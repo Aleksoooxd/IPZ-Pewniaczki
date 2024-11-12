@@ -15,14 +15,14 @@ leagues_dict = {
     'PKO BP Ekstraklasa': "pko-bp-ekstraklasa/startseite/wettbewerb/PL1"
 }
 
-# Nagłówki HTTP
+
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
 }
 
 
 all_clubs_data = []
-# Iteracja przez każdą ligę
+
 for league, path in leagues_dict.items():
     url = site + path
     print(f'Requesting URL for {league}: {url}')
