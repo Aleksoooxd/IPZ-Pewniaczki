@@ -16,10 +16,10 @@ leagues_dict = {
 }
 season_dict = {
     '2024/25': "/saison_id/2024",
-    '2023/24': "/saison_id/2023"
-    #'2022/23': "/saison_id/2022",
-    #'2021/22': "/saison_id/2021",
-    #'2020/21': "/saison_id/2020"
+    '2023/24': "/saison_id/2023",
+    '2022/23': "/saison_id/2022",
+    '2021/22': "/saison_id/2021",
+    '2020/21': "/saison_id/2020"
 }
 
 headers = {
@@ -37,9 +37,9 @@ for league, path in leagues_dict.items():
 
     # Sprawdzenie odpowiedzi serwera
         if response.status_code == 200:
-            print(f"Success for {league}")
+            print(f"Success response for {league} {season}")
         else:
-            raise Exception(f"Error response for {league}: {response.status_code}")
+            raise Exception(f"Error response for {league} {season}: {response.status_code}")
 
     # Parsowanie treści strony
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -50,15 +50,16 @@ for league, path in leagues_dict.items():
 
         club_values = soup.find_all('td', class_='rechts')
 
-        print(f"Clubs in {league}:")
+        print(f"Clubs in {league} {season}:")
         for i, name_td in enumerate(club_names):
 
             club_name = name_td.text.strip()
             club_value = club_values[((i + 1) * 2) + 1].text.strip()
-            if club_name in all_clubs_data:
-                all_clubs_data.update({club_name: club_value})
-            else:
-                all_clubs_data[club_name] = club_value
+
+            if club_name not in all_clubs_data:
+                all_clubs_data[club_name] = {}
+
+            all_clubs_data[club_name][season] = club_value
 
             print(f"- {club_name}: {club_value}")
 
@@ -67,11 +68,25 @@ for league, path in leagues_dict.items():
 save_to_csv = input("Czy chcesz stworzyć raport CSV z tych danych? (T/n): ")
 
 if save_to_csv.upper() == 'T':
+    filepath = 'Data/Club Info/'
     filename = 'clubs_report_from_transfermarkt.csv'
-    with open(filename, mode='w', newline='', encoding='utf-8') as file:
+
+
+    headers = ['Club'] + list(season_dict.keys())
+
+    with open(filepath + filename, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerow(['Club', 'Value of Club'])
-        writer.writerows(all_clubs_data)
+
+
+        writer.writerow(headers)
+
+
+        for club_name, values in all_clubs_data.items():
+            row = [club_name]
+            for season in season_dict.keys():
+                row.append(values.get(season, 'N/A'))
+            writer.writerow(row)
+
     print(f"Raport został zapisany jako {filename}")
 else:
     print("Raport CSV nie został zapisany.")
