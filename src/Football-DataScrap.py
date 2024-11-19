@@ -1,6 +1,7 @@
 import os
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
 import datetime
 #countries = ['england','spain','germany','xsds' ,'italy','france']
 headers = {
@@ -77,12 +78,15 @@ def get_data_from_poland():
     filepath = '../Data/Matches Results/'
     filename = 'Ekstraklasa_allSeasons' + '.csv'
     with open((filepath + filename), 'wb') as file:
-        print(dowload_response.content)
         file.write(dowload_response.content)
+    df = pd.read_csv(filepath + filename)
+    df['Year']=df['Season'].str[0:4]
+    df = df.drop(df[df.Year<=f'{curr_year-5}'].index)
+    df.to_csv(filepath + filename, index=False)
     print(f"Plik został pobrany i zapisany! sciezka: {filepath + filename}")
 
-for key, countryValues in countries.items():
-    for key, seasonsCode in seasons.items():
-        get_data_from_top_5(countryValues, seasonsCode)
+#for key, countryValues in countries.items():
+#    for key, seasonsCode in seasons.items():
+#        get_data_from_top_5(countryValues, seasonsCode)
 
 get_data_from_poland()
