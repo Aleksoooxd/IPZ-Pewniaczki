@@ -19,13 +19,13 @@ Fulham FC,€346.00m,€384.35m,€295.25m,€188.90m,€239.75m
 Southampton FC,€283.20m,€332.48m,€419.95m,€274.30m,€282.80m
 Leicester City,€275.60m,€242.85m,€490.80m,€526.55m,€510.60m
 Ipswich Town,€195.40m,€69.88m,N/A,N/A,N/A
-Burnley FC,N/A,€273.48m,€193.35m,€137.85m,€132.30m
-Sheffield United,N/A,€152.45m,€118.55m,€136.40m,€149.85m
-Luton Town,N/A,€140.90m,€46.83m,€30.25m,€24.95m
-Leeds United,N/A,€244.50m,€345.15m,€299.45m,€238.10m
-Norwich City,N/A,€94.13m,€126.55m,€163.20m,€182.40m
-Watford FC,N/A,€72.60m,€155.40m,€156.20m,€113.30m
-West Bromwich Albion,N/A,€64.85m,€69.35m,€87.40m,€141.15m
+Burnley FC,€187.50m,€273.48m,€193.35m,€137.85m,€132.30m
+Sheffield United,€89.10m,€152.45m,€118.55m,€136.40m,€149.85m
+Luton Town,€101.15m,€140.90m,€46.83m,€30.25m,€24.95m
+Leeds United,€173.58m,€244.50m,€345.15m,€299.45m,€238.10m
+Norwich City,€80.23m,€94.13m,€126.55m,€163.20m,€182.40m
+Watford FC,€48.20m,€72.60m,€155.40m,€156.20m,€113.30m
+West Bromwich Albion,€57.35m,€64.85m,€69.35m,€87.40m,€141.15m
 Real Madrid,€1.36bn,€1.14bn,€923.45m,€770.75m,€787.30m
 FC Barcelona,€946.00m,€916.20m,€836.80m,€735.60m,€813.50m
 Atlético de Madrid,€511.15m,€458.45m,€534.30m,€661.80m,€773.10m
@@ -46,13 +46,13 @@ Getafe CF,€74.00m,€133.00m,€118.90m,€208.68m,€170.10m
 Rayo Vallecano,€71.30m,€63.95m,€103.40m,€67.20m,€29.85m
 CD Leganés,€56.33m,€28.90m,€32.00m,€42.55m,€34.48m
 Real Valladolid CF,€44.20m,€50.90m,€90.75m,€66.65m,€63.35m
-Granada CF,N/A,€141.10m,€55.40m,€103.75m,€122.65m
-UD Almería,N/A,€99.40m,€114.20m,€63.75m,€70.60m
-Cádiz CF,N/A,€60.70m,€65.60m,€67.80m,€47.65m
-Elche CF,N/A,€48.70m,€67.50m,€72.98m,€45.65m
-Levante UD,N/A,€32.15m,€44.78m,€77.90m,€113.00m
-SD Eibar,N/A,€31.68m,€26.40m,€29.25m,€83.40m
-SD Huesca,N/A,€19.95m,€22.98m,€29.90m,€64.10m
+Granada CF,€42.00m,€141.10m,€55.40m,€103.75m,€122.65m
+UD Almería,€56.50m,€99.40m,€114.20m,€63.75m,€70.60m
+Cádiz CF,€33.70m,€60.70m,€65.60m,€67.80m,€47.65m
+Elche CF,€33.90m,€48.70m,€67.50m,€72.98m,€45.65m
+Levante UD,€23.30m,€32.15m,€44.78m,€77.90m,€113.00m
+SD Eibar,€20.50m,€31.68m,€26.40m,€29.25m,€83.40m
+SD Huesca,€13.90m,€19.95m,€22.98m,€29.90m,€64.10m
 Bayern Munich,€939.70m,€965.15m,€948.95m,€790.33m,€858.23m
 Bayer 04 Leverkusen,€634.25m,€658.35m,€452.50m,€455.05m,€373.25m
 RB Leipzig,€517.90m,€545.40m,€486.40m,€498.95m,€574.95m
@@ -71,12 +71,12 @@ FC Augsburg,€99.33m,€140.80m,€132.23m,€95.30m,€93.05m
 VfL Bochum,€60.75m,€64.53m,€53.70m,€52.25m,€33.90m
 FC St. Pauli,€40.73m,€42.08m,€25.05m,€25.68m,€23.23m
 Holstein Kiel,€36.30m,€38.48m,€17.88m,€16.85m,€21.35m
-1.FC Köln,N/A,€81.45m,€115.65m,€99.28m,€118.20m
-SV Darmstadt 98,N/A,€38.70m,€27.88m,€20.33m,€17.03m
-Hertha BSC,N/A,€62.18m,€94.00m,€155.78m,€228.88m
-FC Schalke 04,N/A,€37.70m,€87.78m,€43.83m,€123.05m
+1.FC Köln,€63.20m,€81.45m,€115.65m,€99.28m,€118.20m
+SV Darmstadt 98,€26.40m,€38.70m,€27.88m,€20.33m,€17.03m
+Hertha BSC,€51.35m,€62.18m,€94.00m,€155.78m,€228.88m
+FC Schalke 04,€23.65m,€37.70m,€87.78m,€43.83m,€123.05m
 Arminia Bielefeld,N/A,N/A,€25.00m,€65.85m,€56.73m
-SpVgg Greuther Fürth,N/A,€32.63m,€23.60m,€36.95m,€30.53m
+SpVgg Greuther Fürth,€21.18m,€32.63m,€23.60m,€36.95m,€30.53m
 Inter Milan,€677.30m,€654.85m,€567.55m,€558.55m,€663.90m
 Juventus FC,€594.20m,€504.53m,€483.13m,€642.50m,€633.30m
 AC Milan,€562.00m,€571.41m,€545.10m,€546.95m,€547.78m
@@ -97,12 +97,12 @@ Hellas Verona,€88.43m,€140.70m,€123.89m,€162.98m,€157.21m
 Cagliari Calcio,€70.35m,€92.23m,€41.83m,€134.53m,€187.83m
 FC Empoli,€68.83m,€102.33m,€125.53m,€126.50m,N/A
 Venezia FC,€57.78m,€44.93m,€48.71m,€80.98m,€29.39m
-US Sassuolo,N/A,€139.54m,€232.20m,€251.00m,€241.74m
-Frosinone Calcio,N/A,€108.13m,€40.13m,€30.73m,€18.78m
-US Salernitana 1919,N/A,€94.60m,€118.35m,€70.56m,€27.00m
-Spezia Calcio,N/A,€52.68m,€115.81m,€78.50m,€71.68m
-US Cremonese,N/A,€43.55m,€83.78m,€43.60m,€18.14m
-UC Sampdoria,N/A,€54.48m,€82.96m,€128.55m,€127.18m
+US Sassuolo,€81.55m,€139.54m,€232.20m,€251.00m,€241.74m
+Frosinone Calcio,€25.80m,€108.13m,€40.13m,€30.73m,€18.78m
+US Salernitana 1919,€24.50m,€94.60m,€118.35m,€70.56m,€27.00m
+Spezia Calcio,€31.73m,€52.68m,€115.81m,€78.50m,€71.68m
+US Cremonese,€37.30m,€43.55m,€83.78m,€43.60m,€18.14m
+UC Sampdoria,€33.03m,€54.48m,€82.96m,€128.55m,€127.18m
 FC Crotone,N/A,N/A,N/A,€27.18m,€52.75m
 Benevento Calcio,N/A,N/A,€22.02m,€27.15m,€50.13m
 Paris Saint-Germain,€892.50m,€1.02bn,€891.10m,€875.15m,€805.00m
@@ -123,11 +123,11 @@ Le Havre AC,€70.45m,€72.50m,€50.10m,€31.30m,€18.28m
 AJ Auxerre,€56.25m,€31.70m,€54.80m,€24.55m,€17.30m
 AS Saint-Étienne,€55.75m,€47.20m,€66.50m,€105.65m,€154.50m
 Angers SCO,€34.70m,€42.05m,€71.80m,€89.50m,€111.65m
-FC Lorient,N/A,€131.85m,€175.45m,€61.30m,€72.88m
-FC Metz,N/A,€65.40m,€55.30m,€91.05m,€103.50m
-Clermont Foot 63,N/A,€61.35m,€48.00m,€55.10m,€24.05m
-ESTAC Troyes,N/A,€27.65m,€76.30m,€73.20m,€28.85m
-AC Ajaccio,N/A,€15.25m,€27.00m,€24.40m,€17.90m
+FC Lorient,€66.20m,€131.85m,€175.45m,€61.30m,€72.88m
+FC Metz,€25.70m,€65.40m,€55.30m,€91.05m,€103.50m
+Clermont Foot 63,€13.45m,€61.35m,€48.00m,€55.10m,€24.05m
+ESTAC Troyes,€19.05m,€27.65m,€76.30m,€73.20m,€28.85m
+AC Ajaccio,€10.80m,€15.25m,€27.00m,€24.40m,€17.90m
 FC Girondins Bordeaux,N/A,€28.85m,€51.55m,€116.85m,€105.70m
 Dijon FCO,N/A,N/A,€18.70m,€27.65m,€65.63m
 Nîmes Olympique,N/A,N/A,€23.30m,€30.13m,€60.40m
@@ -149,12 +149,12 @@ Motor Lublin,€8.50m,€6.15m,N/A,N/A,N/A
 Radomiak Radom,€8.23m,€18.58m,€11.43m,€12.53m,€6.25m
 GKS Katowice,€8.10m,€5.90m,€4.93m,€3.48m,N/A
 Puszcza Niepolomice,€7.65m,€8.90m,€6.45m,€3.03m,€3.65m
-Ruch Chorzow,N/A,€8.88m,€5.80m,N/A,N/A
-LKS Lodz,N/A,€7.85m,€6.80m,€4.35m,€5.68m
-Warta Poznan,N/A,€7.38m,€12.08m,€10.33m,€9.63m
-Wisla Plock,N/A,€7.28m,€10.50m,€12.40m,€11.73m
-Miedz Legnica,N/A,€5.68m,€8.08m,€6.58m,€4.75m
-Wisla Kraków,N/A,€8.33m,€7.43m,€13.23m,€14.88m
-Bruk-Bet Termalica Nieciecza,N/A,€5.18m,€6.13m,€8.48m,€5.55m
-Gornik Leczna,N/A,€5.18m,€5.05m,€5.03m,€4.05m
+Ruch Chorzow,€5.90m,€8.88m,€5.80m,N/A,N/A
+LKS Lodz,€5.65m,€7.85m,€6.80m,€4.35m,€5.68m
+Warta Poznan,€3.55m,€7.38m,€12.08m,€10.33m,€9.63m
+Wisla Plock,€4.83m,€7.28m,€10.50m,€12.40m,€11.73m
+Miedz Legnica,€7.43m,€5.68m,€8.08m,€6.58m,€4.75m
+Wisla Kraków,€7.68m,€8.33m,€7.43m,€13.23m,€14.88m
+Bruk-Bet Termalica Nieciecza,€5.45m,€5.18m,€6.13m,€8.48m,€5.55m
+Gornik Leczna,€4.28m,€5.18m,€5.05m,€5.03m,€4.05m
 Podbeskidzie Bielsko-Biala,N/A,€3.78m,€5.40m,€4.10m,€7.05m

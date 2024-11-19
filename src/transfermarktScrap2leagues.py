@@ -2,8 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import os
-
-
+import datetime
+curr_year = datetime.datetime.now().year
+curr_year_2_digits = curr_year % 100
 site = "https://www.transfermarkt.com/"
 
 next_leagues_dict = {
@@ -16,10 +17,11 @@ next_leagues_dict = {
 }
 
 season_dict = {
-    '2023/24': "/plus/?saison_id=2023",
-    '2022/23': "/plus/?saison_id=2022",
-    '2021/22': "/plus/?saison_id=2021",
-    '2020/21': "/plus/?saison_id=2020"
+    f'{curr_year}/{curr_year_2_digits+1}': f"/plus/?saison_id={curr_year}",
+    f'{curr_year-1}/{curr_year_2_digits}': f"/plus/?saison_id={curr_year-1}",
+    f'{curr_year-2}/{curr_year_2_digits-1}': f"/plus/?saison_id={curr_year-2}",
+    f'{curr_year-3}/{curr_year_2_digits-2}': f"/plus/?saison_id={curr_year-3}",
+    f'{curr_year-4}/{curr_year_2_digits-3}': f"/plus/?saison_id={curr_year-4}"
 }
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'

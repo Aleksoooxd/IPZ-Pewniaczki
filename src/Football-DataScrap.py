@@ -1,17 +1,19 @@
+import os
 import requests
 from bs4 import BeautifulSoup
-
+import datetime
 #countries = ['england','spain','germany','xsds' ,'italy','france']
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
 }
-
+curr_year = datetime.datetime.now().year
+curr_year_2_digits = curr_year % 100
 seasons = {
-    '2024/2025':2425,
-    '2023/2024':2324,
-    '2022/2023':2223,
-    '2021/2022':2122,
-    '2020/2021':2021
+    f'{curr_year}/{curr_year+1}': f'{curr_year_2_digits}{curr_year_2_digits+1}',
+    f'{curr_year-1}/{curr_year}': f'{curr_year_2_digits-1}{curr_year_2_digits}',
+    f'{curr_year-2}/{curr_year-1}': f'{curr_year_2_digits-2}{curr_year_2_digits-1}',
+    f'{curr_year-3}/{curr_year-2}': f'{curr_year_2_digits-3}{curr_year_2_digits-2}',
+    f'{curr_year-4}/{curr_year-3}': f'{curr_year_2_digits-4}{curr_year_2_digits-3}'
 }
 
 
@@ -37,23 +39,23 @@ def get_data_from_top_5(countryInfo, seesonCode):
 
 
     all_a_tags = soup.find('a',string=f'{countryInfo[1]}')
-    dowloand_link = all_a_tags.get('href').split('/')
+    download_link = all_a_tags.get('href').split('/')
 
-    dowloand_link[1] = f'{seesonCode}'
-    dowloand_link = '/'.join(dowloand_link)
+    download_link[1] = f'{seesonCode}'
+    download_link = '/'.join(download_link)
 
-    if dowloand_link != None:
-     dowloand_url = f'https://www.football-data.co.uk/{dowloand_link}'
-     dowloand_response = requests.get(dowloand_url,headers=headers)
+    if download_link != None:
+     download_url = f'https://www.football-data.co.uk/{download_link}'
+     download_response = requests.get(download_url,headers=headers)
 
-     if dowloand_response.status_code != 200:
-         print('Failed to load page {}'.format(dowloand_url))
-
-     filepath = 'Data/Matches Results/'
+     if download_response.status_code != 200:
+         print('Failed to load page {}'.format(download_url))
+     filepath = '../Data/Matches Results/'
      filename = f'{countryInfo[1].replace(" ","")}_{seesonCode}' + '.csv'
-     with open((filepath + filename), 'wb') as file:
-         file.write(dowloand_response.content)
-     print(f"Plik został pobrany i zapisany! sciezka: {filepath + filename}")
+     fullname = os.path.join(filepath, filename)
+     with open(fullname, 'wb') as file:
+         file.write(download_response.content)
+     print(f"Plik został pobrany i zapisany! sciezka: {fullname}")
 
 
 
@@ -66,19 +68,18 @@ def get_data_from_poland():
 
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    dowloand_url = 'https://www.football-data.co.uk/new/POL.csv'
-    dowloand_response = requests.get(dowloand_url,headers=headers)
+    dowload_url = 'https://www.football-data.co.uk/new/POL.csv'
+    dowload_response = requests.get(dowload_url,headers=headers)
 
-    if dowloand_response.status_code != 200:
-        print('Failed to load page {}'.format(dowloand_url))
+    if dowload_response.status_code != 200:
+        print('Failed to load page {}'.format(dowload_url))
 
-    filepath = 'Data/Matches Results/'
+    filepath = '../Data/Matches Results/'
     filename = 'Ekstraklasa_allSeasons' + '.csv'
     with open((filepath + filename), 'wb') as file:
-        file.write(dowloand_response.content)
+        print(dowload_response.content)
+        file.write(dowload_response.content)
     print(f"Plik został pobrany i zapisany! sciezka: {filepath + filename}")
-
-
 
 for key, countryValues in countries.items():
     for key, seasonsCode in seasons.items():

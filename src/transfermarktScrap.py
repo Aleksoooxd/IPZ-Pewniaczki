@@ -1,10 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
-
+import datetime
 # Adres strony głównej
 site = "https://www.transfermarkt.com/"
-
+curr_year = datetime.datetime.now().year
+curr_year_2_digits = curr_year % 100
 # Ścieżki do poszczególnych lig
 leagues_dict = {
     'Premier League': "premier-league/startseite/wettbewerb/GB1",
@@ -15,11 +16,11 @@ leagues_dict = {
     'PKO BP Ekstraklasa': "pko-bp-ekstraklasa/startseite/wettbewerb/PL1"
 }
 season_dict = {
-    '2024/25': "/saison_id/2024",
-    '2023/24': "/saison_id/2023",
-    '2022/23': "/saison_id/2022",
-    '2021/22': "/saison_id/2021",
-    '2020/21': "/saison_id/2020"
+    f'{curr_year}/{curr_year_2_digits+1}': f"/saison_id/{curr_year}",
+    f'{curr_year-1}/{curr_year_2_digits}': f"/saison_id/{curr_year-1}",
+    f'{curr_year-2}/{curr_year_2_digits-1}': f"/saison_id/{curr_year-2}",
+    f'{curr_year-3}/{curr_year_2_digits-2}': f"/saison_id/{curr_year-3}",
+    f'{curr_year-4}/{curr_year_2_digits-3}': f"/saison_id/{curr_year-4}"
 }
 
 headers = {
@@ -68,7 +69,7 @@ for league, path in leagues_dict.items():
 save_to_csv = input("Czy chcesz stworzyć raport CSV z tych danych? (T/n): ")
 
 if save_to_csv.upper() == 'T':
-    filepath = 'Data/Club Info/'
+    filepath = '../Data/Club Info/'
     filename = 'clubs_report_from_transfermarkt.csv'
 
 
