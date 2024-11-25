@@ -28,16 +28,16 @@ seasons = {
     f'{curr_year-12}/{curr_year-11}': f'{curr_year_2_digits-12}{curr_year_2_digits-11}', #12/13
     f'{curr_year-13}/{curr_year-12}': f'{curr_year_2_digits-13}{curr_year_2_digits-12}', #11/12
     f'{curr_year-14}/{curr_year-13}': f'{curr_year_2_digits-14}{curr_year_2_digits-13}', #10/11
-    f'{curr_year-15}/{curr_year-14}': f'0{curr_year_2_digits-15}{curr_year_2_digits-14}', #9/10
-    f'{curr_year-16}/{curr_year-15}': f'0{curr_year_2_digits-16}0{curr_year_2_digits-15}', #8/9
-    f'{curr_year-17}/{curr_year-16}': f'0{curr_year_2_digits-17}0{curr_year_2_digits-16}', #7/8
-    f'{curr_year-18}/{curr_year-17}': f'0{curr_year_2_digits-18}0{curr_year_2_digits-17}', #6/7
-    f'{curr_year-19}/{curr_year-18}': f'0{curr_year_2_digits-19}0{curr_year_2_digits-18}', #5/6
-    f'{curr_year-20}/{curr_year-19}': f'0{curr_year_2_digits-20}0{curr_year_2_digits-19}', #4/5
-    f'{curr_year-21}/{curr_year-20}': f'0{curr_year_2_digits-21}0{curr_year_2_digits-20}', #3/4
-    f'{curr_year-22}/{curr_year-21}': f'0{curr_year_2_digits-22}0{curr_year_2_digits-21}', #2/3
-    f'{curr_year-23}/{curr_year-22}': f'0{curr_year_2_digits-23}0{curr_year_2_digits-22}', #1/2
-    f'{curr_year-24}/{curr_year-23}': f'0{curr_year_2_digits-24}0{curr_year_2_digits-23}', #0/1
+    f'{curr_year-15}/{curr_year-14}': f'0{curr_year_2_digits-15}{curr_year_2_digits-14}', #09/10
+    f'{curr_year-16}/{curr_year-15}': f'0{curr_year_2_digits-16}0{curr_year_2_digits-15}', #08/09
+    f'{curr_year-17}/{curr_year-16}': f'0{curr_year_2_digits-17}0{curr_year_2_digits-16}', #07/08
+    f'{curr_year-18}/{curr_year-17}': f'0{curr_year_2_digits-18}0{curr_year_2_digits-17}', #06/07
+    f'{curr_year-19}/{curr_year-18}': f'0{curr_year_2_digits-19}0{curr_year_2_digits-18}', #05/06
+    f'{curr_year-20}/{curr_year-19}': f'0{curr_year_2_digits-20}0{curr_year_2_digits-19}', #04/05
+    f'{curr_year-21}/{curr_year-20}': f'0{curr_year_2_digits-21}0{curr_year_2_digits-20}', #03/04
+    f'{curr_year-22}/{curr_year-21}': f'0{curr_year_2_digits-22}0{curr_year_2_digits-21}', #02/03
+    f'{curr_year-23}/{curr_year-22}': f'0{curr_year_2_digits-23}0{curr_year_2_digits-22}', #01/02
+    f'{curr_year-24}/{curr_year-23}': f'0{curr_year_2_digits-24}0{curr_year_2_digits-23}', #00/01
 }
 
 
@@ -101,10 +101,6 @@ def get_data_from_poland():
     filename = 'Ekstraklasa_allSeasons' + '.csv'
     with open((filepath + filename), 'wb') as file:
         file.write(dowload_response.content)
-    df = pd.read_csv(filepath + filename)
-    df['Year']=df['Season'].str[0:4]
-    df = df.drop(df[df.Year<=f'{curr_year-5}'].index)
-    df.to_csv(filepath + filename, index=False)
     print(f"Plik został pobrany i zapisany! sciezka: {filepath + filename}")
 
 for key, countryValues in countries.items():
