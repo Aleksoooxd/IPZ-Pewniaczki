@@ -11,43 +11,20 @@ headers = {
 
 curr_year = datetime.datetime.now().year
 curr_year_2_digits = curr_year % 100
-deadline = curr_year-2008
-season_dict = {}
-generate_season_entry = lambda curr_year, offset: {
-    f'{curr_year-offset}/{curr_year-offset+1}': f"{curr_year_2_digits-offset}{curr_year_2_digits-offset+1}"
+deadline = curr_year-2009
+deadline2 = curr_year-2000-deadline
+seasons = {}
+generate_season_entry = lambda year, offset: {
+    f'{year-offset}/{year-offset+1}': f"{year%100-offset}{year%100-offset+1}"
+}
+generate_season_entry_0 = lambda year, offset: {
+    f'{year-offset}/{year-offset+1}': f"0{year%100-offset}0{year%100-offset+1}"
 }
 for i in range(deadline):
-    season_dict.update(generate_season_entry(curr_year, i))
-print(season_dict)
-seasons = {
-    f'{curr_year}/{curr_year+1}': f'{curr_year_2_digits}{curr_year_2_digits+1}', #24/25 (current season)
-    f'{curr_year-1}/{curr_year}': f'{curr_year_2_digits-1}{curr_year_2_digits}', #23/24
-    f'{curr_year-2}/{curr_year-1}': f'{curr_year_2_digits-2}{curr_year_2_digits-1}', #22/23
-    f'{curr_year-3}/{curr_year-2}': f'{curr_year_2_digits-3}{curr_year_2_digits-2}', #21/22
-    f'{curr_year-4}/{curr_year-3}': f'{curr_year_2_digits-4}{curr_year_2_digits-3}', #20/21
-    f'{curr_year-5}/{curr_year-4}': f'{curr_year_2_digits-5}{curr_year_2_digits-4}', #19/20
-    f'{curr_year-6}/{curr_year-5}': f'{curr_year_2_digits-6}{curr_year_2_digits-5}', #18/19
-    f'{curr_year-7}/{curr_year-6}': f'{curr_year_2_digits-7}{curr_year_2_digits-6}', #17/18
-    f'{curr_year-8}/{curr_year-7}': f'{curr_year_2_digits-8}{curr_year_2_digits-7}', #16/17
-    f'{curr_year-9}/{curr_year-8}': f'{curr_year_2_digits-9}{curr_year_2_digits-8}', #15/16
-    f'{curr_year-10}/{curr_year-9}': f'{curr_year_2_digits-10}{curr_year_2_digits-9}', #14/15
-    f'{curr_year-11}/{curr_year-10}': f'{curr_year_2_digits-11}{curr_year_2_digits-10}', #13/14
-    f'{curr_year-12}/{curr_year-11}': f'{curr_year_2_digits-12}{curr_year_2_digits-11}', #12/13
-    f'{curr_year-13}/{curr_year-12}': f'{curr_year_2_digits-13}{curr_year_2_digits-12}', #11/12
-    f'{curr_year-14}/{curr_year-13}': f'{curr_year_2_digits-14}{curr_year_2_digits-13}', #10/11
-    f'{curr_year-15}/{curr_year-14}': f'0{curr_year_2_digits-15}{curr_year_2_digits-14}', #09/10
-    f'{curr_year-16}/{curr_year-15}': f'0{curr_year_2_digits-16}0{curr_year_2_digits-15}', #08/09
-    f'{curr_year-17}/{curr_year-16}': f'0{curr_year_2_digits-17}0{curr_year_2_digits-16}', #07/08
-    f'{curr_year-18}/{curr_year-17}': f'0{curr_year_2_digits-18}0{curr_year_2_digits-17}', #06/07
-    f'{curr_year-19}/{curr_year-18}': f'0{curr_year_2_digits-19}0{curr_year_2_digits-18}', #05/06
-    f'{curr_year-20}/{curr_year-19}': f'0{curr_year_2_digits-20}0{curr_year_2_digits-19}', #04/05
-    f'{curr_year-21}/{curr_year-20}': f'0{curr_year_2_digits-21}0{curr_year_2_digits-20}', #03/04
-    f'{curr_year-22}/{curr_year-21}': f'0{curr_year_2_digits-22}0{curr_year_2_digits-21}', #02/03
-    f'{curr_year-23}/{curr_year-22}': f'0{curr_year_2_digits-23}0{curr_year_2_digits-22}', #01/02
-    f'{curr_year-24}/{curr_year-23}': f'0{curr_year_2_digits-24}0{curr_year_2_digits-23}', #00/01
-}
-print(seasons)
-
+    seasons.update(generate_season_entry(curr_year, i))
+seasons.update({'2009/2010': '0910'})
+for i in range(deadline2):
+    seasons.update(generate_season_entry_0(2008, i))
 countries = {
     'en': ['england', 'Premier League',],
     'sp': ['spain', 'La Liga Primera Division'],

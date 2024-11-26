@@ -17,8 +17,8 @@ leagues_dict = {
     'PKO BP Ekstraklasa': "pko-bp-ekstraklasa/startseite/wettbewerb/PL1"
 }
 season_dict = {}
-generate_season_entry = lambda curr_year, offset: {
-    f'{curr_year-offset}/{(curr_year-offset) % 100 + 1}': f"/saison_id/{curr_year-offset}"
+generate_season_entry = lambda year, offset: {
+    f'{year-offset}/{(year-offset) % 100 + 1}': f"/saison_id/{year-offset}"
 }
 for i in range(deadline):
     season_dict.update(generate_season_entry(curr_year, i))
