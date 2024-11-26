@@ -6,6 +6,7 @@ import datetime
 site = "https://www.transfermarkt.com/"
 curr_year = datetime.datetime.now().year
 curr_year_2_digits = curr_year % 100
+deadline = curr_year-2003
 # Ścieżki do poszczególnych lig
 leagues_dict = {
     'Premier League': "premier-league/startseite/wettbewerb/GB1",
@@ -15,13 +16,12 @@ leagues_dict = {
     'Ligue 1': "ligue-1/startseite/wettbewerb/FR1",
     'PKO BP Ekstraklasa': "pko-bp-ekstraklasa/startseite/wettbewerb/PL1"
 }
-season_dict = {
-    f'{curr_year}/{curr_year_2_digits+1}': f"/saison_id/{curr_year}",
-    f'{curr_year-1}/{curr_year_2_digits}': f"/saison_id/{curr_year-1}",
-    f'{curr_year-2}/{curr_year_2_digits-1}': f"/saison_id/{curr_year-2}",
-    f'{curr_year-3}/{curr_year_2_digits-2}': f"/saison_id/{curr_year-3}",
-    f'{curr_year-4}/{curr_year_2_digits-3}': f"/saison_id/{curr_year-4}"
+season_dict = {}
+generate_season_entry = lambda curr_year, offset: {
+    f'{curr_year-offset}/{(curr_year-offset) % 100 + 1}': f"/saison_id/{curr_year-offset}"
 }
+for i in range(deadline):
+    season_dict.update(generate_season_entry(curr_year, i))
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'

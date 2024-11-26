@@ -1,160 +1,247 @@
-Club,2024/25,2023/24,2022/23,2021/22,2020/21
-Manchester City,€1.26bn,€1.46bn,€1.15bn,€1.00bn,€1.04bn
-Arsenal FC,€1.17bn,€1.20bn,€1.00bn,€613.05m,€619.25m
-Chelsea FC,€963.20m,€1.01bn,€994.95m,€914.50m,€889.20m
-Liverpool FC,€931.00m,€955.85m,€811.85m,€918.90m,€969.65m
-Manchester United,€854.15m,€808.75m,€848.00m,€769.15m,€770.05m
-Tottenham Hotspur,€788.30m,€838.50m,€649.10m,€689.35m,€703.50m
-Newcastle United,€657.65m,€652.65m,€541.60m,€313.90m,€255.35m
-Aston Villa,€615.45m,€709.90m,€509.55m,€487.75m,€430.70m
-Brighton & Hove Albion,€572.10m,€524.40m,€529.80m,€318.00m,€290.40m
-West Ham United,€481.50m,€487.50m,€465.75m,€354.90m,€334.90m
-Crystal Palace,€438.00m,€446.78m,€323.05m,€271.05m,€193.85m
-Nottingham Forest,€427.70m,€501.35m,€376.25m,N/A,N/A
-Brentford FC,€403.03m,€429.03m,€371.20m,€273.30m,N/A
-Wolverhampton Wanderers,€379.70m,€443.23m,€497.65m,€376.95m,€450.30m
-AFC Bournemouth,€354.85m,€401.90m,€287.20m,N/A,N/A
-Everton FC,€353.10m,€391.75m,€413.15m,€479.05m,€511.20m
-Fulham FC,€346.00m,€384.35m,€295.25m,N/A,€239.75m
-Southampton FC,€283.20m,N/A,€419.95m,€274.30m,€282.80m
-Leicester City,€275.60m,N/A,€490.80m,€526.55m,€510.60m
-Ipswich Town,€195.40m,N/A,N/A,N/A,N/A
-Burnley FC,N/A,€273.48m,N/A,€137.85m,€132.30m
-Sheffield United,N/A,€152.45m,N/A,N/A,€149.85m
-Luton Town,N/A,€140.90m,N/A,N/A,N/A
-Leeds United,N/A,N/A,€345.15m,€299.45m,€238.10m
-Norwich City,N/A,N/A,N/A,€163.20m,N/A
-Watford FC,N/A,N/A,N/A,€156.20m,N/A
-West Bromwich Albion,N/A,N/A,N/A,N/A,€141.15m
-Real Madrid,€1.36bn,€1.14bn,€923.45m,€770.75m,€787.30m
-FC Barcelona,€946.00m,€916.20m,€836.80m,€735.60m,€813.50m
-Atlético de Madrid,€511.15m,€458.45m,€534.30m,€661.80m,€773.10m
-Real Sociedad,€443.70m,€498.50m,€441.70m,€376.95m,€406.60m
-Athletic Bilbao,€338.70m,€295.65m,€222.45m,€226.05m,€204.15m
-Valencia CF,€253.00m,€244.73m,€249.78m,€310.60m,€278.85m
-Villarreal CF,€230.70m,€252.50m,€363.50m,€408.90m,€292.60m
-Girona FC,€216.50m,€297.90m,€139.90m,N/A,N/A
-Real Betis Balompié,€192.40m,€224.88m,€246.40m,€259.00m,€207.70m
-Sevilla FC,€174.10m,€228.75m,€232.58m,€385.00m,€418.25m
-UD Las Palmas,€112.60m,€112.40m,N/A,N/A,N/A
-CA Osasuna,€112.40m,€105.35m,€150.05m,€108.45m,€96.75m
-RCD Mallorca,€89.70m,€87.70m,€107.00m,€74.15m,N/A
-Deportivo Alavés,€87.70m,€123.70m,N/A,€65.35m,€79.80m
-Celta de Vigo,€86.60m,€149.30m,€138.80m,€120.00m,€155.85m
-RCD Espanyol Barcelona,€79.30m,N/A,€116.50m,€131.60m,N/A
-Getafe CF,€74.00m,€133.00m,€118.90m,€208.68m,€170.10m
-Rayo Vallecano,€71.30m,€63.95m,€103.40m,€67.20m,N/A
-CD Leganés,€56.33m,N/A,N/A,N/A,N/A
-Real Valladolid CF,€44.20m,N/A,€90.75m,N/A,€63.35m
-Granada CF,N/A,€141.10m,N/A,€103.75m,€122.65m
-UD Almería,N/A,€99.40m,€114.20m,N/A,N/A
-Cádiz CF,N/A,€60.70m,€65.60m,€67.80m,€47.65m
-Elche CF,N/A,N/A,€67.50m,€72.98m,€45.65m
-Levante UD,N/A,N/A,N/A,€77.90m,€113.00m
-SD Eibar,N/A,N/A,N/A,N/A,€83.40m
-SD Huesca,N/A,N/A,N/A,N/A,€64.10m
-Bayern Munich,€939.70m,€965.15m,€948.95m,€790.33m,€858.23m
-Bayer 04 Leverkusen,€634.25m,€658.35m,€452.50m,€455.05m,€373.25m
-RB Leipzig,€517.90m,€545.40m,€486.40m,€498.95m,€574.95m
-Borussia Dortmund,€474.90m,€494.80m,€567.55m,€558.98m,€628.40m
-VfB Stuttgart,€313.73m,€346.63m,€151.05m,€174.23m,€189.25m
-Eintracht Frankfurt,€279.70m,€326.65m,€324.55m,€228.75m,€269.15m
-VfL Wolfsburg,€215.00m,€206.45m,€238.30m,€269.30m,€256.83m
-SC Freiburg,€169.05m,€180.35m,€200.95m,€176.35m,€139.10m
-TSG 1899 Hoffenheim,€166.15m,€176.00m,€178.80m,€211.43m,€228.15m
-Borussia Mönchengladbach,€139.70m,€165.23m,€241.68m,€236.80m,€300.75m
-1.FC Union Berlin,€122.18m,€160.95m,€157.95m,€115.90m,€82.05m
-SV Werder Bremen,€119.35m,€134.93m,€89.50m,N/A,€111.98m
-FC Augsburg,€99.33m,€140.80m,€132.23m,€95.30m,€93.05m
-1.FSV Mainz 05,€93.45m,€142.88m,€135.80m,€131.03m,€163.30m
-1.FC Heidenheim 1846,€63.30m,€66.45m,N/A,N/A,N/A
-VfL Bochum,€60.75m,€64.53m,€53.70m,€52.25m,N/A
-FC St. Pauli,€40.73m,N/A,N/A,N/A,N/A
-Holstein Kiel,€36.30m,N/A,N/A,N/A,N/A
-1.FC Köln,N/A,€81.45m,€115.65m,€99.28m,€118.20m
-SV Darmstadt 98,N/A,€38.70m,N/A,N/A,N/A
-Hertha BSC,N/A,N/A,€94.00m,€155.78m,€228.88m
-FC Schalke 04,N/A,N/A,€87.78m,N/A,€123.05m
-Arminia Bielefeld,N/A,N/A,N/A,€65.85m,€56.73m
-SpVgg Greuther Fürth,N/A,N/A,N/A,€36.95m,N/A
-Inter Milan,€677.30m,€654.85m,€567.55m,€558.55m,€663.90m
-Juventus FC,€594.20m,€504.53m,€483.13m,€642.50m,€633.30m
-AC Milan,€562.00m,€571.41m,€545.10m,€546.95m,€547.78m
-Atalanta BC,€447.60m,€436.05m,€338.38m,€398.75m,€430.00m
-SSC Napoli,€429.03m,€515.00m,€654.08m,€477.23m,€530.20m
-AS Roma,€332.50m,€340.40m,€361.38m,€381.25m,€395.65m
-Bologna FC 1909,€276.80m,€349.30m,€153.63m,€186.20m,€153.60m
-ACF Fiorentina,€258.30m,€284.10m,€258.80m,€325.80m,€286.80m
-SS Lazio,€236.35m,€225.45m,€266.43m,€264.53m,€326.33m
-Torino FC,€172.03m,€232.73m,€197.19m,€223.40m,€175.28m
-Genoa CFC,€144.40m,€195.40m,N/A,€121.28m,€111.93m
-Udinese Calcio,€128.18m,€170.06m,€188.86m,€142.30m,€173.00m
-Parma Calcio 1913,€125.10m,N/A,N/A,N/A,€128.70m
-Como 1907,€100.55m,N/A,N/A,N/A,N/A
-AC Monza,€92.68m,€143.43m,€135.70m,N/A,N/A
-US Lecce,€92.20m,€107.73m,€105.20m,N/A,N/A
-Hellas Verona,€88.43m,€140.70m,€123.89m,€162.98m,€157.21m
-Cagliari Calcio,€70.35m,€92.23m,N/A,€134.53m,€187.83m
-FC Empoli,€68.83m,€102.33m,€125.53m,€126.50m,N/A
-Venezia FC,€57.78m,N/A,N/A,€80.98m,N/A
-US Sassuolo,N/A,€139.54m,€232.20m,€251.00m,€241.74m
-Frosinone Calcio,N/A,€108.13m,N/A,N/A,N/A
-US Salernitana 1919,N/A,€94.60m,€118.35m,€70.56m,N/A
-Spezia Calcio,N/A,N/A,€115.81m,€78.50m,€71.68m
-US Cremonese,N/A,N/A,€83.78m,N/A,N/A
-UC Sampdoria,N/A,N/A,€82.96m,€128.55m,€127.18m
-FC Crotone,N/A,N/A,N/A,N/A,€52.75m
-Benevento Calcio,N/A,N/A,N/A,N/A,€50.13m
-Paris Saint-Germain,€892.50m,€1.02bn,€891.10m,€875.15m,€805.00m
-AS Monaco,€358.20m,€398.55m,€368.30m,€396.00m,€370.35m
-Olympique Marseille,€305.30m,€311.40m,€331.55m,€284.70m,€247.95m
-LOSC Lille,€263.70m,€328.90m,€247.95m,€306.88m,€323.20m
-Olympique Lyon,€240.30m,€305.95m,€350.95m,€397.70m,€431.35m
-OGC Nice,€214.40m,€268.78m,€310.80m,€266.05m,€236.10m
-Stade Rennais FC,€203.25m,€375.35m,€387.75m,€305.35m,€297.50m
-RC Strasbourg Alsace,€182.80m,€157.70m,€123.55m,€120.05m,€109.65m
-RC Lens,€177.60m,€205.60m,€238.20m,€154.05m,€104.30m
-Stade Reims,€127.70m,€134.55m,€159.05m,€149.40m,€105.18m
-Stade Brestois 29,€120.90m,€115.15m,€76.65m,€103.15m,€103.23m
-FC Nantes,€99.90m,€125.90m,€119.28m,€112.65m,€95.08m
-Montpellier HSC,€92.75m,€145.58m,€142.90m,€144.60m,€113.85m
-FC Toulouse,€82.15m,€145.20m,€104.80m,N/A,N/A
-Le Havre AC,€70.45m,€72.50m,N/A,N/A,N/A
-AJ Auxerre,€56.25m,N/A,€54.80m,N/A,N/A
-AS Saint-Étienne,€55.75m,N/A,N/A,€105.65m,€154.50m
-Angers SCO,€34.70m,N/A,€71.80m,€89.50m,€111.65m
-FC Lorient,N/A,€131.85m,€175.45m,€61.30m,€72.88m
-FC Metz,N/A,€65.40m,N/A,€91.05m,€103.50m
-Clermont Foot 63,N/A,€61.35m,€48.00m,€55.10m,N/A
-ESTAC Troyes,N/A,N/A,€76.30m,€73.20m,N/A
-AC Ajaccio,N/A,N/A,€27.00m,N/A,N/A
-FC Girondins Bordeaux,N/A,N/A,N/A,€116.85m,€105.70m
-Dijon FCO,N/A,N/A,N/A,N/A,€65.63m
-Nîmes Olympique,N/A,N/A,N/A,N/A,€60.40m
-Legia Warszawa,€26.40m,€43.63m,€34.45m,€36.78m,€36.73m
-Lech Poznan,€25.70m,€32.60m,€36.03m,€46.55m,€50.40m
-Raków Częstochowa,€25.45m,€38.63m,€38.23m,€32.75m,€23.93m
-Jagiellonia Bialystok,€15.95m,€21.78m,€14.88m,€13.10m,€20.05m
-Slask Wroclaw,€15.45m,€20.20m,€10.70m,€13.95m,€11.45m
-Cracovia,€15.15m,€13.45m,€17.13m,€16.03m,€17.53m
-Zaglebie Lubin,€13.75m,€15.20m,€15.30m,€16.70m,€15.78m
-Pogon Szczecin,€12.63m,€16.95m,€19.20m,€28.68m,€21.20m
-Lechia Gdansk,€11.78m,N/A,€7.78m,€19.48m,€14.50m
-Górnik Zabrze,€11.25m,€18.80m,€17.45m,€18.05m,€16.25m
-Piast Gliwice,€10.53m,€11.70m,€12.68m,€16.75m,€13.90m
-Widzew Lodz,€10.23m,€11.70m,€10.48m,N/A,N/A
-Stal Mielec,€9.60m,€11.95m,€9.73m,€10.15m,€7.50m
-Korona Kielce,€9.03m,€9.45m,€9.10m,N/A,N/A
-Motor Lublin,€8.50m,N/A,N/A,N/A,N/A
-Radomiak Radom,€8.23m,€18.58m,€11.43m,€12.53m,N/A
-GKS Katowice,€8.10m,N/A,N/A,N/A,N/A
-Puszcza Niepolomice,€7.65m,€8.90m,N/A,N/A,N/A
-Ruch Chorzow,N/A,€8.88m,N/A,N/A,N/A
-LKS Lodz,N/A,€7.85m,N/A,N/A,N/A
-Warta Poznan,N/A,€7.38m,€12.08m,€10.33m,€9.63m
-Wisla Plock,N/A,N/A,€10.50m,€12.40m,€11.73m
-Miedz Legnica,N/A,N/A,€8.08m,N/A,N/A
-Wisla Kraków,N/A,N/A,N/A,€13.23m,€14.88m
-Bruk-Bet Termalica Nieciecza,N/A,N/A,N/A,€8.48m,N/A
-Gornik Leczna,N/A,N/A,N/A,€5.03m,N/A
-Podbeskidzie Bielsko-Biala,N/A,N/A,N/A,N/A,€7.05m
+Club,2024/25,2023/24,2022/23,2021/22,2020/21,2019/20,2018/19,2017/18,2016/17,2015/16,2014/15,2013/14,2012/13,2011/12,2010/11,2009/10,2008/9,2007/8,2006/7,2005/6,2004/5
+Manchester City,€1.26bn,€1.46bn,€1.15bn,€1.00bn,€1.04bn,€1.05bn,€1.20bn,€1.01bn,€576.50m,€499.35m,€448.25m,€455.80m,€502.10m,€498.60m,€404.18m,€312.50m,€258.35m,€150.10m,€89.25m,€91.90m,€94.30m
+Arsenal FC,€1.17bn,€1.20bn,€1.00bn,€613.05m,€619.25m,€607.65m,€659.05m,€694.00m,€542.00m,€457.85m,€414.75m,€385.75m,€296.90m,€362.43m,€324.00m,€314.30m,€311.45m,€262.40m,€278.18m,€232.33m,€247.00m
+Chelsea FC,€963.20m,€1.01bn,€994.95m,€914.50m,€889.20m,€705.85m,€1.17bn,€884.25m,€686.70m,€553.50m,€557.25m,€584.20m,€454.25m,€375.50m,€424.10m,€451.95m,€448.55m,€434.35m,€416.76m,€363.43m,€331.48m
+Liverpool FC,€931.00m,€955.85m,€811.85m,€918.90m,€969.65m,€1.00bn,€1.17bn,€857.50m,€425.65m,€375.25m,€324.85m,€315.75m,€276.10m,€236.90m,€339.20m,€331.55m,€342.85m,€305.65m,€239.77m,€216.35m,€222.13m
+Manchester United,€854.15m,€808.75m,€848.00m,€769.15m,€770.05m,€670.45m,€797.60m,€849.50m,€531.45m,€439.85m,€505.40m,€402.55m,€457.50m,€404.10m,€388.00m,€384.88m,€425.95m,€354.55m,€259.15m,€254.58m,€293.23m
+Tottenham Hotspur,€788.30m,€838.50m,€649.10m,€689.35m,€703.50m,€806.80m,€898.60m,€829.60m,€543.65m,€371.85m,€304.15m,€288.95m,€296.80m,€323.50m,€307.08m,€263.53m,€278.80m,€220.50m,€165.73m,€154.33m,€127.20m
+Newcastle United,€657.65m,€652.65m,€541.60m,€313.90m,€255.35m,€252.48m,€244.65m,€208.28m,N/A,€198.00m,€140.00m,€172.30m,€200.25m,€161.70m,€119.48m,N/A,€134.55m,€135.20m,€146.55m,€150.48m,€125.90m
+Aston Villa,€615.45m,€709.90m,€509.55m,€487.75m,€430.70m,€231.70m,N/A,N/A,N/A,€117.95m,€114.25m,€109.50m,€110.50m,€123.50m,€202.80m,€167.38m,€157.35m,€112.10m,€109.50m,€89.00m,€84.18m
+Brighton & Hove Albion,€574.60m,€524.40m,€529.80m,€318.00m,€290.40m,€200.78m,€194.35m,€148.20m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+West Ham United,€481.50m,€487.50m,€465.75m,€354.90m,€334.90m,€303.60m,€359.00m,€260.60m,€273.05m,€201.33m,€135.90m,€109.50m,€103.00m,N/A,€138.75m,€121.75m,€133.90m,€120.00m,€105.45m,€62.55m,N/A
+Crystal Palace,€438.00m,€446.78m,€323.05m,€271.05m,€193.85m,€189.33m,€289.00m,€220.73m,€228.43m,€135.70m,€97.25m,€68.70m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€38.53m
+Nottingham Forest,€427.70m,€501.35m,€376.25m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Brentford FC,€403.03m,€429.03m,€371.20m,€273.30m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Wolverhampton Wanderers,€379.70m,€443.23m,€497.65m,€376.95m,€450.30m,€320.33m,€302.90m,N/A,N/A,N/A,N/A,N/A,N/A,€78.05m,€83.55m,€65.48m,N/A,N/A,N/A,N/A,N/A
+AFC Bournemouth,€354.85m,€401.90m,€287.20m,N/A,N/A,€272.18m,€310.00m,€144.50m,€131.60m,€99.90m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Everton FC,€353.10m,€391.75m,€413.15m,€479.05m,€511.20m,€420.55m,€529.10m,€381.25m,€311.25m,€249.85m,€182.85m,€210.00m,€139.75m,€169.95m,€184.48m,€218.93m,€190.33m,€155.30m,€109.45m,€92.92m,€74.28m
+Fulham FC,€346.00m,€384.35m,€295.25m,N/A,€239.75m,N/A,€254.25m,N/A,N/A,N/A,N/A,€112.65m,€109.85m,€100.00m,€109.55m,€101.18m,€83.85m,€99.05m,€84.68m,€70.88m,€65.23m
+Southampton FC,€283.20m,N/A,€419.95m,€274.30m,€282.80m,€210.75m,€305.40m,€297.00m,€263.75m,€225.50m,€210.25m,€131.50m,€83.05m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€85.48m
+Leicester City,€275.60m,N/A,€490.80m,€526.55m,€510.60m,€411.10m,€434.10m,€304.25m,€218.65m,€161.10m,€66.70m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Ipswich Town,€195.40m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Burnley FC,N/A,€273.48m,N/A,€137.85m,€132.30m,€163.88m,€197.25m,€169.30m,€107.18m,N/A,€52.55m,N/A,N/A,N/A,N/A,€48.15m,N/A,N/A,N/A,N/A,N/A
+Sheffield United,N/A,€152.45m,N/A,N/A,€149.85m,€138.60m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€43.36m,N/A,N/A
+Luton Town,N/A,€140.90m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Leeds United,N/A,N/A,€345.15m,€299.45m,€238.10m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Norwich City,N/A,N/A,N/A,€163.20m,N/A,€145.33m,N/A,N/A,N/A,€116.90m,N/A,€89.30m,€73.25m,€58.75m,N/A,N/A,N/A,N/A,N/A,N/A,€30.95m
+Watford FC,N/A,N/A,N/A,€156.20m,N/A,€199.60m,€239.10m,€196.00m,€175.65m,€137.00m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€32.97m,N/A,N/A
+West Bromwich Albion,N/A,N/A,N/A,N/A,€141.15m,N/A,N/A,€165.95m,€123.20m,€113.10m,€95.95m,€90.80m,€93.50m,€69.55m,€86.88m,N/A,€66.10m,N/A,N/A,€65.55m,€50.40m
+Huddersfield Town,N/A,N/A,N/A,N/A,N/A,N/A,€137.45m,€106.05m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Cardiff City,N/A,N/A,N/A,N/A,N/A,N/A,€113.00m,N/A,N/A,N/A,N/A,€87.90m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Stoke City,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€192.45m,€186.00m,€147.00m,€110.50m,€104.70m,€104.05m,€81.65m,€94.45m,€80.70m,€63.45m,N/A,N/A,N/A,N/A
+Swansea City,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€165.49m,€157.10m,€145.80m,€130.75m,€128.93m,€102.25m,€75.60m,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Hull City,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€135.85m,N/A,€117.10m,€68.15m,N/A,N/A,N/A,€73.20m,€64.70m,N/A,N/A,N/A,N/A
+Sunderland AFC,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€132.00m,€111.25m,€91.00m,€122.00m,€133.90m,€126.50m,€149.33m,€131.58m,€110.30m,€83.60m,N/A,€34.35m,N/A
+Middlesbrough FC,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€128.80m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€85.45m,€120.90m,€96.32m,€94.38m,€95.43m
+Queens Park Rangers,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€112.25m,N/A,€120.05m,€81.38m,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Wigan Athletic,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€91.55m,€74.25m,€80.50m,€77.60m,€103.75m,€77.75m,€74.93m,€51.92m,N/A
+Reading FC,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€46.25m,N/A,N/A,N/A,N/A,€65.93m,€32.88m,N/A,N/A
+Bolton Wanderers,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€90.05m,€100.15m,€85.80m,€81.65m,€104.20m,€72.38m,€61.85m,€63.58m
+Blackburn Rovers,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€80.00m,€91.53m,€91.63m,€91.20m,€90.85m,€78.90m,€63.80m,€73.70m
+Birmingham City,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€95.38m,€69.65m,N/A,€82.50m,N/A,€81.83m,€106.93m
+Blackpool FC,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€50.03m,N/A,N/A,N/A,N/A,N/A,N/A
+Portsmouth FC,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€96.65m,€152.60m,€141.30m,€97.08m,€86.13m,€64.00m
+Derby County,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€50.40m,N/A,N/A,N/A
+Charlton Athletic,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€71.47m,€82.43m,€57.80m
+Real Madrid,€1.36bn,€1.14bn,€923.45m,€770.75m,€787.30m,€913.75m,€896.10m,€955.35m,€802.90m,€714.30m,€787.80m,€636.80m,€582.40m,€539.20m,€519.00m,€451.70m,€428.60m,€355.80m,€372.20m,€281.60m,€303.70m
+FC Barcelona,€946.00m,€916.20m,€836.80m,€735.60m,€813.50m,€930.28m,€1.16bn,€1.09bn,€765.30m,€726.00m,€603.80m,€592.20m,€586.60m,€618.20m,€604.70m,€515.40m,€425.40m,€413.70m,€366.50m,€327.50m,€273.03m
+Atlético de Madrid,€511.15m,€458.45m,€534.30m,€661.80m,€773.10m,€720.15m,€969.70m,€711.15m,€515.80m,€418.50m,€356.00m,€308.80m,€267.00m,€210.00m,€187.00m,€210.80m,€221.40m,€211.70m,€174.00m,€134.15m,€125.65m
+Real Sociedad,€443.70m,€498.50m,€441.70m,€376.95m,€406.60m,€347.55m,€300.95m,€232.95m,€156.45m,€119.40m,€96.80m,€136.70m,€112.80m,€74.70m,€66.70m,N/A,N/A,N/A,€45.20m,€53.83m,€53.55m
+Athletic Bilbao,€338.70m,€295.65m,€222.45m,€226.05m,€204.15m,€211.75m,€234.25m,€249.40m,€172.60m,€148.00m,€112.10m,€130.70m,€119.85m,€144.20m,€112.00m,€100.80m,€77.60m,€75.00m,€54.90m,€47.23m,€53.05m
+Valencia CF,€253.00m,€244.73m,€249.78m,€310.60m,€278.85m,€427.80m,€499.65m,€398.05m,€257.50m,€254.00m,€230.00m,€178.80m,€172.90m,€181.00m,€176.60m,€240.00m,€227.50m,€236.50m,€232.70m,€213.55m,€195.90m
+Villarreal CF,€230.70m,€252.50m,€363.50m,€408.90m,€292.60m,€208.68m,€230.65m,€220.00m,€190.70m,€140.60m,€132.70m,€77.30m,N/A,€137.00m,€170.60m,€163.70m,€170.00m,€149.30m,€109.05m,€82.00m,€66.25m
+Girona FC,€216.50m,€297.90m,€139.90m,N/A,N/A,N/A,€97.25m,€81.75m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Real Betis Balompié,€192.40m,€224.88m,€246.40m,€259.00m,€207.70m,€244.35m,€290.75m,€132.25m,€84.20m,€56.40m,N/A,€58.60m,€66.20m,€52.70m,N/A,N/A,€118.70m,€81.10m,€78.93m,€85.95m,€85.15m
+Sevilla FC,€174.10m,€228.75m,€232.58m,€385.00m,€418.25m,€294.75m,€306.30m,€253.20m,€270.10m,€230.30m,€166.75m,€141.15m,€144.80m,€133.00m,€175.60m,€218.30m,€202.70m,€199.40m,€139.80m,€96.85m,€70.55m
+UD Las Palmas,€112.60m,€112.40m,N/A,N/A,N/A,N/A,N/A,€91.25m,€84.30m,€32.20m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CA Osasuna,€112.40m,€105.35m,€150.05m,€108.45m,€96.75m,€62.78m,N/A,N/A,€42.90m,N/A,N/A,€42.30m,€46.40m,€44.40m,€57.90m,€60.00m,€67.10m,€81.90m,€71.35m,€40.70m,€26.70m
+RCD Mallorca,€89.70m,€87.70m,€107.00m,€74.15m,N/A,€64.68m,N/A,N/A,N/A,N/A,N/A,N/A,€47.10m,€62.20m,€53.70m,€65.10m,€68.90m,€79.60m,€55.30m,€42.15m,€42.65m
+Deportivo Alavés,€87.70m,€123.70m,N/A,€65.35m,€79.80m,€106.75m,€110.80m,€74.80m,€85.40m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€34.83m,N/A
+Celta de Vigo,€86.60m,€149.30m,€138.80m,€120.00m,€155.85m,€167.00m,€234.10m,€173.05m,€122.40m,€91.10m,€60.40m,€49.90m,€49.10m,N/A,N/A,N/A,N/A,N/A,€54.88m,€48.30m,N/A
+RCD Espanyol Barcelona,€79.30m,N/A,€116.50m,€131.60m,N/A,€156.05m,€174.70m,€97.80m,€80.80m,€62.20m,€75.70m,€51.30m,€64.10m,€81.20m,€78.40m,€71.00m,€95.30m,€120.50m,€62.15m,€58.98m,€45.15m
+Getafe CF,€74.00m,€133.00m,€118.90m,€208.68m,€170.10m,€175.45m,€132.20m,€65.60m,N/A,€49.10m,€50.20m,€55.90m,€68.30m,€70.95m,€66.40m,€77.30m,€74.50m,€68.90m,€40.05m,€36.38m,€13.85m
+Rayo Vallecano,€71.30m,€63.95m,€103.40m,€67.20m,N/A,N/A,€86.70m,N/A,N/A,€49.60m,€51.70m,€46.10m,€49.75m,€47.30m,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+CD Leganés,€56.33m,N/A,N/A,N/A,N/A,€109.70m,€112.45m,€58.55m,€53.15m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Real Valladolid CF,€44.20m,N/A,€90.75m,N/A,€63.35m,€87.78m,€83.00m,N/A,N/A,N/A,N/A,€41.20m,€38.80m,N/A,N/A,€50.50m,€48.80m,€47.65m,N/A,N/A,N/A
+Granada CF,N/A,€141.10m,N/A,€103.75m,€122.65m,€56.58m,N/A,N/A,€66.45m,€71.50m,€67.55m,€57.48m,€72.80m,€60.60m,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+UD Almería,N/A,€99.40m,€114.20m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€38.30m,€36.45m,N/A,N/A,€73.60m,€63.70m,€80.00m,€56.70m,N/A,N/A,N/A
+Cádiz CF,N/A,€60.70m,€65.60m,€67.80m,€47.65m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€22.15m,N/A
+Elche CF,N/A,N/A,€67.50m,€72.98m,€45.65m,N/A,N/A,N/A,N/A,N/A,€38.60m,€44.60m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Levante UD,N/A,N/A,N/A,€77.90m,€113.00m,€90.50m,€107.85m,€61.85m,N/A,€53.10m,€43.45m,€42.40m,€41.10m,€40.25m,€37.40m,N/A,N/A,€41.50m,€53.75m,N/A,€24.25m
+SD Eibar,N/A,N/A,N/A,N/A,€83.40m,€53.75m,€93.90m,€60.05m,€67.95m,€56.60m,€29.40m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+SD Huesca,N/A,N/A,N/A,N/A,€64.10m,N/A,€61.40m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Deportivo de La Coruña,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€66.45m,€94.00m,€61.75m,€53.40m,N/A,€45.60m,N/A,€63.70m,€75.90m,€77.30m,€72.10m,€98.85m,€133.80m,€144.45m
+Málaga CF,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€55.20m,€84.30m,€77.95m,€82.80m,€62.50m,€122.90m,€121.30m,€71.05m,€58.60m,€54.00m,N/A,N/A,€28.03m,€32.85m
+Sporting Gijón,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€46.75m,€53.20m,N/A,N/A,N/A,€53.40m,€53.40m,€55.20m,€36.30m,N/A,N/A,N/A,N/A
+Córdoba CF,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€50.90m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Real Zaragoza,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€46.80m,€61.00m,€57.00m,€87.25m,N/A,€119.90m,€121.25m,€66.55m,€51.13m
+Racing Santander,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€42.60m,€59.30m,€65.50m,€85.50m,€73.70m,€49.30m,€30.35m,€32.90m
+Hércules CF,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€51.70m,N/A,N/A,N/A,N/A,N/A,N/A
+CD Tenerife,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€34.00m,N/A,N/A,N/A,N/A,N/A
+Xerez CD,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€32.50m,N/A,N/A,N/A,N/A,N/A
+Recreativo Huelva,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€49.90m,€55.60m,€41.90m,N/A,N/A
+CD Numancia,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€38.10m,N/A,N/A,N/A,€13.40m
+Real Murcia CF,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€50.10m,N/A,N/A,N/A
+Gimnàstic de Tarragona,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€28.25m,N/A,N/A
+Albacete Balompié,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€17.75m
+Bayern Munich,€939.70m,€965.15m,€948.95m,€790.33m,€858.23m,€777.33m,€784.88m,€811.85m,€562.55m,€596.05m,€575.13m,€556.88m,€462.40m,€356.00m,€308.98m,€279.55m,€235.95m,€249.20m,€180.73m,€177.88m,€175.30m
+Bayer 04 Leverkusen,€634.25m,€658.35m,€452.50m,€455.05m,€373.25m,€398.95m,€429.40m,€357.35m,€265.03m,€241.30m,€177.10m,€175.88m,€155.30m,€134.85m,€147.68m,€132.90m,€120.10m,€90.05m,€74.08m,€81.23m,€86.93m
+RB Leipzig,€517.90m,€545.40m,€486.40m,€498.95m,€574.95m,€570.48m,€479.00m,€373.30m,€176.33m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Borussia Dortmund,€474.90m,€494.80m,€567.55m,€558.98m,€628.40m,€654.05m,€643.25m,€574.20m,€390.65m,€352.95m,€319.50m,€326.05m,€302.30m,€215.95m,€169.95m,€109.40m,€105.83m,€79.80m,€79.78m,€78.53m,€78.33m
+VfB Stuttgart,€313.73m,€346.63m,€151.05m,€174.23m,€189.25m,N/A,€143.75m,€134.70m,N/A,€81.18m,€86.95m,€108.30m,€93.13m,€118.00m,€105.25m,€124.65m,€119.05m,€108.85m,€97.08m,€69.80m,€79.50m
+Eintracht Frankfurt,€279.70m,€326.65m,€324.55m,€228.75m,€269.15m,€208.98m,€313.40m,€126.15m,€72.30m,€76.60m,€74.90m,€86.20m,€68.40m,N/A,€47.58m,€59.20m,€63.40m,€67.80m,€52.95m,€39.95m,N/A
+VfL Wolfsburg,€215.00m,€206.45m,€238.30m,€269.30m,€256.83m,€207.60m,€229.25m,€143.60m,€203.08m,€270.43m,€221.05m,€155.23m,€109.00m,€125.80m,€145.10m,€155.43m,€138.33m,€79.00m,€55.90m,€61.38m,€59.30m
+SC Freiburg,€169.05m,€180.35m,€200.95m,€176.35m,€139.10m,€122.65m,€122.10m,€100.60m,€86.73m,N/A,€57.40m,€71.68m,€65.80m,€69.43m,€59.95m,€39.45m,N/A,N/A,N/A,N/A,€22.43m
+TSG 1899 Hoffenheim,€166.15m,€176.00m,€178.80m,€211.43m,€228.15m,€226.05m,€336.25m,€212.75m,€138.63m,€90.20m,€121.78m,€97.40m,€78.25m,€88.65m,€126.13m,€97.50m,€79.65m,N/A,N/A,N/A,N/A
+Borussia Mönchengladbach,€139.70m,€165.23m,€241.68m,€236.80m,€300.75m,€254.70m,€264.30m,€193.25m,€162.18m,€186.15m,€130.63m,€111.38m,€87.33m,€88.30m,€66.55m,€55.00m,€49.00m,N/A,€45.85m,€49.90m,€50.93m
+1.FC Union Berlin,€122.18m,€160.95m,€157.95m,€115.90m,€82.05m,€41.20m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+SV Werder Bremen,€119.35m,€134.93m,€89.50m,N/A,€111.98m,€135.13m,€168.05m,€107.15m,€89.45m,€64.68m,€67.53m,€66.40m,€78.00m,€111.95m,€151.13m,€143.95m,€149.45m,€159.55m,€157.25m,€111.60m,€98.48m
+FC Augsburg,€99.33m,€140.80m,€132.23m,€95.30m,€93.05m,€112.95m,€139.25m,€100.45m,€65.85m,€75.83m,€50.08m,€45.95m,€38.45m,€38.35m,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+1.FSV Mainz 05,€93.45m,€142.88m,€135.80m,€131.03m,€163.30m,€121.58m,€159.73m,€98.35m,€96.73m,€85.15m,€88.00m,€59.45m,€52.43m,€52.00m,€60.60m,€48.78m,N/A,N/A,€36.03m,€37.75m,€16.73m
+1.FC Heidenheim 1846,€63.30m,€66.45m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+VfL Bochum,€60.75m,€64.53m,€53.70m,€52.25m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€39.90m,€41.45m,€41.95m,€41.00m,N/A,€31.40m
+FC St. Pauli,€40.73m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€30.50m,N/A,N/A,N/A,N/A,N/A,N/A
+Holstein Kiel,€36.30m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+1.FC Köln,N/A,€81.45m,€115.65m,€99.28m,€118.20m,€98.48m,N/A,€91.73m,€116.15m,€68.63m,€50.75m,N/A,N/A,€60.18m,€69.28m,€59.13m,€49.30m,N/A,N/A,€43.63m,N/A
+SV Darmstadt 98,N/A,€38.70m,N/A,N/A,N/A,N/A,N/A,N/A,€25.98m,€25.15m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Hertha BSC,N/A,N/A,€94.00m,€155.78m,€228.88m,€217.20m,€207.63m,€131.45m,€96.53m,€78.93m,€66.00m,€68.08m,N/A,€45.60m,N/A,€61.98m,€88.10m,€81.00m,€73.40m,€72.70m,€71.78m
+FC Schalke 04,N/A,N/A,€87.78m,N/A,€123.05m,€221.58m,€221.30m,€274.35m,€217.25m,€225.20m,€212.00m,€203.25m,€183.55m,€155.23m,€157.18m,€134.55m,€118.05m,€125.85m,€106.60m,€87.18m,€86.33m
+Arminia Bielefeld,N/A,N/A,N/A,€65.85m,€56.73m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€29.60m,€34.85m,€35.60m,€32.85m,€24.65m
+SpVgg Greuther Fürth,N/A,N/A,N/A,€36.95m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€33.33m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Fortuna Düsseldorf,N/A,N/A,N/A,N/A,N/A,€71.78m,€94.95m,N/A,N/A,N/A,N/A,N/A,€31.15m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+SC Paderborn 07,N/A,N/A,N/A,N/A,N/A,€28.90m,N/A,N/A,N/A,N/A,€28.50m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Hannover 96,N/A,N/A,N/A,N/A,N/A,N/A,€91.43m,€92.95m,N/A,€60.83m,€76.65m,€80.23m,€83.15m,€76.80m,€65.35m,€50.88m,€64.38m,€60.20m,€45.85m,€45.35m,€42.98m
+1.FC Nuremberg,N/A,N/A,N/A,N/A,N/A,N/A,€54.40m,N/A,N/A,N/A,N/A,€56.45m,€46.83m,€52.10m,€60.20m,€47.50m,N/A,€57.45m,€65.45m,€52.13m,€34.90m
+Hamburger SV,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€62.40m,€80.48m,€63.20m,€87.15m,€102.78m,€104.95m,€85.90m,€112.13m,€136.28m,€156.88m,€120.75m,€101.83m,€106.90m,€65.60m
+FC Ingolstadt 04,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€38.63m,€35.65m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Eintracht Braunschweig,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€28.58m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+1.FC Kaiserslautern,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€42.60m,€50.50m,N/A,N/A,N/A,N/A,€37.38m,€33.75m
+Karlsruher SC,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€30.90m,€37.35m,N/A,N/A,N/A
+FC Energie Cottbus,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€29.53m,€30.95m,€26.55m,N/A,N/A
+MSV Duisburg,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€29.20m,N/A,€24.18m,N/A
+FC Hansa Rostock,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€27.55m,N/A,N/A,€25.90m
+Alemannia Aachen,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€26.68m,N/A,N/A
+Inter Milan,€677.30m,€654.85m,€567.55m,€558.55m,€663.90m,€606.05m,€617.93m,€487.28m,€328.30m,€294.28m,€260.70m,€292.65m,€242.80m,€303.05m,€346.95m,€396.50m,€327.90m,€310.00m,€267.23m,€234.93m,€240.63m
+Juventus FC,€594.20m,€504.53m,€483.13m,€642.50m,€633.30m,€661.88m,€871.05m,€653.15m,€497.18m,€440.00m,€329.00m,€391.45m,€337.90m,€262.28m,€258.93m,€273.10m,€256.85m,€236.85m,N/A,€308.90m,€304.90m
+AC Milan,€562.00m,€571.41m,€545.10m,€546.95m,€547.78m,€404.33m,€578.48m,€407.05m,€254.33m,€213.83m,€236.13m,€263.95m,€238.53m,€273.53m,€288.08m,€256.45m,€319.40m,€279.40m,€274.35m,€269.75m,€273.70m
+Atalanta BC,€447.60m,€436.05m,€338.38m,€398.75m,€430.00m,€291.43m,€367.68m,€207.95m,€161.70m,€78.45m,€83.48m,€73.93m,€74.10m,€67.58m,N/A,€62.05m,€64.20m,€54.80m,€53.48m,N/A,€41.70m
+SSC Napoli,€429.03m,€515.00m,€654.08m,€477.23m,€530.20m,€548.28m,€646.80m,€504.25m,€387.30m,€321.93m,€262.18m,€276.60m,€237.25m,€204.75m,€170.43m,€145.63m,€101.50m,€76.95m,N/A,N/A,N/A
+AS Roma,€332.50m,€340.40m,€361.38m,€381.25m,€395.65m,€392.73m,€459.05m,€469.10m,€354.68m,€332.90m,€276.78m,€246.40m,€173.40m,€172.78m,€172.98m,€245.15m,€266.80m,€244.40m,€220.65m,€193.20m,€201.60m
+Bologna FC 1909,€276.80m,€349.30m,€153.63m,€186.20m,€153.60m,€129.65m,€119.68m,€103.55m,€95.00m,€75.23m,N/A,€69.83m,€78.55m,€63.90m,€63.05m,€53.10m,€40.30m,N/A,N/A,N/A,€29.94m
+ACF Fiorentina,€258.30m,€284.10m,€258.80m,€325.80m,€286.80m,€302.23m,€315.33m,€237.33m,€217.08m,€190.53m,€216.13m,€249.13m,€213.65m,€130.83m,€175.48m,€209.30m,€197.10m,€171.35m,€159.60m,€138.68m,€111.83m
+SS Lazio,€236.35m,€225.45m,€266.43m,€264.53m,€326.33m,€303.88m,€291.15m,€408.78m,€226.45m,€175.30m,€167.55m,€162.95m,€143.28m,€113.63m,€111.73m,€141.10m,€109.65m,€110.80m,€105.35m,€83.05m,€77.05m
+Torino FC,€172.03m,€232.73m,€197.19m,€223.40m,€175.28m,€163.55m,€239.23m,€175.53m,€162.35m,€89.83m,€82.58m,€80.25m,€61.60m,N/A,N/A,N/A,€64.90m,€60.05m,€55.55m,N/A,N/A
+Genoa CFC,€144.40m,€195.40m,N/A,€121.28m,€111.93m,€142.38m,€191.73m,€135.13m,€108.18m,€117.55m,€117.33m,€102.10m,€98.50m,€104.30m,€168.18m,€135.85m,€91.70m,€63.25m,N/A,N/A,N/A
+Udinese Calcio,€128.18m,€170.06m,€188.86m,€142.30m,€173.00m,€121.08m,€201.20m,€108.03m,€101.95m,€93.00m,€107.18m,€123.95m,€121.00m,€140.13m,€137.05m,€135.58m,€124.65m,€115.05m,€104.58m,€89.60m,€83.95m
+Parma Calcio 1913,€125.10m,N/A,N/A,N/A,€128.70m,€128.75m,€95.75m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Como 1907,€100.55m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+AC Monza,€92.68m,€143.43m,€135.70m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+US Lecce,€92.20m,€107.73m,€105.20m,N/A,N/A,€52.33m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€37.53m,€32.70m,N/A,€45.78m,N/A,N/A,€52.15m,€44.90m
+Hellas Verona,€88.43m,€140.70m,€123.89m,€162.98m,€157.21m,€112.53m,N/A,€56.50m,N/A,€47.73m,€41.80m,€67.13m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Cagliari Calcio,€70.35m,€92.23m,N/A,€134.53m,€187.83m,€167.83m,€155.38m,€98.58m,€61.08m,N/A,€74.20m,€86.20m,€76.38m,€71.65m,€85.03m,€71.80m,€45.68m,€41.20m,€45.15m,€35.65m,€23.90m
+FC Empoli,€68.83m,€102.33m,€125.53m,€126.50m,N/A,N/A,€105.60m,N/A,€55.45m,€74.60m,€54.03m,N/A,N/A,N/A,N/A,N/A,N/A,€49.50m,€44.30m,€37.00m,N/A
+Venezia FC,€57.78m,N/A,N/A,€80.98m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+US Sassuolo,N/A,€139.54m,€232.20m,€251.00m,€241.74m,€167.98m,€242.05m,€126.78m,€145.25m,€97.00m,€91.03m,€87.85m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Frosinone Calcio,N/A,€108.13m,N/A,N/A,N/A,N/A,€54.53m,N/A,N/A,€38.30m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+US Salernitana 1919,N/A,€94.60m,€118.35m,€70.56m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Spezia Calcio,N/A,N/A,€115.81m,€78.50m,€71.68m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+US Cremonese,N/A,N/A,€83.78m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+UC Sampdoria,N/A,N/A,€82.96m,€128.55m,€127.18m,€135.28m,€216.75m,€190.45m,€117.58m,€126.53m,€132.23m,€83.48m,€85.93m,N/A,€125.05m,€112.70m,€94.30m,€75.70m,€69.45m,€61.50m,€51.00m
+FC Crotone,N/A,N/A,N/A,N/A,€52.75m,N/A,N/A,€47.88m,€36.70m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Benevento Calcio,N/A,N/A,N/A,N/A,€50.13m,N/A,N/A,€57.83m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Brescia Calcio,N/A,N/A,N/A,N/A,N/A,€83.23m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€36.75m,N/A,N/A,N/A,N/A,N/A,€45.25m
+SPAL,N/A,N/A,N/A,N/A,N/A,€73.63m,€97.40m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Chievo Verona,N/A,N/A,N/A,N/A,N/A,N/A,€54.70m,€55.23m,€45.88m,€49.78m,€61.85m,€69.08m,€55.10m,€44.80m,€48.95m,€41.28m,€38.25m,N/A,€83.50m,€49.55m,€46.28m
+SPAL 2013,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€63.55m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Delfino Pescara 1936,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€48.10m,N/A,N/A,N/A,€47.80m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+US Palermo,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€41.10m,€68.68m,€92.60m,N/A,€80.95m,€119.05m,€123.03m,€119.95m,€106.35m,€104.80m,€127.28m,€94.20m,€78.75m
+Carpi FC 1909,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€52.05m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Parma FC,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€65.95m,€89.78m,€85.78m,€82.35m,€86.05m,€82.83m,N/A,€52.50m,€46.90m,€57.05m,€110.05m
+AC Cesena,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€34.15m,N/A,N/A,€39.03m,€64.23m,N/A,N/A,N/A,N/A,N/A,N/A
+Calcio Catania,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€78.98m,€76.48m,€59.25m,€60.68m,€63.05m,€49.90m,€58.40m,€38.60m,N/A,N/A
+AS Livorno,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€71.18m,N/A,N/A,N/A,€46.80m,N/A,€48.35m,€68.33m,€56.38m,€25.00m
+AC Siena,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€47.48m,€39.33m,N/A,€45.83m,€45.30m,€42.80m,€46.08m,€34.98m,€54.90m
+Novara Calcio 1908,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€28.43m,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+AS Bari,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€51.50m,€69.30m,N/A,N/A,N/A,N/A,N/A
+Reggina Calcio,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€35.85m,€44.23m,€50.10m,€43.65m,€29.30m
+FC Messina Peloro,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€40.58m,€39.98m,€32.65m
+Ascoli Calcio 1898,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€25.80m,€24.55m,N/A
+Treviso FBC 1993,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€23.53m,N/A
+Paris Saint-Germain,€892.50m,€1.02bn,€891.10m,€875.15m,€805.00m,€874.15m,€1.01bn,€900.10m,€519.00m,€436.30m,€363.90m,€402.30m,€313.60m,€211.10m,€100.20m,€93.60m,€93.35m,€73.45m,€85.90m,€84.98m,€81.75m
+AS Monaco,€358.20m,€398.55m,€368.30m,€396.00m,€370.35m,€331.03m,€385.83m,€529.80m,€309.55m,€227.40m,€187.70m,€242.55m,N/A,N/A,€75.40m,€87.25m,€77.65m,€89.75m,€97.80m,€114.00m,€103.80m
+Olympique Marseille,€305.30m,€311.40m,€331.55m,€284.70m,€247.95m,€216.15m,€258.35m,€236.80m,€119.65m,€129.50m,€139.70m,€141.30m,€150.65m,€146.50m,€167.90m,€146.70m,€146.90m,€138.35m,€119.30m,€96.38m,€78.60m
+LOSC Lille,€263.70m,€328.90m,€247.95m,€306.88m,€323.20m,€247.78m,€267.55m,€96.75m,€83.90m,€70.80m,€82.65m,€74.10m,€114.60m,€145.35m,€127.40m,€104.60m,€83.45m,€74.90m,€102.15m,€76.75m,€56.25m
+Olympique Lyon,€240.30m,€305.95m,€350.95m,€397.70m,€431.35m,€384.55m,€467.95m,€363.80m,€211.35m,€166.30m,€144.65m,€108.50m,€155.65m,€163.85m,€190.25m,€208.30m,€211.70m,€213.35m,€236.45m,€173.23m,€133.90m
+OGC Nice,€214.40m,€268.78m,€310.80m,€266.05m,€236.10m,€173.45m,€183.20m,€204.10m,€132.80m,€70.95m,€56.25m,€56.10m,€59.15m,€52.45m,€63.50m,€60.55m,€56.25m,€68.10m,€41.00m,€39.50m,€34.45m
+Stade Rennais FC,€203.25m,€375.35m,€387.75m,€305.35m,€297.50m,€171.88m,€168.45m,€131.25m,€80.90m,€94.15m,€66.00m,€92.60m,€97.80m,€101.80m,€108.95m,€87.25m,€79.40m,€73.15m,€78.85m,€77.55m,€61.30m
+RC Strasbourg Alsace,€182.80m,€157.70m,€123.55m,€120.05m,€109.65m,€91.13m,€98.00m,€45.60m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€41.40m,N/A,€44.85m,€35.10m
+RC Lens,€177.60m,€205.60m,€238.20m,€154.05m,€104.30m,N/A,N/A,N/A,N/A,N/A,€27.20m,N/A,N/A,N/A,€45.60m,€47.05m,N/A,€82.50m,€81.85m,€68.00m,€52.50m
+Stade Reims,€127.70m,€134.55m,€159.05m,€149.40m,€105.18m,€81.68m,€86.95m,N/A,N/A,€42.95m,€39.25m,€38.73m,€29.50m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Stade Brestois 29,€120.90m,€115.15m,€76.65m,€103.15m,€103.23m,€47.78m,N/A,N/A,N/A,N/A,N/A,N/A,€36.10m,€43.20m,€34.10m,N/A,N/A,N/A,N/A,N/A,N/A
+FC Nantes,€99.90m,€125.90m,€119.28m,€112.65m,€95.08m,€106.15m,€119.50m,€105.70m,€50.90m,€39.30m,€46.85m,€39.55m,N/A,N/A,N/A,N/A,€38.10m,N/A,€41.40m,€51.60m,€47.35m
+Montpellier HSC,€92.75m,€145.58m,€142.90m,€144.60m,€113.85m,€81.68m,€109.85m,€71.85m,€60.95m,€44.40m,€51.95m,€52.35m,€78.70m,€86.20m,€51.35m,€53.10m,N/A,N/A,N/A,N/A,N/A
+FC Toulouse,€82.15m,€145.20m,€104.80m,N/A,N/A,€71.88m,€113.25m,€110.45m,€77.30m,€42.90m,€48.80m,€67.40m,€82.00m,€83.05m,€80.63m,€89.35m,€70.65m,€69.50m,€46.40m,€46.80m,€37.10m
+Le Havre AC,€70.45m,€72.50m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€31.65m,N/A,N/A,N/A,N/A
+AJ Auxerre,€56.25m,N/A,€54.80m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€50.90m,€66.15m,€64.25m,€53.15m,€55.00m,€68.75m,€62.75m,€47.85m
+AS Saint-Étienne,€55.75m,N/A,N/A,€105.65m,€154.50m,€104.83m,€131.25m,€106.88m,€85.03m,€97.20m,€83.35m,€105.40m,€97.60m,€85.60m,€72.05m,€76.15m,€80.15m,€80.40m,€81.10m,€62.30m,€37.50m
+Angers SCO,€34.70m,N/A,€71.80m,€89.50m,€111.65m,€89.48m,€79.70m,€69.55m,€46.08m,€32.35m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+FC Lorient,N/A,€131.85m,€175.45m,€61.30m,€72.88m,N/A,N/A,N/A,€61.10m,€58.05m,€59.95m,€57.15m,€63.75m,€54.05m,€62.75m,€58.15m,€49.25m,€39.85m,€24.28m,N/A,N/A
+FC Metz,N/A,€65.40m,N/A,€91.05m,€103.50m,€54.10m,N/A,€51.20m,€37.55m,N/A,€29.85m,N/A,N/A,N/A,N/A,N/A,N/A,€30.95m,N/A,€37.00m,€35.70m
+Clermont Foot 63,N/A,€61.35m,€48.00m,€55.10m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+ESTAC Troyes,N/A,N/A,€76.30m,€73.20m,N/A,N/A,N/A,€45.05m,N/A,€30.70m,N/A,N/A,€21.80m,N/A,N/A,N/A,N/A,N/A,€29.55m,€28.13m,N/A
+AC Ajaccio,N/A,N/A,€27.00m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€28.30m,€34.10m,€26.55m,N/A,N/A,N/A,N/A,N/A,€25.10m,€24.55m
+FC Girondins Bordeaux,N/A,N/A,N/A,€116.85m,€105.70m,€125.35m,€179.00m,€155.45m,€88.90m,€90.70m,€71.50m,€62.70m,€80.95m,€82.05m,€123.65m,€143.70m,€123.50m,€100.75m,€85.40m,€68.65m,€52.60m
+Dijon FCO,N/A,N/A,N/A,N/A,€65.63m,€50.23m,€65.80m,€70.30m,€31.20m,N/A,N/A,N/A,N/A,€36.80m,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Nîmes Olympique,N/A,N/A,N/A,N/A,€60.40m,€49.65m,€88.15m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Amiens SC,N/A,N/A,N/A,N/A,N/A,€61.93m,€70.50m,€69.85m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+EA Guingamp,N/A,N/A,N/A,N/A,N/A,N/A,€70.65m,€51.90m,€42.50m,€33.50m,€36.25m,€21.43m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+SM Caen,N/A,N/A,N/A,N/A,N/A,N/A,€67.55m,€60.10m,€36.65m,€36.80m,€32.40m,N/A,N/A,€31.80m,€36.10m,N/A,€39.75m,€38.75m,N/A,N/A,€22.70m
+SC Bastia,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€36.45m,€24.25m,€34.25m,€35.60m,€36.05m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€31.85m
+AS Nancy-Lorraine,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€33.10m,N/A,N/A,N/A,€36.85m,€53.90m,€52.65m,€59.60m,€56.70m,€67.70m,€47.35m,€28.40m,N/A
+GFC Ajaccio,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€18.40m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+FC Évian Thonon Gaillard,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€36.15m,€35.00m,€34.55m,€32.90m,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+FC Sochaux-Montbéliard,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€47.45m,€46.85m,€58.80m,€60.10m,€47.45m,€50.90m,€56.30m,€56.63m,€51.00m,€49.65m
+Valenciennes FC,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€36.65m,€49.75m,€44.50m,€57.45m,€54.20m,€41.75m,€46.80m,€23.68m,N/A,N/A
+AC Arles-Avignon,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€19.95m,N/A,N/A,N/A,N/A,N/A,N/A
+Le Mans Union Club 72,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€48.15m,€52.00m,€69.85m,€46.00m,€37.50m,N/A
+Grenoble Foot 38,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€34.50m,€34.60m,N/A,N/A,N/A,N/A
+US Boulogne,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€30.50m,N/A,N/A,N/A,N/A,N/A
+CS Sedan-Ardennes,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€25.85m,N/A,N/A
+FC Istres Ouest Provence,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€18.50m
+Legia Warszawa,€26.40m,€43.63m,€34.45m,€36.78m,€36.73m,€34.68m,€43.80m,€34.20m,€50.23m,€31.00m,€26.45m,€26.23m,€24.90m,€31.60m,€24.40m,€31.80m,€32.58m,€20.90m,€24.45m,€27.50m,€21.50m
+Lech Poznan,€25.70m,€32.60m,€36.03m,€46.55m,€50.40m,€23.85m,€26.70m,€19.28m,€18.73m,€19.95m,€24.30m,€17.40m,€19.50m,€24.65m,€32.70m,€26.75m,€20.50m,€14.08m,€15.95m,€13.35m,€14.25m
+Raków Częstochowa,€25.45m,€38.63m,€38.23m,€32.75m,€23.93m,€7.73m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Jagiellonia Bialystok,€15.95m,€21.78m,€14.88m,€13.10m,€20.05m,€18.65m,€21.98m,€18.03m,€12.53m,€13.33m,€13.00m,€11.63m,€11.30m,€11.53m,€14.15m,€10.45m,€6.65m,€7.98m,N/A,N/A,N/A
+Slask Wroclaw,€15.45m,€20.20m,€10.70m,€13.95m,€11.45m,€9.15m,€8.70m,€8.55m,€8.08m,€7.93m,€9.15m,€12.90m,€15.95m,€17.98m,€12.50m,€11.53m,€8.95m,N/A,N/A,N/A,N/A
+Cracovia,€15.15m,€13.45m,€17.13m,€16.03m,€17.53m,€10.78m,€14.05m,€10.38m,€16.88m,€11.93m,€7.55m,€8.93m,N/A,€9.78m,€13.45m,€10.95m,€10.20m,€9.38m,€9.90m,€9.13m,€10.55m
+Zaglebie Lubin,€14.15m,€15.20m,€15.30m,€16.70m,€15.78m,€11.20m,€12.75m,€12.20m,€9.40m,€7.15m,N/A,€12.58m,€13.15m,€11.98m,€11.15m,€12.60m,N/A,€17.78m,€18.35m,€11.88m,€7.75m
+Pogon Szczecin,€12.63m,€16.95m,€19.20m,€28.68m,€21.20m,€13.10m,€18.53m,€8.53m,€10.20m,€8.60m,€8.25m,€9.13m,€8.13m,N/A,N/A,N/A,N/A,N/A,€9.85m,€13.33m,€11.23m
+Lechia Gdansk,€11.78m,N/A,€7.78m,€19.48m,€14.50m,€14.45m,€15.93m,€15.68m,€18.25m,€14.53m,€13.40m,€11.65m,€10.68m,€11.68m,€10.80m,€8.30m,€5.18m,N/A,N/A,N/A,N/A
+Górnik Zabrze,€11.25m,€18.80m,€17.45m,€18.05m,€16.25m,€10.08m,€15.98m,€9.05m,N/A,€6.73m,€6.90m,€13.15m,€13.83m,€10.63m,€8.75m,N/A,€10.53m,€10.28m,€7.68m,€8.95m,€8.53m
+Piast Gliwice,€10.53m,€11.70m,€12.68m,€16.75m,€13.90m,€11.83m,€13.00m,€9.13m,€9.53m,€9.48m,€7.20m,€10.20m,€8.85m,N/A,N/A,€8.60m,€5.85m,N/A,N/A,N/A,N/A
+Widzew Lodz,€10.23m,€11.70m,€10.48m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€10.13m,€8.68m,€9.93m,€12.05m,N/A,N/A,€9.50m,€10.85m,N/A,N/A
+Stal Mielec,€9.60m,€11.95m,€9.73m,€10.15m,€7.50m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Korona Kielce,€9.03m,€9.45m,€9.10m,N/A,N/A,€8.00m,€10.43m,€8.88m,€8.05m,€6.95m,€6.90m,€10.83m,€8.45m,€10.20m,€12.50m,€11.73m,N/A,€14.10m,€15.20m,€13.50m,N/A
+Motor Lublin,€8.50m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Radomiak Radom,€8.23m,€18.58m,€11.43m,€12.53m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+GKS Katowice,€8.10m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€7.30m
+Puszcza Niepolomice,€7.65m,€8.90m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Ruch Chorzow,N/A,€8.88m,N/A,N/A,N/A,N/A,N/A,N/A,€9.10m,€6.68m,€6.95m,€7.83m,€9.75m,€9.25m,€13.53m,€10.73m,€7.98m,€8.23m,N/A,N/A,N/A
+LKS Lodz,N/A,€7.85m,N/A,N/A,N/A,€6.60m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€9.60m,N/A,N/A,€8.15m,€9.53m,€10.68m,N/A,N/A
+Warta Poznan,N/A,€7.38m,€12.08m,€10.33m,€9.63m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Wisla Plock,N/A,N/A,€10.50m,€12.40m,€11.73m,€9.05m,€10.60m,€7.95m,€6.83m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€9.35m,€11.63m,€11.18m
+Miedz Legnica,N/A,N/A,€8.08m,N/A,N/A,N/A,€8.70m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Wisla Kraków,N/A,N/A,N/A,€13.23m,€14.88m,€10.10m,€11.65m,€12.46m,€11.70m,€10.53m,€9.15m,€12.25m,€15.35m,€24.35m,€26.83m,€28.88m,€29.95m,€35.00m,€30.18m,€36.73m,€38.88m
+Bruk-Bet Termalica Nieciecza,N/A,N/A,N/A,€8.48m,N/A,N/A,N/A,€8.80m,€6.45m,€5.98m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Gornik Leczna,N/A,N/A,N/A,€5.03m,N/A,N/A,N/A,N/A,€5.95m,€5.28m,€5.50m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€8.65m,€9.55m,€10.03m
+Podbeskidzie Bielsko-Biala,N/A,N/A,N/A,N/A,€7.05m,N/A,N/A,N/A,N/A,€6.13m,€5.20m,€7.25m,€7.58m,€7.78m,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Arka Gdynia,N/A,N/A,N/A,N/A,N/A,€8.88m,€10.18m,€8.73m,€6.68m,N/A,N/A,N/A,N/A,N/A,€7.70m,€8.20m,€10.93m,N/A,€8.90m,€5.18m,N/A
+Zaglebie Sosnowiec,N/A,N/A,N/A,N/A,N/A,N/A,€7.80m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€6.23m,N/A,N/A,N/A
+Sandecja Nowy Sacz,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€6.68m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+Zawisza Bydgoszcz,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€10.80m,€8.13m,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
+GKS Belchatow,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€6.50m,N/A,€8.55m,€8.95m,€11.00m,€12.08m,€14.25m,€14.23m,€16.08m,€9.65m,N/A
+Polonia Warsaw,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€15.03m,€15.05m,€19.33m,€17.60m,€15.30m,N/A,N/A,€8.70m,€8.98m
+Polonia Bytom,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€9.23m,€9.73m,€7.10m,€4.63m,N/A,N/A,N/A
+Odra Wodzislaw Slaski,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€10.48m,€7.28m,€7.63m,€8.93m,€9.65m,€13.35m
+Dyskobolia Grodzisk Wielkopolski,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€13.73m,€11.73m,€14.50m,€20.15m
+Amica Wronki,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,€15.50m,€16.45m

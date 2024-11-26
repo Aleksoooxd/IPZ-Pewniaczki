@@ -11,7 +11,14 @@ headers = {
 
 curr_year = datetime.datetime.now().year
 curr_year_2_digits = curr_year % 100
-
+deadline = curr_year-2008
+season_dict = {}
+generate_season_entry = lambda curr_year, offset: {
+    f'{curr_year-offset}/{curr_year-offset+1}': f"{curr_year_2_digits-offset}{curr_year_2_digits-offset+1}"
+}
+for i in range(deadline):
+    season_dict.update(generate_season_entry(curr_year, i))
+print(season_dict)
 seasons = {
     f'{curr_year}/{curr_year+1}': f'{curr_year_2_digits}{curr_year_2_digits+1}', #24/25 (current season)
     f'{curr_year-1}/{curr_year}': f'{curr_year_2_digits-1}{curr_year_2_digits}', #23/24
@@ -39,7 +46,7 @@ seasons = {
     f'{curr_year-23}/{curr_year-22}': f'0{curr_year_2_digits-23}0{curr_year_2_digits-22}', #01/02
     f'{curr_year-24}/{curr_year-23}': f'0{curr_year_2_digits-24}0{curr_year_2_digits-23}', #00/01
 }
-
+print(seasons)
 
 countries = {
     'en': ['england', 'Premier League',],
