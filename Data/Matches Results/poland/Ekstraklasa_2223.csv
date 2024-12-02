@@ -1,0 +1,307 @@
+Country,League,Season,Date,Time,Home,Away,HG,AG,Res,PSCH,PSCD,PSCA,MaxCH,MaxCD,MaxCA,AvgCH,AvgCD,AvgCA
+Poland,Ekstraklasa,2022/2023,15/07/2022,17:00,Rakow,Warta Poznan,1,0,H,1.45,4.34,9.0,1.45,4.5,10.0,1.41,4.16,8.35
+Poland,Ekstraklasa,2022/2023,15/07/2022,19:30,Zaglebie,Slask Wroclaw,0,0,D,2.36,3.4,3.22,2.4,3.54,3.22,2.33,3.31,2.95
+Poland,Ekstraklasa,2022/2023,16/07/2022,14:00,Lech Poznan,Stal Mielec,0,2,A,1.34,5.93,8.49,1.34,5.93,9.5,1.31,5.25,8.54
+Poland,Ekstraklasa,2022/2023,16/07/2022,16:30,Jagiellonia,Piast Gliwice,2,0,H,2.76,3.18,2.86,2.85,3.28,2.95,2.65,3.07,2.72
+Poland,Ekstraklasa,2022/2023,16/07/2022,19:00,Korona Kielce,Legia,1,1,D,5.38,4.11,1.66,5.5,4.11,1.72,4.97,3.75,1.66
+Poland,Ekstraklasa,2022/2023,17/07/2022,11:30,Radomiak Radom,Legnica,1,1,D,2.28,3.26,3.54,2.33,3.4,3.54,2.21,3.19,3.24
+Poland,Ekstraklasa,2022/2023,17/07/2022,14:00,Wisla Plock,Lechia Gdansk,3,0,H,2.54,3.58,2.82,2.65,3.62,2.82,2.52,3.4,2.63
+Poland,Ekstraklasa,2022/2023,17/07/2022,16:30,Pogon Szczecin,Widzew Lodz,2,1,H,1.45,4.61,8.01,1.48,4.75,8.01,1.41,4.46,7.18
+Poland,Ekstraklasa,2022/2023,18/07/2022,18:00,Gornik Z.,Cracovia,0,2,A,2.52,3.43,2.95,2.52,3.43,2.95,2.44,3.23,2.85
+Poland,Ekstraklasa,2022/2023,22/07/2022,17:00,Warta Poznan,Wisla Plock,0,4,A,2.6,3.14,3.08,2.62,3.2,3.13,2.5,3.07,2.89
+Poland,Ekstraklasa,2022/2023,22/07/2022,19:30,Jagiellonia,Widzew Lodz,0,2,A,1.91,3.7,4.25,2.03,3.7,4.35,1.91,3.47,3.89
+Poland,Ekstraklasa,2022/2023,23/07/2022,16:30,Cracovia,Korona Kielce,2,0,H,1.64,3.92,6.0,1.65,4.0,6.0,1.6,3.83,5.36
+Poland,Ekstraklasa,2022/2023,23/07/2022,19:00,Legia,Zaglebie,2,0,H,1.64,4.09,5.67,1.72,4.09,6.0,1.63,3.81,5.1
+Poland,Ekstraklasa,2022/2023,24/07/2022,16:30,Slask Wroclaw,Pogon Szczecin,2,1,H,3.44,3.51,2.21,3.45,3.51,2.24,3.27,3.32,2.15
+Poland,Ekstraklasa,2022/2023,25/07/2022,18:00,Stal Mielec,Radomiak Radom,1,1,D,3.18,3.28,2.45,3.18,3.3,2.65,2.87,3.15,2.46
+Poland,Ekstraklasa,2022/2023,29/07/2022,17:00,Piast Gliwice,Zaglebie,0,1,A,2.13,3.38,3.8,2.13,3.42,3.85,2.06,3.24,3.6
+Poland,Ekstraklasa,2022/2023,29/07/2022,19:30,Cracovia,Legia,3,0,H,2.88,3.18,2.73,2.9,3.3,2.76,2.74,3.05,2.64
+Poland,Ekstraklasa,2022/2023,30/07/2022,16:30,Radomiak Radom,Gornik Z.,0,3,A,2.42,3.41,3.13,2.5,3.49,3.13,2.36,3.3,2.9
+Poland,Ekstraklasa,2022/2023,30/07/2022,19:00,Legnica,Warta Poznan,1,2,A,2.54,2.98,3.34,2.54,3.15,3.34,2.41,2.99,3.1
+Poland,Ekstraklasa,2022/2023,31/07/2022,14:00,Pogon Szczecin,Jagiellonia,1,0,H,1.56,4.37,6.21,1.6,4.37,6.8,1.54,4.07,5.66
+Poland,Ekstraklasa,2022/2023,31/07/2022,16:30,Lech Poznan,Wisla Plock,1,3,A,1.83,3.9,4.43,1.83,3.91,4.43,1.78,3.73,4.12
+Poland,Ekstraklasa,2022/2023,31/07/2022,16:30,Rakow,Stal Mielec,3,2,H,1.31,5.74,10.91,1.33,5.74,10.91,1.29,5.24,9.35
+Poland,Ekstraklasa,2022/2023,31/07/2022,19:00,Widzew Lodz,Lechia Gdansk,2,3,A,2.64,3.57,2.72,2.75,3.6,2.75,2.55,3.4,2.59
+Poland,Ekstraklasa,2022/2023,01/08/2022,18:00,Korona Kielce,Slask Wroclaw,3,1,H,3.18,3.34,2.42,3.4,3.46,2.42,3.11,3.26,2.27
+Poland,Ekstraklasa,2022/2023,05/08/2022,17:00,Stal Mielec,Cracovia,2,0,H,4.15,3.52,1.98,4.15,3.58,2.0,3.86,3.42,1.92
+Poland,Ekstraklasa,2022/2023,05/08/2022,19:30,Legia,Piast Gliwice,2,0,H,2.18,3.38,3.66,2.28,3.4,4.1,2.12,3.23,3.46
+Poland,Ekstraklasa,2022/2023,06/08/2022,14:00,Lechia Gdansk,Korona Kielce,0,1,A,1.58,4.54,5.63,1.77,4.54,5.63,1.56,4.12,5.34
+Poland,Ekstraklasa,2022/2023,06/08/2022,16:30,Jagiellonia,Radomiak Radom,1,2,A,2.32,3.42,3.29,2.32,3.44,3.35,2.21,3.27,3.19
+Poland,Ekstraklasa,2022/2023,06/08/2022,19:00,Slask Wroclaw,Widzew Lodz,0,0,D,2.23,3.47,3.43,2.25,3.56,3.43,2.17,3.39,3.15
+Poland,Ekstraklasa,2022/2023,07/08/2022,14:00,Warta Poznan,Pogon Szczecin,1,2,A,3.86,3.38,2.11,3.9,3.5,2.11,3.7,3.23,2.03
+Poland,Ekstraklasa,2022/2023,07/08/2022,16:30,Zaglebie,Lech Poznan,1,1,D,3.09,3.66,2.32,3.15,3.66,2.32,3.01,3.41,2.23
+Poland,Ekstraklasa,2022/2023,07/08/2022,19:00,Gornik Z.,Rakow,1,0,H,3.03,3.47,2.44,3.05,3.49,2.5,2.85,3.32,2.39
+Poland,Ekstraklasa,2022/2023,08/08/2022,18:00,Wisla Plock,Legnica,4,1,H,1.75,3.79,5.13,1.76,4.01,5.41,1.69,3.78,4.7
+Poland,Ekstraklasa,2022/2023,12/08/2022,17:00,Legnica,Zaglebie,0,1,A,3.14,3.4,2.41,3.3,3.4,2.47,2.92,3.24,2.38
+Poland,Ekstraklasa,2022/2023,12/08/2022,19:30,Widzew Lodz,Legia,1,2,A,3.47,3.54,2.19,3.47,3.54,2.3,3.15,3.37,2.19
+Poland,Ekstraklasa,2022/2023,13/08/2022,14:00,Cracovia,Piast Gliwice,0,1,A,2.29,3.12,3.7,2.35,3.25,3.7,2.24,3.04,3.38
+Poland,Ekstraklasa,2022/2023,13/08/2022,16:30,Gornik Z.,Stal Mielec,1,3,A,1.68,4.18,5.07,1.75,4.2,5.07,1.69,3.89,4.5
+Poland,Ekstraklasa,2022/2023,13/08/2022,19:00,Pogon Szczecin,Wisla Plock,2,2,D,1.99,3.78,3.84,2.02,3.78,3.84,1.95,3.6,3.57
+Poland,Ekstraklasa,2022/2023,14/08/2022,14:00,Radomiak Radom,Lechia Gdansk,4,1,H,1.83,3.96,4.33,2.05,3.96,4.5,1.86,3.61,3.94
+Poland,Ekstraklasa,2022/2023,14/08/2022,16:30,Rakow,Jagiellonia,2,2,D,1.62,4.03,6.06,1.64,4.15,6.06,1.6,3.89,5.34
+Poland,Ekstraklasa,2022/2023,14/08/2022,19:00,Lech Poznan,Slask Wroclaw,0,1,A,1.81,3.8,4.7,1.82,3.83,4.9,1.75,3.67,4.44
+Poland,Ekstraklasa,2022/2023,15/08/2022,18:00,Korona Kielce,Warta Poznan,0,1,A,3.15,3.15,2.55,3.15,3.15,2.56,3.03,3.03,2.43
+Poland,Ekstraklasa,2022/2023,19/08/2022,17:00,Jagiellonia,Legnica,2,1,H,2.12,3.53,3.66,2.12,3.68,3.95,2.02,3.48,3.49
+Poland,Ekstraklasa,2022/2023,19/08/2022,19:30,Legia,Gornik Z.,2,2,D,1.71,4.05,5.02,1.78,4.11,5.02,1.71,3.81,4.53
+Poland,Ekstraklasa,2022/2023,20/08/2022,14:00,Wisla Plock,Korona Kielce,2,1,H,1.62,4.04,6.04,1.65,4.38,6.2,1.59,3.98,5.36
+Poland,Ekstraklasa,2022/2023,20/08/2022,16:30,Slask Wroclaw,Cracovia,1,1,D,2.85,3.2,2.74,2.85,3.33,2.82,2.67,3.12,2.66
+Poland,Ekstraklasa,2022/2023,20/08/2022,19:00,Warta Poznan,Widzew Lodz,0,1,A,2.37,3.32,3.29,2.38,3.34,3.29,2.32,3.14,3.12
+Poland,Ekstraklasa,2022/2023,21/08/2022,14:00,Zaglebie,Radomiak Radom,0,1,A,2.54,3.41,2.94,2.54,3.47,2.95,2.43,3.26,2.83
+Poland,Ekstraklasa,2022/2023,21/08/2022,16:30,Piast Gliwice,Stal Mielec,4,0,H,1.74,3.72,5.27,1.77,3.79,5.27,1.72,3.58,4.77
+Poland,Ekstraklasa,2022/2023,26/08/2022,17:00,Gornik Z.,Jagiellonia,1,1,D,2.16,3.62,3.46,2.21,3.65,3.5,2.14,3.44,3.21
+Poland,Ekstraklasa,2022/2023,26/08/2022,19:30,Stal Mielec,Legia,0,1,A,3.86,3.68,2.01,4.1,3.76,2.01,3.76,3.54,1.91
+Poland,Ekstraklasa,2022/2023,27/08/2022,11:30,Radomiak Radom,Korona Kielce,0,2,A,1.75,3.61,5.51,1.75,3.83,5.8,1.68,3.62,5.04
+Poland,Ekstraklasa,2022/2023,27/08/2022,14:00,Legnica,Lechia Gdansk,2,1,H,2.22,3.58,3.36,2.52,3.6,3.36,2.2,3.41,3.13
+Poland,Ekstraklasa,2022/2023,27/08/2022,16:30,Pogon Szczecin,Zaglebie,3,0,H,1.84,3.65,4.71,1.87,4.0,5.0,1.76,3.63,4.42
+Poland,Ekstraklasa,2022/2023,27/08/2022,19:00,Widzew Lodz,Wisla Plock,2,1,H,2.48,3.55,2.92,2.72,3.65,2.92,2.38,3.43,2.79
+Poland,Ekstraklasa,2022/2023,28/08/2022,11:30,Cracovia,Warta Poznan,0,2,A,2.12,3.17,4.15,2.16,3.28,4.15,2.1,3.08,3.73
+Poland,Ekstraklasa,2022/2023,28/08/2022,14:00,Slask Wroclaw,Rakow,1,4,A,3.82,3.58,2.05,3.82,3.65,2.11,3.54,3.42,2.02
+Poland,Ekstraklasa,2022/2023,28/08/2022,16:30,Lech Poznan,Piast Gliwice,1,0,H,2.14,3.35,3.8,2.14,3.52,4.0,2.05,3.29,3.6
+Poland,Ekstraklasa,2022/2023,31/08/2022,17:00,Rakow,Pogon Szczecin,1,0,H,1.81,3.71,4.77,1.89,3.76,4.77,1.78,3.57,4.41
+Poland,Ekstraklasa,2022/2023,31/08/2022,19:30,Lechia Gdansk,Lech Poznan,0,3,A,3.16,3.55,2.32,3.4,3.6,2.32,3.17,3.42,2.17
+Poland,Ekstraklasa,2022/2023,02/09/2022,19:30,Legia,Radomiak Radom,1,0,H,1.93,3.57,4.31,2.03,3.57,4.4,1.91,3.38,4.02
+Poland,Ekstraklasa,2022/2023,03/09/2022,14:00,Stal Mielec,Slask Wroclaw,2,0,H,2.34,3.48,3.2,2.4,3.48,3.2,2.28,3.28,3.06
+Poland,Ekstraklasa,2022/2023,03/09/2022,16:30,Lechia Gdansk,Warta Poznan,0,0,D,2.5,3.22,3.16,2.6,3.32,3.16,2.43,3.12,2.96
+Poland,Ekstraklasa,2022/2023,03/09/2022,19:00,Cracovia,Rakow,3,0,H,4.03,3.29,2.1,4.2,3.35,2.12,3.84,3.15,2.04
+Poland,Ekstraklasa,2022/2023,04/09/2022,11:30,Zaglebie,Jagiellonia,1,1,D,2.17,3.55,3.5,2.26,3.55,3.5,2.17,3.38,3.2
+Poland,Ekstraklasa,2022/2023,04/09/2022,14:00,Korona Kielce,Pogon Szczecin,1,2,A,4.17,3.51,1.98,4.25,3.54,2.0,3.9,3.37,1.94
+Poland,Ekstraklasa,2022/2023,04/09/2022,16:30,Lech Poznan,Widzew Lodz,2,0,H,1.67,4.17,5.21,1.69,4.17,5.5,1.63,3.9,5.03
+Poland,Ekstraklasa,2022/2023,05/09/2022,17:00,Piast Gliwice,Legnica,2,1,H,1.82,3.5,5.13,1.89,3.65,5.13,1.8,3.36,4.6
+Poland,Ekstraklasa,2022/2023,05/09/2022,19:30,Wisla Plock,Gornik Z.,1,1,D,2.09,3.7,3.58,2.14,3.9,3.58,2.04,3.58,3.33
+Poland,Ekstraklasa,2022/2023,09/09/2022,17:00,Warta Poznan,Zaglebie,2,2,D,2.62,3.18,3.02,2.62,3.25,3.02,2.5,3.07,2.89
+Poland,Ekstraklasa,2022/2023,09/09/2022,19:30,Widzew Lodz,Cracovia,2,0,H,3.24,3.31,2.4,3.25,3.31,2.42,3.07,3.18,2.32
+Poland,Ekstraklasa,2022/2023,10/09/2022,14:00,Slask Wroclaw,Lechia Gdansk,2,1,H,2.39,3.57,3.04,2.39,3.57,3.2,2.27,3.35,3.01
+Poland,Ekstraklasa,2022/2023,10/09/2022,16:30,Radomiak Radom,Wisla Plock,2,0,H,2.24,3.51,3.37,2.24,3.55,3.45,2.12,3.39,3.29
+Poland,Ekstraklasa,2022/2023,10/09/2022,19:00,Gornik Z.,Piast Gliwice,3,3,D,2.64,3.29,2.91,2.67,3.29,2.91,2.59,3.14,2.74
+Poland,Ekstraklasa,2022/2023,11/09/2022,11:30,Legnica,Korona Kielce,2,2,D,2.07,3.46,3.89,2.1,3.54,4.0,2.03,3.35,3.59
+Poland,Ekstraklasa,2022/2023,11/09/2022,14:00,Pogon Szczecin,Lech Poznan,2,2,D,2.62,3.42,2.83,2.62,3.49,2.85,2.53,3.32,2.67
+Poland,Ekstraklasa,2022/2023,11/09/2022,16:30,Rakow,Legia,4,0,H,1.63,4.05,5.95,1.72,4.06,5.95,1.61,3.85,5.33
+Poland,Ekstraklasa,2022/2023,12/09/2022,18:00,Jagiellonia,Stal Mielec,4,0,H,1.7,4.24,4.82,1.84,4.5,4.82,1.73,3.88,4.31
+Poland,Ekstraklasa,2022/2023,16/09/2022,17:00,Piast Gliwice,Slask Wroclaw,1,1,D,2.09,3.34,3.97,2.11,3.66,4.4,2.0,3.24,3.84
+Poland,Ekstraklasa,2022/2023,16/09/2022,19:30,Legia,Legnica,3,2,H,1.68,3.96,5.42,1.68,4.0,5.6,1.64,3.83,5.03
+Poland,Ekstraklasa,2022/2023,17/09/2022,11:30,Stal Mielec,Widzew Lodz,0,3,A,2.78,3.59,2.57,2.78,3.67,2.65,2.67,3.37,2.5
+Poland,Ekstraklasa,2022/2023,17/09/2022,14:00,Lechia Gdansk,Jagiellonia,2,2,D,2.76,3.57,2.59,2.76,3.6,2.7,2.64,3.44,2.49
+Poland,Ekstraklasa,2022/2023,17/09/2022,16:30,Rakow,Radomiak Radom,3,0,H,1.56,4.07,6.79,1.57,4.25,7.0,1.53,3.97,6.14
+Poland,Ekstraklasa,2022/2023,17/09/2022,19:00,Cracovia,Pogon Szczecin,1,1,D,2.75,3.16,2.89,2.8,3.24,2.89,2.64,3.03,2.77
+Poland,Ekstraklasa,2022/2023,18/09/2022,11:30,Korona Kielce,Gornik Z.,1,2,A,3.4,3.45,2.25,3.41,3.52,2.26,3.23,3.35,2.17
+Poland,Ekstraklasa,2022/2023,18/09/2022,14:00,Zaglebie,Wisla Plock,2,1,H,2.14,3.7,3.43,2.17,3.7,3.43,2.11,3.51,3.21
+Poland,Ekstraklasa,2022/2023,18/09/2022,16:30,Warta Poznan,Lech Poznan,0,1,A,4.29,3.44,1.98,4.3,3.52,1.99,4.03,3.32,1.93
+Poland,Ekstraklasa,2022/2023,30/09/2022,17:00,Radomiak Radom,Cracovia,0,2,A,2.35,3.22,3.43,2.35,3.26,3.43,2.27,3.13,3.22
+Poland,Ekstraklasa,2022/2023,30/09/2022,19:30,Wisla Plock,Piast Gliwice,1,0,H,2.48,3.45,2.99,2.48,3.45,3.05,2.36,3.3,2.92
+Poland,Ekstraklasa,2022/2023,01/10/2022,14:00,Gornik Z.,Zaglebie,2,3,A,2.13,3.64,3.43,2.26,3.7,3.43,2.13,3.48,3.2
+Poland,Ekstraklasa,2022/2023,01/10/2022,16:30,Lech Poznan,Legia,0,0,D,1.85,3.66,4.47,1.85,3.8,4.7,1.79,3.61,4.3
+Poland,Ekstraklasa,2022/2023,01/10/2022,19:30,Pogon Szczecin,Lechia Gdansk,2,1,H,1.67,4.11,5.2,1.7,4.17,5.75,1.63,3.94,4.9
+Poland,Ekstraklasa,2022/2023,02/10/2022,11:30,Legnica,Stal Mielec,0,2,A,2.05,3.63,3.76,2.06,3.67,3.8,1.98,3.52,3.56
+Poland,Ekstraklasa,2022/2023,02/10/2022,14:00,Jagiellonia,Korona Kielce,4,1,H,1.72,3.98,5.04,1.77,3.98,5.04,1.69,3.79,4.66
+Poland,Ekstraklasa,2022/2023,02/10/2022,16:30,Widzew Lodz,Rakow,0,0,D,5.8,4.46,1.57,6.0,4.46,1.61,5.51,4.16,1.54
+Poland,Ekstraklasa,2022/2023,03/10/2022,18:00,Slask Wroclaw,Warta Poznan,0,2,A,2.59,3.01,3.23,2.59,3.18,3.35,2.42,2.98,3.11
+Poland,Ekstraklasa,2022/2023,06/10/2022,19:45,Piast Gliwice,Rakow,0,1,A,7.27,3.55,1.62,7.27,3.85,1.67,5.84,3.64,1.6
+Poland,Ekstraklasa,2022/2023,07/10/2022,17:00,Stal Mielec,Pogon Szczecin,4,2,H,4.17,3.48,1.97,4.2,3.7,1.98,3.82,3.47,1.92
+Poland,Ekstraklasa,2022/2023,07/10/2022,19:30,Jagiellonia,Wisla Plock,1,1,D,2.2,3.68,3.26,2.21,3.75,3.26,2.17,3.55,3.07
+Poland,Ekstraklasa,2022/2023,08/10/2022,14:00,Slask Wroclaw,Gornik Z.,4,1,H,2.84,3.43,2.56,2.84,3.61,2.63,2.71,3.36,2.47
+Poland,Ekstraklasa,2022/2023,08/10/2022,16:30,Legia,Warta Poznan,1,0,H,1.89,3.37,4.75,1.95,3.55,4.75,1.89,3.3,4.23
+Poland,Ekstraklasa,2022/2023,08/10/2022,19:00,Cracovia,Lechia Gdansk,0,1,A,1.92,3.59,4.25,1.92,3.64,4.36,1.88,3.45,4.02
+Poland,Ekstraklasa,2022/2023,09/10/2022,14:00,Zaglebie,Korona Kielce,1,1,D,1.72,3.97,4.88,1.74,3.97,4.9,1.69,3.78,4.64
+Poland,Ekstraklasa,2022/2023,09/10/2022,16:30,Lech Poznan,Radomiak Radom,1,0,H,1.81,3.58,4.88,1.85,3.6,4.88,1.79,3.45,4.51
+Poland,Ekstraklasa,2022/2023,10/10/2022,17:00,Rakow,Legnica,1,0,H,1.16,7.87,18.67,1.23,7.87,18.67,1.16,6.95,15.49
+Poland,Ekstraklasa,2022/2023,10/10/2022,19:30,Piast Gliwice,Widzew Lodz,1,2,A,2.43,3.28,3.15,2.5,3.3,3.2,2.37,3.13,3.04
+Poland,Ekstraklasa,2022/2023,14/10/2022,17:00,Korona Kielce,Stal Mielec,0,2,A,2.28,3.6,3.15,2.35,3.6,3.2,2.25,3.4,3.02
+Poland,Ekstraklasa,2022/2023,14/10/2022,19:30,Wisla Plock,Legia,2,1,H,2.97,3.51,2.43,3.01,3.51,2.55,2.87,3.35,2.36
+Poland,Ekstraklasa,2022/2023,15/10/2022,11:30,Radomiak Radom,Slask Wroclaw,2,0,H,2.21,3.19,3.75,2.3,3.29,3.75,2.21,3.11,3.38
+Poland,Ekstraklasa,2022/2023,15/10/2022,14:00,Lechia Gdansk,Rakow,0,3,A,5.52,3.93,1.66,5.52,4.12,1.67,5.08,3.86,1.63
+Poland,Ekstraklasa,2022/2023,15/10/2022,16:30,Warta Poznan,Jagiellonia,2,0,H,2.33,3.15,3.48,2.35,3.26,3.55,2.27,3.11,3.24
+Poland,Ekstraklasa,2022/2023,15/10/2022,19:00,Pogon Szczecin,Piast Gliwice,1,1,D,1.83,3.66,4.64,1.85,3.75,5.1,1.78,3.55,4.41
+Poland,Ekstraklasa,2022/2023,16/10/2022,11:30,Legnica,Cracovia,1,1,D,3.11,3.28,2.46,3.13,3.4,2.46,3.0,3.23,2.34
+Poland,Ekstraklasa,2022/2023,16/10/2022,14:00,Widzew Lodz,Zaglebie,3,0,H,2.44,3.5,2.97,2.55,3.54,3.0,2.38,3.36,2.83
+Poland,Ekstraklasa,2022/2023,16/10/2022,17:30,Gornik Z.,Lech Poznan,1,2,A,3.23,3.59,2.25,3.27,3.62,2.35,3.0,3.43,2.24
+Poland,Ekstraklasa,2022/2023,21/10/2022,19:30,Widzew Lodz,Legnica,1,0,H,1.96,3.55,4.11,2.04,3.62,4.2,1.97,3.42,3.68
+Poland,Ekstraklasa,2022/2023,22/10/2022,14:00,Stal Mielec,Wisla Plock,1,1,D,3.31,3.71,2.18,3.31,3.71,2.21,3.15,3.52,2.13
+Poland,Ekstraklasa,2022/2023,22/10/2022,16:30,Legia,Pogon Szczecin,1,1,D,2.1,3.49,3.68,2.25,3.52,3.68,2.13,3.34,3.34
+Poland,Ekstraklasa,2022/2023,22/10/2022,19:00,Rakow,Korona Kielce,1,0,H,1.22,6.83,13.4,1.24,6.83,13.5,1.21,6.25,12.36
+Poland,Ekstraklasa,2022/2023,23/10/2022,11:30,Warta Poznan,Gornik Z.,0,0,D,2.34,3.41,3.19,2.55,3.45,3.26,2.28,3.29,3.06
+Poland,Ekstraklasa,2022/2023,23/10/2022,14:00,Slask Wroclaw,Jagiellonia,2,2,D,2.33,3.59,3.08,2.35,3.59,3.08,2.28,3.42,2.95
+Poland,Ekstraklasa,2022/2023,23/10/2022,16:30,Cracovia,Lech Poznan,0,0,D,3.87,3.42,2.07,3.87,3.42,2.2,3.47,3.27,2.11
+Poland,Ekstraklasa,2022/2023,24/10/2022,17:00,Piast Gliwice,Radomiak Radom,1,2,A,2.8,3.15,2.79,2.87,3.23,2.8,2.74,3.06,2.64
+Poland,Ekstraklasa,2022/2023,24/10/2022,19:30,Zaglebie,Lechia Gdansk,0,3,A,2.25,3.64,3.19,2.26,3.65,3.3,2.19,3.5,3.05
+Poland,Ekstraklasa,2022/2023,28/10/2022,17:00,Legnica,Pogon Szczecin,2,4,A,3.39,3.62,2.16,3.65,3.62,2.16,3.42,3.41,2.06
+Poland,Ekstraklasa,2022/2023,28/10/2022,19:30,Gornik Z.,Widzew Lodz,3,0,H,2.07,3.66,3.59,2.08,3.85,3.62,2.01,3.49,3.48
+Poland,Ekstraklasa,2022/2023,29/10/2022,14:00,Korona Kielce,Piast Gliwice,1,1,D,3.36,3.33,2.3,3.36,3.36,2.3,3.15,3.25,2.25
+Poland,Ekstraklasa,2022/2023,29/10/2022,16:30,Jagiellonia,Legia,2,5,A,3.16,3.62,2.26,3.16,3.62,2.38,2.99,3.35,2.29
+Poland,Ekstraklasa,2022/2023,29/10/2022,19:00,Wisla Plock,Slask Wroclaw,1,2,A,1.96,3.6,4.03,2.0,3.66,4.03,1.94,3.45,3.74
+Poland,Ekstraklasa,2022/2023,30/10/2022,11:30,Zaglebie,Cracovia,0,2,A,2.85,3.22,2.69,2.85,3.31,2.69,2.73,3.16,2.58
+Poland,Ekstraklasa,2022/2023,30/10/2022,14:00,Lechia Gdansk,Stal Mielec,1,0,H,1.73,3.97,4.84,1.81,4.0,4.84,1.73,3.79,4.42
+Poland,Ekstraklasa,2022/2023,30/10/2022,16:30,Lech Poznan,Rakow,1,2,A,3.95,3.31,2.09,3.95,3.42,2.15,3.58,3.22,2.08
+Poland,Ekstraklasa,2022/2023,31/10/2022,18:00,Radomiak Radom,Warta Poznan,2,3,A,2.26,3.07,3.76,2.28,3.13,3.76,2.23,2.98,3.48
+Poland,Ekstraklasa,2022/2023,04/11/2022,17:00,Stal Mielec,Zaglebie,3,0,H,2.11,3.46,3.68,2.17,3.6,3.7,2.08,3.45,3.34
+Poland,Ekstraklasa,2022/2023,04/11/2022,19:30,Legia,Lechia Gdansk,2,1,H,1.61,4.14,5.79,1.67,4.2,5.79,1.61,3.92,5.22
+Poland,Ekstraklasa,2022/2023,05/11/2022,11:30,Piast Gliwice,Warta Poznan,0,2,A,2.88,2.79,3.05,2.88,3.01,3.25,2.7,2.85,2.88
+Poland,Ekstraklasa,2022/2023,05/11/2022,14:00,Cracovia,Jagiellonia,1,0,H,1.87,3.67,4.41,1.9,3.75,5.25,1.8,3.58,4.28
+Poland,Ekstraklasa,2022/2023,05/11/2022,16:30,Pogon Szczecin,Gornik Z.,1,4,A,1.81,4.01,4.29,1.85,4.01,4.4,1.78,3.82,4.1
+Poland,Ekstraklasa,2022/2023,05/11/2022,19:00,Rakow,Wisla Plock,7,1,H,1.36,5.25,8.88,1.37,5.5,9.5,1.33,5.08,8.45
+Poland,Ekstraklasa,2022/2023,06/11/2022,11:30,Legnica,Slask Wroclaw,1,0,H,3.0,3.41,2.45,3.0,3.45,2.6,2.77,3.34,2.43
+Poland,Ekstraklasa,2022/2023,06/11/2022,14:00,Widzew Lodz,Radomiak Radom,1,3,A,2.51,3.24,3.06,2.51,3.31,3.06,2.4,3.21,2.9
+Poland,Ekstraklasa,2022/2023,06/11/2022,16:30,Lech Poznan,Korona Kielce,3,2,H,1.41,4.96,7.96,1.45,4.96,8.0,1.4,4.63,7.22
+Poland,Ekstraklasa,2022/2023,11/11/2022,17:00,Warta Poznan,Stal Mielec,1,1,D,1.94,3.45,4.34,2.05,3.6,4.34,1.94,3.33,3.95
+Poland,Ekstraklasa,2022/2023,11/11/2022,19:30,Wisla Plock,Cracovia,1,0,H,2.36,3.4,3.17,2.45,3.42,3.2,2.34,3.24,2.98
+Poland,Ekstraklasa,2022/2023,12/11/2022,11:30,Korona Kielce,Widzew Lodz,0,1,A,3.16,3.5,2.32,3.3,3.5,2.45,3.06,3.37,2.23
+Poland,Ekstraklasa,2022/2023,12/11/2022,14:00,Gornik Z.,Legnica,0,3,A,1.68,3.86,5.45,1.73,4.05,5.45,1.67,3.75,4.89
+Poland,Ekstraklasa,2022/2023,12/11/2022,16:30,Jagiellonia,Lech Poznan,1,2,A,3.76,3.78,1.98,3.76,3.78,2.01,3.56,3.52,1.97
+Poland,Ekstraklasa,2022/2023,12/11/2022,19:00,Zaglebie,Rakow,1,2,A,7.47,4.42,1.48,7.5,4.6,1.5,6.8,4.32,1.44
+Poland,Ekstraklasa,2022/2023,13/11/2022,11:30,Radomiak Radom,Pogon Szczecin,1,2,A,3.12,3.32,2.43,3.12,3.37,2.55,2.93,3.22,2.38
+Poland,Ekstraklasa,2022/2023,13/11/2022,14:00,Lechia Gdansk,Piast Gliwice,1,3,A,2.21,3.45,3.44,2.26,3.48,3.44,2.17,3.3,3.26
+Poland,Ekstraklasa,2022/2023,13/11/2022,16:30,Slask Wroclaw,Legia,0,0,D,3.19,3.33,2.39,3.4,3.38,2.39,3.07,3.24,2.28
+Poland,Ekstraklasa,2022/2023,18/11/2022,19:30,Lechia Gdansk,Gornik Z.,2,1,H,2.75,3.69,2.51,2.76,3.7,2.51,2.69,3.51,2.41
+Poland,Ekstraklasa,2022/2023,27/01/2023,17:00,Legnica,Radomiak Radom,0,0,D,2.49,3.22,3.12,2.61,3.22,3.12,2.46,3.07,2.95
+Poland,Ekstraklasa,2022/2023,27/01/2023,19:30,Stal Mielec,Lech Poznan,0,0,D,5.55,3.93,1.66,5.76,4.0,1.66,5.34,3.8,1.61
+Poland,Ekstraklasa,2022/2023,28/01/2023,14:00,Warta Poznan,Rakow,1,1,D,5.66,3.23,1.82,5.75,3.3,1.83,5.26,3.19,1.77
+Poland,Ekstraklasa,2022/2023,28/01/2023,16:30,Widzew Lodz,Pogon Szczecin,3,3,D,2.62,3.35,2.83,2.68,3.45,2.9,2.53,3.19,2.76
+Poland,Ekstraklasa,2022/2023,28/01/2023,19:00,Slask Wroclaw,Zaglebie,0,3,A,2.27,3.3,3.45,2.28,3.46,3.5,2.22,3.22,3.23
+Poland,Ekstraklasa,2022/2023,29/01/2023,11:30,Piast Gliwice,Jagiellonia,1,1,D,2.21,3.34,3.55,2.21,3.42,3.75,2.09,3.23,3.54
+Poland,Ekstraklasa,2022/2023,29/01/2023,14:00,Legia,Korona Kielce,3,2,H,1.41,4.78,8.14,1.47,4.8,8.14,1.41,4.49,7.12
+Poland,Ekstraklasa,2022/2023,29/01/2023,16:30,Lechia Gdansk,Wisla Plock,1,0,H,2.43,3.35,3.09,2.43,3.45,3.09,2.36,3.28,2.91
+Poland,Ekstraklasa,2022/2023,30/01/2023,18:00,Cracovia,Gornik Z.,2,0,H,2.42,3.16,3.3,2.49,3.16,3.3,2.37,3.06,3.1
+Poland,Ekstraklasa,2022/2023,01/02/2023,18:00,Legnica,Lech Poznan,2,2,D,4.64,3.5,1.87,4.64,3.7,1.92,4.23,3.44,1.85
+Poland,Ekstraklasa,2022/2023,03/02/2023,19:30,Widzew Lodz,Jagiellonia,1,1,D,1.82,3.91,4.33,1.85,3.92,4.5,1.8,3.71,4.14
+Poland,Ekstraklasa,2022/2023,04/02/2023,14:00,Rakow,Piast Gliwice,1,0,H,1.52,4.05,7.55,1.53,4.3,8.2,1.48,3.96,7.09
+Poland,Ekstraklasa,2022/2023,04/02/2023,16:30,Gornik Z.,Lechia Gdansk,1,1,D,2.0,3.71,3.79,2.01,3.84,3.88,1.94,3.55,3.71
+Poland,Ekstraklasa,2022/2023,04/02/2023,19:00,Zaglebie,Legia,1,2,A,3.07,3.56,2.35,3.45,3.65,2.35,3.14,3.42,2.19
+Poland,Ekstraklasa,2022/2023,05/02/2023,11:30,Radomiak Radom,Stal Mielec,1,0,H,1.98,3.43,4.18,2.05,3.6,4.2,1.96,3.37,3.82
+Poland,Ekstraklasa,2022/2023,05/02/2023,14:00,Lech Poznan,Legnica,1,0,H,1.42,4.62,7.99,1.43,4.85,8.8,1.4,4.5,7.54
+Poland,Ekstraklasa,2022/2023,05/02/2023,16:30,Pogon Szczecin,Slask Wroclaw,0,2,A,1.76,3.77,4.95,1.81,3.89,5.1,1.74,3.61,4.62
+Poland,Ekstraklasa,2022/2023,06/02/2023,18:00,Korona Kielce,Cracovia,2,1,H,3.83,3.17,2.19,3.86,3.27,2.2,3.65,3.07,2.14
+Poland,Ekstraklasa,2022/2023,10/02/2023,17:00,Stal Mielec,Rakow,0,0,D,7.91,4.19,1.49,8.2,4.45,1.52,7.11,4.08,1.46
+Poland,Ekstraklasa,2022/2023,10/02/2023,19:30,Lechia Gdansk,Widzew Lodz,0,0,D,2.84,3.34,2.62,2.84,3.41,2.74,2.7,3.21,2.58
+Poland,Ekstraklasa,2022/2023,11/02/2023,14:00,Slask Wroclaw,Korona Kielce,1,1,D,1.98,3.49,4.1,1.98,3.7,4.2,1.92,3.42,3.89
+Poland,Ekstraklasa,2022/2023,11/02/2023,16:30,Wisla Plock,Lech Poznan,0,1,A,4.94,3.79,1.75,4.94,3.79,1.9,4.42,3.58,1.78
+Poland,Ekstraklasa,2022/2023,11/02/2023,19:00,Jagiellonia,Pogon Szczecin,2,0,H,3.36,3.66,2.16,3.88,3.75,2.2,3.42,3.51,2.05
+Poland,Ekstraklasa,2022/2023,12/02/2023,11:30,Zaglebie,Piast Gliwice,0,2,A,3.07,3.26,2.5,3.07,3.33,2.82,2.8,3.12,2.56
+Poland,Ekstraklasa,2022/2023,12/02/2023,14:00,Gornik Z.,Radomiak Radom,0,0,D,2.22,3.35,3.51,2.33,3.41,3.51,2.23,3.22,3.24
+Poland,Ekstraklasa,2022/2023,12/02/2023,16:30,Legia,Cracovia,2,2,D,1.85,3.46,4.85,1.93,3.5,4.85,1.85,3.3,4.42
+Poland,Ekstraklasa,2022/2023,13/02/2023,18:00,Warta Poznan,Legnica,1,1,D,2.01,3.28,4.32,2.06,3.33,4.33,1.98,3.16,4.07
+Poland,Ekstraklasa,2022/2023,17/02/2023,17:00,Cracovia,Stal Mielec,2,1,H,1.93,3.33,4.64,1.95,3.65,5.4,1.84,3.34,4.48
+Poland,Ekstraklasa,2022/2023,17/02/2023,19:30,Widzew Lodz,Slask Wroclaw,1,0,H,1.72,3.75,5.33,1.85,3.87,6.57,1.69,3.68,4.92
+Poland,Ekstraklasa,2022/2023,18/02/2023,14:00,Korona Kielce,Lechia Gdansk,1,0,H,2.5,3.32,3.02,2.5,3.45,3.1,2.38,3.24,2.94
+Poland,Ekstraklasa,2022/2023,18/02/2023,16:30,Rakow,Gornik Z.,2,0,H,1.47,4.33,7.86,1.5,4.5,8.1,1.45,4.22,7.08
+Poland,Ekstraklasa,2022/2023,18/02/2023,19:00,Pogon Szczecin,Warta Poznan,3,1,H,2.01,3.38,4.15,2.06,3.5,4.3,1.97,3.27,3.92
+Poland,Ekstraklasa,2022/2023,19/02/2023,11:30,Legnica,Wisla Plock,2,1,H,2.23,3.49,3.36,2.33,3.52,3.36,2.23,3.33,3.13
+Poland,Ekstraklasa,2022/2023,19/02/2023,14:00,Lech Poznan,Zaglebie,1,2,A,1.75,3.84,4.92,1.79,3.9,5.4,1.71,3.71,4.68
+Poland,Ekstraklasa,2022/2023,19/02/2023,16:30,Piast Gliwice,Legia,0,1,A,2.81,3.22,2.73,2.88,3.25,2.82,2.72,3.08,2.65
+Poland,Ekstraklasa,2022/2023,20/02/2023,18:00,Radomiak Radom,Jagiellonia,0,0,D,2.03,3.44,3.97,2.08,3.52,4.25,1.99,3.31,3.79
+Poland,Ekstraklasa,2022/2023,24/02/2023,17:00,Jagiellonia,Rakow,1,2,A,7.42,4.27,1.5,7.5,4.4,1.54,6.72,4.11,1.48
+Poland,Ekstraklasa,2022/2023,24/02/2023,19:30,Legia,Widzew Lodz,2,2,D,1.98,3.55,4.03,2.03,3.65,4.09,1.95,3.45,3.77
+Poland,Ekstraklasa,2022/2023,25/02/2023,14:00,Piast Gliwice,Cracovia,2,1,H,2.45,2.89,3.59,2.46,3.05,3.63,2.36,2.82,3.45
+Poland,Ekstraklasa,2022/2023,25/02/2023,16:30,Warta Poznan,Korona Kielce,5,1,H,1.93,3.38,4.5,1.95,3.5,4.6,1.9,3.3,4.22
+Poland,Ekstraklasa,2022/2023,25/02/2023,19:00,Lechia Gdansk,Radomiak Radom,1,3,A,2.65,3.15,2.95,2.68,3.35,2.96,2.52,3.11,2.84
+Poland,Ekstraklasa,2022/2023,26/02/2023,11:30,Stal Mielec,Gornik Z.,0,1,A,2.82,3.46,2.57,2.82,3.58,2.68,2.68,3.33,2.53
+Poland,Ekstraklasa,2022/2023,26/02/2023,14:00,Wisla Plock,Pogon Szczecin,0,1,A,3.44,3.66,2.13,3.44,3.85,2.2,3.19,3.6,2.1
+Poland,Ekstraklasa,2022/2023,26/02/2023,16:30,Slask Wroclaw,Lech Poznan,2,1,H,4.52,3.45,1.91,4.55,3.54,1.97,4.09,3.31,1.92
+Poland,Ekstraklasa,2022/2023,27/02/2023,18:00,Zaglebie,Legnica,2,1,H,2.31,3.45,3.22,2.36,3.5,3.4,2.28,3.28,3.09
+Poland,Ekstraklasa,2022/2023,03/03/2023,17:00,Stal Mielec,Piast Gliwice,0,2,A,4.0,3.14,2.15,4.0,3.24,2.33,3.54,3.02,2.19
+Poland,Ekstraklasa,2022/2023,03/03/2023,19:30,Lech Poznan,Lechia Gdansk,5,0,H,1.35,5.27,9.06,1.4,5.4,9.4,1.35,4.84,7.96
+Poland,Ekstraklasa,2022/2023,04/03/2023,14:00,Widzew Lodz,Warta Poznan,0,2,A,2.39,3.09,3.43,2.39,3.22,3.63,2.24,3.06,3.36
+Poland,Ekstraklasa,2022/2023,04/03/2023,16:30,Korona Kielce,Wisla Plock,1,0,H,2.35,3.48,3.13,2.35,3.58,3.4,2.26,3.28,3.07
+Poland,Ekstraklasa,2022/2023,04/03/2023,19:00,Gornik Z.,Legia,0,1,A,3.29,3.46,2.27,3.47,3.65,2.27,3.24,3.34,2.15
+Poland,Ekstraklasa,2022/2023,05/03/2023,11:30,Legnica,Jagiellonia,1,1,D,2.31,3.33,3.33,2.31,3.45,3.55,2.2,3.25,3.22
+Poland,Ekstraklasa,2022/2023,05/03/2023,14:00,Pogon Szczecin,Rakow,0,2,A,3.92,3.51,2.02,3.92,3.52,2.18,3.63,3.31,2.03
+Poland,Ekstraklasa,2022/2023,05/03/2023,16:30,Cracovia,Slask Wroclaw,1,1,D,1.97,3.35,4.38,2.0,3.41,4.4,1.94,3.23,4.1
+Poland,Ekstraklasa,2022/2023,06/03/2023,18:00,Radomiak Radom,Zaglebie,0,1,A,2.07,3.51,3.77,2.08,3.6,3.83,2.02,3.34,3.62
+Poland,Ekstraklasa,2022/2023,08/03/2023,17:45,Wisla Plock,Warta Poznan,1,0,H,2.92,3.02,2.78,2.99,3.13,2.78,2.8,3.0,2.63
+Poland,Ekstraklasa,2022/2023,10/03/2023,17:00,Lechia Gdansk,Legnica,4,0,H,2.55,3.36,2.92,2.62,3.55,2.94,2.49,3.28,2.74
+Poland,Ekstraklasa,2022/2023,10/03/2023,19:30,Rakow,Slask Wroclaw,4,1,H,1.19,6.9,16.98,1.27,7.3,19.5,1.2,6.16,14.76
+Poland,Ekstraklasa,2022/2023,11/03/2023,14:00,Korona Kielce,Radomiak Radom,2,1,H,2.86,3.2,2.7,2.92,3.3,2.74,2.76,3.08,2.6
+Poland,Ekstraklasa,2022/2023,11/03/2023,16:30,Zaglebie,Pogon Szczecin,0,1,A,3.97,3.68,1.96,3.97,3.68,2.12,3.7,3.44,1.97
+Poland,Ekstraklasa,2022/2023,11/03/2023,19:00,Jagiellonia,Gornik Z.,2,1,H,2.78,3.41,2.66,2.82,3.45,2.72,2.69,3.28,2.54
+Poland,Ekstraklasa,2022/2023,12/03/2023,11:30,Warta Poznan,Cracovia,0,0,D,2.5,2.95,3.39,2.53,3.05,3.41,2.43,2.89,3.19
+Poland,Ekstraklasa,2022/2023,12/03/2023,14:00,Piast Gliwice,Lech Poznan,1,1,D,3.03,3.08,2.64,3.12,3.16,2.64,2.94,2.97,2.53
+Poland,Ekstraklasa,2022/2023,12/03/2023,16:30,Legia,Stal Mielec,2,0,H,1.46,4.46,7.84,1.49,4.6,8.0,1.45,4.22,6.94
+Poland,Ekstraklasa,2022/2023,13/03/2023,18:00,Wisla Plock,Widzew Lodz,1,1,D,3.03,3.39,2.45,3.11,3.5,2.46,2.94,3.25,2.36
+Poland,Ekstraklasa,2022/2023,17/03/2023,17:00,Gornik Z.,Wisla Plock,3,2,H,1.84,3.68,4.53,1.95,3.85,4.59,1.8,3.59,4.23
+Poland,Ekstraklasa,2022/2023,17/03/2023,19:30,Radomiak Radom,Legia,0,2,A,3.25,3.31,2.36,3.7,3.38,2.37,3.19,3.21,2.25
+Poland,Ekstraklasa,2022/2023,18/03/2023,11:30,Slask Wroclaw,Stal Mielec,1,1,D,2.25,3.35,3.44,2.27,3.45,3.47,2.18,3.26,3.27
+Poland,Ekstraklasa,2022/2023,18/03/2023,14:00,Jagiellonia,Zaglebie,2,2,D,2.32,3.47,3.18,2.55,3.55,3.19,2.3,3.34,2.97
+Poland,Ekstraklasa,2022/2023,18/03/2023,16:30,Pogon Szczecin,Korona Kielce,0,0,D,1.54,4.58,5.84,1.59,4.7,6.0,1.53,4.24,5.55
+Poland,Ekstraklasa,2022/2023,18/03/2023,19:00,Rakow,Cracovia,4,1,H,1.39,4.8,8.88,1.41,5.1,9.3,1.37,4.52,8.4
+Poland,Ekstraklasa,2022/2023,19/03/2023,11:30,Warta Poznan,Lechia Gdansk,2,0,H,2.01,3.36,4.19,2.04,3.55,4.2,1.97,3.23,3.93
+Poland,Ekstraklasa,2022/2023,19/03/2023,14:00,Legnica,Piast Gliwice,0,1,A,3.74,3.11,2.25,3.74,3.21,2.33,3.47,3.0,2.22
+Poland,Ekstraklasa,2022/2023,19/03/2023,16:30,Widzew Lodz,Lech Poznan,1,2,A,3.4,3.41,2.24,3.41,3.45,2.29,3.19,3.29,2.2
+Poland,Ekstraklasa,2022/2023,31/03/2023,17:00,Zaglebie,Warta Poznan,0,0,D,2.56,3.13,3.1,2.75,3.24,3.11,2.5,3.02,2.92
+Poland,Ekstraklasa,2022/2023,31/03/2023,19:30,Piast Gliwice,Gornik Zabrze,1,0,H,2.31,3.11,3.6,2.34,3.25,3.8,2.24,3.04,3.39
+Poland,Ekstraklasa,2022/2023,01/04/2023,14:00,Korona Kielce,Legnica,1,0,H,1.97,3.46,4.18,2.21,3.6,4.18,1.97,3.34,3.8
+Poland,Ekstraklasa,2022/2023,01/04/2023,16:30,Legia,Rakow,3,1,H,3.8,3.28,2.15,3.8,3.28,2.28,3.49,3.11,2.16
+Poland,Ekstraklasa,2022/2023,01/04/2023,19:00,Lechia Gdansk,Slask Wroclaw,0,0,D,2.15,3.36,3.68,2.32,3.42,3.68,2.13,3.25,3.38
+Poland,Ekstraklasa,2022/2023,02/04/2023,11:30,Wisla Plock,Radomiak Radom,1,1,D,3.02,3.21,2.56,3.02,3.35,2.8,2.83,3.16,2.48
+Poland,Ekstraklasa,2022/2023,02/04/2023,14:00,Cracovia,Widzew Lodz,1,1,D,2.61,3.12,3.04,2.66,3.22,3.45,2.52,3.03,2.89
+Poland,Ekstraklasa,2022/2023,02/04/2023,16:30,Lech Poznan,Pogon Szczecin,2,2,D,1.93,3.7,4.02,2.04,3.78,4.02,1.91,3.53,3.75
+Poland,Ekstraklasa,2022/2023,03/04/2023,18:00,Stal Mielec,Jagiellonia,1,1,D,2.5,3.36,2.97,2.52,3.47,2.98,2.41,3.28,2.83
+Poland,Ekstraklasa,2022/2023,06/04/2023,17:00,Slask Wroclaw,Piast Gliwice,0,1,A,3.2,3.0,2.58,3.4,3.04,2.6,3.19,2.86,2.46
+Poland,Ekstraklasa,2022/2023,06/04/2023,19:30,Gornik Zabrze,Korona Kielce,1,1,D,1.89,3.52,4.5,1.95,3.63,4.51,1.86,3.39,4.17
+Poland,Ekstraklasa,2022/2023,08/04/2023,11:30,Wisla Plock,Zaglebie,2,0,H,2.86,3.52,2.5,2.86,3.54,2.75,2.71,3.33,2.48
+Poland,Ekstraklasa,2022/2023,08/04/2023,14:00,Widzew Lodz,Stal Mielec,0,2,A,1.76,3.8,4.89,1.78,3.96,4.94,1.72,3.67,4.59
+Poland,Ekstraklasa,2022/2023,08/04/2023,16:30,Pogon Szczecin,Cracovia,3,2,H,1.81,3.55,4.61,1.86,3.89,4.95,1.77,3.62,4.33
+Poland,Ekstraklasa,2022/2023,08/04/2023,19:00,Lech Poznan,Warta Poznan,2,0,H,1.66,3.71,6.04,1.7,3.95,6.2,1.64,3.57,5.52
+Poland,Ekstraklasa,2022/2023,10/04/2023,14:00,Jagiellonia,Lechia Gdansk,1,0,H,1.86,3.8,4.25,2.16,3.8,4.47,1.88,3.59,3.89
+Poland,Ekstraklasa,2022/2023,10/04/2023,16:30,Radomiak Radom,Rakow,0,0,D,6.19,3.62,1.67,6.28,3.75,1.7,5.47,3.56,1.65
+Poland,Ekstraklasa,2022/2023,10/04/2023,19:00,Legnica,Legia,2,2,D,4.82,3.8,1.77,4.9,3.89,1.78,4.54,3.69,1.73
+Poland,Ekstraklasa,2022/2023,14/04/2023,17:00,Warta Poznan,Slask Wroclaw,3,1,H,2.23,3.1,3.82,2.24,3.2,3.94,2.13,3.03,3.67
+Poland,Ekstraklasa,2022/2023,14/04/2023,19:30,Zaglebie,Gornik Zabrze,0,2,A,2.42,3.3,3.16,2.53,3.46,3.16,2.36,3.28,2.92
+Poland,Ekstraklasa,2022/2023,15/04/2023,14:00,Cracovia,Radomiak Radom,3,0,H,2.85,3.09,2.79,2.99,3.25,3.28,2.7,3.02,2.73
+Poland,Ekstraklasa,2022/2023,15/04/2023,16:30,Korona Kielce,Jagiellonia,2,1,H,2.83,3.25,2.7,2.85,3.42,2.75,2.69,3.2,2.58
+Poland,Ekstraklasa,2022/2023,15/04/2023,19:00,Lechia Gdansk,Pogon Szczecin,0,1,A,4.31,4.01,1.8,4.75,4.1,1.81,4.28,3.75,1.75
+Poland,Ekstraklasa,2022/2023,16/04/2023,11:30,Piast Gliwice,Wisla Plock,1,0,H,1.68,3.87,5.48,1.77,3.89,5.7,1.69,3.65,4.87
+Poland,Ekstraklasa,2022/2023,16/04/2023,14:00,Rakow,Widzew Lodz,2,0,H,1.37,4.92,9.67,1.38,5.2,10.0,1.34,4.75,9.0
+Poland,Ekstraklasa,2022/2023,16/04/2023,16:30,Legia,Lech Poznan,2,2,D,2.49,3.34,3.02,2.53,3.47,3.1,2.4,3.25,2.88
+Poland,Ekstraklasa,2022/2023,17/04/2023,18:00,Stal Mielec,Legnica,1,1,D,2.18,3.34,3.61,2.23,3.45,3.73,2.12,3.23,3.43
+Poland,Ekstraklasa,2022/2023,21/04/2023,17:00,Wisla Plock,Jagiellonia,2,4,A,2.74,3.39,2.69,2.74,3.51,2.73,2.6,3.31,2.6
+Poland,Ekstraklasa,2022/2023,21/04/2023,19:30,Warta Poznan,Legia,1,0,H,3.27,3.19,2.42,3.45,3.3,2.42,3.2,3.11,2.29
+Poland,Ekstraklasa,2022/2023,22/04/2023,14:00,Lechia Gdansk,Cracovia,1,2,A,2.44,3.34,3.09,2.65,3.34,3.1,2.42,3.18,2.92
+Poland,Ekstraklasa,2022/2023,22/04/2023,16:30,Legnica,Rakow,0,2,A,6.95,3.82,1.58,7.0,4.25,1.61,6.42,3.77,1.54
+Poland,Ekstraklasa,2022/2023,22/04/2023,19:00,Pogon Szczecin,Stal Mielec,4,2,H,1.55,4.37,6.07,1.6,4.4,6.07,1.54,4.14,5.58
+Poland,Ekstraklasa,2022/2023,23/04/2023,11:30,Korona Kielce,Zaglebie,2,2,D,2.88,3.29,2.62,2.95,3.38,2.75,2.78,3.18,2.51
+Poland,Ekstraklasa,2022/2023,23/04/2023,14:00,Widzew Lodz,Piast Gliwice,2,3,A,2.9,3.08,2.76,2.95,3.13,2.8,2.76,2.98,2.67
+Poland,Ekstraklasa,2022/2023,23/04/2023,16:30,Gornik Zabrze,Slask Wroclaw,2,0,H,1.8,3.61,4.9,1.91,3.76,5.0,1.76,3.55,4.56
+Poland,Ekstraklasa,2022/2023,24/04/2023,18:00,Radomiak Radom,Lech Poznan,1,1,D,3.26,3.39,2.32,3.7,3.5,2.46,3.06,3.25,2.29
+Poland,Ekstraklasa,2022/2023,28/04/2023,17:00,Legia,Wisla Plock,2,0,H,1.51,4.56,6.5,1.51,4.9,7.0,1.46,4.44,6.11
+Poland,Ekstraklasa,2022/2023,28/04/2023,19:30,Rakow,Lechia Gdansk,4,0,H,1.24,6.43,12.43,1.27,7.1,14.0,1.22,5.96,11.7
+Poland,Ekstraklasa,2022/2023,29/04/2023,14:00,Jagiellonia,Warta Poznan,3,1,H,2.5,3.15,3.17,2.5,3.28,3.25,2.4,3.03,3.05
+Poland,Ekstraklasa,2022/2023,29/04/2023,16:30,Zaglebie,Widzew Lodz,2,0,H,2.23,3.46,3.38,2.29,3.58,3.38,2.21,3.29,3.13
+Poland,Ekstraklasa,2022/2023,29/04/2023,19:00,Piast Gliwice,Pogon Szczecin,0,0,D,2.76,3.18,2.81,2.76,3.37,2.85,2.61,3.1,2.69
+Poland,Ekstraklasa,2022/2023,30/04/2023,11:30,Slask Wroclaw,Radomiak Radom,0,1,A,3.14,3.17,2.51,3.14,3.26,2.6,2.94,3.11,2.43
+Poland,Ekstraklasa,2022/2023,30/04/2023,14:00,Stal Mielec,Korona Kielce,2,1,H,2.25,3.31,3.48,2.3,3.5,3.48,2.17,3.27,3.26
+Poland,Ekstraklasa,2022/2023,30/04/2023,16:30,Lech Poznan,Gornik Zabrze,0,1,A,1.71,3.94,5.03,1.78,3.94,5.03,1.71,3.67,4.67
+Poland,Ekstraklasa,2022/2023,01/05/2023,18:00,Cracovia,Legnica,1,1,D,1.88,3.55,4.48,1.91,3.6,4.6,1.84,3.4,4.25
+Poland,Ekstraklasa,2022/2023,05/05/2023,17:00,Jagiellonia,Slask Wroclaw,1,1,D,2.01,3.43,4.09,2.06,3.48,4.1,1.99,3.3,3.79
+Poland,Ekstraklasa,2022/2023,05/05/2023,19:30,Gornik Zabrze,Warta Poznan,2,0,H,2.11,3.36,3.8,2.23,3.4,3.85,2.1,3.21,3.54
+Poland,Ekstraklasa,2022/2023,06/05/2023,14:00,Radomiak Radom,Piast Gliwice,0,1,A,2.95,2.92,2.85,2.95,3.06,2.85,2.78,2.92,2.71
+Poland,Ekstraklasa,2022/2023,06/05/2023,16:30,Lech Poznan,Cracovia,3,0,H,1.58,4.19,5.95,1.59,4.33,6.59,1.54,4.0,5.81
+Poland,Ekstraklasa,2022/2023,06/05/2023,19:00,Lechia Gdansk,Zaglebie,1,3,A,2.89,3.55,2.47,2.95,3.63,2.5,2.78,3.41,2.39
+Poland,Ekstraklasa,2022/2023,07/05/2023,11:30,Wisla Plock,Stal Mielec,0,0,D,1.99,3.67,3.85,2.2,3.69,3.85,2.03,3.49,3.42
+Poland,Ekstraklasa,2022/2023,07/05/2023,14:00,Korona Kielce,Rakow,1,0,H,8.81,4.3,1.44,9.1,4.59,1.47,7.68,4.23,1.42
+Poland,Ekstraklasa,2022/2023,07/05/2023,16:30,Pogon Szczecin,Legia,2,1,H,2.22,3.65,3.23,2.25,3.74,3.35,2.14,3.54,3.11
+Poland,Ekstraklasa,2022/2023,08/05/2023,18:00,Legnica,Widzew Lodz,0,1,A,3.13,3.21,2.49,3.13,3.34,2.55,2.94,3.17,2.4
+Poland,Ekstraklasa,2022/2023,12/05/2023,17:00,Piast Gliwice,Korona Kielce,2,1,H,1.73,3.71,5.26,1.77,3.8,5.8,1.68,3.61,5.08
+Poland,Ekstraklasa,2022/2023,12/05/2023,19:30,Legia,Jagiellonia,5,1,H,1.58,4.59,5.38,1.59,4.7,5.6,1.55,4.26,5.28
+Poland,Ekstraklasa,2022/2023,13/05/2023,14:00,Slask Wroclaw,Wisla Plock,3,1,H,2.16,3.48,3.53,2.25,3.53,3.57,2.13,3.32,3.33
+Poland,Ekstraklasa,2022/2023,13/05/2023,16:30,Cracovia,Zaglebie,0,1,A,2.52,3.39,2.93,2.58,3.56,2.93,2.46,3.3,2.73
+Poland,Ekstraklasa,2022/2023,13/05/2023,19:00,Widzew Lodz,Gornik Zabrze,2,3,A,2.6,3.35,2.91,2.63,3.41,2.94,2.49,3.25,2.75
+Poland,Ekstraklasa,2022/2023,14/05/2023,11:30,Stal Mielec,Lechia Gdansk,0,0,D,2.1,3.51,3.66,2.11,3.67,3.71,2.03,3.42,3.48
+Poland,Ekstraklasa,2022/2023,14/05/2023,14:00,Pogon Szczecin,Legnica,3,2,H,1.33,5.39,9.73,1.38,5.5,10.0,1.33,4.99,8.43
+Poland,Ekstraklasa,2022/2023,14/05/2023,16:30,Rakow,Lech Poznan,0,2,A,2.07,3.59,3.65,2.22,3.8,3.7,2.04,3.41,3.48
+Poland,Ekstraklasa,2022/2023,15/05/2023,18:00,Warta Poznan,Radomiak Radom,1,2,A,3.02,3.09,2.64,3.02,3.23,2.83,2.83,3.05,2.57
+Poland,Ekstraklasa,2022/2023,19/05/2023,17:00,Zaglebie,Stal Mielec,2,0,H,1.87,3.4,4.83,1.99,3.5,4.83,1.89,3.32,4.21
+Poland,Ekstraklasa,2022/2023,19/05/2023,19:30,Korona Kielce,Lech Poznan,0,3,A,4.79,3.77,1.78,4.86,3.8,1.94,4.23,3.53,1.82
+Poland,Ekstraklasa,2022/2023,20/05/2023,14:00,Jagiellonia,Cracovia,1,1,D,2.11,3.66,3.49,2.23,3.71,3.58,2.07,3.47,3.33
+Poland,Ekstraklasa,2022/2023,20/05/2023,16:30,Gornik Zabrze,Pogon Szczecin,2,1,H,2.73,3.62,2.56,2.73,3.78,2.6,2.58,3.54,2.49
+Poland,Ekstraklasa,2022/2023,20/05/2023,19:00,Lechia Gdansk,Legia,1,0,H,4.76,4.16,1.7,4.95,4.2,1.82,4.51,3.85,1.69
+Poland,Ekstraklasa,2022/2023,21/05/2023,11:30,Slask Wroclaw,Legnica,4,2,H,1.79,3.55,5.05,1.81,3.93,6.6,1.73,3.47,4.85
+Poland,Ekstraklasa,2022/2023,21/05/2023,14:00,Radomiak Radom,Widzew Lodz,3,1,H,2.39,3.3,3.21,2.39,3.44,3.6,2.23,3.26,3.16
+Poland,Ekstraklasa,2022/2023,21/05/2023,16:30,Wisla Plock,Rakow,1,2,A,3.68,3.84,1.99,4.38,3.99,2.0,3.72,3.66,1.89
+Poland,Ekstraklasa,2022/2023,22/05/2023,18:00,Warta Poznan,Piast Gliwice,1,1,D,2.95,3.01,2.77,3.09,3.12,2.78,2.89,2.95,2.57
+Poland,Ekstraklasa,2022/2023,27/05/2023,16:30,Cracovia,Wisla Plock,3,0,H,2.38,3.66,2.94,2.46,3.73,2.97,2.34,3.47,2.8
+Poland,Ekstraklasa,2022/2023,27/05/2023,16:30,Lech Poznan,Jagiellonia,2,0,H,1.25,6.54,10.92,1.3,6.8,12.0,1.25,5.9,9.82
+Poland,Ekstraklasa,2022/2023,27/05/2023,16:30,Legia,Slask Wroclaw,3,1,H,1.85,3.96,4.13,1.95,4.0,4.2,1.85,3.73,3.83
+Poland,Ekstraklasa,2022/2023,27/05/2023,16:30,Legnica,Gornik Zabrze,0,0,D,3.27,3.7,2.18,3.86,3.81,2.22,3.17,3.52,2.12
+Poland,Ekstraklasa,2022/2023,27/05/2023,16:30,Piast Gliwice,Lechia Gdansk,3,0,H,1.52,4.41,6.61,1.58,4.6,7.1,1.48,4.16,6.48
+Poland,Ekstraklasa,2022/2023,27/05/2023,16:30,Pogon Szczecin,Radomiak Radom,4,0,H,1.56,4.54,5.69,1.63,4.6,5.8,1.55,4.26,5.21
+Poland,Ekstraklasa,2022/2023,27/05/2023,16:30,Rakow,Zaglebie,1,1,D,1.35,5.66,8.24,1.45,5.9,9.5,1.33,5.21,8.15
+Poland,Ekstraklasa,2022/2023,27/05/2023,16:30,Stal Mielec,Warta Poznan,1,0,H,2.82,3.08,2.83,2.82,3.32,3.15,2.53,3.06,2.87
+Poland,Ekstraklasa,2022/2023,27/05/2023,16:30,Widzew Lodz,Korona Kielce,0,3,A,2.49,3.61,2.81,2.52,3.68,2.92,2.4,3.45,2.73
