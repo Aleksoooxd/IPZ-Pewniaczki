@@ -15,6 +15,7 @@ class FileOperator():
         self.save_path = save_path
         self.leagues = ['PremierLeague', 'LaLigaPrimeraDivision', 'Bundesliga1', 'SerieA', 'LeChampionnat', 'Ekstraklasa']
         self.countries = ['england', 'spain', 'germany', 'italy', 'france', 'poland']
+        self.sessonCodes= ['0405', '0506', '0607', '0708', '0809', '0910', '1011', '1112', '1213', '1314', '1415', '1516', '1617', '1718', '1819', '1920','2021','2122','2223','2324','2425']
     def merge_files(self):
         output_dir = '../Data/Matches Results/Merged Results/'
         os.makedirs(output_dir, exist_ok=True)
@@ -122,6 +123,140 @@ class FileOperator():
         with open(file_path, 'rb') as f:
             result = chardet.detect(f.read())
         return result['encoding']
+
+
+
+    def merge_league_sessions(self, league_name, country_name, selected_columns):
+        output_dir = os.path.join(self.save_path, 'Merged Results')
+        os.makedirs(output_dir, exist_ok=True)
+
+        # Ścieżka do folderu z plikami ligi
+        league_path = os.path.join(self.save_path, country_name)
+        if not os.path.exists(league_path):
+            print(f"Directory not found: {league_path}")
+            return
+
+        # Lista plików do połączenia
+        files_to_merge = [
+            os.path.join(league_path, f'{league_name}_{season}.csv')
+            for season in self.sessonCodes
+        ]
+
+        merged_df = pd.DataFrame()
+
+        for file_path in files_to_merge:
+            if os.path.exists(file_path):
+                try:
+                    # Wykrywanie kodowania pliku
+                    encoding = self.detect_encoding(file_path)
+
+                    # Wczytywanie tylko wybranych kolumn
+                    temp_df = pd.read_csv(
+                        file_path,
+                        encoding=encoding,
+                        on_bad_lines='skip',
+                        usecols=lambda col: col in selected_columns  # Filtr kolumn
+                    )
+
+                    # Scalanie danych
+                    merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
+                except Exception as e:
+                    print(f"Error processing file {file_path}: {e}")
+            else:
+                print(f"File not found: {file_path}")
+
+        # Usuwanie pustych kolumn (jeśli kolumna cała jest pusta)
+        try:
+            merged_df.dropna(axis=1, how='all', inplace=True)
+        except Exception as e:
+            print(f"Error cleaning data: {e}")
+
+        # Usuwanie wierszy z pustymi komórkami
+        try:
+            merged_df.dropna(axis=0, how='any', inplace=True)
+        except Exception as e:
+            print(f"Error dropping rows with empty cells: {e}")
+
+        # Zapisanie połączonych danych
+        try:
+            output_file = os.path.join(output_dir, f'{league_name}_MargedSessons.csv')
+            merged_df.to_csv(output_file, index=False)
+            print(f"Merged file saved for {league_name} to {output_file}")
+        except Exception as e:
+            print(f"Error saving merged file for {league_name}: {e}")
+
+    def marge_PremierLeague_sessons(self):
+
+        # Lista wymaganych kolumn
+        selected_columns = [
+            'Date', 'HomeTeam', 'AwayTeam', 'FTHG', 'FTAG', 'FTR',
+            'HTHG', 'HTAG', 'HTR', 'Referee', 'HS', 'AS', 'HST',
+            'AST', 'HC', 'AC', 'HF', 'AF', 'HY', 'AY', 'HR', 'AR',
+             'Div',
+            'B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA'
+        ]
+
+
+        # Aktualizujemy ścieżkę wyjściową dla pliku wynikowego
+        output_file = os.path.join(self.save_path, 'Merged Results', 'PremierLeague_sessonsMarged.csv')
+
+
+        # Ścieżka do katalogu dla ligi "PremierLeague"
+        league_path = os.path.join(self.save_path, 'england')  # Pliki PremierLeague są w 'england'
+
+        if not os.path.exists(league_path):
+            print(f"Directory not found: {league_path}")
+            return
+
+        # Lista plików do połączenia
+        files_to_merge = [
+            os.path.join(league_path, f'PremierLeague_{season}.csv')
+            for season in self.sessonCodes
+        ]
+
+
+        merged_df = pd.DataFrame()
+
+        for file_path in files_to_merge:
+            if os.path.exists(file_path):
+                try:
+                    # Wykrywanie kodowania pliku
+                    encoding = self.detect_encoding(file_path)
+
+                    # Wczytywanie tylko wybranych kolumn
+                    temp_df = pd.read_csv(
+                        file_path,
+                        encoding=encoding,
+                        on_bad_lines='skip',
+                        usecols=lambda col: col in selected_columns  # Filtr kolumn
+                    )
+
+                    # Scalanie danych
+                    merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
+                except Exception as e:
+                    print(f"Error processing file {file_path}: {e}")
+            else:
+                print(f"File not found: {file_path}")
+
+        # Usuwanie pustych kolumn (jeśli kolumna cała jest pusta)
+        try:
+            merged_df.dropna(axis=1, how='all', inplace=True)
+        except Exception as e:
+            print(f"Error cleaning data: {e}")
+
+        # Usuwanie wierszy z pustymi komórkami
+        try:
+            merged_df.dropna(axis=0, how='any', inplace=True)
+        except Exception as e:
+            print(f"Error dropping rows with empty cells: {e}")
+
+        # Zapisanie połączonych danych
+        try:
+            merged_df.to_csv(output_file, index=False)
+            print(f"Merged file saved to {output_file}")
+        except Exception as e:
+            print(f"Error saving merged file: {e}")
+
     # def fill_na_with_data(self,main_file, helper_file, output_file):
     #     helper_data = {}
     #     with open(helper_file, mode='r', encoding='utf-8') as hfile:
@@ -148,6 +283,19 @@ class FileOperator():
     #         writer = csv.writer(ofile)
     #         writer.writerows(updated_data)
 
+selected_columns_PremierLEauge = [
+    'Date', 'HomeTeam', 'AwayTeam', 'FTHG', 'FTAG', 'FTR',
+    'HTHG', 'HTAG', 'HTR', 'Referee', 'HS', 'AS', 'HST',
+    'AST', 'HC', 'AC', 'HF', 'AF', 'HY', 'AY', 'HR', 'AR',
+    'Div', 'B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA'
+]
+
 FileOp = FileOperator()
-FileOp.merge_files()
-FileOp.count_collumns()
+#FileOp.merge_files()
+#FileOp.count_collumns()
+FileOp.merge_league_sessions('PremierLeague', 'england', selected_columns_PremierLEauge)
+FileOp.merge_league_sessions('LaLigaPrimeraDivision', 'spain', selected_columns_PremierLEauge)
+FileOp.merge_league_sessions('Bundesliga1', 'germany', selected_columns_PremierLEauge)
+FileOp.merge_league_sessions('SerieA', 'italy', selected_columns_PremierLEauge)
+FileOp.merge_league_sessions('LeChampionnat', 'france', selected_columns_PremierLEauge)
+
