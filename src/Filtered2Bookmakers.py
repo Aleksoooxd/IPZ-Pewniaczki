@@ -127,7 +127,7 @@ class FileOperator():
 
 
     def merge_league_sessions(self, league_name, country_name, selected_columns):
-        output_dir = os.path.join(self.save_path, 'Merged Results')
+        output_dir = "../Data/Matches Results/Merged Results/Top2Bookmakers"
         os.makedirs(output_dir, exist_ok=True)
 
         # Ścieżka do folderu z plikami ligi
@@ -179,7 +179,7 @@ class FileOperator():
 
         # Zapisanie połączonych danych
         try:
-            output_file = os.path.join(output_dir, f'{league_name}_MargedSessons.csv')
+            output_file = os.path.join(output_dir, f'{league_name}_Top2Bookmakers.csv')
             merged_df.to_csv(output_file, index=False)
             print(f"Merged file saved for {league_name} to {output_file}")
         except Exception as e:
