@@ -8,10 +8,10 @@ selected_columns = [
     'Div',
     'B365H', 'B365D', 'B365A',  # Bookmaker B365 (Home, Draw, Away)
     'BWH', 'BWD', 'BWA',  # Bookmaker BWH (Home, Draw, Away)
-    #'VCH', 'VCD', 'VCA',  # Bookmaker VCH (Home, Draw, Away)
-   # 'LBH', 'LBD', 'LBA',  # Bookmaker LBH (Home, Draw, Away)
-  #  'PSCH', 'PSCD', 'PSCA',  # Bookmaker PSCH (Home, Draw, Away)
-   # 'GBH', 'GBD', 'GBA'   # Bookmaker GBH (Home, Draw, Away)
+    'VCH', 'VCD', 'VCA',  # Bookmaker VCH (Home, Draw, Away)
+    'LBH', 'LBD', 'LBA',  # Bookmaker LBH (Home, Draw, Away)
+    'PSCH', 'PSCD', 'PSCA',  # Bookmaker PSCH (Home, Draw, Away)
+   'GBH', 'GBD', 'GBA'   # Bookmaker GBH (Home, Draw, Away)
 ]
 
 def generate_top_bookmakers(file_operator, suffix):
@@ -26,6 +26,6 @@ def generate_top_bookmakers(file_operator, suffix):
         )
 
 if __name__ == "__main__":
-    suffix = input("Enter the suffix for TopBookmakers files: ")
+    suffix = 6
     file_op = FileOperator()
     generate_top_bookmakers(file_op, suffix)
