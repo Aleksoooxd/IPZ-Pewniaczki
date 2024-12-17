@@ -33,6 +33,7 @@ class FileOperator:
         merged_df = pd.DataFrame()
 
         for file_path in files_to_merge:
+
             if os.path.exists(file_path):
                 try:
                     encoding = self.detect_encoding(file_path)
@@ -42,6 +43,10 @@ class FileOperator:
                         on_bad_lines='skip',
                         usecols=(lambda col: col in selected_columns) if selected_columns else None
                     )
+                    try:
+                        temp_df["Date"] = temp_df["Date"].apply(self.correct_date_format)
+                    except Exception as e:
+                        print(f"Error cleaning date: {e}")
                     merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
                 except Exception as e:
                     print(f"Error processing file {file_path}: {e}")
@@ -50,7 +55,7 @@ class FileOperator:
 
         try:
             merged_df.dropna(axis=1, how='all', inplace=True)
-            merged_df.dropna(axis=0, how='any', inplace=True)
+            #merged_df.dropna(axis=0, how='any', inplace=True)
         except Exception as e:
             print(f"Error cleaning data: {e}")
 
@@ -60,3 +65,7 @@ class FileOperator:
             print(f"Merged file saved to {output_file}")
         except Exception as e:
             print(f"Error saving merged file: {e}")
+    def correct_date_format(self,val):
+        if isinstance(val, str) and len(val) == 8:
+            return val[:6] + "20" + val[6:]
+        return val

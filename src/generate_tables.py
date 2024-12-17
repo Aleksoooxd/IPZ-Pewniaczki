@@ -26,6 +26,7 @@ def generate_top_bookmakers(file_operator, suffix):
         )
 
 if __name__ == "__main__":
-    suffix = 6
+    suffixes = [2,4,6]
     file_op = FileOperator()
-    generate_top_bookmakers(file_op, suffix)
+    for suffix in suffixes:
+        generate_top_bookmakers(file_op, suffix)
