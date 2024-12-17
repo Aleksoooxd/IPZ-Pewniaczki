@@ -8,7 +8,7 @@ class FileOperator:
         self.leagues = ['PremierLeague', 'LaLigaPrimeraDivision', 'Bundesliga1', 'SerieA', 'LeChampionnat', 'Ekstraklasa']
         self.countries = ['england', 'spain', 'germany', 'italy', 'france', 'poland']
         self.sessonCodes = ['0405', '0506', '0607', '0708', '0809', '0910', '1011', '1112', '1213', '1314', '1415', '1516', '1617', '1718', '1819', '1920', '2021', '2122', '2223', '2324', '2425']
-
+        self.club_values = pd.read_csv('..\\IPZ-Pewniaczki\\Data\\Club Info\\clubs_report_from_transfermarkt')
     def detect_encoding(self, file_path):
         """Detect file encoding."""
         with open(file_path, 'rb') as f:
@@ -44,7 +44,7 @@ class FileOperator:
                         usecols=(lambda col: col in selected_columns) if selected_columns else None
                     )
                     try:
-                        temp_df["Date"] = temp_df["Date"].apply(self.correct_date_format)
+                        temp_df = self.modify_df(temp_df)
                     except Exception as e:
                         print(f"Error cleaning date: {e}")
                     merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
@@ -69,3 +69,21 @@ class FileOperator:
         if isinstance(val, str) and len(val) == 8:
             return val[:6] + "20" + val[6:]
         return val
+    def get_club_value(self,club,season):
+        try:
+            return self.club_values.at[club, season]
+        except KeyError:
+            return None
+    def modify_df(self,temp_df):
+        temp_df["Date"] = temp_df["Date"].apply(self.correct_date_format)
+        temp_df['Season'] = temp_df['Date'].dt.year.astype(str) + "/" + (temp_df['Date'].dt.year + 1).astype(str).str[
+                                                                        2:]
+
+        temp_df['HomeValue'] = temp_df.apply(
+            lambda row: self.get_club_value(row['HomeTeam'], row['Season']), axis=1
+        )
+
+        temp_df['AwayValue'] = temp_df.apply(
+            lambda row: self.get_club_value(row['AwayTeam'], row['Season']), axis=1
+        )
+        return temp_df
