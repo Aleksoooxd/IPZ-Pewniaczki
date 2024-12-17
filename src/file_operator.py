@@ -8,7 +8,7 @@ class FileOperator:
         self.leagues = ['PremierLeague', 'LaLigaPrimeraDivision', 'Bundesliga1', 'SerieA', 'LeChampionnat', 'Ekstraklasa']
         self.countries = ['england', 'spain', 'germany', 'italy', 'france', 'poland']
         self.sessonCodes = ['0405', '0506', '0607', '0708', '0809', '0910', '1011', '1112', '1213', '1314', '1415', '1516', '1617', '1718', '1819', '1920', '2021', '2122', '2223', '2324', '2425']
-        self.club_values = pd.read_csv('..\\IPZ-Pewniaczki\\Data\\Club Info\\clubs_report_from_transfermarkt')
+        self.club_values = pd.read_csv('../Data/Club Info/clubs_report_from_transfermarkt.csv', index_col=0)
     def detect_encoding(self, file_path):
         """Detect file encoding."""
         with open(file_path, 'rb') as f:
@@ -44,18 +44,19 @@ class FileOperator:
                         usecols=(lambda col: col in selected_columns) if selected_columns else None
                     )
                     try:
-                        temp_df = self.modify_df(temp_df)
+                        temp_df = self.modify_df(temp_df,file_path)
                     except Exception as e:
                         print(f"Error cleaning date: {e}")
                     merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
                 except Exception as e:
                     print(f"Error processing file {file_path}: {e}")
             else:
-                print(f"File not found: {file_path}")
+                pass
+                #print(f"File not found: {file_path}")
 
         try:
             merged_df.dropna(axis=1, how='all', inplace=True)
-            #merged_df.dropna(axis=0, how='any', inplace=True)
+            merged_df.dropna(axis=0, how='all', inplace=True)
         except Exception as e:
             print(f"Error cleaning data: {e}")
 
@@ -71,19 +72,25 @@ class FileOperator:
         return val
     def get_club_value(self,club,season):
         try:
-            return self.club_values.at[club, season]
+            return self.club_values.loc[club,season]
         except KeyError:
             return None
-    def modify_df(self,temp_df):
+    def modify_df(self,temp_df,file_path):
         temp_df["Date"] = temp_df["Date"].apply(self.correct_date_format)
-        temp_df['Season'] = temp_df['Date'].dt.year.astype(str) + "/" + (temp_df['Date'].dt.year + 1).astype(str).str[
-                                                                        2:]
-
-        temp_df['HomeValue'] = temp_df.apply(
-            lambda row: self.get_club_value(row['HomeTeam'], row['Season']), axis=1
-        )
-
-        temp_df['AwayValue'] = temp_df.apply(
-            lambda row: self.get_club_value(row['AwayTeam'], row['Season']), axis=1
-        )
+        season = self.extract_season_from_path(file_path)
+        temp_df['Season'] = season
+        HomeVals = []
+        AwayVals = []
+        for i,j in temp_df.iterrows():
+            Home = j['HomeTeam']
+            Away = j['AwayTeam']
+            Season = j['Season']
+            HomeVals.append(self.get_club_value(Home,Season))
+            AwayVals.append(self.get_club_value(Away,Season))
+        temp_df['HomeValue'] = HomeVals
+        temp_df['AwayValue'] = AwayVals
         return temp_df
+    def extract_season_from_path(self,file_path):
+        base_name = os.path.basename(file_path)
+        season_code = base_name.split('_')[-1].replace('.csv', '')
+        return '20'+season_code[:2] + '/' + season_code[2:]
