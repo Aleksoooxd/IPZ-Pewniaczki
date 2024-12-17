@@ -11,7 +11,6 @@ def generate_all_seasons(file_operator):
             selected_columns=None,
             output_suffix="allSeasons"
         )
-
 if __name__ == "__main__":
     file_op = FileOperator()
     generate_all_seasons(file_op)
