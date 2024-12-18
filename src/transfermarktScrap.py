@@ -1,3 +1,4 @@
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 import csv
@@ -82,7 +83,13 @@ def scrape_leagues():
                     )
         for future in futures:
             future.result()  # Czekanie na zakończenie
-
+def modify_transfermarkt(temp_df,file_path):
+    temp_df['Club'] = temp_df['Club'].replace({
+        'SPAL 2013': 'SPAL',
+        'Parma Calcio 1913': 'Parma FC'
+    })
+    temp_df = temp_df.groupby('Club', as_index=False).first()
+    temp_df.to_csv(file_path, index=False)
 scrape_leagues()
 
 # Zapis do CSV
@@ -103,6 +110,8 @@ if save_to_csv == 'T':
             for season in season_dict.keys():
                 row.append(values.get(season, 'N/A'))
             writer.writerow(row)
+    df = pd.read_csv(filepath+filename)
+    modify_transfermarkt(df,filepath+filename)
 
     print(f"Raport został zapisany jako {filepath + filename}")
 else:

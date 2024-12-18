@@ -8,7 +8,7 @@ class FileOperator:
         self.leagues = ['PremierLeague', 'LaLigaPrimeraDivision', 'Bundesliga1', 'SerieA', 'LeChampionnat', 'Ekstraklasa']
         self.countries = ['england', 'spain', 'germany', 'italy', 'france', 'poland']
         self.sessonCodes = ['0405', '0506', '0607', '0708', '0809', '0910', '1011', '1112', '1213', '1314', '1415', '1516', '1617', '1718', '1819', '1920', '2021', '2122', '2223', '2324', '2425']
-        self.club_values = pd.read_csv('../Data/Club Info/clubs_report_from_transfermarkt.csv', index_col=0)
+        self.club_values = pd.read_csv('../Data/Club Info/clubs_report_from_transfermarkt_updated.csv', index_col=0)
     def detect_encoding(self, file_path):
         """Detect file encoding."""
         with open(file_path, 'rb') as f:
@@ -46,7 +46,8 @@ class FileOperator:
                     try:
                         temp_df = self.modify_df(temp_df,file_path)
                     except Exception as e:
-                        print(f"Error cleaning date: {e}")
+                        pass
+                        #print(f"Error cleaning date: {e}")
                     merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
                 except Exception as e:
                     print(f"Error processing file {file_path}: {e}")
@@ -75,12 +76,19 @@ class FileOperator:
             return self.club_values.loc[club,season]
         except KeyError:
             return None
+
     def modify_df(self,temp_df,file_path):
         temp_df.dropna(axis=1, how='all', inplace=True)
         temp_df.dropna(axis=0, how='all', inplace=True)
         temp_df["Date"] = temp_df["Date"].apply(self.correct_date_format)
         season = self.extract_season_from_path(file_path)
         temp_df['Season'] = season
+        if 'Home' in temp_df:
+            temp_df["Home"] = temp_df["Home"].apply(self.correct_clubs)
+            temp_df["Away"] = temp_df["Away"].apply(self.correct_clubs)
+        else:
+            temp_df["HomeTeam"] = temp_df["HomeTeam"].apply(self.correct_clubs)
+            temp_df["AwayTeam"] = temp_df["AwayTeam"].apply(self.correct_clubs)
         HomeVals = []
         AwayVals = []
         for i,j in temp_df.iterrows():
@@ -92,7 +100,22 @@ class FileOperator:
         temp_df['HomeValue'] = HomeVals
         temp_df['AwayValue'] = AwayVals
         return temp_df
+    def correct_clubs(self,val):
+        if val == "Gornik Z.":
+            return "Gornik Zabrze"
+        elif val =="QPR":
+            return "Queens Park Rangers"
+        elif val =="Rennes":
+            return "Stade Rennais FC"
+        elif val=="Ruch":
+            return "Ruch Chorzow"
+        elif val=="Verona":
+            return "Hellas Verona"
+        else:
+            return val
     def extract_season_from_path(self,file_path):
         base_name = os.path.basename(file_path)
         season_code = base_name.split('_')[-1].replace('.csv', '')
+        if season_code[2] == '0':
+            return '20' + season_code[:2] + '/' + season_code[3:]
         return '20'+season_code[:2] + '/' + season_code[2:]
