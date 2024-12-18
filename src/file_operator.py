@@ -15,7 +15,7 @@ class FileOperator:
             result = chardet.detect(f.read())
         return result['encoding']
 
-    def merge_files(self, league_name, country_name, selected_columns=None, output_suffix="allSeasons"):
+    def merge_files(self, league_name, country_name, selected_columns=None, output_suffix="allSeasons", use_book=False):
         """Merge all season files for a league and save to a CSV file."""
         output_dir = f"../Data/Matches Results/Merged Results/{output_suffix}"
         os.makedirs(output_dir, exist_ok=True)
@@ -29,11 +29,8 @@ class FileOperator:
             os.path.join(league_path, f'{league_name}_{season}.csv')
             for season in self.sessonCodes
         ]
-
         merged_df = pd.DataFrame()
-
         for file_path in files_to_merge:
-
             if os.path.exists(file_path):
                 try:
                     encoding = self.detect_encoding(file_path)
@@ -56,8 +53,11 @@ class FileOperator:
                 #print(f"File not found: {file_path}")
 
         try:
-            merged_df.dropna(axis=1, how='all', inplace=True)
-            merged_df.dropna(axis=0, how='all', inplace=True)
+            if use_book:
+                merged_df.dropna(axis=1, how='all', inplace=True)
+            else:
+                merged_df.dropna(axis=1, how='all', inplace=True)
+            merged_df.dropna(axis=0, how='any', inplace=True)
         except Exception as e:
             print(f"Error cleaning data: {e}")
 
@@ -119,3 +119,35 @@ class FileOperator:
         if season_code[2] == '0':
             return '20' + season_code[:2] + '/' + season_code[3:]
         return '20'+season_code[:2] + '/' + season_code[2:]
+    def merge_top_books(self,league_name, country_name):
+        output_dir = f"../Data/Matches Results/Merged Results/Merged Books/"
+        input_dir = f"../Data/Matches Results/Merged Results/Top4Bookmakers/"
+        os.makedirs(output_dir, exist_ok=True)
+        files = os.listdir(input_dir)
+        merged_df = pd.DataFrame()
+        for file in files:
+            if file.startswith("Ekstraklasa"):
+                continue
+            if file.endswith(".csv"):
+                file_path = os.path.join(input_dir, file)
+                try:
+                    encoding = self.detect_encoding(file_path)
+                    temp_df = pd.read_csv(
+                        file_path,
+                        encoding=encoding,
+                        on_bad_lines='skip',
+                    )
+                    try:
+                        temp_df = self.modify_df(temp_df,file_path)
+                    except Exception as e:
+                        pass
+                        #print(f"Error cleaning date: {e}")
+                    merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
+                except Exception as e:
+                    print(f"Error processing file {file_path}: {e}")
+        try:
+            output_file = os.path.join(output_dir, f'top4combined.csv')
+            merged_df.to_csv(output_file, index=False)
+            print(f"Merged file saved to {output_file}")
+        except Exception as e:
+            print(f"Error saving merged file: {e}")
