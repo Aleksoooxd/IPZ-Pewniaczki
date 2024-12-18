@@ -76,6 +76,8 @@ class FileOperator:
         except KeyError:
             return None
     def modify_df(self,temp_df,file_path):
+        temp_df.dropna(axis=1, how='all', inplace=True)
+        temp_df.dropna(axis=0, how='all', inplace=True)
         temp_df["Date"] = temp_df["Date"].apply(self.correct_date_format)
         season = self.extract_season_from_path(file_path)
         temp_df['Season'] = season

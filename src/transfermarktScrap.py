@@ -8,7 +8,6 @@ import os
 # Adres strony głównej
 site = "https://www.transfermarkt.com/"
 curr_year = datetime.datetime.now().year
-deadline = curr_year - 2003
 
 # Ścieżki do poszczególnych lig
 leagues_dict = {
@@ -20,11 +19,13 @@ leagues_dict = {
     'PKO BP Ekstraklasa': "pko-bp-ekstraklasa/startseite/wettbewerb/PL1"
 }
 
-# Generowanie sezonów
+# Generowanie sezonów dla wszystkich lig
 season_dict = {}
-for i in range(deadline):
-    year = curr_year - i
+for year in range(2004, curr_year + 1):  # Wszystkie sezony od 2004/05
     season_dict[f'{year}/{(year % 100) + 1}'] = f"/saison_id/{year}"
+
+# Ograniczenie sezonów dla PKO BP Ekstraklasa do 2012/13
+ekstraklasa_seasons = {k: v for k, v in season_dict.items() if int(k.split('/')[0]) >= 2012}
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
@@ -62,16 +63,23 @@ def fetch_league_data(league, season, path, spath):
                 continue  # Dalsza obsługa w przypadku niezgodności danych
         return league_data
 
-
 # Pobieranie danych wielowątkowo
 def scrape_leagues():
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
         for league, path in leagues_dict.items():
-            for season, spath in season_dict.items():
-                futures.append(
-                    executor.submit(fetch_league_data, league, season, path, spath)
-                )
+            if league == 'PKO BP Ekstraklasa':
+                # Ograniczenie do sezonów od 2012/13 dla Ekstraklasy
+                for season, spath in ekstraklasa_seasons.items():
+                    futures.append(
+                        executor.submit(fetch_league_data, league, season, path, spath)
+                    )
+            else:
+                # Wszystkie sezony dla innych lig
+                for season, spath in season_dict.items():
+                    futures.append(
+                        executor.submit(fetch_league_data, league, season, path, spath)
+                    )
         for future in futures:
             future.result()  # Czekanie na zakończenie
 
