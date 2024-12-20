@@ -16,7 +16,7 @@ def generate_top_bookmakers(file_operator, suffix):
         4: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'VCH', 'VCD', 'VCA','LBH', 'LBD', 'LBA'],
         6: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'VCH', 'VCD', 'VCA', 'LBH', 'LBD', 'LBA','PSCH', 'PSCD', 'PSCA', 'GBH', 'GBD', 'GBA'],
     }
-    selected_columns_dynamic = selected_columns[:] + bookmaker_columns.get(suffix, [])
+    selected_columns_dynamic = selected_columns[::] + bookmaker_columns.get(suffix, [])
     for league, country in zip(file_operator.leagues, file_operator.countries):
         file_operator.merge_files(
             league_name=league,

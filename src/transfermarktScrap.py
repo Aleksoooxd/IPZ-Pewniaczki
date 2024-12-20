@@ -17,38 +17,33 @@ leagues_dict = {
     'Bundesliga': "bundesliga/startseite/wettbewerb/L1",
     'Serie A': "serie-a/startseite/wettbewerb/IT1",
     'Ligue 1': "ligue-1/startseite/wettbewerb/FR1",
-    'PKO BP Ekstraklasa': "pko-bp-ekstraklasa/startseite/wettbewerb/PL1"
+    'SPremier League': "scottish-premiership/startseite/wettbewerb/SC1",
+    'Eredivisie': "eredivisie/startseite/wettbewerb/NL1",
+    'Jupiler League': "jupiler-pro-league/startseite/wettbewerb/BE1",
+    'Liga I': "liga-nos/startseite/wettbewerb/PO1",
+    'Futbol Ligi 1': "super-lig/startseite/wettbewerb/TR1",
+    'Ethniki Katigoria': "super-league-1/startseite/wettbewerb/GR1"
 }
 
 # Generowanie sezonów dla wszystkich lig
 season_dict = {}
 for year in range(2004, curr_year + 1):  # Wszystkie sezony od 2004/05
     season_dict[f'{year}/{(year % 100) + 1}'] = f"/saison_id/{year}"
-
-# Ograniczenie sezonów dla PKO BP Ekstraklasa do 2012/13
-ekstraklasa_seasons = {k: v for k, v in season_dict.items() if int(k.split('/')[0]) >= 2012}
-
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
 }
-
 all_clubs_data = {}
-
 def fetch_league_data(league, season, path, spath):
     url = site + path + spath
     print(f"Fetching: {league}, Season: {season}, URL: {url}")
-
     with requests.Session() as session:
         response = session.get(url, headers=headers)
         if response.status_code != 200:
             print(f"Error fetching data for {league} {season}: {response.status_code}")
             return None
-
         soup = BeautifulSoup(response.text, 'html.parser')
-
         club_names = soup.find_all('td', class_='hauptlink no-border-links')
         club_values = soup.find_all('td', class_='rechts')
-
         league_data = {}
         for i, name_td in enumerate(club_names):
             try:
@@ -69,30 +64,25 @@ def scrape_leagues():
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
         for league, path in leagues_dict.items():
-            if league == 'PKO BP Ekstraklasa':
-                # Ograniczenie do sezonów od 2012/13 dla Ekstraklasy
-                for season, spath in ekstraklasa_seasons.items():
-                    futures.append(
-                        executor.submit(fetch_league_data, league, season, path, spath)
-                    )
-            else:
-                # Wszystkie sezony dla innych lig
-                for season, spath in season_dict.items():
-                    futures.append(
-                        executor.submit(fetch_league_data, league, season, path, spath)
-                    )
+            # Wszystkie sezony dla innych lig
+            for season, spath in season_dict.items():
+                futures.append(
+                    executor.submit(fetch_league_data, league, season, path, spath)
+                )
         for future in futures:
-            future.result()  # Czekanie na zakończenie
+            future.result()
 def modify_transfermarkt(temp_df,file_path):
     temp_df['Club'] = temp_df['Club'].replace({
         'SPAL 2013': 'SPAL',
-        'Parma Calcio 1913': 'Parma FC'
+        'Parma Calcio 1913': 'Parma FC',
+        'Beerschot AC (-2013)': 'Beerschot VA',
+        'Buyuksehir Belediyesi Ankaraspor' : 'Buyuksehyr',
+        'Buyuksehir Belediyespor': 'Buyuksehyr',
+        'Apollon Smyrnis': 'Apollon'
     })
     temp_df = temp_df.groupby('Club', as_index=False).first()
     temp_df.to_csv(file_path, index=False)
 scrape_leagues()
-
-# Zapis do CSV
 save_to_csv = input("Czy chcesz stworzyć raport CSV z tych danych? (T/n): ").strip().upper()
 if save_to_csv == 'T':
     filepath = '../Data/Club Info/'
