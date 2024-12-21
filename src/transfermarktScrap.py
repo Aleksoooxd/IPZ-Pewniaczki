@@ -75,34 +75,74 @@ def modify_transfermarkt(temp_df,file_path):
     temp_df['Club'] = temp_df['Club'].replace({
         'SPAL 2013': 'SPAL',
         'Parma Calcio 1913': 'Parma FC',
-        'Beerschot AC (-2013)': 'Beerschot VA',
-        'Buyuksehir Belediyesi Ankaraspor' : 'Buyuksehyr',
-        'Buyuksehir Belediyespor': 'Buyuksehyr',
-        'Apollon Smyrnis': 'Apollon'
+        'Beerschot AC (-2013)': 'Germinal',
+        'Büyüksehir Belediyespor': 'Buyuksehyr',
+        'Basaksehir FK' : 'Buyuksehyr',
+        'Istanbul Büyüksehir Belediyespor': 'Buyuksehyr',
+        'Apollon Smyrnis': 'Apollon',
+        'Lierse SK (-2018)': 'Lierse',
+        'Büyüksehir Belediye Erzurumspor': 'Erzurum BB',
+        '1.FC Nuremberg': 'Nurnberg',
+        'Desportivo Aves (- 2020)' : 'AVS',
+        'Avs Futebol' : 'AVS',
+        'Germinal Beerschot Antwerpen' : 'Germinal',
+        'AEK Athens': 'AEK',
+        'RAEC Mons (-2015)' : 'Bergen',
+        'Sporting CP' : 'Sp Lisbon',
+        'Aris Thessaloniki' : 'Aris',
+        'Iraklis Thessaloniki': 'Iraklis',
+        'Asteras Aktor': 'Asteras Tripolis',
+        'AOK Kerkyra': 'Kerkyra',
+        'AO Kerkyra': 'Kerkyra',
+        'Akhisarspor': 'Akhisar Belediyespor',
+        'Büyüksehir Belediyesi Ankaraspor': 'Ankaraspor',
+        'Excelsior Rotterdam': 'Excelsior',
+        'FC Brüssel' : 'FC Brussels',
+        'FC Molenbeek Brüssel' : 'FC Brussels',
+        'FC Molenbeek Brüssel Strombeek' : 'FC Brussels',
+        'Kardemir DC Karabükspor' : 'Karabukspor',
+        'Kardemir Karabükspor' : 'Karabukspor',
+        'Skoda Xanthi' : 'Xanthi',
+        'AO Xanthi' : 'Xanthi',
+        'Royal Excel Mouscron (-2022)' : 'Mouscron',
+        'Excelsior Mouscron (-2009)' : 'Mouscron',
+        'B SAD' : 'Belenses',
+        'CF Os Belenenses' : 'Belenses',
+        'RC Lens' : 'Lens',
+        'Roda JC Kerkrade' : 'Roda',
+        'Roda JC': 'Roda'
+
     })
     temp_df = temp_df.groupby('Club', as_index=False).first()
     temp_df.to_csv(file_path, index=False)
-scrape_leagues()
-save_to_csv = input("Czy chcesz stworzyć raport CSV z tych danych? (T/n): ").strip().upper()
-if save_to_csv == 'T':
+
+# scrape_leagues()
+# save_to_csv = input("Czy chcesz stworzyć raport CSV z tych danych? (T/n): ").strip().upper()
+# if save_to_csv == 'T':
+#     filepath = '../Data/Club Info/'
+#     filename = 'clubs_report_from_transfermarkt.csv'
+#     os.makedirs(filepath, exist_ok=True)  # Tworzenie folderu jeśli nie istnieje
+#
+#     headers_csv = ['Club'] + list(season_dict.keys())
+#
+#     with open(filepath + filename, mode='w', newline='', encoding='utf-8') as file:
+#         writer = csv.writer(file)
+#         writer.writerow(headers_csv)
+#
+#         for club_name, values in all_clubs_data.items():
+#             row = [club_name]
+#             for season in season_dict.keys():
+#                 row.append(values.get(season, 'N/A'))
+#             writer.writerow(row)
+#     df = pd.read_csv(filepath+filename)
+#     modify_transfermarkt(df,filepath+filename)
+#
+#     print(f"Raport został zapisany jako {filepath + filename}")
+# else:
+#     print("Raport CSV nie został zapisany.")
+def only_mod():
     filepath = '../Data/Club Info/'
     filename = 'clubs_report_from_transfermarkt.csv'
-    os.makedirs(filepath, exist_ok=True)  # Tworzenie folderu jeśli nie istnieje
-
-    headers_csv = ['Club'] + list(season_dict.keys())
-
-    with open(filepath + filename, mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-        writer.writerow(headers_csv)
-
-        for club_name, values in all_clubs_data.items():
-            row = [club_name]
-            for season in season_dict.keys():
-                row.append(values.get(season, 'N/A'))
-            writer.writerow(row)
-    df = pd.read_csv(filepath+filename)
-    modify_transfermarkt(df,filepath+filename)
-
-    print(f"Raport został zapisany jako {filepath + filename}")
-else:
-    print("Raport CSV nie został zapisany.")
+    df = pd.read_csv(filepath + filename)
+    modify_transfermarkt(df, filepath + filename)
+only_mod()

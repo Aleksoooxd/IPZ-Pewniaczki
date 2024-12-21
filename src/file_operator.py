@@ -74,8 +74,11 @@ class FileOperator:
         except KeyError:
             return None
     def modify_df(self,temp_df,file_path):
+        if "HT" in temp_df.columns:
+            temp_df.rename(columns={'HT': 'HomeTeam', 'AT': 'AwayTeam'}, inplace=True)
         temp_df.dropna(axis=1, how='all', inplace=True)
         temp_df.dropna(axis=0, how='all', inplace=True)
+        temp_df.dropna(axis=0, how='all',subset=['Div'], inplace=True)
         temp_df["Date"] = temp_df["Date"].apply(self.correct_date_format)
         season = self.extract_season_from_path(file_path)
         temp_df['Season'] = season
@@ -99,6 +102,36 @@ class FileOperator:
             return "Stade Rennais FC"
         elif val=="Verona":
             return "Hellas Verona"
+        elif val=="Ajax ":
+            return "Ajax"
+        elif val=="Feyenoord ":
+            return "Feyenoord"
+        elif val=="Graafschap ":
+            return "Graafschap"
+        elif val=="Groningen ":
+            return "Groningen"
+        elif val=="Heracles ":
+            return "Heracles"
+        elif val=="Roda ":
+            return "Roda"
+        elif val=="Utrecht ":
+            return "Utrecht"
+        elif val=="Vitesse ":
+            return "Vitesse"
+        elif val=="Willem II ":
+            return "Willem II"
+        elif val=="Kalithea":
+            return "Kallithea"
+        elif val=="Aves":
+            return "AVS"
+        elif val=="Feirense ":
+            return "Feirense"
+        elif val=="Sparta":
+            return "Sparta Rotterdam"
+        elif val=="OFI":
+            return "OFI Crete"
+        elif val=="Roda JC":
+            return "Roda"
         else:
             return val
     def extract_season_from_path(self,file_path):

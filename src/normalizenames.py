@@ -16,6 +16,10 @@ for index, row in data_transfer.iterrows():
     teams_transfermarkt.add(unidecode(str(row['Club'])))
 list_1 = sorted(list(teams_football_data))
 list_2 = sorted(list(teams_transfermarkt))
+print(f"lista football len{len(list_1)}")
+print(f"lista football {list_1}")
+print(f"lista transfer len{len(list_2)}")
+print(f"lista transfer {list_2}")
 temp_list_1 = copy.deepcopy(list_1)
 temp_list_2 = copy.deepcopy(list_2)
 THRESHOLD = 95
