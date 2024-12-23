@@ -116,33 +116,27 @@ def modify_transfermarkt(temp_df,file_path):
     temp_df = temp_df.groupby('Club', as_index=False).first()
     temp_df.to_csv(file_path, index=False)
 
-# scrape_leagues()
-# save_to_csv = input("Czy chcesz stworzyć raport CSV z tych danych? (T/n): ").strip().upper()
-# if save_to_csv == 'T':
-#     filepath = '../Data/Club Info/'
-#     filename = 'clubs_report_from_transfermarkt.csv'
-#     os.makedirs(filepath, exist_ok=True)  # Tworzenie folderu jeśli nie istnieje
-#
-#     headers_csv = ['Club'] + list(season_dict.keys())
-#
-#     with open(filepath + filename, mode='w', newline='', encoding='utf-8') as file:
-#         writer = csv.writer(file)
-#         writer.writerow(headers_csv)
-#
-#         for club_name, values in all_clubs_data.items():
-#             row = [club_name]
-#             for season in season_dict.keys():
-#                 row.append(values.get(season, 'N/A'))
-#             writer.writerow(row)
-#     df = pd.read_csv(filepath+filename)
-#     modify_transfermarkt(df,filepath+filename)
-#
-#     print(f"Raport został zapisany jako {filepath + filename}")
-# else:
-#     print("Raport CSV nie został zapisany.")
-def only_mod():
+scrape_leagues()
+save_to_csv = input("Czy chcesz stworzyć raport CSV z tych danych? (T/n): ").strip().upper()
+if save_to_csv == 'T':
     filepath = '../Data/Club Info/'
     filename = 'clubs_report_from_transfermarkt.csv'
-    df = pd.read_csv(filepath + filename)
-    modify_transfermarkt(df, filepath + filename)
-only_mod()
+    os.makedirs(filepath, exist_ok=True)  # Tworzenie folderu jeśli nie istnieje
+
+    headers_csv = ['Club'] + list(season_dict.keys())
+
+    with open(filepath + filename, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(headers_csv)
+
+        for club_name, values in all_clubs_data.items():
+            row = [club_name]
+            for season in season_dict.keys():
+                row.append(values.get(season, 'N/A'))
+            writer.writerow(row)
+    df = pd.read_csv(filepath+filename)
+    modify_transfermarkt(df,filepath+filename)
+
+    print(f"Raport został zapisany jako {filepath + filename}")
+else:
+    print("Raport CSV nie został zapisany.")

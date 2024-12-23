@@ -2,10 +2,8 @@ from file_operator import FileOperator
 
 #Top6 Bookmacherow
 selected_columns = [
-    'Date', 'HomeTeam', 'AwayTeam', 'FTHG', 'FTAG', 'FTR',
-    'HTHG', 'HTAG', 'HTR', 'Referee', 'HS', 'AS', 'HST',
-    'AST', 'HC', 'AC', 'HF', 'AF', 'HY', 'AY', 'HR', 'AR',
-    'Div','Season','HomeValue','AwayValue',
+    'Div','Season','Date', 'HomeTeam', 'AwayTeam', 'FTR',
+    'HomeValue','AwayValue'
 ]
 
 def generate_top_bookmakers(file_operator, suffix):
@@ -13,8 +11,8 @@ def generate_top_bookmakers(file_operator, suffix):
     dynamic_suffix = f"Top{suffix}Bookmakers"
     bookmaker_columns = {
         2: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA'],
-        4: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'VCH', 'VCD', 'VCA','LBH', 'LBD', 'LBA'],
-        6: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'VCH', 'VCD', 'VCA', 'LBH', 'LBD', 'LBA','PSCH', 'PSCD', 'PSCA', 'GBH', 'GBD', 'GBA'],
+        4: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA','WHH','WHD','WHA','IWH','IWD','IWA'],
+        6: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA','WHH','WHD','WHA','IWH','IWD','IWA','VCH','VCD','VCA','LBH','LBD','LBA'],
     }
     selected_columns_dynamic = selected_columns[::] + bookmaker_columns.get(suffix, [])
     for league, country in zip(file_operator.leagues, file_operator.countries):

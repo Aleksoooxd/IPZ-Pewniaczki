@@ -14,3 +14,4 @@ def generate_all_seasons(file_operator):
 if __name__ == "__main__":
     file_op = FileOperator()
     generate_all_seasons(file_op)
+    file_op.count_collumns()
