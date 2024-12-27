@@ -23,10 +23,26 @@ bookmakers_columns = {
     "A": ["B365A", "BWA", "LBA", "VCA"]
 }
 
+# Function to calculate consensus using Majority Voting
+def calculate_consensus(row):
+    # Count the number of votes for each outcome (H, D, A)
+    votes_H = sum([1 for col in bookmakers_columns["H"] if row[col] < row[bookmakers_columns["D"][0]] and row[col] < row[bookmakers_columns["A"][0]]])
+    votes_D = sum([1 for col in bookmakers_columns["D"] if row[col] < row[bookmakers_columns["H"][0]] and row[col] < row[bookmakers_columns["A"][0]]])
+    votes_A = sum([1 for col in bookmakers_columns["A"] if row[col] < row[bookmakers_columns["H"][0]] and row[col] < row[bookmakers_columns["D"][0]]])
+
+    # Majority Voting - select the outcome with the most votes
+    if votes_H > max(votes_D, votes_A):
+        return 'H'
+    elif votes_D > max(votes_H, votes_A):
+        return 'D'
+    elif votes_A > max(votes_H, votes_D):
+        return 'A'
+    else:
+        return 'No Consensus'
+
 # Process each file
 for file_name in file_names:
     file_path = f"../Data/Matches Results/Merged Results/Top4Bookmakers/{file_name}"
-
 
     try:
         # Load the file
@@ -39,6 +55,9 @@ for file_name in file_names:
             data[f"{col}_Prob"] = (1 / data[col]) * 100
         for col in bookmakers_columns["A"]:
             data[f"{col}_Prob"] = (1 / data[col]) * 100
+
+        # Add consensus column using Majority Voting
+        data['Consensus'] = data.apply(calculate_consensus, axis=1)
 
         # Aggregate probabilities (mean and standard deviation)
         data['Mean_Prob_H'] = data[[f"{col}_Prob" for col in bookmakers_columns["H"]]].mean(axis=1, skipna=True)
