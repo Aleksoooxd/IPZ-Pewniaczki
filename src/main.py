@@ -1,14 +1,12 @@
-selected_columns = [
-    'Date', 'HomeTeam', 'AwayTeam', 'FTHG', 'FTAG', 'FTR',
-    'HTHG', 'HTAG', 'HTR', 'Referee', 'HS', 'AS', 'HST',
-    'AST', 'HC', 'AC', 'HF', 'AF', 'HY', 'AY', 'HR', 'AR',
-    'Div','Season','HomeValue','AwayValue',
-]
-suffix = 2
-bookmaker_columns = {
-        2: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA'],
-        4: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'VCH', 'VCD', 'VCA','LBH', 'LBD', 'LBA'],
-        6: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'VCH', 'VCD', 'VCA', 'LBH', 'LBD', 'LBA','PSCH', 'PSCD', 'PSCA', 'GBH', 'GBD', 'GBA'],
-    }
-selected_columns_dynamic = selected_columns[:] + bookmaker_columns.get(suffix, [])
-print(selected_columns_dynamic)
+import os
+import pandas as pd
+path = "../Data/MatchesResultsMarged+consensus/"
+output_directory = "../Data/"
+files = os.listdir(path)
+merged_df = pd.DataFrame()
+for file in files:
+    file_path = os.path.join(path+file)
+    temp_df = pd.read_csv(file_path,on_bad_lines='skip')
+    merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
+output_file = os.path.join(output_directory, "AllLeaguesTop4BooksConsensus.csv")
+merged_df.to_csv(output_file, index=False)

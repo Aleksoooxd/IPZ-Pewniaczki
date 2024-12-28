@@ -36,8 +36,7 @@ input_directory = "../Data/Matches Results/Merged Results/Top4Bookmakers"
 output_directory = "../Data/BooksStatistic"
 
 # Lista kolumn z kursami bukmacherów
-bukmacher_cols = ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA',
-                  'LBH', 'LBD', 'LBA', 'VCH', 'VCD', 'VCA']
+bukmacher_cols = ["B365H", "BWH", "WHH", "IWH", "B365D", "BWD", "WHD", "IWD","B365A", "BWA", "WHA", "IWA"]
 
 # Tworzenie katalogu wynikowego, jeśli nie istnieje
 if not os.path.exists(output_directory):

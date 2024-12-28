@@ -8,16 +8,15 @@ output_directory = "../Data/"
 # Funkcja obliczająca niespodzianki na podstawie średnich kursów
 def analyze_average_odds_Surprise(df, file_name):
     # Sprawdzamy, czy potrzebne kolumny istnieją
-    required_cols = ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA',
-                     'LBH', 'LBD', 'LBA', 'VCH', 'VCD', 'VCA', 'FTR']
+    required_cols = ["B365H", "BWH", "WHH", "IWH", "B365D", "BWD", "WHD", "IWD","B365A", "BWA", "WHA", "IWA",'FTR']
     if not all(col in df.columns for col in required_cols):
         print(f"Brak wymaganych kolumn w pliku {file_name}")
         return None
 
     # Obliczamy średnie kursy dla każdego wyniku
-    df['Avg_H'] = df[['B365H', 'BWH', 'LBH', 'VCH']].mean(axis=1)
-    df['Avg_D'] = df[['B365D', 'BWD', 'LBD', 'VCD']].mean(axis=1)
-    df['Avg_A'] = df[['B365A', 'BWA', 'LBA', 'VCA']].mean(axis=1)
+    df['Avg_H'] = df[["B365H", "BWH", "WHH", "IWH"]].mean(axis=1)
+    df['Avg_D'] = df[["B365D", "BWD", "WHD", "IWD"]].mean(axis=1)
+    df['Avg_A'] = df[["B365A", "BWA", "WHA", "IWA"]].mean(axis=1)
 
     total_matches = len(df)
     upsets = []
@@ -42,8 +41,8 @@ def analyze_average_odds_Surprise(df, file_name):
 
     # Obliczenie statystyk
     num_upsets = len(upsets)
-    percent_upsets = (num_upsets / total_matches) * 100
-    avg_upset_odds = sum(upsets) / num_upsets if upsets else 0
+    percent_upsets = round(((num_upsets / total_matches) * 100),2)
+    avg_upset_odds = round((sum(upsets) / num_upsets),2) if upsets else 0
 
     return {
         "Total Matches": total_matches,
@@ -66,7 +65,7 @@ for filename in os.listdir(input_directory):
 
         stats = analyze_average_odds_Surprise(df, filename)
         if stats:
-            stats["File"] = filename
+            stats["File"] = filename.split('_')[0]
             results.append(stats)
 
 # Tworzenie podsumowania wyników

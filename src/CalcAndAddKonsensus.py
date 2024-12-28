@@ -18,9 +18,9 @@ file_names = [
 
 # Define bookmaker columns
 bookmakers_columns = {
-    "H": ["B365H", "BWH", "LBH", "VCH"],
-    "D": ["B365D", "BWD", "LBD", "VCD"],
-    "A": ["B365A", "BWA", "LBA", "VCA"]
+    "H": ["B365H", "BWH", "WHH", "IWH"],
+    "D": ["B365D", "BWD", "WHD", "IWD"],
+    "A": ["B365A", "BWA", "WHA", "IWA"]
 }
 
 # Function to calculate consensus using Majority Voting
@@ -50,24 +50,24 @@ for file_name in file_names:
 
         # Convert odds to probabilities
         for col in bookmakers_columns["H"]:
-            data[f"{col}_Prob"] = (1 / data[col]) * 100
+            data[f"{col}_Prob"] = round(((1 / data[col]) * 100),4)
         for col in bookmakers_columns["D"]:
-            data[f"{col}_Prob"] = (1 / data[col]) * 100
+            data[f"{col}_Prob"] = round(((1 / data[col]) * 100),4)
         for col in bookmakers_columns["A"]:
-            data[f"{col}_Prob"] = (1 / data[col]) * 100
+            data[f"{col}_Prob"] = round(((1 / data[col]) * 100),4)
 
         # Add consensus column using Majority Voting
         data['Consensus'] = data.apply(calculate_consensus, axis=1)
 
         # Aggregate probabilities (mean and standard deviation)
-        data['Mean_Prob_H'] = data[[f"{col}_Prob" for col in bookmakers_columns["H"]]].mean(axis=1, skipna=True)
-        data['Std_Dev_Prob_H'] = data[[f"{col}_Prob" for col in bookmakers_columns["H"]]].std(axis=1, skipna=True)
+        data['Mean_Prob_H'] = round((data[[f"{col}_Prob" for col in bookmakers_columns["H"]]].mean(axis=1, skipna=True)),4)
+        data['Std_Dev_Prob_H'] = round((data[[f"{col}_Prob" for col in bookmakers_columns["H"]]].std(axis=1, skipna=True)),4)
 
-        data['Mean_Prob_D'] = data[[f"{col}_Prob" for col in bookmakers_columns["D"]]].mean(axis=1, skipna=True)
-        data['Std_Dev_Prob_D'] = data[[f"{col}_Prob" for col in bookmakers_columns["D"]]].std(axis=1, skipna=True)
+        data['Mean_Prob_D'] = round((data[[f"{col}_Prob" for col in bookmakers_columns["D"]]].mean(axis=1, skipna=True)),4)
+        data['Std_Dev_Prob_D'] = round((data[[f"{col}_Prob" for col in bookmakers_columns["D"]]].std(axis=1, skipna=True)),4)
 
-        data['Mean_Prob_A'] = data[[f"{col}_Prob" for col in bookmakers_columns["A"]]].mean(axis=1, skipna=True)
-        data['Std_Dev_Prob_A'] = data[[f"{col}_Prob" for col in bookmakers_columns["A"]]].std(axis=1, skipna=True)
+        data['Mean_Prob_A'] = round((data[[f"{col}_Prob" for col in bookmakers_columns["A"]]].mean(axis=1, skipna=True)),4)
+        data['Std_Dev_Prob_A'] = round((data[[f"{col}_Prob" for col in bookmakers_columns["A"]]].std(axis=1, skipna=True)),4)
 
         output_path = f"../Data/MatchesResultsMarged+consensus/{file_name}"
         data.to_csv(output_path, index=False)
