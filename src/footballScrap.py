@@ -87,4 +87,3 @@ def scrape_top_11():
         for future in futures:
             future.result()  # Czekanie na zakończenie
 # Wywołanie funkcji
-scrape_top_11()

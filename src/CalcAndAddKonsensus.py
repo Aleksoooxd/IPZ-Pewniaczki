@@ -41,63 +41,63 @@ def calculate_consensus(row, columns):
         return 'A'
     else:
         return 'No Consensus'
+def calculate_cons():
+    # Process each group (Top2Bookmakers, Top4Bookmakers, Top6Bookmakers)
+    for group, columns in bookmakers_columns.items():
+        all_leagues_data = []  # Initialize list to store data for all leagues in this group
 
-# Process each group (Top2Bookmakers, Top4Bookmakers, Top6Bookmakers)
-for group, columns in bookmakers_columns.items():
-    all_leagues_data = []  # Initialize list to store data for all leagues in this group
+        for league in file_names:
+            file_name = f"{league}_{group}.csv"
+            input_path = os.path.join("..", "Data", "Matches Results", "Merged Results", group, file_name)
+            output_dir = os.path.join("..", "Data", "MatchesResultsMarged+consensus", group)
+            output_path = os.path.join(output_dir, file_name)
 
-    for league in file_names:
-        file_name = f"{league}_{group}.csv"
-        input_path = os.path.join("..", "Data", "Matches Results", "Merged Results", group, file_name)
-        output_dir = os.path.join("..", "Data", "MatchesResultsMarged+consensus", group)
-        output_path = os.path.join(output_dir, file_name)
+            try:
+                # Load the file
+                if not os.path.exists(input_path):
+                    print(f"File not found: {input_path}")
+                    continue
 
-        try:
-            # Load the file
-            if not os.path.exists(input_path):
-                print(f"File not found: {input_path}")
-                continue
+                data = pd.read_csv(input_path)
 
-            data = pd.read_csv(input_path)
+                # Convert odds to probabilities
+                for col in columns["H"]:
+                    data[f"{col}_Prob"] = round((1 / data[col]) * 100, 4)
+                for col in columns["D"]:
+                    data[f"{col}_Prob"] = round((1 / data[col]) * 100, 4)
+                for col in columns["A"]:
+                    data[f"{col}_Prob"] = round((1 / data[col]) * 100, 4)
 
-            # Convert odds to probabilities
-            for col in columns["H"]:
-                data[f"{col}_Prob"] = round((1 / data[col]) * 100, 4)
-            for col in columns["D"]:
-                data[f"{col}_Prob"] = round((1 / data[col]) * 100, 4)
-            for col in columns["A"]:
-                data[f"{col}_Prob"] = round((1 / data[col]) * 100, 4)
+                # Add consensus column using Majority Voting
+                data['Consensus'] = data.apply(calculate_consensus, axis=1, columns=columns)
 
-            # Add consensus column using Majority Voting
-            data['Consensus'] = data.apply(calculate_consensus, axis=1, columns=columns)
+                # Aggregate probabilities (mean and standard deviation)
+                data['Mean_Prob_H'] = round(data[[f"{col}_Prob" for col in columns["H"]]].mean(axis=1, skipna=True), 4)
+                data['Std_Dev_Prob_H'] = round(data[[f"{col}_Prob" for col in columns["H"]]].std(axis=1, skipna=True), 4)
 
-            # Aggregate probabilities (mean and standard deviation)
-            data['Mean_Prob_H'] = round(data[[f"{col}_Prob" for col in columns["H"]]].mean(axis=1, skipna=True), 4)
-            data['Std_Dev_Prob_H'] = round(data[[f"{col}_Prob" for col in columns["H"]]].std(axis=1, skipna=True), 4)
+                data['Mean_Prob_D'] = round(data[[f"{col}_Prob" for col in columns["D"]]].mean(axis=1, skipna=True), 4)
+                data['Std_Dev_Prob_D'] = round(data[[f"{col}_Prob" for col in columns["D"]]].std(axis=1, skipna=True), 4)
 
-            data['Mean_Prob_D'] = round(data[[f"{col}_Prob" for col in columns["D"]]].mean(axis=1, skipna=True), 4)
-            data['Std_Dev_Prob_D'] = round(data[[f"{col}_Prob" for col in columns["D"]]].std(axis=1, skipna=True), 4)
+                data['Mean_Prob_A'] = round(data[[f"{col}_Prob" for col in columns["A"]]].mean(axis=1, skipna=True), 4)
+                data['Std_Dev_Prob_A'] = round(data[[f"{col}_Prob" for col in columns["A"]]].std(axis=1, skipna=True), 4)
 
-            data['Mean_Prob_A'] = round(data[[f"{col}_Prob" for col in columns["A"]]].mean(axis=1, skipna=True), 4)
-            data['Std_Dev_Prob_A'] = round(data[[f"{col}_Prob" for col in columns["A"]]].std(axis=1, skipna=True), 4)
+                # Add league name for identification
+                data['League'] = league
 
-            # Add league name for identification
-            data['League'] = league
+                # Append the data to the list for all leagues
+                all_leagues_data.append(data)
 
-            # Append the data to the list for all leagues
-            all_leagues_data.append(data)
+                # Save the processed file in the correct group folder
+                os.makedirs(output_dir, exist_ok=True)
+                data.to_csv(output_path, index=False)
+                print(f"Processed and saved: {output_path}")
 
-            # Save the processed file in the correct group folder
-            os.makedirs(output_dir, exist_ok=True)
-            data.to_csv(output_path, index=False)
-            print(f"Processed and saved: {output_path}")
+            except Exception as e:
+                print(f"Error processing {file_name}: {e}")
 
-        except Exception as e:
-            print(f"Error processing {file_name}: {e}")
-
-    # Combine all leagues data into one DataFrame for the current group
-    if all_leagues_data:
-        combined_data = pd.concat(all_leagues_data, ignore_index=True)
-        combined_output_path = os.path.join(output_dir, f"all_leagues_{group}.csv")
-        combined_data.to_csv(combined_output_path, index=False)
-        print(f"All leagues combined data saved: {combined_output_path}")
+        # Combine all leagues data into one DataFrame for the current group
+        if all_leagues_data:
+            combined_data = pd.concat(all_leagues_data, ignore_index=True)
+            combined_output_path = os.path.join(output_dir, f"all_leagues_{group}.csv")
+            combined_data.to_csv(combined_output_path, index=False)
+            print(f"All leagues combined data saved: {combined_output_path}")

@@ -1,6 +1,4 @@
-11 LIG 20 SEZONOW (wydaje mi sie ze trzeba ta ekstraklase wyjebac i dac same main ligi z tej strony bo za duzo pierdolenia sie do wszystkiego potrzebne sa dodatkowe implementacje a bukow i tak nie ma praktycznie)
--POLACZYC WSZYSTKIE MECZE Z TOP 11 LIG DO JEDNEGO PLIKU CSV wedlug schematu nizszego
-+znowu lekki syf sie z plikami robi wiec jakby komus sie chcialo uporzadkowac troche
+znowu lekki syf sie z plikami robi wiec jakby komus sie chcialo uporzadkowac troche
 liga    kraj    FTR     HOMETEAM    AWAYTEAM   HOMEVALUE AWAYVALUE B2:B6 IF NONE = 000     WSPOLCZYNNIK KONSENSUSU
 
 -SCRAPING TERMINARZA

@@ -8,7 +8,7 @@ class FileOperator:
         self.leagues = ['PremierLeague', 'LaLigaPrimeraDivision', 'Bundesliga1', 'SerieA', 'LeChampionnat','PremierLeague','Eredivisie','JupilerLeague','LigaI','FutbolLigi1','EthnikiKatigoria']
         self.countries = ['england', 'spain', 'germany', 'italy', 'france','scotland','netherlands','belgium','portugal','turkey','greece']
         self.sessonCodes = ['0405', '0506', '0607', '0708', '0809', '0910', '1011', '1112', '1213', '1314', '1415', '1516', '1617', '1718', '1819', '1920', '2021', '2122', '2223', '2324', '2425']
-        self.club_values = pd.read_csv('../Data/Club Info/clubs_report_from_transfermarkt_updated.csv', index_col=0)
+        self.club_values = pd.read_csv('../Data/Club Info/clubs_report_from_transfermarkt.csv', index_col=0)
     def detect_encoding(self, file_path):
         """Detect file encoding."""
         with open(file_path, 'rb') as f:
@@ -140,37 +140,6 @@ class FileOperator:
         if season_code[2] == '0':
             return '20' + season_code[:2] + '/' + season_code[3:]
         return '20'+season_code[:2] + '/' + season_code[2:]
-    def merge_top_books(self):
-        output_dir = f"../Data/Matches Results/Merged Results/Merged Books/"
-        input_dir = f"../Data/Matches Results/Merged Results/Top4Bookmakers/"
-        os.makedirs(output_dir, exist_ok=True)
-        files = os.listdir(input_dir)
-        merged_df = pd.DataFrame()
-        for file in files:
-            if file.endswith(".csv"):
-                file_path = os.path.join(input_dir, file)
-                try:
-                    encoding = self.detect_encoding(file_path)
-                    temp_df = pd.read_csv(
-                        file_path,
-                        encoding=encoding,
-                        on_bad_lines='skip',
-                    )
-                    try:
-                        temp_df = self.modify_df(temp_df,file_path)
-                    except Exception as e:
-                        pass
-                        #print(f"Error cleaning date: {e}")
-                    merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
-                except Exception as e:
-                    print(f"Error processing file {file_path}: {e}")
-        try:
-            output_file = os.path.join(output_dir, f'top4combined.csv')
-            merged_df.to_csv(output_file, index=False)
-            print(f"Merged file saved to {output_file}")
-        except Exception as e:
-            print(f"Error saving merged file: {e}")
-
     def count_collumns(self):
         os.makedirs('../Data/Columns Info/', exist_ok=True)
         # List to store all column names across all leagues

@@ -64,37 +64,37 @@ def analyze_average_odds_Surprise(df, file_name, columns):
         "Average Upset Odds": avg_upset_odds
     }
 
+def surprise_counter():
+    # Tworzenie katalogu wynikowego, jeśli nie istnieje
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory)
 
-# Tworzenie katalogu wynikowego, jeśli nie istnieje
-if not os.path.exists(output_directory):
-    os.makedirs(output_directory)
+    # Przetwarzanie plików dla każdej grupy bukmacherów
+    all_results = []
 
-# Przetwarzanie plików dla każdej grupy bukmacherów
-all_results = []
+    for group, columns in bookmakers_columns.items():
+        group_results = []
+        input_directory = os.path.join(input_base_directory, group)
+        print(f"Przetwarzanie plików dla grupy: {group}")
 
-for group, columns in bookmakers_columns.items():
-    group_results = []
-    input_directory = os.path.join(input_base_directory, group)
-    print(f"Przetwarzanie plików dla grupy: {group}")
+        for filename in os.listdir(input_directory):
+            if filename.endswith(f"_{group}.csv"):
+                input_file = os.path.join(input_directory, filename)
+                df = pd.read_csv(input_file)
+                print(f"Przetwarzanie pliku: {filename}")
 
-    for filename in os.listdir(input_directory):
-        if filename.endswith(f"_{group}.csv"):
-            input_file = os.path.join(input_directory, filename)
-            df = pd.read_csv(input_file)
-            print(f"Przetwarzanie pliku: {filename}")
+                stats = analyze_average_odds_Surprise(df, filename, columns)
+                if stats:
+                    stats["File"] = filename.split('_')[0]  # Dodajemy nazwę ligi
+                    group_results.append(stats)
 
-            stats = analyze_average_odds_Surprise(df, filename, columns)
-            if stats:
-                stats["File"] = filename.split('_')[0]  # Dodajemy nazwę ligi
-                group_results.append(stats)
+        # Dodanie wyników grupy do zbiorczego wyniku
+        all_results.extend(group_results)
 
-    # Dodanie wyników grupy do zbiorczego wyniku
-    all_results.extend(group_results)
-
-    # Tworzenie podsumowania wyników dla konkretnej grupy
-    group_results_df = pd.DataFrame(group_results)
-    group_output_file = os.path.join(output_directory, f"Surprise_AverageOdds_Statistics_{group}.csv")
-    group_results_df.to_csv(group_output_file, index=False)
-    print(f"Wyniki dla grupy {group} zapisano do pliku: {group_output_file}")
+        # Tworzenie podsumowania wyników dla konkretnej grupy
+        group_results_df = pd.DataFrame(group_results)
+        group_output_file = os.path.join(output_directory, f"Surprise_AverageOdds_Statistics_{group}.csv")
+        group_results_df.to_csv(group_output_file, index=False)
+        print(f"Wyniki dla grupy {group} zapisano do pliku: {group_output_file}")
 
 
