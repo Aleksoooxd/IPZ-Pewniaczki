@@ -63,6 +63,7 @@ def main():
             suffixes = [2, 4, 6]
             for suffix in suffixes:
                 generate_top_bookmakers(file_op2, suffix)
+            file_op2.count_collumns()
             statistica_calc()
             surprise_counter()
             calculate_cons()
