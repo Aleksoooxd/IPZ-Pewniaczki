@@ -10,13 +10,11 @@ class FileOperator:
         self.sessonCodes = ['0405', '0506', '0607', '0708', '0809', '0910', '1011', '1112', '1213', '1314', '1415', '1516', '1617', '1718', '1819', '1920', '2021', '2122', '2223', '2324', '2425']
         self.club_values = pd.read_csv('../Data/Club Info/clubs_report_from_transfermarkt.csv', index_col=0)
     def detect_encoding(self, file_path):
-        """Detect file encoding."""
         with open(file_path, 'rb') as f:
             result = chardet.detect(f.read())
         return result['encoding']
 
     def merge_files(self, league_name, country_name, selected_columns=None, output_suffix="allSeasons", use_book=False):
-        """Merge all season files for a league and save to a CSV file."""
         output_dir = f"../Data/Matches Results/Merged Results/{output_suffix}"
         os.makedirs(output_dir, exist_ok=True)
 
@@ -45,6 +43,9 @@ class FileOperator:
                     except Exception as e:
                         print(f"Error cleaning date: {e}")
                     merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
+                    merged_df = self.combine_columns(merged_df, ['LBH', 'LBD', 'LBA'], ['PSH', 'PSD', 'PSA'])
+                    merged_df = self.combine_columns(merged_df, ['IWH', 'IWD', 'IWA'], ['PSCH', 'PSCD', 'PSCA'])
+                    merged_df = self.combine_columns(merged_df, ['VCH', 'VCD', 'VCA'], ['B365CH', 'B365CD', 'B365CA'])
                 except Exception as e:
                     print(f"Error processing file {file_path}: {e}")
             else:
@@ -55,7 +56,6 @@ class FileOperator:
                 merged_df.dropna(axis=0, how='any', inplace=True)
         except Exception as e:
             print(f"Error cleaning data: {e}")
-
         try:
             output_file = os.path.join(output_dir, f'{league_name}_{output_suffix}.csv')
             if country_name == 'scotland':
@@ -134,6 +134,14 @@ class FileOperator:
             return "Roda"
         else:
             return val
+    #def combine_columns(self,df,columns_with_none,columns_replacing):
+
+    def combine_columns(self,df,columns_with_none,columns_replacing):
+        for column_with_none, column_replacing in zip(columns_with_none, columns_replacing):
+            if column_with_none in df.columns and column_replacing in df.columns:
+                df[column_with_none] = df[column_with_none].combine_first(df[column_replacing])
+                df.drop(columns=column_replacing, inplace=True)
+        return df
     def extract_season_from_path(self,file_path):
         base_name = os.path.basename(file_path)
         season_code = base_name.split('_')[-1].replace('.csv', '')

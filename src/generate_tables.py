@@ -5,6 +5,7 @@ selected_columns = [
     'Div','Season','Date', 'HomeTeam', 'AwayTeam', 'FTR',
     'HomeValue','AwayValue'
 ]
+additional_columns = ['HT','AT','PSH','PSD','PSA','PSCH', 'PSCD', 'PSCA','B365CH','B365CD','B365CA']
 
 def generate_top_bookmakers(file_operator, suffix):
     """Generates files with a dynamic suffix."""
@@ -14,7 +15,7 @@ def generate_top_bookmakers(file_operator, suffix):
         4: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA','WHH','WHD','WHA','IWH','IWD','IWA'],
         6: ['B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA','WHH','WHD','WHA','IWH','IWD','IWA','VCH','VCD','VCA','LBH','LBD','LBA'],
     }
-    selected_columns_dynamic = selected_columns[::] + bookmaker_columns.get(suffix, [])
+    selected_columns_dynamic = additional_columns[::]+ selected_columns[::] + bookmaker_columns.get(suffix, [])
     for league, country in zip(file_operator.leagues, file_operator.countries):
         file_operator.merge_files(
             league_name=league,
