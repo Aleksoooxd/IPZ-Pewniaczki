@@ -20,6 +20,7 @@ def main():
         print("8. Surprises")
         print("9. Calculate consensus")
         print("10. Generate all in order")
+        print("0. Generate all in order")
         choice = input("Enter your choice: ")
         if choice == '1':
             scrape_top_11()
