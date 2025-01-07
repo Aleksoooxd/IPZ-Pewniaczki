@@ -23,6 +23,21 @@ def hhi_index(values):
     probabilities /= np.sum(probabilities)
     return np.sum(probabilities ** 2)
 
+# Funkcja do obliczania konsensusu metodą majority voting
+def calculate_consensus(row, columns):
+    votes_H = sum([1 for col in columns["H"] if row[col] < row[columns["D"][0]] and row[col] < row[columns["A"][0]]])
+    votes_D = sum([1 for col in columns["D"] if row[col] < row[columns["H"][0]] and row[col] < row[columns["A"][0]]])
+    votes_A = sum([1 for col in columns["A"] if row[col] < row[columns["H"][0]] and row[col] < row[columns["D"][0]]])
+
+    if votes_H > max(votes_D, votes_A):
+        return 'H'
+    elif votes_D > max(votes_H, votes_A):
+        return 'D'
+    elif votes_A > max(votes_H, votes_D):
+        return 'A'
+    else:
+        return 'No Consensus'
+
 # Funkcja przetwarzająca dane
 def calculate_cons():
     bookmakers_columns = {
@@ -63,7 +78,7 @@ def calculate_cons():
 
                 data = pd.read_csv(input_path)
 
-                # Tworzenie kolumn statystycznych
+                # Tworzenie kolumn statystycznych dla H, D, A
                 for result_type, cols in columns.items():
                     values = data[cols].dropna(axis=1).values
                     data[f"{result_type}_Mean"] = np.mean(values, axis=1)
@@ -73,6 +88,9 @@ def calculate_cons():
                     data[f"{result_type}_Gini"] = [gini_index(v) for v in values]
                     data[f"{result_type}_HHI"] = [hhi_index(v) for v in values]
 
+                # Dodanie kolumny z konsensusem
+                data['Consensus'] = data.apply(calculate_consensus, axis=1, columns=columns)
+
                 # Zapisanie pliku
                 os.makedirs(output_dir, exist_ok=True)
                 data.to_csv(output_path, index=False)
@@ -80,4 +98,4 @@ def calculate_cons():
 
             except Exception as e:
                 print(f"Error processing {file_name}: {e}")
-
+calculate_cons()
