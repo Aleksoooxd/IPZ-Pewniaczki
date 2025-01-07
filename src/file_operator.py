@@ -53,6 +53,10 @@ class FileOperator:
 
         try:
             if use_book:
+                cols = ['PSH', 'PSD', 'PSA', 'PSCH', 'PSCD', 'PSCA', 'B365CH', 'B365CD', 'B365CA']
+                for col in cols:
+                    if col in merged_df.columns:
+                        merged_df.drop(columns=col, inplace=True)
                 merged_df.dropna(axis=0, how='any', inplace=True)
         except Exception as e:
             print(f"Error cleaning data: {e}")

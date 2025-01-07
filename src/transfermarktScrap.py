@@ -8,7 +8,7 @@ import os
 
 # Adres strony głównej
 site = "https://www.transfermarkt.com/"
-curr_year = datetime.datetime.now().year
+curr_year = (datetime.datetime.now().year-1) if datetime.datetime.now().month < 8 else datetime.datetime.now().year
 
 # Ścieżki do poszczególnych lig
 leagues_dict = {

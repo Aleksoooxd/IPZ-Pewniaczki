@@ -98,4 +98,3 @@ def calculate_cons():
 
             except Exception as e:
                 print(f"Error processing {file_name}: {e}")
-calculate_cons()

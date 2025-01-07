@@ -10,7 +10,7 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
 }
 # Obliczenia związane z sezonami
-curr_year = datetime.datetime.now().year
+curr_year = (datetime.datetime.now().year-1) if datetime.datetime.now().month < 8 else datetime.datetime.now().year
 deadline = curr_year - 2009
 deadline2 = curr_year - 2004 - deadline
 

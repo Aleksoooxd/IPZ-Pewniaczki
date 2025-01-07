@@ -20,7 +20,7 @@ def main():
         print("8. Surprises")
         print("9. Calculate consensus")
         print("10. Generate all in order")
-        print("0. Generate all in order")
+        print("0. Quit")
         choice = input("Enter your choice: ")
         if choice == '1':
             scrape_top_11()
@@ -62,8 +62,9 @@ def main():
             file_op2 = FileOperator()
             generate_all_seasons(file_op2)
             suffixes = [2, 4, 6]
+            file_op3 = FileOperator()
             for suffix in suffixes:
-                generate_top_bookmakers(file_op2, suffix)
+                generate_top_bookmakers(file_op3, suffix)
             file_op2.count_collumns()
             statistica_calc()
             surprise_counter()
