@@ -2,7 +2,7 @@ from file_operator import FileOperator
 
 #Top6 Bookmacherow
 selected_columns = [
-    'Div','Season','Date', 'HomeTeam', 'AwayTeam', 'FTR',
+    'Div','Season','Date', 'HomeTeam', 'AwayTeam','FTHG','FTAG','FTR','HTHG','HTAG',
     'HomeValue','AwayValue'
 ]
 additional_columns = ['HT','AT','PSH','PSD','PSA','PSCH', 'PSCD', 'PSCA','B365CH','B365CD','B365CA']
