@@ -1,5 +1,5 @@
 from file_operator import FileOperator
-from generate_tables import generate_top_bookmakers
+from generate_tables import generate_all_bookmakers
 from all_seasons import generate_all_seasons
 from footballScrap import scrape_top_11
 from transfermarktScrap import scrape_transfermarkt
@@ -40,12 +40,12 @@ def main():
             generate_all_seasons(file_op)
             suffixes = [2, 4, 6]
             for suffix in suffixes:
-                generate_top_bookmakers(file_op, suffix)
+                generate_all_bookmakers(file_op, suffix)
         elif choice == '6':
             file_op = FileOperator()
             suffixes = [2,4,6]
             for suffix in suffixes:
-                generate_top_bookmakers(file_op, suffix)
+                generate_all_bookmakers(file_op, suffix)
         elif choice == '7':
             statistica_calc()
         elif choice == '8':
@@ -64,7 +64,7 @@ def main():
             suffixes = [2, 4, 6]
             file_op3 = FileOperator()
             for suffix in suffixes:
-                generate_top_bookmakers(file_op3, suffix)
+                generate_all_bookmakers(file_op3, suffix)
             file_op2.count_collumns()
             statistica_calc()
             surprise_counter()

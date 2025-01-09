@@ -15,19 +15,21 @@ class FileOperator:
         return result['encoding']
 
     def merge_files(self, league_name, country_name, selected_columns=None, output_suffix="allSeasons", use_book=False):
+        """Merge all season files for a league and save to a CSV file."""
         output_dir = f"../Data/Matches Results/Merged Results/{output_suffix}"
         os.makedirs(output_dir, exist_ok=True)
 
         league_path = os.path.join(self.save_path, country_name)
         if not os.path.exists(league_path):
             print(f"Directory not found: {league_path}")
-            return
+            return None  # Zwracamy None, gdy katalog nie istnieje
 
         files_to_merge = [
             os.path.join(league_path, f'{league_name}_{season}.csv')
             for season in self.sessonCodes
         ]
         merged_df = pd.DataFrame()
+
         for file_path in files_to_merge:
             if os.path.exists(file_path):
                 try:
@@ -39,27 +41,19 @@ class FileOperator:
                         usecols=(lambda col: col in selected_columns) if selected_columns else None
                     )
                     try:
-                        temp_df = self.modify_df(temp_df,file_path)
+                        temp_df = self.modify_df(temp_df, file_path)
                     except Exception as e:
-                        print(f"Error cleaning date: {e}")
+                        print(f"Error modifying data in file {file_path}: {e}")
                     merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
-                    merged_df = self.combine_columns(merged_df, ['LBH', 'LBD', 'LBA'], ['PSH', 'PSD', 'PSA'])
-                    merged_df = self.combine_columns(merged_df, ['IWH', 'IWD', 'IWA'], ['PSCH', 'PSCD', 'PSCA'])
-                    merged_df = self.combine_columns(merged_df, ['VCH', 'VCD', 'VCA'], ['B365CH', 'B365CD', 'B365CA'])
                 except Exception as e:
                     print(f"Error processing file {file_path}: {e}")
             else:
                 print(f"File not found: {file_path}")
 
-        try:
-            if use_book:
-                cols = ['PSH', 'PSD', 'PSA', 'PSCH', 'PSCD', 'PSCA', 'B365CH', 'B365CD', 'B365CA']
-                for col in cols:
-                    if col in merged_df.columns:
-                        merged_df.drop(columns=col, inplace=True)
-                merged_df.dropna(axis=0, how='any', inplace=True)
-        except Exception as e:
-            print(f"Error cleaning data: {e}")
+        # Wstawianie 1.0 w miejscach braków danych
+        if not merged_df.empty:
+            merged_df.fillna(1.0, inplace=True)
+
         try:
             output_file = os.path.join(output_dir, f'{league_name}_{output_suffix}.csv')
             if country_name == 'scotland':
@@ -68,10 +62,8 @@ class FileOperator:
             print(f"Merged file saved to {output_file}")
         except Exception as e:
             print(f"Error saving merged file: {e}")
-    def correct_date_format(self,val):
-        if isinstance(val, str) and len(val) == 8:
-            return val[:6] + "20" + val[6:]
-        return val
+
+        return merged_df  # Zwracamy przetworzoną ramkę danych
     def get_club_value(self,club,season):
         try:
             return self.club_values.loc[club,season]
