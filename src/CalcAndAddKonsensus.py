@@ -41,60 +41,55 @@ def calculate_consensus(row, columns):
 # Funkcja przetwarzająca dane
 def calculate_cons():
     bookmakers_columns = {
-        "Top2Bookmakers": {
-            "H": ["B365H", "BWH"],
-            "D": ["B365D", "BWD"],
-            "A": ["B365A", "BWA"]
-        },
-        "Top4Bookmakers": {
-            "H": ["B365H", "BWH", "WHH", "IWH"],
-            "D": ["B365D", "BWD", "WHD", "IWD"],
-            "A": ["B365A", "BWA", "WHA", "IWA"]
-        },
-        "Top6Bookmakers": {
-            "H": ["B365H", "BWH", "WHH", "IWH", "VCH", "LBH"],
-            "D": ["B365D", "BWD", "WHD", "IWD", "VCD", "LBD"],
-            "A": ["B365A", "BWA", "WHA", "IWA", "VCA", "LBA"]
+        "AllBookmakers": {
+            "H": ["B365H", "BFH", "BSH", "BWH", "GBH", "IWH", "LBH", "PSH", "SOH", "SBH", "SJH", "SYH", "VCH", "WHH"],
+            "D": ["B365D", "BFD", "BSD", "BWD", "GBD", "IWD", "LBD", "PSD", "SOD", "SBD", "SJD", "SYD", "VCD", "WHD"],
+            "A": ["B365A", "BFA", "BSA", "BWA", "GBA", "IWA", "LBA", "PSA", "SOA", "SBA", "SJA", "SYA", "VCA", "WHA"]
         }
     }
 
     file_names = [
         "Bundesliga1", "Eredivisie", "EthnikiKatigoria", "FutbolLigi1",
         "JupilerLeague", "LaLigaPrimeraDivision", "LeChampionnat",
-        "LigaI", "PremierLeague", "ScotishPremierLeague", "SerieA"
+        "LigaI", "PremierLeague", "SerieA"
     ]
 
-    for group, columns in bookmakers_columns.items():
-        for league in file_names:
-            file_name = f"{league}_{group}.csv"
-            input_path = os.path.join("..", "Data", "Matches Results", "Merged Results", group, file_name)
-            output_dir = os.path.join("..", "Data", "MatchesResultsMarged+consensus", group)
-            output_path = os.path.join(output_dir, file_name)
+    for league in file_names:
+        file_name = f"{league}_AllBookmakers.csv_isSuprise.csv"
+        input_path = os.path.join("..", "Data", "FinalData", "allBookmakers_isSuprise", file_name)
+        output_dir = os.path.join("..", "Data", "FinalData", "allBookmakers_isSuprise+StatisticCalcAndConesnsus")
+        output_path = os.path.join(output_dir, file_name)
 
-            try:
-                if not os.path.exists(input_path):
-                    print(f"File not found: {input_path}")
-                    continue
+        try:
+            if not os.path.exists(input_path):
+                print(f"File not found: {input_path}")
+                continue
 
-                data = pd.read_csv(input_path)
+            data = pd.read_csv(input_path)
 
-                # Tworzenie kolumn statystycznych dla H, D, A
-                for result_type, cols in columns.items():
-                    values = data[cols].dropna(axis=1).values
-                    data[f"{result_type}_Mean"] = np.mean(values, axis=1)
-                    data[f"{result_type}_Std"] = np.std(values, axis=1)
-                    data[f"{result_type}_Shannon"] = [shannon_index(v) for v in values]
-                    data[f"{result_type}_CV"] = [coefficient_of_variation(v) for v in values]
-                    data[f"{result_type}_Gini"] = [gini_index(v) for v in values]
-                    data[f"{result_type}_HHI"] = [hhi_index(v) for v in values]
+            # Tworzenie folderu, jeśli nie istnieje
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
 
-                # Dodanie kolumny z konsensusem
-                data['Consensus'] = data.apply(calculate_consensus, axis=1, columns=columns)
+            # Tworzenie kolumn statystycznych dla H, D, A
+            for result_type, cols in bookmakers_columns["AllBookmakers"].items():
+                values = data[cols].dropna(axis=1).values
+                data[f"{result_type}_Mean"] = np.mean(values, axis=1)
+                data[f"{result_type}_Std"] = np.std(values, axis=1)
+                data[f"{result_type}_Shannon"] = [shannon_index(v) for v in values]
+                data[f"{result_type}_CV"] = [coefficient_of_variation(v) for v in values]
+                data[f"{result_type}_Gini"] = [gini_index(v) for v in values]
+                data[f"{result_type}_HHI"] = [hhi_index(v) for v in values]
 
-                # Zapisanie pliku
-                os.makedirs(output_dir, exist_ok=True)
-                data.to_csv(output_path, index=False)
-                print(f"Processed and saved: {output_path}")
+            # Dodanie kolumny z konsensusem
+            data['Consensus'] = data.apply(calculate_consensus, axis=1, columns=bookmakers_columns["AllBookmakers"])
 
-            except Exception as e:
-                print(f"Error processing {file_name}: {e}")
+            # Zapisanie pliku
+            data.to_csv(output_path, index=False)
+            print(f"Processed and saved: {output_path}")
+
+        except Exception as e:
+            print(f"Error processing {file_name}: {e}")
+
+# Wywołanie funkcji
+calculate_cons()
