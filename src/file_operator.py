@@ -1,7 +1,9 @@
 import os
 import pandas as pd
 import chardet
+import numpy as np
 from collections import Counter
+from helpfunctions import normalize_names,shannon_index,coefficient_of_variation,gini_index,hhi_index,calculate_consensus
 class FileOperator:
     def __init__(self, save_path="../Data/Matches Results/"):
         self.save_path = save_path
@@ -13,16 +15,15 @@ class FileOperator:
         with open(file_path, 'rb') as f:
             result = chardet.detect(f.read())
         return result['encoding']
-
-    def merge_files(self, league_name, country_name, selected_columns=None, output_suffix="allSeasons", use_book=False):
+    def update_club_vals(self):
+        self.club_values = pd.read_csv('../Data/Club Info/clubs_report_from_transfermarkt.csv', index_col=0)
+    def merge_files(self, league_name, country_name, selected_columns=None, output_suffix="allSeasons"):
         output_dir = f"../Data/Matches Results/Merged Results/{output_suffix}"
         os.makedirs(output_dir, exist_ok=True)
-
         league_path = os.path.join(self.save_path, country_name)
         if not os.path.exists(league_path):
             print(f"Directory not found: {league_path}")
             return
-
         files_to_merge = [
             os.path.join(league_path, f'{league_name}_{season}.csv')
             for season in self.sessonCodes
@@ -43,23 +44,10 @@ class FileOperator:
                     except Exception as e:
                         print(f"Error cleaning date: {e}")
                     merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
-                    merged_df = self.combine_columns(merged_df, ['LBH', 'LBD', 'LBA'], ['PSH', 'PSD', 'PSA'])
-                    merged_df = self.combine_columns(merged_df, ['IWH', 'IWD', 'IWA'], ['PSCH', 'PSCD', 'PSCA'])
-                    merged_df = self.combine_columns(merged_df, ['VCH', 'VCD', 'VCA'], ['B365CH', 'B365CD', 'B365CA'])
                 except Exception as e:
                     print(f"Error processing file {file_path}: {e}")
             else:
                 print(f"File not found: {file_path}")
-
-        try:
-            if use_book:
-                cols = ['PSH', 'PSD', 'PSA', 'PSCH', 'PSCD', 'PSCA', 'B365CH', 'B365CD', 'B365CA']
-                for col in cols:
-                    if col in merged_df.columns:
-                        merged_df.drop(columns=col, inplace=True)
-                merged_df.dropna(axis=0, how='any', inplace=True)
-        except Exception as e:
-            print(f"Error cleaning data: {e}")
         try:
             output_file = os.path.join(output_dir, f'{league_name}_{output_suffix}.csv')
             if country_name == 'scotland':
@@ -138,14 +126,6 @@ class FileOperator:
             return "Roda"
         else:
             return val
-    #def combine_columns(self,df,columns_with_none,columns_replacing):
-
-    def combine_columns(self,df,columns_with_none,columns_replacing):
-        for column_with_none, column_replacing in zip(columns_with_none, columns_replacing):
-            if column_with_none in df.columns and column_replacing in df.columns:
-                df[column_with_none] = df[column_with_none].combine_first(df[column_replacing])
-                df.drop(columns=column_replacing, inplace=True)
-        return df
     def extract_season_from_path(self,file_path):
         base_name = os.path.basename(file_path)
         season_code = base_name.split('_')[-1].replace('.csv', '')
@@ -213,3 +193,120 @@ class FileOperator:
             global_output_file = '../Data/Columns Info/All_Columns_Stats.csv'
             global_df.to_csv(global_output_file, index=False)
             print(f"Saved global column stats to {global_output_file}")
+    def generate_all_bookmakers(self):
+        selected_columns = [
+            'Div', 'Season', 'Date', 'HomeTeam', 'AwayTeam', 'FTR',
+            'HomeValue', 'AwayValue'
+        ]
+        all_bookmaker_columns = [
+            'B365H', 'B365D', 'B365A', 'BFH', 'BFD', 'BFA', 'BSH', 'BSD', 'BSA', 'BWH', 'BWD', 'BWA',
+            'GBH', 'GBD', 'GBA', 'IWH', 'IWD', 'IWA', 'LBH', 'LBD', 'LBA', 'PSH', 'PSD', 'PSA',
+            'SOH', 'SOD', 'SOA', 'SBH', 'SBD', 'SBA', 'SJH', 'SJD', 'SJA', 'SYH', 'SYD', 'SYA',
+            'VCH', 'VCD', 'VCA', 'WHH', 'WHD', 'WHA'
+        ]
+        required_columns = selected_columns + all_bookmaker_columns
+        input_path = os.path.join(self.save_path, 'Merged Results/allSeasons')
+        output_dir = f"../Data/FinalData/AllBookmakers"
+        os.makedirs(output_dir, exist_ok=True)
+        files = os.listdir(input_path)
+        for file in files:
+            if file.endswith('.csv'):
+                league = file.split('_')[0]
+                file_path = os.path.join(input_path, file)
+                try:
+                    merged_data = pd.read_csv(file_path)
+                except Exception as e:
+                    print(f"Nie udało się wczytać pliku dla ligi {league}: {e}")
+                    continue
+                for col in required_columns:
+                    if col not in merged_data.columns:
+                        merged_data[col] = pd.NA
+                merged_data = merged_data[required_columns]
+                merged_data = merged_data.fillna(1.0)
+                output_file = os.path.join(output_dir, f"{league}_AllBookmakers.csv")
+                try:
+                    merged_data.to_csv(output_file, index=False)
+                    print(f"Zapisano plik dla ligi {league}: {output_file}")
+                except Exception as e:
+                    print(f"Nie udało się zapisać pliku dla ligi {league}: {e}")
+        self.add_isSuprise_column()
+    def generate_all_seasons(self):
+        for i, league in enumerate(self.leagues):
+            self.merge_files(league, self.countries[i])
+    def generate_seasons_with_values(self):
+        self.generate_all_seasons()
+        normalize_names()
+        self.update_club_vals()
+        self.generate_all_seasons()
+    def add_isSuprise_column(self):
+        input_base_directory = "../Data/FinalData/allBookmakers"
+        output_directory = input_base_directory
+        os.makedirs(output_directory, exist_ok=True)
+        for filename in os.listdir(input_base_directory):
+            if filename.endswith(".csv"):
+                file_path = os.path.join(input_base_directory, filename)
+                try:
+                    print(f"Processing file: {filename}")
+                    data = pd.read_csv(file_path)
+                    home_stakeholders = [col for col in data.columns if col.endswith("H")]
+                    draw_stakeholders = [col for col in data.columns if col.endswith("D")]
+                    away_stakeholders = [col for col in data.columns if col.endswith("A")]
+                    data['Avg_H'] = data[home_stakeholders].mean(axis=1)
+                    data['Avg_D'] = data[draw_stakeholders].mean(axis=1)
+                    data['Avg_A'] = data[away_stakeholders].mean(axis=1)
+                    data['isSuprise_H'] = (
+                        (data['FTR'] == 'H') & (data['Avg_H'] > data[['Avg_D', 'Avg_A']].max(axis=1))
+                    ).astype(int)
+                    data['isSuprise_D'] = (
+                        (data['FTR'] == 'D') & (data['Avg_D'] > data[['Avg_H', 'Avg_A']].max(axis=1))
+                    ).astype(int)
+                    data['isSuprise_A'] = (
+                        (data['FTR'] == 'A') & (data['Avg_A'] > data[['Avg_H', 'Avg_D']].max(axis=1))
+                    ).astype(int)
+                    data = data.drop(columns=['Avg_H', 'Avg_D', 'Avg_A'])
+                    output_path = os.path.join(output_directory, f"{filename}")
+                    data.to_csv(output_path, index=False)
+                    print(f"File processed successfully: {output_path}")
+                except Exception as e:
+                    print(f"Error processing file {filename}: {e}")
+    def add_statistics_and_consensus(self):
+        bookmakers_columns = {
+            "AllBookmakers": {
+                "H": ["B365H", "BFH", "BSH", "BWH", "GBH", "IWH", "LBH", "PSH", "SOH", "SBH", "SJH", "SYH", "VCH",
+                      "WHH"],
+                "D": ["B365D", "BFD", "BSD", "BWD", "GBD", "IWD", "LBD", "PSD", "SOD", "SBD", "SJD", "SYD", "VCD",
+                      "WHD"],
+                "A": ["B365A", "BFA", "BSA", "BWA", "GBA", "IWA", "LBA", "PSA", "SOA", "SBA", "SJA", "SYA", "VCA",
+                      "WHA"]
+            }
+        }
+        for league in self.leagues:
+            file_name = f"{league}_AllBookmakers.csv"
+            input_path = os.path.join("..", "Data", "FinalData", "allBookmakers", file_name)
+            output_dir = os.path.join("..", "Data", "FinalData", "allBookmakers+StatisticCalcAndConesnsus")
+            output_path = os.path.join(output_dir, file_name)
+            try:
+                if not os.path.exists(input_path):
+                    print(f"File not found: {input_path}")
+                    continue
+                data = pd.read_csv(input_path)
+                # Tworzenie folderu, jeśli nie istnieje
+                if not os.path.exists(output_dir):
+                    os.makedirs(output_dir)
+                # Tworzenie kolumn statystycznych dla H, D, A
+                for result_type, cols in bookmakers_columns["AllBookmakers"].items():
+                    values = data[cols].dropna(axis=1).values
+                    data[f"{result_type}_Mean"] = np.round(np.mean(values, axis=1),4)
+                    data[f"{result_type}_Std"] = np.round(np.std(values, axis=1),4)
+                    data[f"{result_type}_Shannon"] = [shannon_index(v) for v in values]
+                    data[f"{result_type}_CV"] = [coefficient_of_variation(v) for v in values]
+                    data[f"{result_type}_Gini"] = [gini_index(v) for v in values]
+                    data[f"{result_type}_HHI"] = [hhi_index(v) for v in values]
+                # Dodanie kolumny z konsensusem
+                data['Consensus'] = data.apply(calculate_consensus, axis=1, columns=bookmakers_columns["AllBookmakers"])
+                # Zapisanie pliku
+                data.to_csv(output_path, index=False)
+                print(f"Processed and saved: {output_path}")
+            except Exception as e:
+                print(f"Error processing {file_name}: {e}")
+
