@@ -42,8 +42,7 @@ def main():
         elif choice == '8':
             # Do testowania roznych rzeczy
             file_op = FileOperator()
-            file_op.generate_all_bookmakers()
-            file_op.add_statistics_and_consensus()
+            file_op.generate_seasons_with_values()
         else:
             break
 
