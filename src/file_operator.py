@@ -17,6 +17,58 @@ class FileOperator:
         return result['encoding']
     def update_club_vals(self):
         self.club_values = pd.read_csv('../Data/Club Info/clubs_report_from_transfermarkt.csv', index_col=0)
+
+    def add_matchday_to_season(self):
+        import os
+        import pandas as pd
+
+        path2 = os.path.join(self.save_path, "Merged Results/allSeasons")
+        try:
+            files = os.listdir(path2)
+            league_files = [file for file in files if file.endswith('.csv')]
+            for file in league_files:
+                file_path = os.path.join(path2, file)
+                encoding = self.detect_encoding(file_path)
+                try:
+                    df = pd.read_csv(file_path, encoding=encoding, low_memory=False)
+
+                    # Initialize a dictionary to keep track of the matchday count for each team
+                    matchday_counter = {}
+
+                    # Function to assign matchday and update the counter
+                    def assign_matchday(row):
+                        season = row['Season']
+                        home_team = row['HomeTeam']
+                        away_team = row['AwayTeam']
+
+                        # Initialize counters for the season if not present
+                        if season not in matchday_counter:
+                            matchday_counter[season] = {}
+                        if home_team not in matchday_counter[season]:
+                            matchday_counter[season][home_team] = 0
+                        if away_team not in matchday_counter[season]:
+                            matchday_counter[season][away_team] = 0
+
+                        # Increment counters and assign values
+                        matchday_counter[season][home_team] += 1
+                        matchday_counter[season][away_team] += 1
+
+                        row['HomeMatchday'] = matchday_counter[season][home_team]
+                        row['AwayMatchday'] = matchday_counter[season][away_team]
+
+                        return row
+
+                    # Apply the function to each row
+                    df = df.apply(assign_matchday, axis=1)
+
+                    # Save updated DataFrame back to CSV
+                    df.to_csv(file_path, index=False)
+                    print(f"Added HomeMatchday and AwayMatchday columns to {file}")
+                except Exception as e:
+                    print(f"Error reading file {file_path}: {e}")
+        except Exception as e:
+            print(f"Error reading file: {e}")
+
     def merge_files(self, league_name, country_name, selected_columns=None, output_suffix="allSeasons"):
         output_dir = f"../Data/Matches Results/Merged Results/{output_suffix}"
         os.makedirs(output_dir, exist_ok=True)
@@ -196,7 +248,7 @@ class FileOperator:
     def generate_all_bookmakers(self):
         selected_columns = [
             'Div', 'Season', 'Date', 'HomeTeam', 'AwayTeam', 'FTR',
-            'HomeValue', 'AwayValue'
+            'HomeValue', 'AwayValue','HomeMatchday','AwayMatchday'
         ]
         all_bookmaker_columns = [
             'B365H', 'B365D', 'B365A', 'BFH', 'BFD', 'BFA', 'BSH', 'BSD', 'BSA', 'BWH', 'BWD', 'BWA',
@@ -238,6 +290,7 @@ class FileOperator:
         normalize_names()
         self.update_club_vals()
         self.generate_all_seasons()
+        self.add_matchday_to_season()
     def add_isSuprise_column(self):
         input_base_directory = "../Data/FinalData/allBookmakers"
         output_directory = input_base_directory
@@ -263,6 +316,7 @@ class FileOperator:
                     data['isSuprise_A'] = (
                         (data['FTR'] == 'A') & (data['Avg_A'] > data[['Avg_H', 'Avg_D']].max(axis=1))
                     ).astype(int)
+                    data['isSuprise'] = data['isSuprise_H'] + data['isSuprise_D'] + data['isSuprise_A']
                     data = data.drop(columns=['Avg_H', 'Avg_D', 'Avg_A'])
                     output_path = os.path.join(output_directory, f"{filename}")
                     data.to_csv(output_path, index=False)
