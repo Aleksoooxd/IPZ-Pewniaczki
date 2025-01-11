@@ -106,14 +106,21 @@ def normalize_values(file_path):
     data.to_csv(file_path, index=False)
     print(f"Updated file saved as: {file_path}")
 def get_club_matches_in_season(club_name= 'Stuttgart', season= '2004/5'):
-    file_path = '../Data/Matches Results/Merged Results/allSeasons/Bundesliga1_allSeasons.csv'
-    df = pd.read_csv(file_path)
+    df = merge_all_seasons()
     df['Date'] = pd.to_datetime(df['Date'], dayfirst=True, errors='coerce')
     home_matches = df[(df['HomeTeam'] == club_name) & (df['Season'] == season)]
     away_matches = df[(df['AwayTeam'] == club_name) & (df['Season'] == season)]
     all_matches = pd.concat([home_matches, away_matches])
-    all_matches_sorted = all_matches.sort_values(by='Date')
-    all_matches_sorted['Matchday'] = range(1, len(all_matches_sorted) + 1)
+    all_matches_sorted = all_matches.sort_values(by='Date').reset_index(drop=True)
+    all_matches_sorted['Matchday'] = all_matches_sorted.index + 1
     return all_matches_sorted
+def merge_all_seasons():
+    all_seasons = pd.DataFrame()
+    path = '../Data/Matches Results/Merged Results/allSeasons'
+    for file in os.listdir(path):
+        file_path = os.path.join(path, file)
+        data = pd.read_csv(file_path, low_memory=False)
+        all_seasons = pd.concat([all_seasons, data])
+    return all_seasons
 matches = get_club_matches_in_season()
 print(matches)
