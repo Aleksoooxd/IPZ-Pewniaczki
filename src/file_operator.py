@@ -248,7 +248,7 @@ class FileOperator:
     def generate_all_bookmakers(self):
         selected_columns = [
             'Div', 'Season', 'Date', 'HomeTeam', 'AwayTeam', 'FTR',
-            'HomeValue', 'AwayValue','HomeMatchday','AwayMatchday'
+            'HomeValue', 'AwayValue','HomeMatchday','AwayMatchday','FTHG','FTAG'
         ]
         all_bookmaker_columns = [
             'B365H', 'B365D', 'B365A', 'BFH', 'BFD', 'BFA', 'BSH', 'BSD', 'BSA', 'BWH', 'BWD', 'BWA',
