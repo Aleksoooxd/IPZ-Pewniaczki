@@ -5,6 +5,7 @@ from fuzzywuzzy import process
 from unidecode import unidecode
 import numpy as np
 from scipy.stats import entropy
+import shutil
 def normalize():
     teams_football_data = set()
     teams_transfermarkt = set()
@@ -158,4 +159,9 @@ def get_info():
     print(f"Form in last 5 matches: {form5}")
     print(f"Goals in all matches: {goalss}")
     print(f"Form in all matches: {forms}")
-get_info()
+def reset_data():
+    if os.path.exists('../Data'):
+        try:
+            shutil.rmtree('../Data')
+        except OSError as e:
+            print(f"Error: {e.strerror}")
