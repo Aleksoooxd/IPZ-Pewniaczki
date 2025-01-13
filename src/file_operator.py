@@ -364,3 +364,100 @@ class FileOperator:
             except Exception as e:
                 print(f"Error processing {file_name}: {e}")
 
+    def create_placement_columns(self, dataframe):
+        # Upewniamy się, że kolumny 'FTHG', 'FTAG' i 'Matchday' są typu numerycznego
+        dataframe['FTHG'] = pd.to_numeric(dataframe['FTHG'], errors='coerce')
+        dataframe['FTAG'] = pd.to_numeric(dataframe['FTAG'], errors='coerce')
+        dataframe['HomeMatchday'] = pd.to_numeric(dataframe['HomeMatchday'], errors='coerce')
+
+        # Inicjalizujemy kolumny na miejsca
+        dataframe['HomeTeamPlacement'] = None
+        dataframe['AwayTeamPlacement'] = None
+
+        def calculate_season_placements(season_df):
+            standings = {}
+            placements = []
+
+            # Przechodzimy po każdej kolejce w sezonie
+            for matchday in sorted(season_df['HomeMatchday'].unique()):
+                matchday_df = season_df[season_df['HomeMatchday'] == matchday]
+
+                for _, row in matchday_df.iterrows():
+                    home_team = row['HomeTeam']
+                    away_team = row['AwayTeam']
+                    ftr = row['FTR']
+                    fthg = row['FTHG']
+                    ftag = row['FTAG']
+
+                    # Inicjalizujemy drużyny, jeśli nie zostały dodane do tabeli
+                    if home_team not in standings:
+                        standings[home_team] = {'points': 0, 'goal_diff': 0, 'goals_scored': 0}
+                    if away_team not in standings:
+                        standings[away_team] = {'points': 0, 'goal_diff': 0, 'goals_scored': 0}
+
+                    # Aktualizujemy punkty i statystyki
+                    if ftr == 'H':  # Wygrana gospodarzy
+                        standings[home_team]['points'] += 3
+                    elif ftr == 'A':  # Wygrana gości
+                        standings[away_team]['points'] += 3
+                    elif ftr == 'D':  # Remis
+                        standings[home_team]['points'] += 1
+                        standings[away_team]['points'] += 1
+
+                    standings[home_team]['goal_diff'] += fthg - ftag
+                    standings[home_team]['goals_scored'] += fthg
+                    standings[away_team]['goal_diff'] += ftag - fthg
+                    standings[away_team]['goals_scored'] += ftag
+
+                # Sortujemy drużyny po punktach, różnicy bramek, bramkach zdobytych i nazwie
+                sorted_standings = sorted(standings.items(), key=lambda x: (-x[1]['points'], -x[1]['goal_diff'], -x[1]['goals_scored'], x[0]))
+                placement_map = {team[0]: idx + 1 for idx, team in enumerate(sorted_standings)}
+
+                # Przypisujemy miejsca drużynom
+                for _, row in matchday_df.iterrows():
+                    placements.append((placement_map[row['HomeTeam']], placement_map[row['AwayTeam']]))
+
+            return placements
+
+        # Przechodzimy po wszystkich sezonach
+        for season in dataframe['Season'].unique():
+            season_mask = dataframe['Season'] == season
+            season_df = dataframe[season_mask].sort_values(by=['HomeMatchday', 'Date'])
+
+            season_placements = calculate_season_placements(season_df)
+
+            # Przypisujemy miejsca do dataframe
+            home_placements, away_placements = zip(*season_placements)
+            dataframe.loc[season_mask, 'HomeTeamPlacement'] = home_placements
+            dataframe.loc[season_mask, 'AwayTeamPlacement'] = away_placements
+
+        return dataframe
+
+    def calculate_placements(self):
+        # Pętla po wszystkich ligach
+        for league in self.leagues:
+            # Konstrukcja ścieżki do pliku dla bieżącej ligi
+            input_file = os.path.join(f"../Data/FinalData/AllBookmakers", f'{league}_AllBookmakers.csv')
+
+            # Sprawdzamy, czy plik istnieje przed przetwarzaniem
+            if os.path.exists(input_file):
+                print(f"Processing {league}...")
+
+                # Wczytujemy dane
+                df_new = pd.read_csv(input_file)
+
+                # Obliczamy miejsca drużyn
+                df_updated = self.create_placement_columns(df_new)
+
+                # Konstrukcja ścieżki do zapisania pliku
+                output_path = os.path.join(f"../Data/FinalData/AllBookmakers", f'{league}_AllBookmakers.csv')
+
+                # Zapisujemy zaktualizowane dane do pliku
+                df_updated.to_csv(output_path, index=False)
+                print(f"File saved to {output_path}")
+            else:
+                print(f"File {input_file} does not exist. Skipping...")
+
+        return "Processing complete"
+
+

@@ -11,7 +11,8 @@ def main():
         print("5. Generate top bookmakers")
         print("6. Calculate consensus")
         print("7. Generate all in order")
-        print("8. Do testowania roznych rzeczy")
+        print("8. Calculate place in table")
+        print("9. Do testowania roznych rzeczy")
         print("0. Quit")
         choice = input("Enter your choice: ")
         if choice == '1':
@@ -40,6 +41,9 @@ def main():
             file_op.generate_all_bookmakers()
             file_op.add_statistics_and_consensus()
         elif choice == '8':
+            file_op = FileOperator()
+            file_op.calculate_placements()
+        elif choice == '9':
             # Do testowania roznych rzeczy
             file_op = FileOperator()
             file_op.generate_seasons_with_values()
