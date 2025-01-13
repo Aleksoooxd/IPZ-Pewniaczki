@@ -1,0 +1,32 @@
+name: Run main.py weekly
+
+on:
+  schedule:
+    
+cron: "0 0 * * 0" # Uruchamianie co tydzień w niedzielę o północy UTC
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      
+name: Checkout repository
+      uses: actions/checkout@v3
+
+      
+name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x' # Zmień na wersję Pythona wymaganą przez Twój projekt
+
+      
+name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+      
+name: Run main.py with option 7
+      run: |
+        python -c "from src.main import main; import sys; sys.stdin = open('/dev/null'); print('7\n', end=''); main()"
