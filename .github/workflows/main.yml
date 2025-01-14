@@ -3,7 +3,8 @@ name: Aktualizacja danych co 12 godzin
 on:
   workflow_dispatch:
   schedule:
-    - cron: '* */12 * * *'
+    - cron: '0 0 * * *'
+    - cron: '0 12 * * *'
 
 jobs:
   run-python-script:
