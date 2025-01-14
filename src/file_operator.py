@@ -382,6 +382,9 @@ class FileOperator:
         dataframe['AwayGoals3'] = 0
         dataframe['AwayGoals5'] = 0
         dataframe['AwayGoalsSeason'] = 0
+        dataframe['HTLSP'] = None
+        dataframe['ATLSP'] = None
+
         def calculate_season_placements(season_df):
             standings = {}
             placements = []
@@ -436,13 +439,15 @@ class FileOperator:
                 for _, row in matchday_df.iterrows():
                     placements.append((placement_map[row['HomeTeam']], placement_map[row['AwayTeam']]))
 
-            return placements, form_data, goals_data
+            return placements, form_data, goals_data, placement_map
 
-        for season in dataframe['Season'].unique():
+        previous_season_placements = {}
+
+        for season in sorted(dataframe['Season'].unique()):
             season_mask = dataframe['Season'] == season
             season_df = dataframe[season_mask].sort_values(by=['HomeMatchday', 'Date'])
 
-            season_placements, form_data, goals_data = calculate_season_placements(season_df)
+            season_placements, form_data, goals_data, final_placements = calculate_season_placements(season_df)
 
             home_placements, away_placements = zip(*season_placements)
             dataframe.loc[season_mask, 'HomeTeamPlacement'] = home_placements
@@ -481,6 +486,10 @@ class FileOperator:
                 dataframe.at[index, 'AwayGoals3'] = away_goals3
                 dataframe.at[index, 'AwayGoals5'] = away_goals5
                 dataframe.at[index, 'AwayGoalsSeason'] = away_goals_season
+                dataframe.at[index, 'HTLSP'] = previous_season_placements.get(home_team, 0)
+                dataframe.at[index, 'ATLSP'] = previous_season_placements.get(away_team, 0)
+
+            previous_season_placements = final_placements
 
         return dataframe
 
