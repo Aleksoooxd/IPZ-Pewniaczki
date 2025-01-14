@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - name: Set up Python environment
         uses: actions/setup-python@v4
@@ -24,14 +26,12 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Python script
-        env:
-          SOME_SECRET: ${{ secrets.SOME_SECRET }}
         run: python src/main.py
 
       - name: Configure Git
         run: |
-          git config --local user.name "GitHub Action"
-          git config --local user.email "action@ugithub.com"
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@ugithub.com"
           git add -A
           git diff-index --quiet HEAD || (git commit -a -m "Automatyczne odswiezanie danych" --allow empy)
 
