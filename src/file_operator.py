@@ -368,7 +368,6 @@ class FileOperator:
         dataframe['FTHG'] = pd.to_numeric(dataframe['FTHG'], errors='coerce')
         dataframe['FTAG'] = pd.to_numeric(dataframe['FTAG'], errors='coerce')
         dataframe['HomeMatchday'] = pd.to_numeric(dataframe['HomeMatchday'], errors='coerce')
-
         dataframe['HomeTeamPlacement'] = None
         dataframe['AwayTeamPlacement'] = None
         dataframe['HomeForm3'] = 0
@@ -383,7 +382,6 @@ class FileOperator:
         dataframe['AwayGoals3'] = 0
         dataframe['AwayGoals5'] = 0
         dataframe['AwayGoalsSeason'] = 0
-
         def calculate_season_placements(season_df):
             standings = {}
             placements = []
