@@ -30,13 +30,20 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@ugithub.com"
-          git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "Automatyczne odswiezanie danych" --allow empy)
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Push changes
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+      - name: Check for changes
+        run: |
+          git add .
+          if git diff --cached --quiet; then
+              echo "No changes to commit."
+              exit 0
+          fi
+
+      - name: Commit and Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git commit -m "Automated update from GitHub Actions"
+          git push origin HEAD
