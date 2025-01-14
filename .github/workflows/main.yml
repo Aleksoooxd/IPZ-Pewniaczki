@@ -1,4 +1,4 @@
-name: Daily Python Script Execution
+name: Aktualizacja danych co 12 godzin
 
 on:
   workflow_dispatch:
@@ -31,3 +31,5 @@ jobs:
 
       - name: Configure Git
         uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          add_options: '-u'
