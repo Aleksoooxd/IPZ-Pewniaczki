@@ -123,42 +123,6 @@ def merge_all_seasons():
         data = pd.read_csv(file_path, low_memory=False)
         all_seasons = pd.concat([all_seasons, data])
     return all_seasons
-def get_matchdays_in_season(club, season):
-    matches = get_club_matches_in_season(club, season)
-    return matches['Matchday'].max()
-def calculate_form_and_goals(club,matches, matchday, i):
-    filtered_matches = matches[matches['Matchday'] <= matchday]
-    last_i_matches = filtered_matches.tail(i)
-    home_goals = last_i_matches[last_i_matches['HomeTeam'] == club]['FTHG'].sum()
-    away_goals = last_i_matches[last_i_matches['AwayTeam'] == club]['FTAG'].sum()
-    total_goals = home_goals + away_goals
-    form_points = 0
-    for _, match in last_i_matches.iterrows():
-        if match['HomeTeam'] == club:
-            if match['FTR'] == 'H':
-                form_points += 3
-            elif match['FTR'] == 'D':
-                form_points += 1
-        elif match['AwayTeam'] == club:
-            if match['FTR'] == 'A':
-                form_points += 3
-            elif match['FTR'] == 'D':
-                form_points += 1
-    return int(total_goals), int(form_points)
-def get_info():
-    club = 'Stuttgart'
-    season = '2004/5'
-    matchday = get_matchdays_in_season(club,season)
-    matches = get_club_matches_in_season(club,season)
-    goals3,form3 = calculate_form_and_goals(club,matches,matchday,3)
-    goals5, form5 = calculate_form_and_goals(club, matches, matchday, 5)
-    goalss, forms = calculate_form_and_goals(club, matches, matchday, matchday)
-    print(f"Goals in last 3 matches: {goals3}")
-    print(f"Form in last 3 matches: {form3}")
-    print(f"Goals in last 5 matches: {goals5}")
-    print(f"Form in last 5 matches: {form5}")
-    print(f"Goals in all matches: {goalss}")
-    print(f"Form in all matches: {forms}")
 def reset_data():
     if os.path.exists('../Data'):
         try:

@@ -51,6 +51,5 @@ def main():
             file_op.generate_seasons_with_values()
         else:
             break
-
 if __name__ == "__main__":
     main()
