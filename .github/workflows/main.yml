@@ -7,7 +7,7 @@ on:
 
 jobs:
   run-python-script:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
@@ -17,10 +17,14 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
+      - name: Check if requirements.txt exists
+        run: |
+          if [ ! -f requirements.txt ]; then echo \"requirements.txt not found\"; exit 1; fi
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Run Python script
-        run: python src/main.py
+      - name: Debug Python script
+        run: |
+          echo \"Running src/main.py...\"
+          python src/main.py || { echo \"Script failed with exit code $?\"; exit 1; }
