@@ -1,32 +1,27 @@
-name: Run main.py weekly
+name: Run main.py daily
 
 on:
   schedule:
-    
-cron: "40 1 * * *"
+    - cron: "50 1 * * *"
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
 
     steps:
-      
-name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      
-name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-      
-name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      
-name: Run main.py with option 7
-      run: |
-        python -c "from src.main import main; import sys; sys.stdin = open('/dev/null'); print('7\n', end=''); main()"
+      - name: Run main.py with option 7
+        run: |
+          python -c "from src.main import main; import sys; sys.stdin = open('/dev/null'); print('7\n', end=''); main()"
