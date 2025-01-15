@@ -115,13 +115,16 @@ def get_club_matches_in_season(club_name= 'Stuttgart', season= '2004/5'):
     all_matches_sorted = all_matches.sort_values(by='Date').reset_index(drop=True)
     all_matches_sorted['Matchday'] = all_matches_sorted.index + 1
     return all_matches_sorted
-def merge_all_seasons():
+def merge_all_seasons(save=True):
     all_seasons = pd.DataFrame()
-    path = '../Data/Matches Results/Merged Results/allSeasons'
+    path = '../Data/FinalData/allBookmakers+StatisticCalcAndConesnsus'
     for file in os.listdir(path):
         file_path = os.path.join(path, file)
         data = pd.read_csv(file_path, low_memory=False)
         all_seasons = pd.concat([all_seasons, data])
+    if save:
+        output_path = os.path.join(f"../Data/FinalData/allBookmakers+StatisticCalcAndConesnsus", 'AllLeagues.csv')
+        all_seasons.to_csv(output_path,index=False)
     return all_seasons
 def reset_data():
     if os.path.exists('../Data'):
