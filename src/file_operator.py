@@ -334,10 +334,9 @@ class FileOperator:
                       "WHA"]
             }
         }
-        for league in self.leagues:
-            file_name = f"{league}_AllBookmakers.csv"
-            input_path = os.path.join("..", "Data", "FinalData", "allBookmakers", file_name)
-            output_dir = os.path.join("..", "Data", "FinalData", "allBookmakers+StatisticCalcAndConesnsus")
+        input_path = os.path.join("..", "Data", "FinalData", "allBookmakers")
+        output_dir = os.path.join("..", "Data", "FinalData", "allBookmakers+StatisticCalcAndConesnsus")
+        for file_name in os.listdir(input_path):
             output_path = os.path.join(output_dir, file_name)
             try:
                 if not os.path.exists(input_path):
