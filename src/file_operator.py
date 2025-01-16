@@ -334,9 +334,10 @@ class FileOperator:
                       "WHA"]
             }
         }
-        input_path = os.path.join("..", "Data", "FinalData", "allBookmakers")
-        output_dir = os.path.join("..", "Data", "FinalData", "allBookmakers+StatisticCalcAndConesnsus")
-        for file_name in os.listdir(input_path):
+        for league in self.leagues:
+            file_name = f"{league}_AllBookmakers.csv"
+            input_path = os.path.join("..", "Data", "FinalData", "AllBookmakers", file_name)
+            output_dir = os.path.join("..", "Data", "FinalData", "AllBookmakers")
             output_path = os.path.join(output_dir, file_name)
             try:
                 if not os.path.exists(input_path):
@@ -349,8 +350,8 @@ class FileOperator:
                 # Tworzenie kolumn statystycznych dla H, D, A
                 for result_type, cols in bookmakers_columns["AllBookmakers"].items():
                     values = data[cols].dropna(axis=1).values
-                    data[f"{result_type}_Mean"] = np.round(np.mean(values, axis=1),4)
-                    data[f"{result_type}_Std"] = np.round(np.std(values, axis=1),4)
+                    data[f"{result_type}_Mean"] = np.round(np.mean(values, axis=1), 4)
+                    data[f"{result_type}_Std"] = np.round(np.std(values, axis=1), 4)
                     data[f"{result_type}_Shannon"] = [shannon_index(v) for v in values]
                     data[f"{result_type}_CV"] = [coefficient_of_variation(v) for v in values]
                     data[f"{result_type}_Gini"] = [gini_index(v) for v in values]
