@@ -30,6 +30,12 @@ jobs:
       - name: Run Python script
         run: python src/runBiDaily.py
 
+      - name: Verify current working directory
+        run: pwd
+
+      - name: List files in repository
+        run: ls -la
+
       - name: Show Git status
         run: git status
         
