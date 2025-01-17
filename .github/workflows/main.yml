@@ -32,3 +32,5 @@ jobs:
 
       - name: Configure Git
         uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          add_options: '-A'
