@@ -30,6 +30,12 @@ jobs:
       - name: Run Python script
         run: python src/runBiDaily.py
 
+      - name: Show Git status
+        run: git status
+        
+      - name: Add new files
+        run: git add -A
+          
       - name: Configure Git
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
