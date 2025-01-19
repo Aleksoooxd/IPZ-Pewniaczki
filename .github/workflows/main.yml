@@ -25,16 +25,26 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Python script
-        run: python src/runBiDaily.py
+      - name: Run main.py
+        run: python main.py
+
+      - name: Debug file changes
+        run: |
+          git status
+          ls -la Data/
+
+      - name: Force Git to detect changes
+        run: |
+          git fetch --all
+          git reset --hard HEAD
+          git add -A
 
       - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
           git add Data/
-          git commit -m "Automatyczny update plików w folderze Data [skip ci]" || echo "Brak zmian do commitowania"
+          git commit -m "Automatyczny update plików w folderze Data [skip ci]" || echo "Nothing to commit"
           git push
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
