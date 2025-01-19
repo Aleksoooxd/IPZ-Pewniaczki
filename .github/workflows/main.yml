@@ -35,7 +35,7 @@ jobs:
           echo "==== GIT DIFF ===="
           git diff
           echo "==== CONTENTS OF Data FOLDER ===="
-          ls -l Data || echo "Brak folderu Data"
+          ls -l ./Data || echo "Brak folderu Data"
 
       - name: Configure Git
         run: |
