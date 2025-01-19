@@ -44,7 +44,8 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git add -A
+          git fetch
+          git add .
           # Próba commita - jeśli brak zmian, polecenie się nie powiedzie, ale nie przerywamy joba
-          git commit -m "Automated update from GitHub Actions" || echo "No changes to commit"
-          git push
+          git commit -am "Automated update from GitHub Actions" || echo "No changes to commit"
+          git push origin main
