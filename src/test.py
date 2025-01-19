@@ -2,15 +2,19 @@ from datetime import datetime
 import asyncio
 import json
 import httpx
+import requests
 import time
 def team_modifier(teamh,teama,separator,use_date=False,date="20/09/2005"):
-    date = date.replace("/", "%2F")
+    if use_date:
+        date = date.replace("/", "%2F")
+    else:
+        date=""
     link = teamh+" "+teama+" "+date
     link = link.replace(" ", separator)
     return link
 
 async def find_match_link(home_team, away_team, match_date):
-    teams_in_match = team_modifier(home_team, away_team, "%20",use_date=True,date=match_date)
+    teams_in_match = team_modifier(home_team, away_team, "%20",use_date=False,date=match_date)
     base_url = f"https://www.sofascore.com/api/v1/search/events?q={teams_in_match}&page=0"
     async with httpx.AsyncClient() as client:
         response = await client.get(base_url)
@@ -24,17 +28,18 @@ async def find_match_link(home_team, away_team, match_date):
         ht = entity['homeTeam']['name']
         at = entity['awayTeam']['name']
         date = datetime.fromtimestamp(entity['startTimestamp']).strftime("%d/%m/%Y")
-        if date != match_date or ht != home_team or at != away_team:
+        if date.replace(" ", "") != match_date.replace(" ", "") or ht.replace(" ", "") != home_team.replace(" ", "") or at.replace(" ", "") != away_team.replace(" ", ""):
             continue
         customid = entity['customId']
         id = entity['id']
         teams_link = team_modifier(ht,at,"-")
-        match_link = f"www.sofascore.com/football/match/{teams_link}/{customid}#id:{id}"
-        print(match_link)
+        match_link = f"https://www.sofascore.com/football/match/{teams_link}/{customid}#id:{id}"
+        return match_link
 
 async def main():# Przykład użycia
-    home_team = "Hannover 96"
-    away_team = "VfL Wolfsburg"
-    match_date = "20/09/2005"
-    await find_match_link(home_team, away_team, match_date)
+    home_team = "SV Werder Bremen"
+    away_team = "1.FC Heidenheim"
+    match_date = "15/01/2025"
+    match_link = await find_match_link(home_team, away_team, match_date)
+    print(match_link)
 asyncio.run(main())
