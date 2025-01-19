@@ -28,6 +28,10 @@ jobs:
       - name: Run runBiDaily.py
         run: python src/runBiDaily.py
 
+      - name: Remove data
+        run: |
+          rm -rf Data
+          
       - name: Show changes
         run: |
           echo "==== GIT STATUS ===="
