@@ -124,11 +124,12 @@ def save(auto_save=False):
     if (save_to_csv == 'T') or auto_save:
         filepath = os.path.join(os.getcwd(), 'Data', 'Club Info')
         filename = 'clubs_report_from_transfermarkt.csv'
-        os.makedirs(filepath, exist_ok=True)  # Tworzenie folderu jeśli nie istnieje
+        file_path_name = os.path.join(filepath, filename)
+        os.makedirs(file_path_name, exist_ok=True)  # Tworzenie folderu jeśli nie istnieje
 
         headers_csv = ['Club'] + list(season_dict.keys())
 
-        with open(filepath + filename, mode='w', newline='', encoding='utf-8') as file:
+        with open(file_path_name, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow(headers_csv)
 
@@ -137,7 +138,7 @@ def save(auto_save=False):
                 for season in season_dict.keys():
                     row.append(values.get(season, 'N/A'))
                 writer.writerow(row)
-        file_path_name = os.path.join(filepath,filename)
+
         df = pd.read_csv(file_path_name)
         modify_transfermarkt(df,file_path_name)
 
