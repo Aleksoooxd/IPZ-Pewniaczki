@@ -9,12 +9,13 @@ import shutil
 def normalize():
     teams_football_data = set()
     teams_transfermarkt = set()
-    for file in os.listdir('../Data/Matches Results/Merged Results/allSeasons'):
-        file_path = os.path.join('../Data/Matches Results/Merged Results/allSeasons', file)
+
+    for file in os.listdir(os.path.join(os.getcwd(),'Data/Matches Results/Merged Results/allSeasons')):
+        file_path = os.path.join(os.path.join(os.getcwd(),'Data/Matches Results/Merged Results/allSeasons'), file)
         data = pd.read_csv(file_path, index_col=0, low_memory=False)
         for index, row in data.iterrows():
             teams_football_data.add(unidecode(str(row['HomeTeam'])))
-    file_path_transfer = '../Data/Club Info/clubs_report_from_transfermarkt.csv'
+    file_path_transfer = os.path.join(os.getcwd(),'Data/Club Info/clubs_report_from_transfermarkt.csv')
     data_transfer = pd.read_csv(file_path_transfer, low_memory=False)
     for index, row in data_transfer.iterrows():
         teams_transfermarkt.add(unidecode(str(row['Club'])))
@@ -61,7 +62,7 @@ def update_club_name(row, mapping):
 def normalize_names():
     data_transfer, correct = normalize()
     data_transfer['Club'] = data_transfer.apply(update_club_name, axis=1, mapping=correct)
-    output_file_path = '../Data/Club Info/clubs_report_from_transfermarkt.csv'
+    output_file_path = os.path.join(os.getcwd(),'Data/Club Info/clubs_report_from_transfermarkt.csv')
     data_transfer.to_csv(output_file_path, index=False)
     normalize_values(output_file_path)
     print(f"Zaktualizowany plik zapisany jako: {output_file_path}")
@@ -117,19 +118,20 @@ def get_club_matches_in_season(club_name= 'Stuttgart', season= '2004/5'):
     return all_matches_sorted
 def merge_all_seasons(save=True):
     all_seasons = pd.DataFrame()
-    path = '../Data/FinalData/AllBookmakers'
+    path = os.path.join(os.getcwd(),'Data/FinalData/AllBookmakers')
     for file in os.listdir(path):
         file_path = os.path.join(path, file)
         data = pd.read_csv(file_path, low_memory=False)
         all_seasons = pd.concat([all_seasons, data])
     if save:
-        output_path = os.path.join(f"../Data/FinalData/AllBookmakers", 'AllLeagues.csv')
+        output_path = os.path.join(os.path.join(os.getcwd(),'Data/FinalData/AllBookmakers'), 'AllLeagues.csv')
         all_seasons.to_csv(output_path,index=False)
     return all_seasons
 def reset_data():
-    if os.path.exists('../Data'):
+    data_path = os.path.join(os.getcwd(),'Data')
+    if os.path.exists(data_path):
         try:
-            shutil.rmtree('../Data')
+            shutil.rmtree(data_path)
             print("Removed dir Data")
         except OSError as e:
             print(f"Error: {e.strerror}")

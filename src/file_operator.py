@@ -5,7 +5,7 @@ import numpy as np
 from collections import Counter
 from helpfunctions import normalize_names,shannon_index,coefficient_of_variation,gini_index,hhi_index,calculate_consensus
 class FileOperator:
-    def __init__(self, save_path="../Data/Matches Results/"):
+    def __init__(self, save_path=os.path.join(os.getcwd(),'Data','Matches Results')):
         self.save_path = save_path
         self.leagues = ['PremierLeague', 'LaLigaPrimeraDivision', 'Bundesliga1', 'SerieA', 'LeChampionnat','PremierLeague','Eredivisie','JupilerLeague','LigaI','FutbolLigi1','EthnikiKatigoria']
         self.countries = ['england', 'spain', 'germany', 'italy', 'france','scotland','netherlands','belgium','portugal','turkey','greece']
@@ -16,7 +16,8 @@ class FileOperator:
             result = chardet.detect(f.read())
         return result['encoding']
     def update_club_vals(self):
-        self.club_values = pd.read_csv('../Data/Club Info/clubs_report_from_transfermarkt.csv', index_col=0)
+        path = os.path.join(os.getcwd(),'Data','Club Info','clubs_report_from_transfermarkt.csv')
+        self.club_values = pd.read_csv(path, index_col=0)
 
     def add_matchday_to_season(self):
         import os
@@ -70,7 +71,7 @@ class FileOperator:
             print(f"Error reading file: {e}")
 
     def merge_files(self, league_name, country_name, selected_columns=None, output_suffix="allSeasons"):
-        output_dir = f"../Data/Matches Results/Merged Results/{output_suffix}"
+        output_dir = os.path.join(os.getcwd(),'Data','Matches Results','Merged Results',f"{output_suffix}")
         os.makedirs(output_dir, exist_ok=True)
         league_path = os.path.join(self.save_path, country_name)
         if not os.path.exists(league_path):
@@ -185,7 +186,8 @@ class FileOperator:
             return '20' + season_code[:2] + '/' + season_code[3:]
         return '20'+season_code[:2] + '/' + season_code[2:]
     def count_collumns(self):
-        os.makedirs('../Data/Columns Info/', exist_ok=True)
+
+        os.makedirs(os.path.join(os.getcwd(),'Data/Columns Info'), exist_ok=True)
         # List to store all column names across all leagues
         all_columns = []
         total_files_all_leagues = 0  # Initialize the counter for all files across leagues
@@ -220,7 +222,7 @@ class FileOperator:
                     league_data.append({'Column Name': column, 'Count': count, 'Percentage': percentage})
                 # Save league-specific stats to a CSV file
                 league_df = pd.DataFrame(league_data)
-                league_output_file = f'../Data/Columns Info/{league}columns_stats.csv'
+                league_output_file = os.path.join(os.getcwd(),'Data/Columns Info',f'{league}columns_stats.csv')
                 league_df.to_csv(league_output_file, index=False)
                 print(f"Saved column stats for {league} in {league_output_file}")
                 # Add stats to global dictionary
@@ -242,7 +244,7 @@ class FileOperator:
                 global_data.append({'Column Name': column, 'Count': count, 'Percentage': percentage})
             # Save global stats to a CSV file
             global_df = pd.DataFrame(global_data)
-            global_output_file = '../Data/Columns Info/All_Columns_Stats.csv'
+            global_output_file = os.path.join(os.getcwd(),'Data/Columns Info/All_Columns_Stats.csv')
             global_df.to_csv(global_output_file, index=False)
             print(f"Saved global column stats to {global_output_file}")
     def generate_all_bookmakers(self):
@@ -258,7 +260,7 @@ class FileOperator:
         ]
         required_columns = selected_columns + all_bookmaker_columns
         input_path = os.path.join(self.save_path, 'Merged Results/allSeasons')
-        output_dir = f"../Data/FinalData/AllBookmakers"
+        output_dir = os.path.join(os.getcwd(),'Data/FinalData/AllBookmakers')
         os.makedirs(output_dir, exist_ok=True)
         files = os.listdir(input_path)
         for file in files:
@@ -293,7 +295,7 @@ class FileOperator:
         self.generate_all_seasons()
         self.add_matchday_to_season()
     def add_isSuprise_column(self):
-        input_base_directory = "../Data/FinalData/allBookmakers"
+        input_base_directory = os.path.join(os.getcwd(),'Data/FinalData/AllBookmakers')
         output_directory = input_base_directory
         os.makedirs(output_directory, exist_ok=True)
         for filename in os.listdir(input_base_directory):
@@ -337,8 +339,8 @@ class FileOperator:
         }
         for league in self.leagues:
             file_name = f"{league}_AllBookmakers.csv"
-            input_path = os.path.join("..", "Data", "FinalData", "AllBookmakers", file_name)
-            output_dir = os.path.join("..", "Data", "FinalData", "AllBookmakers")
+            input_path = os.path.join(os.getcwd(), "Data", "FinalData", "AllBookmakers", file_name)
+            output_dir = os.path.join(os.getcwd(), "Data", "FinalData", "AllBookmakers")
             output_path = os.path.join(output_dir, file_name)
             try:
                 if not os.path.exists(input_path):
@@ -495,14 +497,14 @@ class FileOperator:
         return dataframe
 
     def calculate_placements(self):
-        input_path = f"../Data/FinalData/AllBookmakers"
+        input_path = os.path.join(os.getcwd(),'Data/FinalData/AllBookmakers')
         os.makedirs(input_path, exist_ok=True)
         files = os.listdir(input_path)
         for file in files:
             if file.endswith('.csv'):
                 league = file.split('_')[0]
 
-                input_file = os.path.join(f"../Data/FinalData/AllBookmakers", f'{league}_AllBookmakers.csv')
+                input_file = os.path.join(input_path, f'{league}_AllBookmakers.csv')
 
                 if os.path.exists(input_file):
                     print(f"Processing {league}...")
@@ -510,7 +512,7 @@ class FileOperator:
                     df_new = pd.read_csv(input_file)
                     df_updated = self.create_placement_columns(df_new)
 
-                    output_path = os.path.join(f"../Data/FinalData/AllBookmakers", f'{league}_AllBookmakers.csv')
+                    output_path = os.path.join(input_path, f'{league}_AllBookmakers.csv')
                     df_updated.to_csv(output_path, index=False)
                     print(f"File saved to {output_path}")
                 else:
