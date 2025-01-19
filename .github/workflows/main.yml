@@ -1,4 +1,4 @@
-name: Usuwanie dane co 12 godzin
+name: Dodawane dane co 12 godzin
 
 on:
   workflow_dispatch:
@@ -37,5 +37,5 @@ jobs:
         run: |
           git fetch
           git add .
-          git commit -am "Automated removal from GitHub Actions" || echo "No changes to commit"
+          git commit -am "Automated addition from GitHub Actions" || echo "No changes to commit"
           git push origin main
