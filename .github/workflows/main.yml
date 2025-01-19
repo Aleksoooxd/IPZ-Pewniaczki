@@ -44,7 +44,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git add Data
+          git add -f -A Data/\*.csv
           # Próba commita - jeśli brak zmian, polecenie się nie powiedzie, ale nie przerywamy joba
           git commit -m "Automated update from GitHub Actions" || echo "No changes to commit"
           git push
