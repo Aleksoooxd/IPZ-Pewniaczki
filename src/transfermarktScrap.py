@@ -122,7 +122,7 @@ def save(auto_save=False):
     if not auto_save:
         save_to_csv = input("Czy chcesz stworzyć raport CSV z tych danych? (T/n): ").strip().upper()
     if (save_to_csv == 'T') or auto_save:
-        filepath = '../Data/Club Info/'
+        filepath = os.path.join(os.getcwd(), 'Data', 'Club Info')
         filename = 'clubs_report_from_transfermarkt.csv'
         os.makedirs(filepath, exist_ok=True)  # Tworzenie folderu jeśli nie istnieje
 
@@ -137,10 +137,11 @@ def save(auto_save=False):
                 for season in season_dict.keys():
                     row.append(values.get(season, 'N/A'))
                 writer.writerow(row)
-        df = pd.read_csv(filepath+filename)
-        modify_transfermarkt(df,filepath+filename)
+        file_path_name = os.path.join(filepath,filename)
+        df = pd.read_csv(file_path_name)
+        modify_transfermarkt(df,file_path_name)
 
-        print(f"Raport został zapisany jako {filepath + filename}")
+        print(f"Raport został zapisany jako {file_path_name}")
     else:
         print("Raport CSV nie został zapisany.")
 def scrape_transfermarkt():
