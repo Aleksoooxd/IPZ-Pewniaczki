@@ -25,8 +25,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run main.py
-        run: python main.py
+      - name: Run runBiDaily.py
+        run: python src/runBiDaily.py
 
       - name: Debug file changes
         run: |
