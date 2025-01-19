@@ -125,7 +125,7 @@ def save(auto_save=False):
         filepath = os.path.join(os.getcwd(), 'Data', 'Club Info')
         filename = 'clubs_report_from_transfermarkt.csv'
         file_path_name = os.path.join(filepath, filename)
-        os.makedirs(file_path_name, exist_ok=True)  # Tworzenie folderu jeśli nie istnieje
+        os.makedirs(filepath, exist_ok=True)  # Tworzenie folderu jeśli nie istnieje
 
         headers_csv = ['Club'] + list(season_dict.keys())
 
