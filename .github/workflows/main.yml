@@ -35,10 +35,7 @@ jobs:
           echo "==== GIT DIFF ===="
           git diff
           echo "==== CONTENTS OF Data FOLDER ===="
-          ls -l Data || echo "Brak folderu Data"
-
-      - name: Checkout repository2
-        uses: actions/checkout@v3
+          ls -l Data/FinalData/AllBookmakers || echo "Brak folderu Data"
 
       - name: Configure Git
         run: |
@@ -47,7 +44,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git add -f -A Data/\*.csv
+          git add -A
           # Próba commita - jeśli brak zmian, polecenie się nie powiedzie, ale nie przerywamy joba
           git commit -m "Automated update from GitHub Actions" || echo "No changes to commit"
           git push
