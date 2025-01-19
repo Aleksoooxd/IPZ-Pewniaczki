@@ -3,13 +3,14 @@ import asyncio
 import json
 import httpx
 import time
-def team_modifier(teamh,teama,separator):
-    link = teamh+" "+teama
+def team_modifier(teamh,teama,separator,use_date=False,date="20/09/2005"):
+    date = date.replace("/", "%2F")
+    link = teamh+" "+teama+" "+date
     link = link.replace(" ", separator)
     return link
 
 async def find_match_link(home_team, away_team, match_date):
-    teams_in_match = team_modifier(home_team, away_team, "%20")
+    teams_in_match = team_modifier(home_team, away_team, "%20",use_date=True,date=match_date)
     base_url = f"https://www.sofascore.com/api/v1/search/events?q={teams_in_match}&page=0"
     async with httpx.AsyncClient() as client:
         response = await client.get(base_url)
@@ -32,8 +33,8 @@ async def find_match_link(home_team, away_team, match_date):
         print(match_link)
 
 async def main():# Przykład użycia
-    home_team = "VfL Wolfsburg"
-    away_team = "VfB Stuttgart"
-    match_date = "18/12/2018"
+    home_team = "Hannover 96"
+    away_team = "VfL Wolfsburg"
+    match_date = "20/09/2005"
     await find_match_link(home_team, away_team, match_date)
 asyncio.run(main())
