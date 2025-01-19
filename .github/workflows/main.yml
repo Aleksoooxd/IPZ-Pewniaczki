@@ -37,6 +37,9 @@ jobs:
           echo "==== CONTENTS OF Data FOLDER ===="
           ls -l Data || echo "Brak folderu Data"
 
+      - name: Checkout repository2
+        uses: actions/checkout@v3
+
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
