@@ -28,23 +28,17 @@ jobs:
       - name: Run runBiDaily.py
         run: python src/runBiDaily.py
 
-      - name: Debug file changes
+      - name: Configure Git
         run: |
-          git status
-          ls -la Data/
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Force Git to detect changes
+      - name: Commit changes
         run: |
-          git fetch --all
-          git reset --hard HEAD
-          git add -A
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions@github.com"
-          git add Data/
-          git commit -m "Automatyczny update plików w folderze Data [skip ci]" || echo "Nothing to commit"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git add Data
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "Automated update from GitHub Actions"
+            git push
+          else
+            echo "No changes to commit"
+          fi
