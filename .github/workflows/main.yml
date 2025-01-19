@@ -28,17 +28,23 @@ jobs:
       - name: Run runBiDaily.py
         run: python src/runBiDaily.py
 
+      - name: Show changes
+        run: |
+          echo "==== GIT STATUS ===="
+          git status
+          echo "==== GIT DIFF ===="
+          git diff
+          echo "==== CONTENTS OF Data FOLDER ===="
+          ls -l Data || echo "Brak folderu Data"
+
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit changes
+      - name: Commit and push changes
         run: |
           git add Data
-          if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "Automated update from GitHub Actions"
-            git push
-          else
-            echo "No changes to commit"
-          fi
+          # Próba commita - jeśli brak zmian, polecenie się nie powiedzie, ale nie przerywamy joba
+          git commit -m "Automated update from GitHub Actions" || echo "No changes to commit"
+          git push
