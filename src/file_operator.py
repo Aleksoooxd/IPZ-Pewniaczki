@@ -266,7 +266,7 @@ class FileOperator:
                 league = file.split('_')[0]
                 file_path = os.path.join(input_path, file)
                 try:
-                    merged_data = pd.read_csv(file_path)
+                    merged_data = pd.read_csv(file_path,low_memory=False)
                 except Exception as e:
                     print(f"Nie udało się wczytać pliku dla ligi {league}: {e}")
                     continue
@@ -275,6 +275,7 @@ class FileOperator:
                         merged_data[col] = pd.NA
                 merged_data = merged_data[required_columns]
                 merged_data = merged_data.fillna(1.0)
+                #merged_data = merged_data.infer_objects(copy=False)
                 output_file = os.path.join(output_dir, f"{league}_AllBookmakers.csv")
                 try:
                     merged_data.to_csv(output_file, index=False)

@@ -13,9 +13,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
+        uses: actions/checkout@v3
 
       - name: Set up Python environment
         uses: actions/setup-python@v4
@@ -30,19 +28,13 @@ jobs:
       - name: Run Python script
         run: python src/runBiDaily.py
 
-      - name: Verify current working directory
-        run: pwd
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add Data/
+          git commit -m "Automatyczny update plików w folderze Data [skip ci]" || echo "Brak zmian do commitowania"
+          git push
 
-      - name: List files in repository
-        run: ls -la
-        
-      - name: Add new files
-        run: git add -A
-
-      - name: Show Git status
-        run: git status
-
-      - name: Configure Git
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          add_options: '-A'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
