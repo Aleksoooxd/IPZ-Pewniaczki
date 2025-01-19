@@ -70,7 +70,8 @@ def get_data_from_top_11(countryInfo, seasonCode):
             return
 
         # Zapis pliku do odpowiedniego folderu
-        os.makedirs('../Data',exist_ok=True)
+        folder_path = os.path.join(os.getcwd(), 'Data')
+        os.makedirs(folder_path,exist_ok=True)
         filepath = f'../Data/Matches Results/{countryInfo[0]}/'
         os.makedirs(filepath, exist_ok=True)  # Tworzenie folderu, jeśli nie istnieje
         filename = f'{countryInfo[1].replace(" ", "")}_{seasonCode}.csv'
