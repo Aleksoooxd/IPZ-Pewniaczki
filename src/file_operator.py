@@ -123,10 +123,12 @@ class FileOperator:
             temp_df.rename(columns={'HT': 'HomeTeam', 'AT': 'AwayTeam'}, inplace=True)
         temp_df.dropna(axis=1, how='all', inplace=True)
         temp_df.dropna(axis=0, how='all', inplace=True)
+        temp_df.drop(temp_df[temp_df['FTR'] == 1.0].index, inplace=True)
         temp_df.dropna(axis=0, how='all',subset=['Div'], inplace=True)
         temp_df["Date"] = temp_df["Date"].apply(self.correct_date_format)
         season = self.extract_season_from_path(file_path)
         temp_df['Season'] = season
+
         temp_df["HomeTeam"] = temp_df["HomeTeam"].apply(self.correct_clubs)
         temp_df["AwayTeam"] = temp_df["AwayTeam"].apply(self.correct_clubs)
         HomeVals = []

@@ -42,9 +42,9 @@ async def find_match_link(home_team, away_team, match_date):
         return match_link
 
 async def main():# Przykład użycia
-    home_team = "Academica"
-    away_team = "Maritimo"
-    match_date = "03/10/2015"
+    home_team = "Panathinaikos"
+    away_team = "Olympiakos"
+    match_date = "17/03/2019"
     match_link = await find_match_link(home_team, away_team, match_date)
     print(match_link)
 asyncio.run(main())
