@@ -44,18 +44,19 @@ for filename in os.listdir(input_path):
             data['FTR'] = data['FTR'].map(FTR_map)
 
             # Wyświetlenie liczby meczów dla drużyn
-            print(data['HomeTeam'].value_counts())
+            #print(data['HomeTeam'].value_counts())
 
             # Wybór cech i celu (przykład: isSuprise jako cel)
             target_column = 'isSuprise'
             numeric_data = data.select_dtypes(include=['number'])
+            print(numeric_data.shape)
 
             X = numeric_data.drop(columns=[target_column])
             y = numeric_data[target_column]
 
             # Podział danych na treningowe i testowe (90:10)
             X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.1, random_state=42, stratify=y
+                X, y, test_size=0.01, random_state=42, stratify=y
             )
 
             # Standaryzacja danych
