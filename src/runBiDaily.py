@@ -3,6 +3,7 @@ from footballScrap import scrape_top_11
 from transfermarktScrap import scrape_transfermarkt
 from helpfunctions import reset_data
 def main():
+    reset_data()
     scrape_top_11()
     scrape_transfermarkt()
     file_op = FileOperator()

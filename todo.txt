@@ -5,3 +5,5 @@ Polaczyc/zmienic top6 bukow po sezonie 17/18 bukmacher LB odpada,
 Zrobic mini dokumentacje kolumn w pliku z folderu Docs. Zrobic opis kazdej kolumny,
 a jezeli jest tam jakas kalkulacja to trzeba ja opisac.
 -SCRAPING TERMINARZA
+
+- ML ( nie uzywając FTR) (mozna potestować na kilku kolumn i sukcesywnie zwiększać ich ilość) 

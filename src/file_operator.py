@@ -10,14 +10,14 @@ class FileOperator:
         self.leagues = ['PremierLeague', 'LaLigaPrimeraDivision', 'Bundesliga1', 'SerieA', 'LeChampionnat','PremierLeague','Eredivisie','JupilerLeague','LigaI','FutbolLigi1','EthnikiKatigoria']
         self.countries = ['england', 'spain', 'germany', 'italy', 'france','scotland','netherlands','belgium','portugal','turkey','greece']
         self.sessonCodes = ['0405', '0506', '0607', '0708', '0809', '0910', '1011', '1112', '1213', '1314', '1415', '1516', '1617', '1718', '1819', '1920', '2021', '2122', '2223', '2324', '2425']
-        self.club_values = pd.read_csv(os.path.join(os.getcwd(),'Data','Club Info','clubs_report_from_transfermarkt.csv'), index_col=0)
+        self.club_values = pd.read_csv(os.path.join(os.getcwd(),'Data','Club Info','clubs_report_from_transfermarkt.csv'), index_col=0,low_memory=False)
     def detect_encoding(self, file_path):
         with open(file_path, 'rb') as f:
             result = chardet.detect(f.read())
         return result['encoding']
     def update_club_vals(self):
         path = os.path.join(os.getcwd(),'Data','Club Info','clubs_report_from_transfermarkt.csv')
-        self.club_values = pd.read_csv(path, index_col=0)
+        self.club_values = pd.read_csv(path, index_col=0,low_memory=False)
 
     def add_matchday_to_season(self):
         import os
@@ -123,7 +123,7 @@ class FileOperator:
             temp_df.rename(columns={'HT': 'HomeTeam', 'AT': 'AwayTeam'}, inplace=True)
         temp_df.dropna(axis=1, how='all', inplace=True)
         temp_df.dropna(axis=0, how='all', inplace=True)
-        temp_df.dropna(axis=0, how='all',subset=['Div'], inplace=True)
+        temp_df.dropna(axis=0, how='any',subset=['Div', 'FTR'], inplace=True)
         temp_df["Date"] = temp_df["Date"].apply(self.correct_date_format)
         season = self.extract_season_from_path(file_path)
         temp_df['Season'] = season
@@ -337,19 +337,15 @@ class FileOperator:
                       "WHA"]
             }
         }
-        for league in self.leagues:
-            file_name = f"{league}_AllBookmakers.csv"
-            input_path = os.path.join(os.getcwd(), "Data", "FinalData", "AllBookmakers", file_name)
-            output_dir = os.path.join(os.getcwd(), "Data", "FinalData", "AllBookmakers")
-            output_path = os.path.join(output_dir, file_name)
+        inpath = os.path.join(os.getcwd(), "Data", "FinalData", "AllBookmakers")
+        os.makedirs(inpath,exist_ok=True)
+        for file in os.listdir(inpath):
+            inputout_path = os.path.join(inpath,file)
             try:
-                if not os.path.exists(input_path):
-                    print(f"File not found: {input_path}")
+                if not os.path.exists(inputout_path):
+                    print(f"File not found: {inputout_path}")
                     continue
-                data = pd.read_csv(input_path)
-                # Tworzenie folderu, jeśli nie istnieje
-                if not os.path.exists(output_dir):
-                    os.makedirs(output_dir)
+                data = pd.read_csv(inputout_path,low_memory=False)
                 # Tworzenie kolumn statystycznych dla H, D, A
                 for result_type, cols in bookmakers_columns["AllBookmakers"].items():
                     values = data[cols].dropna(axis=1).values
@@ -362,10 +358,10 @@ class FileOperator:
                 # Dodanie kolumny z konsensusem
                 data['Consensus'] = data.apply(calculate_consensus, axis=1, columns=bookmakers_columns["AllBookmakers"])
                 # Zapisanie pliku
-                data.to_csv(output_path, index=False)
-                print(f"Processed and saved: {output_path}")
+                data.to_csv(inputout_path, index=False)
+                print(f"Processed and saved: {inputout_path}")
             except Exception as e:
-                print(f"Error processing {file_name}: {e}")
+                print(f"Error processing {file}: {e}")
 
     def create_placement_columns(self, dataframe):
         dataframe['FTHG'] = pd.to_numeric(dataframe['FTHG'], errors='coerce')

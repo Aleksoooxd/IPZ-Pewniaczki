@@ -34,17 +34,17 @@ async def find_match_link(home_team, away_team, match_date):
         id = entity['id']
         teams_link = team_modifier(ht,at,"-")
         match_link = f"https://www.sofascore.com/football/match/{teams_link}/{customid}#id:{id}"
-        lineups_link = f"https://www.sofascore.com/api/v1//event/{id}/lineups"
+        lineups_link = f"https://www.sofascore.com/api/v1/event/{id}/lineups"
         print(lineups_link)
-        statistics_link = f"https://www.sofascore.com/api/v1//event/{id}/statistics"
+        statistics_link = f"https://www.sofascore.com/api/v1/event/{id}/statistics"
         print(statistics_link)
         managers_link = f"https://www.sofascore.com/api/v1//event/{id}/managers"
         return match_link
 
 async def main():# Przykład użycia
-    home_team = "Academica"
-    away_team = "Maritimo"
-    match_date = "03/10/2015"
+    home_team = "Pogon Szczecin"
+    away_team = "Zaglebie Lubin"
+    match_date = "04/12/2024"
     match_link = await find_match_link(home_team, away_team, match_date)
     print(match_link)
 asyncio.run(main())

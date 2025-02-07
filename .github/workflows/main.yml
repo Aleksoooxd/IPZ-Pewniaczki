@@ -1,4 +1,4 @@
-name: Dodawane dane co 12 godzin
+name: Odswierzane dane co 12 godzin
 
 on:
   workflow_dispatch:
