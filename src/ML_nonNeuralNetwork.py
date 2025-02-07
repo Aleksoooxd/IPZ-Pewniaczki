@@ -7,8 +7,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from imblearn.over_sampling import SMOTE
+from sklearn.tree import DecisionTreeClassifier
+from xgboost import XGBClassifier
 
 # Mapy do zamiany wartości tekstowych na numeryczne
 consensus_map = {
@@ -23,75 +25,64 @@ FTR_map = {
     "A": 2
 }
 
-# Ścieżki do danych wejściowych i wynikowych
-output_path = os.path.join('..', 'ML_output_data')
+
 input_path = os.path.join('..', 'Data', 'FinalData', 'AllBookmakers')
 
-# Tworzenie folderu wynikowego, jeśli nie istnieje
-os.makedirs(output_path, exist_ok=True)
+fileInDir = os.listdir(input_path)
 
-for filename in os.listdir(input_path):
-    if filename.endswith(".csv"):
-        try:
-            print(f"Processing {filename}")
+for file in fileInDir:
+    if file.endswith(".csv"):
+        print(f'========= Machine Lerning for file {file} =========')
+        data = pd.read_csv(os.path.join(input_path, file))
+        pd.set_option('display.max_columns', None)
+        pd.set_option('display.max_rows', None)
 
-            # Wczytywanie danych
-            filePath = os.path.join(input_path, filename)
-            data = pd.read_csv(filePath)
+        data['Date'] = pd.to_datetime(data['Date'],format='%d/%m/%Y')
+        data['Consensus'] = data['Consensus'].map(consensus_map)
+        data['FTR'] = data['FTR'].map(FTR_map)
+        ## brak pomyslu na konwersje data['Season'] z object na cosik???
 
-            # Mapowanie kolumn Consensus i FTR
-            data['Consensus'] = data['Consensus'].map(consensus_map)
-            data['FTR'] = data['FTR'].map(FTR_map)
+        OneHotEncoed_Data = pd.get_dummies(data, columns=['HomeTeam', 'AwayTeam'])
+       # print(OneHotEncoed_Data.dtypes)
+
+        X = OneHotEncoed_Data.drop(columns=['Date', 'FTR', 'isSuprise', 'Season', 'isSuprise_H', 'isSuprise_D', 'isSuprise_A','Div'])
+        y = OneHotEncoed_Data['isSuprise']
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
+
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
+
+        smote = SMOTE(random_state=42)
+        X_train_smote, y_train_smote = smote.fit_resample(X_train_scaled, y_train)
+
+        classifiers = {
+            "Random Forest": RandomForestClassifier(n_estimators=100, random_state=42),
+            "Gradient Boosting": GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, random_state=42),
+            "Logistic Regression": LogisticRegression(max_iter=500, random_state=42),
+            "SVM (Support Vector Machine)": SVC(kernel='rbf', random_state=42),
+            "KNN (K-Nearest Neighbors)": KNeighborsClassifier(n_neighbors=5),
+            "Naive Bayes": GaussianNB(),
+            "XGBoost": XGBClassifier(n_estimators=100, learning_rate=0.1, max_depth=5, random_state=42),
+            "Decision Tree": DecisionTreeClassifier(random_state=42)
+        }
 
 
+        for name, clf in classifiers.items():
+            print(f"=== {name} ===")
 
-            # Wybór cech i celu (przykład: isSuprise jako cel)
-            target_column = 'isSuprise'
-            numeric_data = data.select_dtypes(include=['number'])
+            # Trenowanie modelu
+            clf.fit(X_train_smote, y_train_smote)
 
-            X = numeric_data.drop(columns=[target_column])
-            y = numeric_data[target_column]
+            # Predykcje
+            y_pred = clf.predict(X_test_scaled)
 
-            # Podział danych na treningowe i testowe (90:10)
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.1, random_state=42, stratify=y
-            )
+            # Ocena wyników
+            print("Accuracy:", accuracy_score(y_test, y_pred))
+            print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+            print("Classification Report:\n", classification_report(y_test, y_pred))
+            print("\n" + "=" * 50 + "\n")
 
-            # Standaryzacja danych
-            scaler = StandardScaler()
-            X_train_scaled = scaler.fit_transform(X_train)
-            X_test_scaled = scaler.transform(X_test)
+        #break
 
-            # Równoważenie danych przy użyciu SMOTE
-            smote = SMOTE(random_state=42)
-            X_train_balanced, y_train_balanced = smote.fit_resample(X_train_scaled, y_train)
-
-            # Lista klasyfikatorów
-            classifiers = {
-                "Random Forest": RandomForestClassifier(random_state=42),
-                "Logistic Regression": LogisticRegression(random_state=42, max_iter=500),
-                "Support Vector Machine": SVC(random_state=42, probability=True),
-                "K-Nearest Neighbors": KNeighborsClassifier(),
-                "Naive Bayes": GaussianNB(),
-                "Gradient Boosting": GradientBoostingClassifier(random_state=42)
-            }
-
-            # Iteracja po klasyfikatorach
-            for clf_name, clf in classifiers.items():
-                print(f"\n{clf_name} Results:")
-                clf.fit(X_train_balanced, y_train_balanced)
-                predictions = clf.predict(X_test_scaled)
-
-                # Macierz konfuzji i raport
-                confusion = confusion_matrix(y_test, predictions)
-                report = classification_report(y_test, predictions)
-
-                print("\t\tMacierz konfuzji:")
-                print(confusion)
-                print("====================")
-                print("\t\tMiary:")
-                print(report)
-
-            print(f"End of processing {filename}")
-        except Exception as e:
-            print(f"Error processing {filename}: {e}")
