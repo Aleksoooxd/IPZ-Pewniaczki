@@ -37,14 +37,15 @@ input_path = os.path.join('..', 'Data', 'FinalData', 'AllBookmakers')
 fileInDir = os.listdir(input_path)
 
 try:
-    for file in fileInDir:
+    #for file in fileInDir:
+    for file in ['AllLeagues.csv']:
         if file.endswith(".csv"):
-            print(f'========= Machine Lerning for file {file} =========')
+            print(f'========= Machine Learning for file {file} =========')
             data = pd.read_csv(os.path.join(input_path, file))
             pd.set_option('display.max_columns', None)
             pd.set_option('display.max_rows', None)
 
-            data['Date'] = pd.to_datetime(data['Date'], format='%d/%m/%Y')
+            #data['Date'] = pd.to_datetime(data['Date'], format='%d/%m/%Y')
             data['Consensus'] = data['Consensus'].map(consensus_map)
             data['FTR'] = data['FTR'].map(FTR_map)
             ## brak pomyslu na konwersje data['Season'] z object na cosik???

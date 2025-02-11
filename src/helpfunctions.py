@@ -5,6 +5,7 @@ from fuzzywuzzy import process
 from unidecode import unidecode
 import numpy as np
 from scipy.stats import entropy
+import datetime
 import shutil
 def normalize():
     teams_football_data = set()
@@ -118,13 +119,15 @@ def get_club_matches_in_season(club_name= 'Stuttgart', season= '2004/5'):
     return all_matches_sorted
 def merge_all_seasons(save=True):
     all_seasons = pd.DataFrame()
-    path = os.path.join(os.getcwd(),'Data/FinalData/AllBookmakers')
+    path = os.path.join('../Data/FinalData/AllBookmakers')
     for file in os.listdir(path):
         file_path = os.path.join(path, file)
         data = pd.read_csv(file_path, low_memory=False)
         all_seasons = pd.concat([all_seasons, data])
+    all_seasons["Date"] = pd.to_datetime(all_seasons["Date"], format="%d/%m/%Y", errors="coerce")
+    all_seasons = all_seasons.sort_values(by="Date")
     if save:
-        output_path = os.path.join(os.path.join(os.getcwd(),'Data/FinalData/AllBookmakers'), 'AllLeagues.csv')
+        output_path = os.path.join('../Data/FinalData/AllBookmakers', 'AllLeagues.csv')
         all_seasons.to_csv(output_path,index=False)
     return all_seasons
 def reset_data():

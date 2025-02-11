@@ -294,6 +294,28 @@ class FileOperator:
         self.update_club_vals()
         self.generate_all_seasons()
         self.add_matchday_to_season()
+    def final_merge(self):
+        input_base_directory = os.path.join(os.getcwd(), 'Data/FinalData/AllBookmakers')
+        output_directory = input_base_directory
+        os.makedirs(output_directory, exist_ok=True)
+        merged_df = pd.DataFrame()
+        for filename in os.listdir(input_base_directory):
+            if filename.endswith(".csv"):
+                file_path = os.path.join(input_base_directory, filename)
+                if os.path.exists(file_path):
+                    try:
+                        encoding = self.detect_encoding(file_path)
+                        temp_df = pd.read_csv(
+                            file_path,
+                            encoding=encoding,
+                            on_bad_lines='skip'
+                        )
+                        merged_df = pd.concat([merged_df, temp_df], ignore_index=True)
+                    except Exception as e:
+                        print(f"Error merging file: {e}")
+        output_file = os.path.join(output_directory,"Merged_AllBookmakers")
+        merged_df.to_csv(output_file,index=False)
+        print(f"Merged file saved to {output_file}")
     def add_isSuprise_column(self):
         input_base_directory = os.path.join(os.getcwd(),'Data/FinalData/AllBookmakers')
         output_directory = input_base_directory
