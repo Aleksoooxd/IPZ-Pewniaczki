@@ -37,8 +37,8 @@ input_path = os.path.join('..', 'Data', 'FinalData', 'AllBookmakers')
 fileInDir = os.listdir(input_path)
 
 try:
-    #for file in fileInDir:
-    for file in ['AllLeagues.csv']:
+    for file in fileInDir:
+   #for file in ['AllLeagues.csv']:
         if file.endswith(".csv"):
             print(f'========= Machine Learning for file {file} =========')
             data = pd.read_csv(os.path.join(input_path, file))
@@ -54,7 +54,7 @@ try:
             # print(OneHotEncoed_Data.dtypes)
 
             X = OneHotEncoed_Data.drop(
-                columns=['Date', 'FTR', 'isSuprise', 'Season', 'isSuprise_H', 'isSuprise_D', 'isSuprise_A', 'Div'])
+                columns=['Date', 'FTR', 'isSuprise', 'Season', 'isSuprise_H', 'isSuprise_D', 'isSuprise_A', 'Div','FTHG','FTAG'])
             y = OneHotEncoed_Data['isSuprise']
 
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
@@ -67,14 +67,14 @@ try:
             X_train_smote, y_train_smote = smote.fit_resample(X_train_scaled, y_train)
 
             classifiers = {
-                "Random Forest": RandomForestClassifier(n_estimators=100, random_state=42),
+                "Random Forest": RandomForestClassifier(n_estimators=100, random_state=42,max_depth=5),
                 "Gradient Boosting": GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, random_state=42),
                 "Logistic Regression": LogisticRegression(max_iter=500, random_state=42),
                 "SVM (Support Vector Machine)": SVC(kernel='rbf', random_state=42),
                 "KNN (K-Nearest Neighbors)": KNeighborsClassifier(n_neighbors=5),
                 "Naive Bayes": GaussianNB(),
                 "XGBoost": XGBClassifier(n_estimators=100, learning_rate=0.1, max_depth=5, random_state=42),
-                "Decision Tree": DecisionTreeClassifier(random_state=42)
+                "Decision Tree": DecisionTreeClassifier(random_state=42,max_depth=5)
             }
 
 
