@@ -1,7 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 
-from src.flask_app.app.models import Employee
-
 main = Blueprint('main', __name__)
 @main.route('/')
 def home():

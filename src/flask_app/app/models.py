@@ -1,12 +1,127 @@
-from . import db
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
+from src.flask_app.app import db
 
-class Employee(db.Model):
-    __tablename__ = 'employees'
 
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
-    email = db.Column(db.String(100))
-    hire_date = db.Column(db.Date)
-    department = db.Column(db.String(50))
-    salary = db.Column(db.Numeric(10, 2))
+class Teams(db.Model):
+    _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    values = db.relationship('TeamValues', back_populates='team', cascade='all, delete-orphan')
+    def __init__(self, name):
+        self.name = name
+
+
+class TeamValues(db.Model):
+    _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    team_id = db.Column(db.Integer, ForeignKey('teams.id'), nullable=False)
+    season = db.Column(db.String(20), nullable=False)
+    value = db.Column(db.Float, nullable=True)
+
+    team = db.relationship('Teams', back_populates='values')
+    def __init__(self, team_id, season, value):
+        self.team_id = team_id
+        self.season = season
+        self.value = value
+
+class Matches(db.Model):
+    _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    div = db.Column(db.String(10), nullable=False)
+    season = db.Column(db.String(20), nullable=False)
+    date = db.Column(db.String(20), nullable=False)
+    home_team_id = db.Column(db.Integer, ForeignKey('teams.id'), nullable=False)
+    away_team_id = db.Column(db.Integer, ForeignKey('teams.id'), nullable=False)
+    ftr = db.Column(db.String(1), nullable=False)
+    home_value = db.Column(db.Float, nullable=True)
+    away_value = db.Column(db.Float, nullable=True)
+    home_matchday = db.Column(db.Integer, nullable=True)
+    away_matchday = db.Column(db.Integer, nullable=True)
+    fthg = db.Column(db.Float, nullable=True)
+    ftag = db.Column(db.Float, nullable=True)
+    b365h = db.Column(db.Float, nullable=True)
+    b365d = db.Column(db.Float, nullable=True)
+    b365a = db.Column(db.Float, nullable=True)
+    bfh = db.Column(db.Float, nullable=True)
+    bfd = db.Column(db.Float, nullable=True)
+    bfa = db.Column(db.Float, nullable=True)
+    bsh = db.Column(db.Float, nullable=True)
+    bsd = db.Column(db.Float, nullable=True)
+    bsa = db.Column(db.Float, nullable=True)
+    bwh = db.Column(db.Float, nullable=True)
+    bwd = db.Column(db.Float, nullable=True)
+    bwa = db.Column(db.Float, nullable=True)
+    gbh = db.Column(db.Float, nullable=True)
+    gbd = db.Column(db.Float, nullable=True)
+    gba = db.Column(db.Float, nullable=True)
+    iwh = db.Column(db.Float, nullable=True)
+    iwd = db.Column(db.Float, nullable=True)
+    iwa = db.Column(db.Float, nullable=True)
+    lbh = db.Column(db.Float, nullable=True)
+    lbd = db.Column(db.Float, nullable=True)
+    lba = db.Column(db.Float, nullable=True)
+    psh = db.Column(db.Float, nullable=True)
+    psd = db.Column(db.Float, nullable=True)
+    psa = db.Column(db.Float, nullable=True)
+    soh = db.Column(db.Float, nullable=True)
+    sod = db.Column(db.Float, nullable=True)
+    soa = db.Column(db.Float, nullable=True)
+    sbh = db.Column(db.Float, nullable=True)
+    sbd = db.Column(db.Float, nullable=True)
+    sba = db.Column(db.Float, nullable=True)
+    sjh = db.Column(db.Float, nullable=True)
+    sjd = db.Column(db.Float, nullable=True)
+    sja = db.Column(db.Float, nullable=True)
+    syh = db.Column(db.Float, nullable=True)
+    syd = db.Column(db.Float, nullable=True)
+    sya = db.Column(db.Float, nullable=True)
+    vch = db.Column(db.Float, nullable=True)
+    vcd = db.Column(db.Float, nullable=True)
+    vca = db.Column(db.Float, nullable=True)
+    whh = db.Column(db.Float, nullable=True)
+    whd = db.Column(db.Float, nullable=True)
+    wha = db.Column(db.Float, nullable=True)
+    is_suprise_h = db.Column(db.Integer, nullable=True)
+    is_suprise_d = db.Column(db.Integer, nullable=True)
+    is_suprise_a = db.Column(db.Integer, nullable=True)
+    is_suprise = db.Column(db.Integer, nullable=True)
+    home_team_placement = db.Column(db.Integer, nullable=True)
+    away_team_placement = db.Column(db.Integer, nullable=True)
+    home_form3 = db.Column(db.Integer, nullable=True)
+    home_form5 = db.Column(db.Integer, nullable=True)
+    home_form_season = db.Column(db.Integer, nullable=True)
+    away_form3 = db.Column(db.Integer, nullable=True)
+    away_form5 = db.Column(db.Integer, nullable=True)
+    away_form_season = db.Column(db.Integer, nullable=True)
+    home_goals3 = db.Column(db.Integer, nullable=True)
+    home_goals5 = db.Column(db.Integer, nullable=True)
+    home_goals_season = db.Column(db.Integer, nullable=True)
+    away_goals3 = db.Column(db.Integer, nullable=True)
+    away_goals5 = db.Column(db.Integer, nullable=True)
+    away_goals_season = db.Column(db.Integer, nullable=True)
+    htlsp = db.Column(db.Integer, nullable=True)
+    atlsp = db.Column(db.Integer, nullable=True)
+    h_mean = db.Column(db.Float, nullable=True)
+    h_std = db.Column(db.Float, nullable=True)
+    h_shannon = db.Column(db.Float, nullable=True)
+    h_cv = db.Column(db.Float, nullable=True)
+    h_gini = db.Column(db.Float, nullable=True)
+    h_hhi = db.Column(db.Float, nullable=True)
+    d_mean = db.Column(db.Float, nullable=True)
+    d_std = db.Column(db.Float, nullable=True)
+    d_shannon = db.Column(db.Float, nullable=True)
+    d_cv = db.Column(db.Float, nullable=True)
+    d_gini = db.Column(db.Float, nullable=True)
+    d_hhi = db.Column(db.Float, nullable=True)
+    a_mean = db.Column(db.Float, nullable=True)
+    a_std = db.Column(db.Float, nullable=True)
+    a_shannon = db.Column(db.Float, nullable=True)
+    a_cv = db.Column(db.Float, nullable=True)
+    a_gini = db.Column(db.Float, nullable=True)
+    a_hhi = db.Column(db.Float, nullable=True)
+    consensus = db.Column(String(1), nullable=True)
+
+    home_team = db.relationship('Teams', foreign_keys=[home_team_id])
+    away_team = db.relationship('Teams', foreign_keys=[away_team_id])
+    def __init__(self, home_team, away_team):
+        self.home_team = home_team
+        self.away_team = away_team
