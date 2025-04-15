@@ -1,5 +1,5 @@
 from file_operator import FileOperator
-from footballScrap import scrape_top_11
+from footballScrap import correct_scrape_top_11
 from transfermarktScrap import scrape_transfermarkt
 from helpfunctions import reset_data,merge_all_seasons
 def main():
@@ -16,10 +16,10 @@ def main():
         print("0. Quit")
         choice = input("Enter your choice: ")
         if choice == '1':
-            scrape_top_11()
             scrape_transfermarkt()
+            correct_scrape_top_11()
         elif choice == '2':
-            scrape_top_11()
+            correct_scrape_top_11()
         elif choice == '3':
             scrape_transfermarkt()
         elif choice == '4':
@@ -34,7 +34,7 @@ def main():
             file_op.add_statistics_and_consensus()
         elif choice == '7':
             reset_data()
-            scrape_top_11()
+            correct_scrape_top_11()
             scrape_transfermarkt()
             file_op = FileOperator()
             file_op.generate_seasons_with_values()
