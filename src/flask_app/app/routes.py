@@ -4,6 +4,11 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def home():
     return render_template('index.html')
+
+@main.route('/main')
+def mainpage():
+    return render_template('MainPage.html')
+
 @main.route('/premierleague')
 def premierleague():
     return render_template('premierleague.html')
@@ -62,3 +67,5 @@ def test_db():
         status = f"❌ Błąd połączenia z bazą danych: {str(e)}"
 
     return render_template('test_db.html', status=status)
+
+
