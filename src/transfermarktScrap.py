@@ -3,15 +3,17 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 from concurrent.futures import ThreadPoolExecutor
-from flask_app.app.db import db,app, Team, League, Season, TeamLeague, TeamValue
+
+from sqlalchemy import select
+
+from flask_app.app.db import db, app, Team, League, Season, TeamLeague, TeamValue
 import os
+from threading import Lock
 from sqlalchemy.exc import IntegrityError
 
-# Adres strony głównej
 site = "https://www.transfermarkt.com/"
 curr_year = (datetime.datetime.now().year - 1) if datetime.datetime.now().month < 8 else datetime.datetime.now().year
 
-# Ścieżki do poszczególnych lig
 leagues_dict = {
     'Premier League': "premier-league/startseite/wettbewerb/GB1",
     'La Liga': "laliga/startseite/wettbewerb/ES1",
@@ -26,16 +28,14 @@ leagues_dict = {
     'Ethniki Katigoria': "super-league-1/startseite/wettbewerb/GR1"
 }
 
-# Generowanie sezonów dla wszystkich lig
 season_dict = {}
-for year in range(2004, curr_year + 1):  # Wszystkie sezony od 2004/05
+for year in range(2004, curr_year + 1):
     season_dict[f'{year}/{(year % 100) + 1}'] = f"/saison_id/{year}"
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
 }
 
-# Mapa nazw klubów do znormalizowanych nazw
 club_name_mapping = {
     'SPAL 2013': 'SPAL',
     'Parma Calcio 1913': 'Parma FC',
@@ -77,26 +77,30 @@ club_name_mapping = {
     'Roda JC': 'Roda'
 }
 
-
 def normalize_club_name(club_name):
-    """Normalize club names using the mapping dictionary"""
     return club_name_mapping.get(club_name, club_name)
 
-
 def get_or_create_team(session, team_name):
-    """Get existing team or create new one"""
     normalized_name = normalize_club_name(team_name)
-    team = session.query(Team).filter_by(name=normalized_name).first()
+    team = session.execute(
+        select(Team)
+        .where(Team.name == normalized_name)
+        .with_for_update()
+    ).scalar_one_or_none()
     if not team:
         team = Team(name=normalized_name)
         session.add(team)
-        session.commit()
+        try:
+            session.commit()
+        except IntegrityError:
+            session.rollback()
+            team = session.execute(
+                select(Team)
+                .where(Team.name == normalized_name)
+            ).scalar_one()
     return team
 
-
 def get_or_create_league(session, league_name):
-    """Get existing league or create new one"""
-    # For league code, we'll use the first part of the URL path
     path_part = leagues_dict[league_name].split('/')[0]
     league = session.query(League).filter_by(code=path_part).first()
     if not league:
@@ -105,9 +109,7 @@ def get_or_create_league(session, league_name):
         session.commit()
     return league
 
-
 def get_or_create_season(session, season_name):
-    """Get existing season or create new one"""
     season = session.query(Season).filter_by(name=season_name).first()
     if not season:
         season = Season(name=season_name)
@@ -115,15 +117,12 @@ def get_or_create_season(session, season_name):
         session.commit()
     return season
 
-
 def create_team_value(session, team_id, season_id, value_str):
-    """Create team value record after converting the string value to float"""
     try:
-        # Convert value string (like "€5.00m") to float
         if value_str == 'N/A':
             return None
         if value_str.endswith('bn'):
-            value = float(value_str.replace('€', '').replace('bn', '').strip())*1000
+            value = float(value_str.replace('€', '').replace('bn', '').strip()) * 1000
         else:
             value = float(value_str.replace('€', '').replace('m', '').strip())
         team_value = TeamValue(
@@ -138,43 +137,31 @@ def create_team_value(session, team_id, season_id, value_str):
         print(f"Could not parse value: {value_str}")
         return None
 
-
 def fetch_league_data(league_name, season_name, path, spath):
     url = site + path + spath
     print(f"Fetching: {league_name}, Season: {season_name}, URL: {url}")
-
     with requests.Session() as session:
         response = session.get(url, headers=headers)
         if response.status_code != 200:
             print(f"Error fetching data for {league_name} {season_name}: {response.status_code}")
             return None
-
         soup = BeautifulSoup(response.text, 'html.parser')
         club_names = soup.find_all('td', class_='hauptlink no-border-links')
         club_values = soup.find_all('td', class_='rechts')
         with app.app_context():
-            # Get or create league and season in database
             league = get_or_create_league(db.session, league_name)
             season = get_or_create_season(db.session, season_name)
-
             for i, name_td in enumerate(club_names):
                 try:
                     original_club_name = name_td.text.strip()
                     club_value_str = club_values[((i + 1) * 2) + 1].text.strip()
-
-                    # Get or create team
                     team = get_or_create_team(db.session, original_club_name)
-
-                    # Create team value record
                     create_team_value(db.session, team.team_id, season.season_id, club_value_str)
-
-                    # Create team-league-season association
                     team_league = db.session.query(TeamLeague).filter_by(
                         team_id=team.team_id,
                         league_id=league.league_id,
                         season_id=season.season_id
                     ).first()
-
                     if not team_league:
                         team_league = TeamLeague(
                             team_id=team.team_id,
@@ -183,7 +170,6 @@ def fetch_league_data(league_name, season_name, path, spath):
                         )
                         db.session.add(team_league)
                         db.session.commit()
-
                 except IndexError:
                     continue
                 except IntegrityError as e:
@@ -194,19 +180,16 @@ def fetch_league_data(league_name, season_name, path, spath):
                     print(f"Unexpected error for {original_club_name}: {e}")
                     continue
 
-
 def scrape_leagues():
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
         for league, path in leagues_dict.items():
-            # Wszystkie sezony dla innych lig
             for season, spath in season_dict.items():
                 futures.append(
                     executor.submit(fetch_league_data, league, season, path, spath)
                 )
         for future in futures:
             future.result()
-
 
 def scrape_transfermarkt():
     try:

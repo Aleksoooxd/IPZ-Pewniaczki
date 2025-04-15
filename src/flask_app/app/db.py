@@ -21,14 +21,11 @@ class Team(db.Model):
     __tablename__ = 'team'
 
     team_id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(100), unique=True)
 
-    # Relationships
     team_leagues = relationship("TeamLeague", back_populates="team")
-    home_matches = relationship("FootballMatch", foreign_keys="[FootballMatch.home_team_id]",
-                                back_populates="home_team")
-    away_matches = relationship("FootballMatch", foreign_keys="[FootballMatch.away_team_id]",
-                                back_populates="away_team")
+    home_matches = relationship("FootballMatch", foreign_keys="[FootballMatch.home_team_id]",back_populates="home_team")
+    away_matches = relationship("FootballMatch", foreign_keys="[FootballMatch.away_team_id]",back_populates="away_team")
     team_values = relationship("TeamValue", back_populates="team")
 
 
@@ -38,7 +35,6 @@ class League(db.Model):
     league_id = Column(Integer, primary_key=True)
     code = Column(String)
 
-    # Relationships
     team_leagues = relationship("TeamLeague", back_populates="league")
     matches = relationship("FootballMatch", back_populates="league")
 
@@ -49,7 +45,6 @@ class Season(db.Model):
     season_id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    # Relationships
     team_leagues = relationship("TeamLeague", back_populates="season")
     matches = relationship("FootballMatch", back_populates="season")
     team_values = relationship("TeamValue", back_populates="season")
@@ -63,7 +58,6 @@ class TeamLeague(db.Model):
     league_id = Column(Integer, ForeignKey('league.league_id'))
     season_id = Column(Integer, ForeignKey('season.season_id'))
 
-    # Relationships
     team = relationship("Team", back_populates="team_leagues")
     league = relationship("League", back_populates="team_leagues")
     season = relationship("Season", back_populates="team_leagues")
@@ -77,7 +71,6 @@ class TeamValue(db.Model):
     season_id = Column(Integer, ForeignKey('season.season_id'))
     value = Column(Float)
 
-    # Relationships
     team = relationship("Team", back_populates="team_values")
     season = relationship("Season", back_populates="team_values")
 
@@ -94,8 +87,8 @@ class FootballMatch(db.Model):
     result = Column(String)
     home_matchday = Column(Integer)
     away_matchday = Column(Integer)
-    ffng = Column(Integer)  # Assuming this stands for something like "full time home goals"
-    ffag = Column(Integer)  # Assuming this stands for "full time away goals"
+    ffng = Column(Integer)
+    ffag = Column(Integer)
     home_value = Column(Float)
     away_value = Column(Float)
     home_value_id = Column(Integer)
@@ -103,7 +96,6 @@ class FootballMatch(db.Model):
     is_surprise = Column(Boolean)
     consensus = Column(String)
 
-    # Relationships
     league = relationship("League", back_populates="matches")
     season = relationship("Season", back_populates="matches")
     home_team = relationship("Team", foreign_keys=[home_team_id], back_populates="home_matches")
@@ -117,7 +109,7 @@ class StatisticsIndex(db.Model):
     __tablename__ = 'statistics_index'
 
     index_id = Column(Integer, primary_key=True)
-    metric_name = Column(String(255), unique=True, nullable=False)  # Changed to String(255)
+    metric_name = Column(String(255), unique=True, nullable=False)
     description = Column(String)
 
     stats = relationship("MatchStats", back_populates="metric")
@@ -128,10 +120,8 @@ class MatchStats(db.Model):
 
     stat_id = Column(Integer, primary_key=True)
     match_id = Column(Integer, ForeignKey('football_match.match_id'), nullable=False)
-    team_side = Column(String(50))  # Added reasonable length
-    metric_name = Column(String(255),  # Must match exactly
-                         ForeignKey('statistics_index.metric_name'),
-                         nullable=False)
+    team_side = Column(String(50))
+    metric_name = Column(String(255),ForeignKey('statistics_index.metric_name'),nullable=False)
     metric_value = Column(Float)
 
     match = relationship("FootballMatch", back_populates="match_stats")
@@ -153,7 +143,6 @@ class MatchForm(db.Model):
     team_placement = Column(Integer)
     team_strength = Column(Float)
 
-    # Relationships
     match = relationship("FootballMatch", back_populates="form_data")
 
 
@@ -165,7 +154,6 @@ class Predicted(db.Model):
     predicted_result = Column(String)
     confidence = Column(Float)
 
-    # Relationships
     match = relationship("FootballMatch", back_populates="predictions")
 
 
