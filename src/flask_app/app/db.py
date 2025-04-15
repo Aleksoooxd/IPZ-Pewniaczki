@@ -9,8 +9,9 @@ from src.flask_app.app import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
-
-db = SQLAlchemy(app)
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app, session_options={'autoflush': False})
 
 from sqlalchemy import create_engine, Column, Integer, String, Date, Float, Boolean, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
@@ -33,7 +34,7 @@ class League(db.Model):
     __tablename__ = 'league'
 
     league_id = Column(Integer, primary_key=True)
-    code = Column(String)
+    code = Column(String(30), unique=True)
 
     team_leagues = relationship("TeamLeague", back_populates="league")
     matches = relationship("FootballMatch", back_populates="league")
@@ -43,7 +44,7 @@ class Season(db.Model):
     __tablename__ = 'season'
 
     season_id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(10), unique=True)
 
     team_leagues = relationship("TeamLeague", back_populates="season")
     matches = relationship("FootballMatch", back_populates="season")
@@ -91,15 +92,20 @@ class FootballMatch(db.Model):
     ffag = Column(Integer)
     home_value = Column(Float)
     away_value = Column(Float)
-    home_value_id = Column(Integer)
-    away_value_id = Column(Integer)
+    home_value_id = Column(Integer, ForeignKey('team_value.value_id'))  # Updated ForeignKey
+    away_value_id = Column(Integer, ForeignKey('team_value.value_id'))  # Updated ForeignKey
     is_surprise = Column(Boolean)
+    is_suprise_h = Column(Boolean)
+    is_suprise_d = Column(Boolean)
+    is_suprise_a = Column(Boolean)
     consensus = Column(String)
 
     league = relationship("League", back_populates="matches")
     season = relationship("Season", back_populates="matches")
     home_team = relationship("Team", foreign_keys=[home_team_id], back_populates="home_matches")
     away_team = relationship("Team", foreign_keys=[away_team_id], back_populates="away_matches")
+    home_value_ref = relationship("TeamValue", foreign_keys=[home_value_id])  # New relationship
+    away_value_ref = relationship("TeamValue", foreign_keys=[away_value_id])  # New relationship
     match_stats = relationship("MatchStats", back_populates="match")
     form_data = relationship("MatchForm", back_populates="match")
     predictions = relationship("Predicted", back_populates="match")
@@ -156,8 +162,8 @@ class Predicted(db.Model):
 
     match = relationship("FootballMatch", back_populates="predictions")
 
-
-with app.app_context():
-    db.drop_all()
-    db.create_all()
-app.run(debug=True)
+if __name__ == "__main__":
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+    app.run(debug=True)

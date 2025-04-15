@@ -101,10 +101,9 @@ def get_or_create_team(session, team_name):
     return team
 
 def get_or_create_league(session, league_name):
-    path_part = leagues_dict[league_name].split('/')[0]
-    league = session.query(League).filter_by(code=path_part).first()
+    league = session.query(League).filter_by(code=league_name.lower()).first()
     if not league:
-        league = League(code=path_part)
+        league = League(code=league_name.lower())
         session.add(league)
         session.commit()
     return league
@@ -190,11 +189,15 @@ def scrape_leagues():
                 )
         for future in futures:
             future.result()
-
+def get_all_teams_from_db():
+    with app.app_context():
+        teams = db.session.query(Team).all()
+        return [team.name for team in teams]
 def scrape_transfermarkt():
     try:
         scrape_leagues()
         print("Data successfully saved to database")
+        print(get_all_teams_from_db())
     except Exception as e:
         print(f"Error during scraping: {e}")
         with app.app_context():
