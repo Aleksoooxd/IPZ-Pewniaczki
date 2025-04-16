@@ -1,4 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+from sqlalchemy.orm import aliased
+
+from .db import db, FootballMatch, Team, League
 
 main = Blueprint('main', __name__)
 @main.route('/')
@@ -51,6 +54,36 @@ def superleauge():
 @main.route('/leaugeportugal')
 def leaugeportugal():
     return render_template('leaugeportugal.html')
+
+@main.route('/matches')
+def get_matches():
+    HomeTeam = aliased(Team)
+    AwayTeam = aliased(Team)
+
+    matches = db.session.query(
+        FootballMatch.date,
+        HomeTeam.name.label('home_team'),
+        AwayTeam.name.label('away_team'),
+        League.code.label('league')
+    ).join(
+        HomeTeam, FootballMatch.home_team_id == HomeTeam.team_id
+    ).join(
+        AwayTeam, FootballMatch.away_team_id == AwayTeam.team_id
+    ).join(
+        League, FootballMatch.league_id == League.league_id
+    ).all()
+
+    result = [
+        {
+            "date": m.date.strftime('%Y-%m-%d'),
+            "home_team": m.home_team,
+            "away_team": m.away_team,
+            "league": m.league
+        } for m in matches
+    ]
+
+    return jsonify(result)
+
 
 @main.route('/test_db')
 def test_db():

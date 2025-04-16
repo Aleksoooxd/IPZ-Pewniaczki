@@ -35,6 +35,17 @@
             gap: 10px;
             margin-bottom: 20px;
         }
+        .date-container {
+            margin-bottom: 20px;
+        }
+        .date-picker {
+            font-size: 16px;
+            padding: 10px;
+            background-color: white;
+            color: black;
+            border-radius: 5px;
+            border: none;
+        }
         .league-container {
             display: flex;
             flex-direction: column;
@@ -96,18 +107,18 @@
 </head>
 <body>
     <h1>Pewniaczki</h1>
-    <div class="button-container">
-        <button class="button">YESTERDAY</button>
-        <button class="button">TODAY</button>
-        <button class="button">TOMORROW</button>
+    <div class="date-container">
+        <label for="date-picker">Wybierz datę:</label>
+        <input type="date" id="date-picker" class="date-picker" onchange="fetchMatches()">
     </div>
+
     <div class="container">
         <div class="league-container">
             <div class="logo-placeholder">
                 <img src="../static/pewniaczkilogo.png" alt="Logo">
             </div>
             <div class="league-selection">
-                <h1>Select League</h1>
+                <h1>Wybierz Ligę</h1>
                 <button class="league-button">Bundesliga</button>
                 <button class="league-button">Eredivise</button>
                 <button class="league-button">EthnikiKatigoria</button>
@@ -120,30 +131,62 @@
                 <button class="league-button">SerieA</button>
             </div>
         </div>
-        <div class="matches">
-            <div class="match-card">
-                <span class="match-time">21:00</span>
-                <span class="team">TEAM A</span>
-                <span>vs</span>
-                <span class="team">TEAM B</span>
-                <button class="button">Predict</button>
-            </div>
-            <div class="match-card">
-                <span class="match-time">21:00</span>
-                <span class="team">TEAM C</span>
-                <span>vs</span>
-                <span class="team">TEAM D</span>
-                <button class="button">Predict</button>
-            </div>
-            <div class="match-card">
-                <span class="match-time">21:00</span>
-                <span class="team">TEAM E</span>
-                <span>vs</span>
-                <span class="team">TEAM F</span>
-                <button class="button">Predict</button>
-            </div>
-        </div>
 
+        <div class="matches" id="matches-container">
+
+        </div>
     </div>
+
+    <script>
+        let allMatches = [];
+
+        async function fetchAllMatches() {
+            try {
+                const response = await fetch('/matches');
+                const data = await response.json();
+
+                allMatches = data.map(match => ({
+                    date: new Date(match.date).toISOString().split('T')[0],
+                    time: "21:00", // Możesz zastąpić jeśli masz godzinę w bazie
+                    homeTeam: match.home_team,
+                    awayTeam: match.away_team,
+                    league: match.league
+                }));
+            } catch (err) {
+                console.error("Błąd pobierania meczów:", err);
+            }
+        }
+
+        async function fetchMatches() {
+            if (allMatches.length === 0) {
+                await fetchAllMatches();
+            }
+
+            const selectedDate = document.getElementById('date-picker').value;
+            const matchesContainer = document.getElementById('matches-container');
+            matchesContainer.innerHTML = ''; // Clear previous matches
+
+            const filteredMatches = allMatches.filter(match => match.date === selectedDate);
+
+            if (filteredMatches.length === 0) {
+                matchesContainer.innerHTML = '<p>Brak meczów dla wybranej daty.</p>';
+            } else {
+                filteredMatches.forEach(match => {
+                    const matchCard = document.createElement('div');
+                    matchCard.classList.add('match-card');
+                    matchCard.innerHTML = `
+                        <span class="match-time">${match.time}</span>
+                        <span class="team">${match.homeTeam}</span>
+                        <span>vs</span>
+                        <span class="team">${match.awayTeam}</span>
+                        <button class="button">Typuj</button>
+                    `;
+                    matchesContainer.appendChild(matchCard);
+                });
+            }
+        }
+
+        window.onload = fetchAllMatches;
+    </script>
 </body>
 </html>

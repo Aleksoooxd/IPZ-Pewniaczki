@@ -18,6 +18,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 
+
+
+
 class Team(db.Model):
     __tablename__ = 'team'
 
@@ -161,6 +164,7 @@ class Predicted(db.Model):
     confidence = Column(Float)
 
     match = relationship("FootballMatch", back_populates="predictions")
+
 
 if __name__ == "__main__":
     with app.app_context():

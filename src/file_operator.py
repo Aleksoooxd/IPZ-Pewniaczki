@@ -33,16 +33,13 @@ class FileOperator:
                 try:
                     df = pd.read_csv(file_path, encoding=encoding, low_memory=False)
 
-                    # Initialize a dictionary to keep track of the matchday count for each team
                     matchday_counter = {}
 
-                    # Function to assign matchday and update the counter
                     def assign_matchday(row):
                         season = row['Season']
                         home_team = row['HomeTeam']
                         away_team = row['AwayTeam']
 
-                        # Initialize counters for the season if not present
                         if season not in matchday_counter:
                             matchday_counter[season] = {}
                         if home_team not in matchday_counter[season]:
@@ -50,7 +47,6 @@ class FileOperator:
                         if away_team not in matchday_counter[season]:
                             matchday_counter[season][away_team] = 0
 
-                        # Increment counters and assign values
                         matchday_counter[season][home_team] += 1
                         matchday_counter[season][away_team] += 1
 
@@ -59,10 +55,8 @@ class FileOperator:
 
                         return row
 
-                    # Apply the function to each row
                     df = df.apply(assign_matchday, axis=1)
 
-                    # Save updated DataFrame back to CSV
                     df.to_csv(file_path, index=False)
                     print(f"Added HomeMatchday and AwayMatchday columns to {file}")
                 except Exception as e:
@@ -188,18 +182,17 @@ class FileOperator:
     def count_collumns(self):
 
         os.makedirs(os.path.join(os.getcwd(),'Data/Columns Info'), exist_ok=True)
-        # List to store all column names across all leagues
         all_columns = []
-        total_files_all_leagues = 0  # Initialize the counter for all files across leagues
-        league_global_stats = {}  # Dictionary to hold global stats per league
+        total_files_all_leagues = 0
+        league_global_stats = {}
         for i, league in enumerate(self.leagues):
             path2 = os.path.join(self.save_path, self.countries[i])
             league_columns = []
             try:
                 files = os.listdir(path2)
                 league_files = [file for file in files if file.endswith('.csv') and file.startswith(league)]
-                total_files = len(league_files)  # Count the number of league-specific files
-                total_files_all_leagues += total_files  # Add to the global total count
+                total_files = len(league_files)
+                total_files_all_leagues += total_files
                 if not league_files:
                     print(f"No files found for {league} in {path2}")
                     continue
@@ -212,37 +205,28 @@ class FileOperator:
                         all_columns.extend(df.columns.tolist())
                     except Exception as e:
                         print(f"Error reading file {file_path}: {e}")
-                # Count the occurrences of each column for the league
                 league_column_counts = Counter(league_columns)
-                # Calculate percentage of occurrences for each column in the league
                 league_total_files = len(league_files)
                 league_data = []
                 for column, count in league_column_counts.items():
                     percentage = (count / league_total_files) * 100
                     league_data.append({'Column Name': column, 'Count': count, 'Percentage': percentage})
-                # Save league-specific stats to a CSV file
                 league_df = pd.DataFrame(league_data)
                 league_output_file = os.path.join(os.getcwd(),'Data/Columns Info',f'{league}columns_stats.csv')
                 league_df.to_csv(league_output_file, index=False)
                 print(f"Saved column stats for {league} in {league_output_file}")
-                # Add stats to global dictionary
                 league_global_stats[league] = league_column_counts
             except Exception as e:
                 print(f"Error processing {league}: {e}")
-        # Print the total number of files across all leagues
         print(f"Total files across all leagues: {total_files_all_leagues}")
-        # Check if any files were processed
         if total_files_all_leagues == 0:
             print("No files were processed. Make sure the paths and files are correct.")
         else:
-            # Count the occurrences of each column across all leagues
             global_column_counts = Counter(all_columns)
-            # Calculate the percentage of occurrences for each column relative to the total number of files across all leagues
             global_data = []
             for column, count in global_column_counts.items():
                 percentage = (count / total_files_all_leagues) * 100
                 global_data.append({'Column Name': column, 'Count': count, 'Percentage': percentage})
-            # Save global stats to a CSV file
             global_df = pd.DataFrame(global_data)
             global_output_file = os.path.join(os.getcwd(),'Data/Columns Info/All_Columns_Stats.csv')
             global_df.to_csv(global_output_file, index=False)
@@ -368,7 +352,6 @@ class FileOperator:
                     print(f"File not found: {inputout_path}")
                     continue
                 data = pd.read_csv(inputout_path,low_memory=False)
-                # Tworzenie kolumn statystycznych dla H, D, A
                 for result_type, cols in bookmakers_columns["AllBookmakers"].items():
                     values = data[cols].dropna(axis=1).values
                     data[f"{result_type}_Mean"] = np.round(np.mean(values, axis=1), 4)
@@ -377,9 +360,7 @@ class FileOperator:
                     data[f"{result_type}_CV"] = [coefficient_of_variation(v) for v in values]
                     data[f"{result_type}_Gini"] = [gini_index(v) for v in values]
                     data[f"{result_type}_HHI"] = [hhi_index(v) for v in values]
-                # Dodanie kolumny z konsensusem
                 data['Consensus'] = data.apply(calculate_consensus, axis=1, columns=bookmakers_columns["AllBookmakers"])
-                # Zapisanie pliku
                 data.to_csv(inputout_path, index=False)
                 print(f"Processed and saved: {inputout_path}")
             except Exception as e:
