@@ -1,6 +1,6 @@
 import copy
 import os
-import numpy as np
+
 import chardet
 import requests
 import io
@@ -10,11 +10,8 @@ from concurrent.futures import ThreadPoolExecutor
 import pandas as pd
 from fuzzywuzzy import process
 from unidecode import unidecode
-from helpfunctions import *
+
 from src.helpfunctions import normalize_names
-from sqlalchemy import select, and_
-import traceback
-from flask_app.app.db import *
 from src.transfermarktScrap import get_all_teams_from_db
 
 # Ustawienia nagłówków
@@ -357,7 +354,6 @@ def calculate_is_suprise(df):
     ).astype(int)
     df['isSuprise'] = df['isSuprise_H'] + df['isSuprise_D'] + df['isSuprise_A']
     df = df.drop(columns=['Avg_H', 'Avg_D', 'Avg_A'])
-    return df
 def get_data_from_top_11(correct, countryInfo, seasonCode):
     name_mapping = correct
     url = f'https://www.football-data.co.uk/{countryInfo[0]}m.php'
@@ -410,14 +406,18 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                 row['AwayMatchday'] = matchday_counter[season][away_team]
                 return row
             df = df.apply(assign_matchday, axis=1)
-            df = calculate_is_suprise(df)
             df = create_placement_columns(df)
             df = calculate_statistics_and_consensus(df)
-            try:
-                season_name = f"{seasonCode[:2]}/{seasonCode[2:]}"  # Konwersja np. "2122" na "21/22"
-                save_matches_to_database(df, countryInfo[1], season_name)
-            except Exception as e:
-                print(f"Błąd podczas zapisywania do bazy danych: {e}")
+            folder_path = os.path.join(os.getcwd(), 'Data')
+            os.makedirs(folder_path, exist_ok=True)
+            filepath = os.path.join(folder_path, 'Matches Results', f'{countryInfo[0]}')
+            os.makedirs(filepath, exist_ok=True)
+
+            filename = f'{countryInfo[1].replace(" ", "")}_{seasonCode}.csv'
+            fullname = os.path.join(filepath, filename)
+
+            df.to_csv(fullname, index=False)
+            print(f"Plik został pobrany, przetworzony i zapisany! Ścieżka: {fullname}")
 
         except Exception as e:
             print(f"Błąd podczas przetwarzania pliku: {e}")
@@ -478,328 +478,6 @@ def create_team_name_mapping():
 def correct_scrape_top_11():
     correct = create_team_name_mapping()
     scrape_top_11(correct)
-
-
-from sqlalchemy import select, and_, or_
-from sqlalchemy.exc import IntegrityError
-from datetime import datetime
-import traceback
-
-
-def save_matches_to_database(df, league_name, season_name):
-    """
-    Zapisuje dane meczowe do bazy danych z osobnym commitem dla każdego meczu
-    Args:
-        df (DataFrame): DataFrame zawierający dane meczowe
-        league_name (str): Nazwa ligi (np. 'Premier League')
-        season_name (str): Nazwa sezonu (np. '2022/2023')
-    Returns:
-        tuple: (liczba_sukcesów, liczba_błędów)
-    """
-    success_count = 0
-    error_count = 0
-
-    with app.app_context():
-        # 1. Przygotowanie podstawowych encji (liga i sezon)
-        try:
-            league_code = league_name.split()[0].lower()
-
-            league = db.session.execute(
-                select(League).where(League.code == league_code)
-            ).scalar_one_or_none()
-
-            if not league:
-                league = League(code=league_code)
-                db.session.add(league)
-                db.session.commit()
-                print(f"Utworzono nową ligę: {league_name}")
-
-            season = db.session.execute(
-                select(Season).where(Season.name == season_name)
-            ).scalar_one_or_none()
-
-            if not season:
-                season = Season(name=season_name)
-                db.session.add(season)
-                db.session.commit()
-                print(f"Utworzono nowy sezon: {season_name}")
-
-        except Exception as e:
-            print(f"Błąd podczas przygotowania ligi/sezonu: {str(e)}")
-            return (0, len(df))
-
-        # 2. Przetwarzanie wierszy meczowych
-        for idx, row in df.iterrows():
-            try:
-                # Rozpocznij nową transakcję dla każdego meczu
-                with db.session.begin():
-                    # 3. Przygotowanie drużyn
-                    home_team_name = str(row['HomeTeam']).strip()
-                    away_team_name = str(row['AwayTeam']).strip()
-
-                    # Pobierz lub utwórz drużynę gospodarzy
-                    home_team = db.session.execute(
-                        select(Team).where(Team.name == home_team_name)
-                    ).scalar_one_or_none()
-
-                    if not home_team:
-                        home_team = Team(name=home_team_name)
-                        db.session.add(home_team)
-                        db.session.flush()
-                        print(f"Utworzono nową drużynę: {home_team_name}")
-
-                    # Pobierz lub utwórz drużynę gości
-                    away_team = db.session.execute(
-                        select(Team).where(Team.name == away_team_name)
-                    ).scalar_one_or_none()
-
-                    if not away_team:
-                        away_team = Team(name=away_team_name)
-                        db.session.add(away_team)
-                        db.session.flush()
-                        print(f"Utworzono nową drużynę: {away_team_name}")
-
-                    # 4. Sprawdź czy mecz już istnieje
-                    existing_match = db.session.execute(
-                        select(FootballMatch)
-                        .where(
-                            and_(
-                                FootballMatch.home_team_id == home_team.team_id,
-                                FootballMatch.away_team_id == away_team.team_id,
-                                FootballMatch.date == row['Date'],
-                                FootballMatch.league_id == league.league_id,
-                                FootballMatch.season_id == season.season_id
-                            )
-                        )
-                    ).scalar_one_or_none()
-
-                    if existing_match:
-                        print(f"Pominięto istniejący mecz: {home_team_name} vs {away_team_name} ({row['Date']})")
-                        continue
-
-                    # 5. Pobierz wartości drużyn z TeamValue
-                    home_value = db.session.execute(
-                        select(TeamValue)
-                        .where(
-                            and_(
-                                TeamValue.team_id == home_team.team_id,
-                                TeamValue.season_id == season.season_id
-                            )
-                        )
-                    ).scalar_one_or_none()
-
-                    away_value = db.session.execute(
-                        select(TeamValue)
-                        .where(
-                            and_(
-                                TeamValue.team_id == away_team.team_id,
-                                TeamValue.season_id == season.season_id
-                            )
-                        )
-                    ).scalar_one_or_none()
-
-                    # 6. Utwórz rekord meczu z powiązaniami
-                    match = FootballMatch(
-                        league_id=league.league_id,
-                        season_id=season.season_id,
-                        date=row['Date'],
-                        home_team_id=home_team.team_id,
-                        away_team_id=away_team.team_id,
-                        result=row['FTR'],
-                        home_matchday=row.get('HomeMatchday'),
-                        away_matchday=row.get('AwayMatchday'),
-                        ffng=row.get('FTHG'),
-                        ffag=row.get('FTAG'),
-                        home_value=home_value.value if home_value else None,
-                        home_value_id=home_value.value_id if home_value else None,
-                        away_value=away_value.value if away_value else None,
-                        away_value_id=away_value.value_id if away_value else None,
-                        is_surprise=bool(row.get('isSuprise', False)),
-                        is_suprise_h=bool(row.get('isSuprise_H', False)),
-                        is_suprise_d=bool(row.get('isSuprise_D', False)),
-                        is_suprise_a=bool(row.get('isSuprise_A', False)),
-                        consensus=row.get('Consensus')
-                    )
-                    db.session.add(match)
-                    db.session.flush()
-
-                    # 7. Zapisz dane formy drużyn
-                    for team_type in ['home', 'away']:
-                        prefix = team_type.capitalize()
-                        form_data = MatchForm(
-                            match_id=match.match_id,
-                            team_side=team_type,
-                            form_last_3=row.get(f'{prefix}Form3', 0),
-                            form_last_5=row.get(f'{prefix}Form5', 0),
-                            form_season=row.get(f'{prefix}FormSeason', 0),
-                            goals_last_3=row.get(f'{prefix}Goals3', 0),
-                            goals_last_5=row.get(f'{prefix}Goals5', 0),
-                            goals_season=row.get(f'{prefix}GoalsSeason', 0),
-                            team_placement=row.get(f'{prefix}TeamPlacement'),
-                            team_strength=row.get(f'{prefix}Strength')
-                        )
-                        db.session.add(form_data)
-
-                    # 8. Zapisz statystyki meczowe
-                    stats_mapping = {
-                        'H_Mean': ('Mean odds home', 'home'),
-                        'H_Std': ('Std odds home', 'home'),
-                        'H_Shannon': ('Shannon index home', 'home'),
-                        'H_CV': ('Coefficient variation home', 'home'),
-                        'A_Mean': ('Mean odds away', 'away'),
-                        'A_Std': ('Std odds away', 'away'),
-                        'A_Shannon': ('Shannon index away', 'away'),
-                        'A_CV': ('Coefficient variation away', 'away')
-                    }
-
-                    for col, (metric_name, team_side) in stats_mapping.items():
-                        if col in row and pd.notna(row[col]):
-                            metric = db.session.execute(
-                                select(StatisticsIndex)
-                                .where(StatisticsIndex.metric_name == metric_name)
-                            ).scalar_one_or_none()
-
-                            if not metric:
-                                metric = StatisticsIndex(
-                                    metric_name=metric_name,
-                                    description=f"Statystyka {metric_name} dla drużyny {team_side}"
-                                )
-                                db.session.add(metric)
-                                db.session.flush()
-
-                            stat = MatchStats(
-                                match_id=match.match_id,
-                                team_side=team_side,
-                                metric_name=metric.metric_name,
-                                metric_value=float(row[col])
-                            )
-                            db.session.add(stat)
-
-                    # 9. Aktualizuj TeamLeague
-                    for team_id in [home_team.team_id, away_team.team_id]:
-                        exists = db.session.execute(
-                            select(TeamLeague)
-                            .where(
-                                and_(
-                                    TeamLeague.team_id == team_id,
-                                    TeamLeague.league_id == league.league_id,
-                                    TeamLeague.season_id == season.season_id
-                                )
-                            )
-                        ).scalar_one_or_none()
-
-                        if not exists:
-                            team_league = TeamLeague(
-                                team_id=team_id,
-                                league_id=league.league_id,
-                                season_id=season.season_id
-                            )
-                            db.session.add(team_league)
-
-                    # Commit dla pojedynczego meczu
-                    db.session.commit()
-                    success_count += 1
-                    print(
-                        f"Zapisano mecz {success_count}/{len(df)}: {home_team_name} vs {away_team_name} ({row['Date']})")
-
-            except Exception as e:
-                error_count += 1
-                print(f"Błąd podczas zapisywania meczu {home_team_name} vs {away_team_name}: {str(e)}")
-                traceback.print_exc()
-                db.session.rollback()
-                continue
-
-        print(f"Zakończono przetwarzanie. Sukces: {success_count}, Błędy: {error_count}")
-        return (success_count, error_count)
-
-
-def save_form_data(match_id, row, team_type):
-    """Zapisuje dane formy drużyny"""
-    try:
-        prefix = team_type.capitalize()
-        form_data = MatchForm(
-            match_id=match_id,
-            team_side=team_type,
-            form_last_3=row[f'{prefix}Form3'],
-            form_last_5=row[f'{prefix}Form5'],
-            form_season=row[f'{prefix}FormSeason'],
-            goals_last_3=row[f'{prefix}Goals3'],
-            goals_last_5=row[f'{prefix}Goals5'],
-            goals_season=row[f'{prefix}GoalsSeason'],
-            team_placement=row[f'{prefix}TeamPlacement'],
-            team_strength=row.get(f'{prefix}Strength', None)
-        )
-        db.session.add(form_data)
-    except KeyError as e:
-        print(f"Brak kolumny {e} w danych formy")
-    except Exception as e:
-        print(f"Błąd zapisu formy drużyny: {e}")
-
-
-def save_match_stats(match_id, row):
-    """Zapisuje statystyki meczowe z obsługą błędów"""
-    stats_mapping = {
-        'H_Mean': ('Mean odds home', 'home'),
-        'H_Std': ('Std odds home', 'home'),
-        'H_Shannon': ('Shannon index home', 'home'),
-        'H_CV': ('Coefficient variation home', 'home'),
-        'A_Mean': ('Mean odds away', 'away'),
-        'A_Std': ('Std odds away', 'away'),
-        'A_Shannon': ('Shannon index away', 'away'),
-        'A_CV': ('Coefficient variation away', 'away')
-    }
-
-    for col, (metric_name, team_side) in stats_mapping.items():
-        try:
-            if col in row and pd.notna(row[col]):
-                # Sprawdź czy metryka istnieje
-                metric = db.session.execute(
-                    select(StatisticsIndex)
-                    .where(StatisticsIndex.metric_name == metric_name)
-                ).scalar_one_or_none()
-
-                if not metric:
-                    metric = StatisticsIndex(
-                        metric_name=metric_name,
-                        description=f"Statystyka {metric_name} dla drużyny {team_side}"
-                    )
-                    db.session.add(metric)
-                    db.session.flush()
-
-                # Zapisz statystykę
-                stat = MatchStats(
-                    match_id=match_id,
-                    team_side=team_side,
-                    metric_name=metric.metric_name,
-                    metric_value=float(row[col])
-                )
-                db.session.add(stat)
-        except Exception as e:
-            print(f"Błąd zapisu statystyki {col}: {e}")
-
-
-def update_team_leagues(team_id, league_id, season_id):
-    """Aktualizuje przynależność drużyn do lig w sezonie"""
-    try:
-        existing = db.session.execute(
-            select(TeamLeague)
-            .where(and_(
-                TeamLeague.team_id == team_id,
-                TeamLeague.league_id == league_id,
-                TeamLeague.season_id == season_id
-            ))
-        ).scalar_one_or_none()
-
-        if not existing:
-            team_league = TeamLeague(
-                team_id=team_id,
-                league_id=league_id,
-                season_id=season_id
-            )
-            db.session.add(team_league)
-    except Exception as e:
-        print(f"Błąd aktualizacji TeamLeague: {e}")
-
 
 
 if __name__ == "__main__":
