@@ -86,7 +86,9 @@
         .matches {
             flex-grow: 1;
             margin-left: 250px;
+            text-align: left;
         }
+
         .match-card {
             background-color: white;
             color: black;
@@ -99,9 +101,32 @@
         }
         .match-time {
             font-weight: bold;
+            width: 80px;
+            text-align: center;
         }
         .team {
             font-weight: bold;
+            flex: 1;
+            text-align: center;
+        }
+        .vs {
+            width: 50px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .predict-button {
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+
+        .league-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin-top: 30px;
+            margin-left: 10px;
+            border-bottom: 2px solid white;
+            padding-bottom: 5px;
         }
     </style>
 </head>
@@ -109,7 +134,8 @@
     <h1>Pewniaczki</h1>
     <div class="date-container">
         <label for="date-picker">Wybierz datę:</label>
-        <input type="date" id="date-picker" class="date-picker" onchange="fetchMatches()">
+        <input type="date" id="date-picker" class="date-picker">
+        <button class="button" onclick="fetchMatches()">Zatwierdź</button>
     </div>
 
     <div class="container">
@@ -132,13 +158,25 @@
             </div>
         </div>
 
-        <div class="matches" id="matches-container">
-
-        </div>
+        <div class="matches" id="matches-container"></div>
     </div>
 
     <script>
         let allMatches = [];
+
+        const leagueNames = {
+    Bundesliga: "Bundesliga",
+    Eredivise: "Eredivisie",
+    EthnikiKatigoria: "Grecja: Ethniki Katigoria",
+    FutbolLig1: "Turcja: 1. Lig",
+    JupiterLeague: "Belgia: Jupiler League",
+    LaLiga: "Hiszpania: La Liga",
+    Ligue1: "Francja: Ligue 1",
+    LigaI: "Rumunia: Liga I",
+    "Scottish Premier League": "Szkocja: Premiership",
+    SerieA: "Włochy: Serie A"
+};
+
 
         async function fetchAllMatches() {
             try {
@@ -147,7 +185,7 @@
 
                 allMatches = data.map(match => ({
                     date: new Date(match.date).toISOString().split('T')[0],
-                    time: "21:00", // Możesz zastąpić jeśli masz godzinę w bazie
+                    time: "21:00",
                     homeTeam: match.home_team,
                     awayTeam: match.away_team,
                     league: match.league
@@ -164,29 +202,48 @@
 
             const selectedDate = document.getElementById('date-picker').value;
             const matchesContainer = document.getElementById('matches-container');
-            matchesContainer.innerHTML = ''; // Clear previous matches
+            matchesContainer.innerHTML = ''; // Wyczyść poprzednie mecze
 
             const filteredMatches = allMatches.filter(match => match.date === selectedDate);
 
             if (filteredMatches.length === 0) {
                 matchesContainer.innerHTML = '<p>Brak meczów dla wybranej daty.</p>';
             } else {
+                const matchesByLeague = {};
                 filteredMatches.forEach(match => {
-                    const matchCard = document.createElement('div');
-                    matchCard.classList.add('match-card');
-                    matchCard.innerHTML = `
-                        <span class="match-time">${match.time}</span>
-                        <span class="team">${match.homeTeam}</span>
-                        <span>vs</span>
-                        <span class="team">${match.awayTeam}</span>
-                        <button class="button">Typuj</button>
-                    `;
-                    matchesContainer.appendChild(matchCard);
+                    if (!matchesByLeague[match.league]) {
+                        matchesByLeague[match.league] = [];
+                    }
+                    matchesByLeague[match.league].push(match);
                 });
+
+                for (const league in matchesByLeague) {
+                    const leagueTitle = document.createElement('h2');
+                    leagueTitle.classList.add('league-title');
+                    leagueTitle.textContent = leagueNames[league] || league;
+                    matchesContainer.appendChild(leagueTitle);
+
+                    matchesByLeague[league].forEach(match => {
+                        const matchCard = document.createElement('div');
+                        matchCard.classList.add('match-card');
+                        matchCard.innerHTML = `
+                            <span class="match-time">${match.time}</span>
+                            <span class="team">${match.homeTeam}</span>
+                            <span class="vs">vs</span>
+                            <span class="team">${match.awayTeam}</span>
+                            <button class="button predict-button">Typuj</button>
+                        `;
+                        matchesContainer.appendChild(matchCard);
+                    });
+                }
             }
         }
 
-        window.onload = fetchAllMatches;
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date-picker').value = today;
+            fetchAllMatches();
+        };
     </script>
 </body>
 </html>
