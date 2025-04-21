@@ -1,6 +1,6 @@
 import copy
 import os
-
+import numpy as np
 import chardet
 import requests
 import io
@@ -9,12 +9,13 @@ import datetime
 from concurrent.futures import ThreadPoolExecutor
 import pandas as pd
 from fuzzywuzzy import process
+from sqlalchemy import select
 from unidecode import unidecode
-
-from src.helpfunctions import normalize_names
+from flask_app.app.db import db, app, FootballMatch, MatchStats, MatchForm, Team, League, Season, StatisticsIndex, TeamValue
+from src.helpfunctions import normalize_names,hhi_index,shannon_index, coefficient_of_variation, gini_index, calculate_consensus
 from src.transfermarktScrap import get_all_teams_from_db
 
-# Ustawienia nagłówków
+pd.set_option('future.no_silent_downcasting', True)
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
 }
@@ -36,7 +37,6 @@ for i in range(deadline):
 seasons.update({'2009/2010': '0910'})
 for i in range(deadline2):
     seasons.update(generate_season_entry_0(2008, i))
-# Informacje o krajach i ligach
 countries = {
     'en': ['england', 'Premier League'],
     'sp': ['spain', 'La Liga Primera Division'],
@@ -101,27 +101,6 @@ def get_team_names_only(countryInfo, seasonCode):
         extract_team_names(download_response.content)
 
 
-def assign_matchday(row):
-    season = row['Season']
-    home_team = row['HomeTeam']
-    away_team = row['AwayTeam']
-
-    if season not in matchday_counter:
-        matchday_counter[season] = {}
-    if home_team not in matchday_counter[season]:
-        matchday_counter[season][home_team] = 0
-    if away_team not in matchday_counter[season]:
-        matchday_counter[season][away_team] = 0
-
-    matchday_counter[season][home_team] += 1
-    matchday_counter[season][away_team] += 1
-
-    row['HomeMatchday'] = matchday_counter[season][home_team]
-    row['AwayMatchday'] = matchday_counter[season][away_team]
-
-    return row
-
-
 def map_team_name(val):
     """Funkcja do mapowania nazw klubów na ustandaryzowane wersje"""
     mapping = {
@@ -179,21 +158,24 @@ def create_placement_columns(dataframe):
     dataframe['FTHG'] = pd.to_numeric(dataframe['FTHG'], errors='coerce')
     dataframe['FTAG'] = pd.to_numeric(dataframe['FTAG'], errors='coerce')
     dataframe['HomeMatchday'] = pd.to_numeric(dataframe['HomeMatchday'], errors='coerce')
-    dataframe['HomeTeamPlacement'] = None
-    dataframe['AwayTeamPlacement'] = None
-    dataframe['HomeForm3'] = 0
-    dataframe['HomeForm5'] = 0
-    dataframe['HomeFormSeason'] = 0
-    dataframe['AwayForm3'] = 0
-    dataframe['AwayForm5'] = 0
-    dataframe['AwayFormSeason'] = 0
-    dataframe['HomeGoals3'] = 0
-    dataframe['HomeGoals5'] = 0
-    dataframe['HomeGoalsSeason'] = 0
-    dataframe['AwayGoals3'] = 0
-    dataframe['AwayGoals5'] = 0
-    dataframe['AwayGoalsSeason'] = 0
-
+    new_columns = {
+        'HomeTeamPlacement': None,
+        'AwayTeamPlacement': None,
+        'HomeForm3': 0,
+        'HomeForm5': 0,
+        'HomeFormSeason': 0,
+        'AwayForm3': 0,
+        'AwayForm5': 0,
+        'AwayFormSeason': 0,
+        'HomeGoals3': 0,
+        'HomeGoals5': 0,
+        'HomeGoalsSeason': 0,
+        'AwayGoals3': 0,
+        'AwayGoals5': 0,
+        'AwayGoalsSeason': 0
+    }
+    new_data = pd.DataFrame({k: [v] * len(dataframe) for k, v in new_columns.items()}, index=dataframe.index)
+    dataframe = pd.concat([dataframe, new_data], axis=1)
     def calculate_season_placements(season_df):
         standings = {}
         placements = []
@@ -322,7 +304,7 @@ def calculate_statistics_and_consensus(data):
     return data
 def calculate_is_suprise(df):
     selected_columns = [
-        'Season', 'Date', 'HomeTeam', 'AwayTeam', 'FTR',
+        'Div','Season', 'Date', 'HomeTeam', 'AwayTeam', 'FTR',
         'HomeMatchday', 'AwayMatchday', 'FTHG', 'FTAG'
     ]
     all_bookmaker_columns = [
@@ -336,7 +318,6 @@ def calculate_is_suprise(df):
     df = pd.concat([df, pd.DataFrame(new_columns, index=df.index)], axis=1)
     df = df[required_columns]
     df = df.fillna(1.0)
-    df = df.infer_objects(copy=False)
     home_stakeholders = [col for col in df.columns if col.endswith("H")]
     draw_stakeholders = [col for col in df.columns if col.endswith("D")]
     away_stakeholders = [col for col in df.columns if col.endswith("A")]
@@ -354,6 +335,34 @@ def calculate_is_suprise(df):
     ).astype(int)
     df['isSuprise'] = df['isSuprise_H'] + df['isSuprise_D'] + df['isSuprise_A']
     df = df.drop(columns=['Avg_H', 'Avg_D', 'Avg_A'])
+    return df
+def get_team_value_id(session, team_id, season_id):
+    team_value = session.query(TeamValue).filter_by(team_id=team_id, season_id=season_id).first()
+    if team_value:
+        return team_value
+    else:
+        return None
+def get_or_create_league(session, league_name):
+    league = session.query(League).filter_by(code=league_name.lower()).first()
+    if not league:
+        league = League(code=league_name.lower())
+        session.add(league)
+        session.commit()
+    return league
+def get_or_create_team(session, team_name):
+    team = session.query(Team).filter_by(name=team_name).first()
+    if not team:
+        team = Team(name=team_name)
+        session.add(team)
+        session.commit()
+    return team
+def get_or_create_season(session, season_name):
+    season = session.query(Season).filter_by(name=season_name).first()
+    if not season:
+        season = Season(name=season_name)
+        session.add(season)
+        session.commit()
+    return season
 def get_data_from_top_11(correct, countryInfo, seasonCode):
     name_mapping = correct
     url = f'https://www.football-data.co.uk/{countryInfo[0]}m.php'
@@ -405,23 +414,112 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                 row['HomeMatchday'] = matchday_counter[season][home_team]
                 row['AwayMatchday'] = matchday_counter[season][away_team]
                 return row
+            df = calculate_is_suprise(df)
             df = df.apply(assign_matchday, axis=1)
             df = create_placement_columns(df)
             df = calculate_statistics_and_consensus(df)
-            folder_path = os.path.join(os.getcwd(), 'Data')
-            os.makedirs(folder_path, exist_ok=True)
-            filepath = os.path.join(folder_path, 'Matches Results', f'{countryInfo[0]}')
-            os.makedirs(filepath, exist_ok=True)
 
-            filename = f'{countryInfo[1].replace(" ", "")}_{seasonCode}.csv'
-            fullname = os.path.join(filepath, filename)
+            with app.app_context():
+                league = get_or_create_league(db.session, get_league(df))
 
-            df.to_csv(fullname, index=False)
-            print(f"Plik został pobrany, przetworzony i zapisany! Ścieżka: {fullname}")
+                for _, row in df.iterrows():
+                    season = get_or_create_season(db.session, row['Season'])
+                    home_team = get_or_create_team(db.session, row['HomeTeam'])
+                    away_team = get_or_create_team(db.session, row['AwayTeam'])
+                    homet_value_id = get_team_value_id(db.session,home_team.team_id,season.season_id)
+                    awayt_value_id = get_team_value_id(db.session,away_team.team_id,season.season_id)
+                    match = FootballMatch(
+                        home_team_id=home_team.team_id,
+                        home_value_id = homet_value_id.value_id,
+                        away_value_id = awayt_value_id.value_id,
+                        away_team_id=away_team.team_id,
+                        season_id=season.season_id,
+                        league_id=league.league_id,
+                        date=row['Date'],
+                        result=row['FTR'],
+                        home_matchday=row['HomeMatchday'],
+                        away_matchday=row['AwayMatchday'],
+                        fthg=row['FTHG'],
+                        ftag=row['FTAG'],
+                        is_surprise=row['isSuprise'],
+                        is_suprise_h=row['isSuprise_H'],
+                        is_suprise_d=row['isSuprise_D'],
+                        is_suprise_a=row['isSuprise_A'],
+                        consensus=row['Consensus']
+                    )
+                    db.session.add(match)
+                    db.session.flush()
+                    for suffix in ['H','D','A']:
+                        if suffix == 'H':
+                            side = 'home'
+                        elif suffix == 'D':
+                            side = 'draw'
+                        else:
+                            side = 'away'
+                        stats_mapping = {
+                            f'{suffix}_Mean': ('Mean odds result', 'result'),
+                            f'{suffix}_Std': ('Std odds result', 'result'),
+                            f'{suffix}_Shannon': ('Shannon index result', 'result'),
+                            f'{suffix}_CV': ('Coefficient variation result', 'result'),
+                            f'{suffix}_Gini': ('Gini index result', 'result'),
+                            f'{suffix}_HHI': ('HHI index result', 'result'),
+                            'Consensus': ('Consensus result', 'result'),
+                        }
+                        for col, (metric_name, result) in stats_mapping.items():
+                            if col in row and pd.notna(row[col]):
+                                metric = db.session.execute(
+                                    select(StatisticsIndex)
+                                    .where(StatisticsIndex.metric_name == metric_name)
+                                ).scalar_one_or_none()
+
+                                if not metric:
+                                    metric = StatisticsIndex(
+                                        metric_name=metric_name,
+                                        description=f"Statystyka {metric_name}"
+                                    )
+                                    db.session.add(metric)
+                                    db.session.flush()
+
+                                stat = MatchStats(
+                                    match_id=match.match_id,
+                                    team_side=side,
+                                    metric_name=metric.metric_name,
+                                    metric_value=float(row[col])
+                                )
+                                db.session.add(stat)
+                    match_form = MatchForm(
+                        match_id=match.match_id,
+                        team_side='home',
+                        form_last_3=row['HomeForm3'],
+                        form_last_5=row['HomeForm5'],
+                        form_season=row['HomeFormSeason'],
+                        goals_last_3=row['HomeGoals3'],
+                        goals_last_5=row['HomeGoals5'],
+                        goals_season=row['HomeGoalsSeason'],
+                        team_placement=row['HomeTeamPlacement'],
+                        team_strength=None  # Add logic for team strength if available
+                    )
+                    db.session.add(match_form)
+
+                    match_form = MatchForm(
+                        match_id=match.match_id,
+                        team_side='away',
+                        form_last_3=row['AwayForm3'],
+                        form_last_5=row['AwayForm5'],
+                        form_season=row['AwayFormSeason'],
+                        goals_last_3=row['AwayGoals3'],
+                        goals_last_5=row['AwayGoals5'],
+                        goals_season=row['AwayGoalsSeason'],
+                        team_placement=row['AwayTeamPlacement'],
+                        team_strength=None  # Add logic for team strength if available
+                    )
+                    db.session.add(match_form)
+
+                db.session.commit()
+            print(f"Data successfully inserted into the database for {countryInfo[1]} {seasonCode}")
 
         except Exception as e:
-            print(f"Błąd podczas przetwarzania pliku: {e}")
-
+            print(f"Error processing file: {e}")
 
 def detect_encoding(byte_content):
     result = chardet.detect(byte_content)
@@ -442,6 +540,33 @@ def scrape_top_11(correct):
                 futures.append(executor.submit(get_data_from_top_11, correct, countryValues, seasonCode))
         for future in futures:
             future.result()
+
+def get_league(df):
+    league = df['Div'].unique()
+    if league == 'E0':
+        return 'premier league'
+    elif league == 'SC0':
+        return 'spremier league'
+    elif league == 'D1':
+        return 'bundesliga'
+    elif league == 'SP1':
+        return 'la liga'
+    elif league == 'I1':
+        return 'serie a'
+    elif league == 'F1':
+        return 'ligue 1'
+    elif league == 'N1':
+        return 'eredivisie'
+    elif league == 'B1':
+        return 'jupiler league'
+    elif league == 'P1':
+        return 'liga i'
+    elif league == 'T1':
+        return 'futbol ligi 1'
+    elif league == 'G1':
+        return 'ethniki katigoria'
+    else:
+        return df['Div']
 
 
 def create_team_name_mapping():

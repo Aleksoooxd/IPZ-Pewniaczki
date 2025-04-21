@@ -20,7 +20,6 @@ from sqlalchemy.orm import relationship
 
 
 
-
 class Team(db.Model):
     __tablename__ = 'team'
 
@@ -91,10 +90,8 @@ class FootballMatch(db.Model):
     result = Column(String)
     home_matchday = Column(Integer)
     away_matchday = Column(Integer)
-    ffng = Column(Integer)
-    ffag = Column(Integer)
-    home_value = Column(Float)
-    away_value = Column(Float)
+    fthg = Column(Integer)
+    ftag = Column(Integer)
     home_value_id = Column(Integer, ForeignKey('team_value.value_id'))  # Updated ForeignKey
     away_value_id = Column(Integer, ForeignKey('team_value.value_id'))  # Updated ForeignKey
     is_surprise = Column(Boolean)
@@ -168,6 +165,6 @@ class Predicted(db.Model):
 
 if __name__ == "__main__":
     with app.app_context():
-       # db.drop_all()
+        db.drop_all()
         db.create_all()
     app.run(debug=True)
