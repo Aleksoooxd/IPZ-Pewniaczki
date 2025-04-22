@@ -97,7 +97,13 @@ def get_team_names_only(countryInfo, seasonCode):
 
         extract_team_names(download_response.content)
 
+def apply_team_mapping(name, mapping):
+    clean_name = unidecode(str(name)).strip()
+    return mapping.get(clean_name, clean_name)
 def map_team_name(val):
+    if not isinstance(val, str):
+        val = str(val)
+    val = unidecode(val).strip()
     mapping = {
         "QPR": "Queens Park Rangers",
         "Rennes": "Stade Rennais FC",
@@ -118,7 +124,7 @@ def map_team_name(val):
         "OFI": "OFI Crete",
         "Roda JC": "Roda"
     }
-    return mapping.get(val.strip(), val.strip())
+    return mapping.get(val, val)
 
 def scrape_team_names_only():
     with ThreadPoolExecutor(max_workers=10) as executor:
@@ -331,40 +337,38 @@ def get_team_value_id(session, team_id, season_id):
     team_values = session.execute(
         select(TeamValue)
         .where(TeamValue.team_id == team_id, TeamValue.season_id == season_id)
+        .with_for_update()
     ).scalars().all()
 
     if not team_values:
         return None
     return team_values[0]
-def get_or_create_league(session, league_name):
+def get_league_id(session, league_name):
     league = db.session.execute(
         select(League)
         .where(League.code == league_name)
+        .with_for_update()
     ).scalar_one_or_none()
     if not league:
-        league = League(code=league_name.lower())
-        session.add(league)
-        session.commit()
+        return None
     return league
-def get_or_create_team(session, team_name):
+def get_team_id(session, team_name):
     team = db.session.execute(
         select(Team)
         .where(Team.name == team_name)
+        .with_for_update()
     ).scalar_one_or_none()
     if not team:
-        team = Team(name=team_name)
-        session.add(team)
-        session.commit()
+        return None
     return team
-def get_or_create_season(session, season_name):
+def get_season_id(session, season_name):
     season = db.session.execute(
         select(Season)
         .where(Season.name == season_name)
+        .with_for_update()
     ).scalar_one_or_none()
     if not season:
-        season = Season(name=season_name)
-        session.add(season)
-        session.commit()
+        return None
     return season
 def get_data_from_top_11(correct, countryInfo, seasonCode):
     name_mapping = correct
@@ -398,8 +402,8 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
             df["Date"] = df["Date"].apply(correct_date_format)
             df["Date"] = pd.to_datetime(df["Date"], errors='coerce', dayfirst=True)
             df['Season'] = df['Date'].apply(get_season)
-            df["HomeTeam"] = df["HomeTeam"].apply(lambda x: name_mapping.get(unidecode(str(x)).strip(), x))
-            df["AwayTeam"] = df["AwayTeam"].apply(lambda x: name_mapping.get(unidecode(str(x)).strip(), x))
+            df["HomeTeam"] = df["HomeTeam"].apply(lambda x: apply_team_mapping(x, name_mapping))
+            df["AwayTeam"] = df["AwayTeam"].apply(lambda x: apply_team_mapping(x, name_mapping))
             matchday_counter = {}
             def assign_matchday(row):
                 season = row['Season']
@@ -423,13 +427,19 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
             df = calculate_statistics_and_consensus(df)
 
             with app.app_context():
-                league = get_or_create_league(db.session, get_league(df))
-                season = get_or_create_season(db.session, get_seasons(df))
+                league = get_league_id(db.session, get_league(df))
+                season = get_season_id(db.session, get_seasons(df))
                 for _, row in df.iterrows():
-                    home_team = get_or_create_team(db.session, row['HomeTeam'])
-                    away_team = get_or_create_team(db.session, row['AwayTeam'])
-                    homet_value_id = get_team_value_id(db.session,home_team.team_id,season.season_id)
-                    awayt_value_id = get_team_value_id(db.session,away_team.team_id,season.season_id)
+                    if league is None or season is None:
+                        print(f"Missing league {get_league(df)} or season {get_seasons(df)}")
+                        continue
+                    home_team = get_team_id(db.session, row['HomeTeam'])
+                    away_team = get_team_id(db.session, row['AwayTeam'])
+                    if home_team is None or away_team is None:
+                        print(f"Skipping match {row['HomeTeam']} vs {row['AwayTeam']} - missing team names")
+                        continue
+                    homet_value_id = get_team_value_id(db.session, home_team.team_id, season.season_id)
+                    awayt_value_id = get_team_value_id(db.session, away_team.team_id, season.season_id)
                     if homet_value_id is None or awayt_value_id is None:
                         print(f"Skipping match {row['HomeTeam']} vs {row['AwayTeam']} - missing team values")
                         continue
@@ -437,6 +447,7 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                     match = db.session.execute(
                         select(FootballMatch)
                         .where(FootballMatch.home_team_id == home_team.team_id,FootballMatch.away_team_id == away_team.team_id, FootballMatch.date==row['Date'])
+                        .with_for_update()
                     ).scalar_one_or_none()
                     if not match:
                         match = FootballMatch(
@@ -485,6 +496,7 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                         match_form = db.session.execute(
                             select(MatchForm)
                             .where(MatchForm.match_id == match.match_id, MatchForm.team_side == side)
+                            .with_for_update().with_for_update()
                         ).scalar_one_or_none()
                         if not match_form:
                             match_form = match_form = MatchForm(
@@ -594,6 +606,11 @@ def create_team_name_mapping():
                 break
         else:
             break
+    print(f"\nTotal teams in football-data: {len(list_1)}")
+    print(f"Total teams in database: {len(list_2)}")
+    print(f"Initial matches found: {len(correct)}")
+    print(f"Remaining unmapped in football-data: {len(temp_list_1)}")
+    print(f"Remaining unmapped in database: {len(temp_list_2)}")
     return correct
 
 def correct_scrape_top_11():

@@ -101,25 +101,48 @@ def get_or_create_team(session, team_name):
     return team
 
 def get_or_create_league(session, league_name):
-    league = session.query(League).filter_by(code=league_name.lower()).first()
+    league = session.execute(
+        select(League)
+        .where(League.code == league_name)
+        .with_for_update()
+    ).scalar_one_or_none()
     if not league:
         league = League(code=league_name.lower())
         session.add(league)
-        session.commit()
+        try:
+            session.commit()
+        except IntegrityError:
+            session.rollback()
+            league = session.execute(
+                select(League)
+                .where(League.code == league_name)
+            ).scalar_one()
     return league
 
 def get_or_create_season(session, season_name):
-    season = session.query(Season).filter_by(name=season_name).first()
+    season = session.execute(
+        select(Season)
+        .where(Season.name == season_name)
+        .with_for_update()
+    ).scalar_one_or_none()
     if not season:
         season = Season(name=season_name)
         session.add(season)
-        session.commit()
+        try:
+            session.commit()
+        except IntegrityError:
+            session.rollback()
+            season = session.execute(
+                select(Season)
+                .where(Season.name == season_name)
+            ).scalar_one()
     return season
 
 def get_or_create_team_value(session, team_id, season_id, value_str):
     team_value = db.session.execute(
         select(TeamValue)
         .where(TeamValue.team_id == team_id, TeamValue.season_id == season_id)
+        .with_for_update()
     ).scalar_one_or_none()
     if not team_value:
         try:
@@ -135,7 +158,14 @@ def get_or_create_team_value(session, team_id, season_id, value_str):
                 value=value
             )
             session.add(team_value)
-            session.commit()
+            try:
+                session.commit()
+            except IntegrityError:
+                session.rollback()
+                team_value = session.execute(
+                    select(TeamValue)
+                    .where(TeamValue.team_id == team_id, TeamValue.season_id==season_id)
+                ).scalar_one()
             return team_value
         except (ValueError, AttributeError):
             print(f"Could not parse value: {value_str}")
