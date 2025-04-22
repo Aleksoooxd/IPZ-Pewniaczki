@@ -142,14 +142,17 @@ def scrape_team_names_only():
 def get_season(date):
     if pd.isnull(date):
         return None
+    if not isinstance(date, (pd.Timestamp, datetime.date)):
+        raise ValueError("The 'date' parameter must be a pandas.Timestamp or datetime.date object.")
+
     year = date.year
     if date.month >= 8:
-        if date.year >= 2009:
+        if year >= 2009:
             return f"{year}/{(year + 1) % 100:02d}"
         else:
             return f"{year}/{(year + 1) % 100:01d}"
     else:
-        if date.year >= 2009:
+        if year >= 2009:
             return f"{year}/{year % 100:02d}"
         else:
             return f"{year}/{year % 100:01d}"
@@ -337,27 +340,39 @@ def calculate_is_suprise(df):
     df = df.drop(columns=['Avg_H', 'Avg_D', 'Avg_A'])
     return df
 def get_team_value_id(session, team_id, season_id):
-    team_value = session.query(TeamValue).filter_by(team_id=team_id, season_id=season_id).first()
+    team_value = db.session.execute(
+        select(TeamValue)
+        .where(TeamValue.team_id == team_id,TeamValue.season_id==season_id)
+    ).scalar_one_or_none()
     if team_value:
         return team_value
     else:
         return None
 def get_or_create_league(session, league_name):
-    league = session.query(League).filter_by(code=league_name.lower()).first()
+    league = db.session.execute(
+        select(League)
+        .where(League.code == league_name)
+    ).scalar_one_or_none()
     if not league:
         league = League(code=league_name.lower())
         session.add(league)
         session.commit()
     return league
 def get_or_create_team(session, team_name):
-    team = session.query(Team).filter_by(name=team_name).first()
+    team = db.session.execute(
+        select(Team)
+        .where(Team.name == team_name)
+    ).scalar_one_or_none()
     if not team:
         team = Team(name=team_name)
         session.add(team)
         session.commit()
     return team
 def get_or_create_season(session, season_name):
-    season = session.query(Season).filter_by(name=season_name).first()
+    season = db.session.execute(
+        select(Season)
+        .where(Season.name == season_name)
+    ).scalar_one_or_none()
     if not season:
         season = Season(name=season_name)
         session.add(season)
@@ -421,13 +436,14 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
 
             with app.app_context():
                 league = get_or_create_league(db.session, get_league(df))
-
+                season = get_or_create_season(db.session, get_season(df))
                 for _, row in df.iterrows():
-                    season = get_or_create_season(db.session, row['Season'])
                     home_team = get_or_create_team(db.session, row['HomeTeam'])
                     away_team = get_or_create_team(db.session, row['AwayTeam'])
                     homet_value_id = get_team_value_id(db.session,home_team.team_id,season.season_id)
                     awayt_value_id = get_team_value_id(db.session,away_team.team_id,season.season_id)
+                    if homet_value_id is None or awayt_value_id is None:
+                        pass
                     match = FootballMatch(
                         home_team_id=home_team.team_id,
                         home_value_id = homet_value_id.value_id,
@@ -463,7 +479,6 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                             f'{suffix}_CV': ('Coefficient variation result', 'result'),
                             f'{suffix}_Gini': ('Gini index result', 'result'),
                             f'{suffix}_HHI': ('HHI index result', 'result'),
-                            'Consensus': ('Consensus result', 'result'),
                         }
                         for col, (metric_name, result) in stats_mapping.items():
                             if col in row and pd.notna(row[col]):
@@ -479,14 +494,19 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                                     )
                                     db.session.add(metric)
                                     db.session.flush()
-
-                                stat = MatchStats(
-                                    match_id=match.match_id,
-                                    team_side=side,
-                                    metric_name=metric.metric_name,
-                                    metric_value=float(row[col])
-                                )
-                                db.session.add(stat)
+                                stat = db.session.execute(
+                                    select(MatchStats)
+                                    .where(MatchStats.metric_name == metric_name, MatchStats.match_id == match.match_id, MatchStats.team_side == side)
+                                ).scalar_one_or_none()
+                                if not stat:
+                                    stat = MatchStats(
+                                        match_id=match.match_id,
+                                        team_side=side,
+                                        metric_name=metric.metric_name,
+                                        metric_value=float(row[col])
+                                    )
+                                    db.session.add(stat)
+                                    db.session.flush()
                     match_form = MatchForm(
                         match_id=match.match_id,
                         team_side='home',
@@ -500,7 +520,7 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                         team_strength=None  # Add logic for team strength if available
                     )
                     db.session.add(match_form)
-
+                    db.session.flush()
                     match_form = MatchForm(
                         match_id=match.match_id,
                         team_side='away',
@@ -514,8 +534,9 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                         team_strength=None  # Add logic for team strength if available
                     )
                     db.session.add(match_form)
-
-                db.session.commit()
+                    db.session.flush()
+                    db.session.commit()
+                    print(f'Inserted {_} match data for {row["HomeTeam"]} vs {row["AwayTeam"]}')
             print(f"Data successfully inserted into the database for {countryInfo[1]} {seasonCode}")
 
         except Exception as e:
@@ -540,7 +561,9 @@ def scrape_top_11(correct):
                 futures.append(executor.submit(get_data_from_top_11, correct, countryValues, seasonCode))
         for future in futures:
             future.result()
-
+def get_season(df):
+    season = df['Season'].unique()
+    return season
 def get_league(df):
     league = df['Div'].unique()
     if league == 'E0':
