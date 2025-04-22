@@ -340,14 +340,15 @@ def calculate_is_suprise(df):
     df = df.drop(columns=['Avg_H', 'Avg_D', 'Avg_A'])
     return df
 def get_team_value_id(session, team_id, season_id):
-    team_value = db.session.execute(
+    team_values = session.execute(
         select(TeamValue)
-        .where(TeamValue.team_id == team_id,TeamValue.season_id==season_id)
-    ).scalar_one_or_none()
-    if team_value:
-        return team_value
-    else:
+        .where(TeamValue.team_id == team_id, TeamValue.season_id == season_id)
+    ).scalars().all()
+
+    if not team_values:
         return None
+    # If multiple values exist, return the first one (you might want to add logic to choose the most recent/appropriate one)
+    return team_values[0]
 def get_or_create_league(session, league_name):
     league = db.session.execute(
         select(League)
@@ -408,7 +409,7 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
             df.dropna(axis=0, how='all', inplace=True)
             df.dropna(axis=0, how='any', subset=['Div', 'FTR'], inplace=True)
             df["Date"] = df["Date"].apply(correct_date_format)
-            df['Date'] = pd.to_datetime(df['Date'], errors='coerce', dayfirst=True)
+            df["Date"] = pd.to_datetime(df["Date"], errors='coerce', dayfirst=True)
             df['Season'] = df['Date'].apply(get_season)
             df["HomeTeam"] = df["HomeTeam"].apply(lambda x: name_mapping.get(unidecode(str(x)).strip(), x))
             df["AwayTeam"] = df["AwayTeam"].apply(lambda x: name_mapping.get(unidecode(str(x)).strip(), x))
@@ -436,35 +437,41 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
 
             with app.app_context():
                 league = get_or_create_league(db.session, get_league(df))
-                season = get_or_create_season(db.session, get_season(df))
+                season = get_or_create_season(db.session, get_seasons(df))
                 for _, row in df.iterrows():
                     home_team = get_or_create_team(db.session, row['HomeTeam'])
                     away_team = get_or_create_team(db.session, row['AwayTeam'])
                     homet_value_id = get_team_value_id(db.session,home_team.team_id,season.season_id)
                     awayt_value_id = get_team_value_id(db.session,away_team.team_id,season.season_id)
                     if homet_value_id is None or awayt_value_id is None:
-                        pass
-                    match = FootballMatch(
-                        home_team_id=home_team.team_id,
-                        home_value_id = homet_value_id.value_id,
-                        away_value_id = awayt_value_id.value_id,
-                        away_team_id=away_team.team_id,
-                        season_id=season.season_id,
-                        league_id=league.league_id,
-                        date=row['Date'],
-                        result=row['FTR'],
-                        home_matchday=row['HomeMatchday'],
-                        away_matchday=row['AwayMatchday'],
-                        fthg=row['FTHG'],
-                        ftag=row['FTAG'],
-                        is_surprise=row['isSuprise'],
-                        is_suprise_h=row['isSuprise_H'],
-                        is_suprise_d=row['isSuprise_D'],
-                        is_suprise_a=row['isSuprise_A'],
-                        consensus=row['Consensus']
-                    )
-                    db.session.add(match)
-                    db.session.flush()
+                        print(f"Skipping match {row['HomeTeam']} vs {row['AwayTeam']} - missing team values")
+                        continue
+                    match = db.session.execute(
+                        select(FootballMatch)
+                        .where(FootballMatch.home_team_id == home_team.team_id,FootballMatch.away_team_id == away_team.team_id, FootballMatch.Date==row['Date'])
+                    ).scalar_one_or_none()
+                    if not match:
+                        match = FootballMatch(
+                            home_team_id=home_team.team_id,
+                            home_value_id = homet_value_id.value_id,
+                            away_value_id = awayt_value_id.value_id,
+                            away_team_id=away_team.team_id,
+                            season_id=season.season_id,
+                            league_id=league.league_id,
+                            date=row['Date'],
+                            result=row['FTR'],
+                            home_matchday=row['HomeMatchday'],
+                            away_matchday=row['AwayMatchday'],
+                            fthg=row['FTHG'],
+                            ftag=row['FTAG'],
+                            is_surprise=row['isSuprise'],
+                            is_suprise_h=row['isSuprise_H'],
+                            is_suprise_d=row['isSuprise_D'],
+                            is_suprise_a=row['isSuprise_A'],
+                            consensus=row['Consensus']
+                        )
+                        db.session.add(match)
+                        db.session.flush()
                     for suffix in ['H','D','A']:
                         if suffix == 'H':
                             side = 'home'
@@ -561,11 +568,18 @@ def scrape_top_11(correct):
                 futures.append(executor.submit(get_data_from_top_11, correct, countryValues, seasonCode))
         for future in futures:
             future.result()
-def get_season(df):
-    season = df['Season'].unique()
-    return season
+def get_seasons(df):
+    seasons = df['Season'].unique()
+    if len(seasons) == 1:
+        return seasons[0]
+    else:
+        # Handle case with multiple seasons or return the first one
+        return seasons[0] if len(seasons) > 0 else None
 def get_league(df):
-    league = df['Div'].unique()
+    leagues = df['Div'].unique()
+    if len(leagues) == 0:
+        return None
+    league = leagues[0]  # Take the first league if there are multiple
     if league == 'E0':
         return 'premier league'
     elif league == 'SC0':
@@ -589,7 +603,7 @@ def get_league(df):
     elif league == 'G1':
         return 'ethniki katigoria'
     else:
-        return df['Div']
+        return league
 
 
 def create_team_name_mapping():

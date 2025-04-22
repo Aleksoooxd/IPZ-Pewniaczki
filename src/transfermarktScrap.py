@@ -116,25 +116,31 @@ def get_or_create_season(session, season_name):
         session.commit()
     return season
 
-def create_team_value(session, team_id, season_id, value_str):
-    try:
-        if value_str == 'N/A':
+def get_or_create_team_value(session, team_id, season_id, value_str):
+    team_value = db.session.execute(
+        select(TeamValue)
+        .where(TeamValue.team_id == team_id, TeamValue.season_id == season_id)
+    ).scalar_one_or_none()
+    if not team_value:
+        try:
+            if value_str == 'N/A':
+                return None
+            if value_str.endswith('bn'):
+                value = float(value_str.replace('€', '').replace('bn', '').strip()) * 1000
+            else:
+                value = float(value_str.replace('€', '').replace('m', '').strip())
+            team_value = TeamValue(
+                team_id=team_id,
+                season_id=season_id,
+                value=value
+            )
+            session.add(team_value)
+            session.commit()
+            return team_value
+        except (ValueError, AttributeError):
+            print(f"Could not parse value: {value_str}")
             return None
-        if value_str.endswith('bn'):
-            value = float(value_str.replace('€', '').replace('bn', '').strip()) * 1000
-        else:
-            value = float(value_str.replace('€', '').replace('m', '').strip())
-        team_value = TeamValue(
-            team_id=team_id,
-            season_id=season_id,
-            value=value
-        )
-        session.add(team_value)
-        session.commit()
-        return team_value
-    except (ValueError, AttributeError):
-        print(f"Could not parse value: {value_str}")
-        return None
+    return team_value
 
 def fetch_league_data(league_name, season_name, path, spath):
     url = site + path + spath
@@ -155,7 +161,7 @@ def fetch_league_data(league_name, season_name, path, spath):
                     original_club_name = name_td.text.strip()
                     club_value_str = club_values[((i + 1) * 2) + 1].text.strip()
                     team = get_or_create_team(db.session, original_club_name)
-                    create_team_value(db.session, team.team_id, season.season_id, club_value_str)
+                    get_or_create_team_value(db.session, team.team_id, season.season_id, club_value_str)
                     team_league = db.session.query(TeamLeague).filter_by(
                         team_id=team.team_id,
                         league_id=league.league_id,
