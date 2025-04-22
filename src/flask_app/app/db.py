@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app, session_options={'autoflush': False})
 
-from sqlalchemy import create_engine, Column, Integer, String, Date, Float, Boolean, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Date, Float, Boolean, ForeignKey, select
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -111,28 +111,41 @@ class FootballMatch(db.Model):
     predictions = relationship("Predicted", back_populates="match")
 
 
-class StatisticsIndex(db.Model):
-    __tablename__ = 'statistics_index'
-
-    index_id = Column(Integer, primary_key=True)
-    metric_name = Column(String(255), unique=True, nullable=False)
-    description = Column(String)
-
-    stats = relationship("MatchStats", back_populates="metric")
-
-
 class MatchStats(db.Model):
     __tablename__ = 'match_stats'
 
     stat_id = Column(Integer, primary_key=True)
     match_id = Column(Integer, ForeignKey('football_match.match_id'), nullable=False)
-    team_side = Column(String(50))
-    metric_name = Column(String(255),ForeignKey('statistics_index.metric_name'),nullable=False)
-    metric_value = Column(Float)
+    team_side = Column(String(10), nullable=False)
+
+    mean = Column(Float, nullable=True)
+    std = Column(Float, nullable=True)
+    shannon = Column(Float, nullable=True)
+    cv = Column(Float, nullable=True)
+    gini = Column(Float, nullable=True)
+    hhi = Column(Float, nullable=True)
 
     match = relationship("FootballMatch", back_populates="match_stats")
-    metric = relationship("StatisticsIndex", back_populates="stats")
 
+    @classmethod
+    def create_or_update_stats(cls, session, match_id, side, stats_data):
+        stats = session.execute(
+            select(cls)
+            .where(cls.match_id == match_id, cls.team_side == side)
+        ).scalar_one_or_none()
+
+        if not stats:
+            stats = cls(match_id=match_id, team_side=side)
+            session.add(stats)
+        stats.mean = stats_data.get('mean')
+        stats.std = stats_data.get('std')
+        stats.shannon = stats_data.get('shannon')
+        stats.cv = stats_data.get('cv')
+        stats.gini = stats_data.get('gini')
+        stats.hhi = stats_data.get('hhi')
+
+        session.flush()
+        return stats
 
 class MatchForm(db.Model):
     __tablename__ = 'match_form'
@@ -165,6 +178,6 @@ class Predicted(db.Model):
 
 if __name__ == "__main__":
     with app.app_context():
-        #db.drop_all()
+        db.drop_all()
         db.create_all()
     app.run(debug=True)

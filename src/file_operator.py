@@ -3,7 +3,7 @@ import pandas as pd
 import chardet
 import numpy as np
 from collections import Counter
-from helpfunctions import normalize_names,shannon_index,coefficient_of_variation,gini_index,hhi_index,calculate_consensus
+from helpfunctions import shannon_index,coefficient_of_variation,gini_index,hhi_index,calculate_consensus
 class FileOperator:
     def __init__(self, save_path=os.path.join(os.getcwd(),'Data','Matches Results')):
         self.save_path = save_path

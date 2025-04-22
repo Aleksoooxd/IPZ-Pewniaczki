@@ -1,11 +1,9 @@
 from file_operator import FileOperator
 from footballScrap import correct_scrape_top_11
 from transfermarktScrap import scrape_transfermarkt
-from helpfunctions import reset_data
 def main():
-    reset_data()
-    correct_scrape_top_11()
     scrape_transfermarkt()
+    correct_scrape_top_11()
     # file_op = FileOperator()
     # file_op.generate_seasons_with_values()
     # file_op.count_collumns()

@@ -11,8 +11,8 @@ import pandas as pd
 from fuzzywuzzy import process
 from sqlalchemy import select
 from unidecode import unidecode
-from flask_app.app.db import db, app, FootballMatch, MatchStats, MatchForm, Team, League, Season, StatisticsIndex, TeamValue
-from src.helpfunctions import normalize_names,hhi_index,shannon_index, coefficient_of_variation, gini_index, calculate_consensus
+from flask_app.app.db import db, app, FootballMatch, MatchStats, MatchForm, Team, League, Season, TeamValue
+from src.helpfunctions import hhi_index,shannon_index, coefficient_of_variation, gini_index, calculate_consensus
 from src.transfermarktScrap import get_all_teams_from_db
 
 pd.set_option('future.no_silent_downcasting', True)
@@ -54,7 +54,6 @@ all_team_names = set()
 
 
 def extract_team_names(csv_content):
-    """Wyodrębnij unikalne nazwy drużyn z zawartości CSV i dodaj do globalnego seta"""
     try:
         enc = detect_encoding(csv_content)
         df = pd.read_csv(io.StringIO(csv_content.decode(enc)), encoding=enc, low_memory=False, on_bad_lines='skip')
@@ -73,9 +72,7 @@ def extract_team_names(csv_content):
     except Exception as e:
         print(f"Błąd podczas wyodrębniania nazw drużyn: {e}")
 
-
 def get_team_names_only(countryInfo, seasonCode):
-    """Pobierz tylko nazwy drużyn i dodaj do globalnego seta, bez zapisywania plików"""
     url = f'https://www.football-data.co.uk/{countryInfo[0]}m.php'
     with requests.Session() as session:
         response = session.get(url, headers=headers)
@@ -100,9 +97,7 @@ def get_team_names_only(countryInfo, seasonCode):
 
         extract_team_names(download_response.content)
 
-
 def map_team_name(val):
-    """Funkcja do mapowania nazw klubów na ustandaryzowane wersje"""
     mapping = {
         "QPR": "Queens Park Rangers",
         "Rennes": "Stade Rennais FC",
@@ -125,9 +120,7 @@ def map_team_name(val):
     }
     return mapping.get(val.strip(), val.strip())
 
-
 def scrape_team_names_only():
-    """Zbierz nazwy drużyn ze wszystkich lig i sezonów"""
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
         for country, countryValues in countries.items():
@@ -137,7 +130,6 @@ def scrape_team_names_only():
             future.result()
 
     return sorted(all_team_names)
-
 
 def get_season(date):
     if pd.isnull(date):
@@ -235,8 +227,6 @@ def create_placement_columns(dataframe):
 
         return placements, form_data, goals_data, placement_map
 
-    previous_season_placements = {}
-
     for season in sorted(dataframe['Season'].unique()):
         season_mask = dataframe['Season'] == season
         season_df = dataframe[season_mask].sort_values(by=['HomeMatchday', 'Date'])
@@ -280,8 +270,6 @@ def create_placement_columns(dataframe):
             dataframe.at[index, 'AwayGoals3'] = away_goals3
             dataframe.at[index, 'AwayGoals5'] = away_goals5
             dataframe.at[index, 'AwayGoalsSeason'] = away_goals_season
-
-        previous_season_placements = final_placements
 
     return dataframe
 def calculate_statistics_and_consensus(data):
@@ -347,7 +335,6 @@ def get_team_value_id(session, team_id, season_id):
 
     if not team_values:
         return None
-    # If multiple values exist, return the first one (you might want to add logic to choose the most recent/appropriate one)
     return team_values[0]
 def get_or_create_league(session, league_name):
     league = db.session.execute(
@@ -446,9 +433,10 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                     if homet_value_id is None or awayt_value_id is None:
                         print(f"Skipping match {row['HomeTeam']} vs {row['AwayTeam']} - missing team values")
                         continue
+                    # Dodawanie meczu
                     match = db.session.execute(
                         select(FootballMatch)
-                        .where(FootballMatch.home_team_id == home_team.team_id,FootballMatch.away_team_id == away_team.team_id, FootballMatch.Date==row['Date'])
+                        .where(FootballMatch.home_team_id == home_team.team_id,FootballMatch.away_team_id == away_team.team_id, FootballMatch.date==row['Date'])
                     ).scalar_one_or_none()
                     if not match:
                         match = FootballMatch(
@@ -472,76 +460,47 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                         )
                         db.session.add(match)
                         db.session.flush()
-                    for suffix in ['H','D','A']:
-                        if suffix == 'H':
-                            side = 'home'
-                        elif suffix == 'D':
-                            side = 'draw'
-                        else:
-                            side = 'away'
-                        stats_mapping = {
-                            f'{suffix}_Mean': ('Mean odds result', 'result'),
-                            f'{suffix}_Std': ('Std odds result', 'result'),
-                            f'{suffix}_Shannon': ('Shannon index result', 'result'),
-                            f'{suffix}_CV': ('Coefficient variation result', 'result'),
-                            f'{suffix}_Gini': ('Gini index result', 'result'),
-                            f'{suffix}_HHI': ('HHI index result', 'result'),
+                    #Indexy statystyczne dla Home, Draw i Away
+                    for suffix in ['H', 'D', 'A']:
+                        side = 'home' if suffix == 'H' else ('draw' if suffix == 'D' else 'away')
+                        stats_data = {
+                            'mean': row.get(f'{suffix}_Mean'),
+                            'std': row.get(f'{suffix}_Std'),
+                            'shannon': row.get(f'{suffix}_Shannon'),
+                            'cv': row.get(f'{suffix}_CV'),
+                            'gini': row.get(f'{suffix}_Gini'),
+                            'hhi': row.get(f'{suffix}_HHI')
                         }
-                        for col, (metric_name, result) in stats_mapping.items():
-                            if col in row and pd.notna(row[col]):
-                                metric = db.session.execute(
-                                    select(StatisticsIndex)
-                                    .where(StatisticsIndex.metric_name == metric_name)
-                                ).scalar_one_or_none()
-
-                                if not metric:
-                                    metric = StatisticsIndex(
-                                        metric_name=metric_name,
-                                        description=f"Statystyka {metric_name}"
-                                    )
-                                    db.session.add(metric)
-                                    db.session.flush()
-                                stat = db.session.execute(
-                                    select(MatchStats)
-                                    .where(MatchStats.metric_name == metric_name, MatchStats.match_id == match.match_id, MatchStats.team_side == side)
-                                ).scalar_one_or_none()
-                                if not stat:
-                                    stat = MatchStats(
-                                        match_id=match.match_id,
-                                        team_side=side,
-                                        metric_name=metric.metric_name,
-                                        metric_value=float(row[col])
-                                    )
-                                    db.session.add(stat)
-                                    db.session.flush()
-                    match_form = MatchForm(
-                        match_id=match.match_id,
-                        team_side='home',
-                        form_last_3=row['HomeForm3'],
-                        form_last_5=row['HomeForm5'],
-                        form_season=row['HomeFormSeason'],
-                        goals_last_3=row['HomeGoals3'],
-                        goals_last_5=row['HomeGoals5'],
-                        goals_season=row['HomeGoalsSeason'],
-                        team_placement=row['HomeTeamPlacement'],
-                        team_strength=None  # Add logic for team strength if available
-                    )
-                    db.session.add(match_form)
-                    db.session.flush()
-                    match_form = MatchForm(
-                        match_id=match.match_id,
-                        team_side='away',
-                        form_last_3=row['AwayForm3'],
-                        form_last_5=row['AwayForm5'],
-                        form_season=row['AwayFormSeason'],
-                        goals_last_3=row['AwayGoals3'],
-                        goals_last_5=row['AwayGoals5'],
-                        goals_season=row['AwayGoalsSeason'],
-                        team_placement=row['AwayTeamPlacement'],
-                        team_strength=None  # Add logic for team strength if available
-                    )
-                    db.session.add(match_form)
-                    db.session.flush()
+                        stats_data = {k: float(v) for k, v in stats_data.items() if v is not None and pd.notna(v)}
+                        if stats_data:
+                            MatchStats.create_or_update_stats(
+                                session=db.session,
+                                match_id=match.match_id,
+                                side=side,
+                                stats_data=stats_data
+                            )
+                    # Forma drużyn
+                    for side in ['home', 'away']:
+                        prefix = side.capitalize()
+                        match_form = db.session.execute(
+                            select(MatchForm)
+                            .where(MatchForm.match_id == match.match_id, MatchForm.team_side == side)
+                        ).scalar_one_or_none()
+                        if not match_form:
+                            match_form = match_form = MatchForm(
+                                match_id=match.match_id,
+                                team_side=side,
+                                form_last_3=row[f'{prefix}Form3'],
+                                form_last_5=row[f'{prefix}Form5'],
+                                form_season=row[f'{prefix}FormSeason'],
+                                goals_last_3=row[f'{prefix}Goals3'],
+                                goals_last_5=row[f'{prefix}Goals5'],
+                                goals_season=row[f'{prefix}GoalsSeason'],
+                                team_placement=row[f'{prefix}TeamPlacement'],
+                                team_strength=None
+                            )
+                            db.session.add(match_form)
+                            db.session.flush()
                     db.session.commit()
                     print(f'Inserted {_} match data for {row["HomeTeam"]} vs {row["AwayTeam"]}')
             print(f"Data successfully inserted into the database for {countryInfo[1]} {seasonCode}")

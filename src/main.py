@@ -1,7 +1,6 @@
 from file_operator import FileOperator
 from footballScrap import correct_scrape_top_11
 from transfermarktScrap import scrape_transfermarkt
-from helpfunctions import reset_data,merge_all_seasons
 def main():
     while True:
         print("1. Scrape ALL")
@@ -33,7 +32,6 @@ def main():
             file_op = FileOperator()
             file_op.add_statistics_and_consensus()
         elif choice == '7':
-            reset_data()
             correct_scrape_top_11()
             scrape_transfermarkt()
             file_op = FileOperator()
@@ -46,8 +44,7 @@ def main():
             file_op = FileOperator()
             file_op.calculate_placements()
         elif choice == '9':
-            # Do testowania roznych rzeczy
-            merge_all_seasons()
+            pass
         else:
             break
 if __name__ == "__main__":
