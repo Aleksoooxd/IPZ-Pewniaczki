@@ -122,9 +122,15 @@ def get_team_names_only(countryInfo, seasonCode):
 
         extract_team_names(download_response.content)
 
-def apply_team_mapping(name, mapping):
-    clean_name = unidecode(str(name)).strip()
-    return mapping.get(clean_name, clean_name)
+def apply_team_mapping(club_name, mapping):
+    cleaned_name = ' '.join(club_name.strip().split())
+    if cleaned_name in mapping:
+        return mapping[cleaned_name]
+    lower_name = cleaned_name.lower()
+    for key in mapping:
+        if key.lower() == lower_name:
+            return mapping[key]
+    return cleaned_name
 def map_team_name(val):
     if not isinstance(val, str):
         val = str(val)
