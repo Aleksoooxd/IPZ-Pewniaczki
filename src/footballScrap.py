@@ -51,7 +51,32 @@ countries = {
     'gr': ['greece', 'Ethniki Katigoria']
 }
 all_team_names = set()
-
+football_mapping = {
+        "Belenenses" : "CF Belenenses",
+        "Hamilton" : "Hamilton Academical FC",
+        "Cadiz" : "Cádiz CF",
+        "FC Koln" : "1.FC Köln",
+        "FC Famalicão" : "1.FC Köln",
+        "Famalicao": "FC Famalicão",
+        "QPR": "Queens Park Rangers",
+        "Rennes": "Stade Rennais FC",
+        "Verona": "Hellas Verona",
+        "Ajax ": "Ajax",
+        "Feyenoord ": "Feyenoord",
+        "Graafschap ": "Graafschap",
+        "Groningen ": "Groningen",
+        "Heracles ": "Heracles",
+        "Roda ": "Roda",
+        "Utrecht ": "Utrecht",
+        "Vitesse ": "Vitesse",
+        "Willem II ": "Willem II",
+        "Kalithea": "Kallithea",
+        "Aves": "AVS",
+        "Feirense ": "Feirense",
+        "Sparta": "Sparta Rotterdam",
+        "OFI": "OFI Crete",
+        "Roda JC": "Roda"
+}
 
 def extract_team_names(csv_content):
     try:
@@ -104,27 +129,7 @@ def map_team_name(val):
     if not isinstance(val, str):
         val = str(val)
     val = unidecode(val).strip()
-    mapping = {
-        "QPR": "Queens Park Rangers",
-        "Rennes": "Stade Rennais FC",
-        "Verona": "Hellas Verona",
-        "Ajax ": "Ajax",
-        "Feyenoord ": "Feyenoord",
-        "Graafschap ": "Graafschap",
-        "Groningen ": "Groningen",
-        "Heracles ": "Heracles",
-        "Roda ": "Roda",
-        "Utrecht ": "Utrecht",
-        "Vitesse ": "Vitesse",
-        "Willem II ": "Willem II",
-        "Kalithea": "Kallithea",
-        "Aves": "AVS",
-        "Feirense ": "Feirense",
-        "Sparta": "Sparta Rotterdam",
-        "OFI": "OFI Crete",
-        "Roda JC": "Roda"
-    }
-    return mapping.get(val, val)
+    return football_mapping.get(val, val)
 
 def scrape_team_names_only():
     with ThreadPoolExecutor(max_workers=10) as executor:
@@ -402,6 +407,8 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
             df["Date"] = df["Date"].apply(correct_date_format)
             df["Date"] = pd.to_datetime(df["Date"], errors='coerce', dayfirst=True)
             df['Season'] = df['Date'].apply(get_season)
+            df["HomeTeam"] = df["HomeTeam"].apply(lambda x: apply_team_mapping(x, football_mapping))
+            df["AwayTeam"] = df["AwayTeam"].apply(lambda x: apply_team_mapping(x, football_mapping))
             df["HomeTeam"] = df["HomeTeam"].apply(lambda x: apply_team_mapping(x, name_mapping))
             df["AwayTeam"] = df["AwayTeam"].apply(lambda x: apply_team_mapping(x, name_mapping))
             matchday_counter = {}
@@ -471,6 +478,11 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                         )
                         db.session.add(match)
                         db.session.flush()
+                    else:
+                        print(
+                            f'Skipping match {_} match data for {row["HomeTeam"]} vs {row["AwayTeam"]}, already exists')
+                        continue
+
                     #Indexy statystyczne dla Home, Draw i Away
                     for suffix in ['H', 'D', 'A']:
                         side = 'home' if suffix == 'H' else ('draw' if suffix == 'D' else 'away')
@@ -611,6 +623,8 @@ def create_team_name_mapping():
     print(f"Initial matches found: {len(correct)}")
     print(f"Remaining unmapped in football-data: {len(temp_list_1)}")
     print(f"Remaining unmapped in database: {len(temp_list_2)}")
+    print(f"Remaining unmapped in database: {temp_list_2}")
+    print(f'Mapped teams: {correct}')
     return correct
 
 def correct_scrape_top_11():

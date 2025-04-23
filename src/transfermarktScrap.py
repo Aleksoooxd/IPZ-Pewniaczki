@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 from concurrent.futures import ThreadPoolExecutor
-
+import re
 from sqlalchemy import select
 
 from flask_app.app.db import db, app, Team, League, Season, TeamLeague, TeamValue
@@ -37,6 +37,10 @@ headers = {
 }
 
 club_name_mapping = {
+    'CF União Madeira (-2021)' : 'Uniao Madeira',
+    'CF Belenenses' : 'Belenses',
+    'AO Kerkyraikos' : "Kerkyra",
+    'AO Chalkidona Near-East': 'Atromitos Athens',
     'SPAL 2013': 'SPAL',
     'Parma Calcio 1913': 'Parma FC',
     'Beerschot AC (-2013)': 'Germinal',
@@ -78,17 +82,23 @@ club_name_mapping = {
 }
 
 def normalize_club_name(club_name):
-    return club_name_mapping.get(club_name, club_name)
+    cleaned_name = ' '.join(club_name.strip().split())
+    if cleaned_name in club_name_mapping:
+        return club_name_mapping[cleaned_name]
+    lower_name = cleaned_name.lower()
+    for key in club_name_mapping:
+        if key.lower() == lower_name:
+            return club_name_mapping[key]
+    return cleaned_name
 
 def get_or_create_team(session, team_name):
-    normalized_name = normalize_club_name(team_name)
     team = session.execute(
         select(Team)
-        .where(Team.name == normalized_name)
+        .where(Team.name == team_name)
         .with_for_update()
     ).scalar_one_or_none()
     if not team:
-        team = Team(name=normalized_name)
+        team = Team(name=team_name)
         session.add(team)
         try:
             session.commit()
@@ -96,7 +106,7 @@ def get_or_create_team(session, team_name):
             session.rollback()
             team = session.execute(
                 select(Team)
-                .where(Team.name == normalized_name)
+                .where(Team.name == team_name)
             ).scalar_one()
     return team
 
@@ -189,8 +199,9 @@ def fetch_league_data(league_name, season_name, path, spath):
             for i, name_td in enumerate(club_names):
                 try:
                     original_club_name = name_td.text.strip()
+                    normalized_club_name = normalize_club_name(original_club_name)
                     club_value_str = club_values[((i + 1) * 2) + 1].text.strip()
-                    team = get_or_create_team(db.session, original_club_name)
+                    team = get_or_create_team(db.session, normalized_club_name)
                     get_or_create_team_value(db.session, team.team_id, season.season_id, club_value_str)
                     team_league = db.session.query(TeamLeague).filter_by(
                         team_id=team.team_id,
@@ -209,10 +220,10 @@ def fetch_league_data(league_name, season_name, path, spath):
                     continue
                 except IntegrityError as e:
                     db.session.rollback()
-                    print(f"Database error for {original_club_name}: {e}")
+                    print(f"Database error for {normalized_club_name}: {e}")
                     continue
                 except Exception as e:
-                    print(f"Unexpected error for {original_club_name}: {e}")
+                    print(f"Unexpected error for {normalized_club_name}: {e}")
                     continue
 
 def scrape_leagues():
