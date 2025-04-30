@@ -279,45 +279,48 @@ def scrape_fixtures():
             continue
 
         soup = BeautifulSoup(response.text, "html.parser")
-        boxes = soup.select("div.box")  # <- ważne! przechodzimy po boxach (kolejkach)
+        boxes = soup.select("div.box")
 
         for box in boxes:
             # Pobieramy numer kolejki
             headline = box.select_one("div.content-box-headline")
             round_number = headline.text.strip() if headline else "N/A"
-            round_number = re.sub(r"[^\d]", "", round_number)  # zostaw tylko cyfry
+            round_number = re.sub(r"[^\d]", "", round_number)
 
             table = box.select_one("table")
             if not table:
                 continue
 
             rows = table.select("tbody > tr")
-            current_date = None
-            current_time = None
+            current_time = None  # tylko godzina może być dziedziczona
 
             for row in rows:
-                if row.get("class") and "bg_blau_20" in row.get("class", []):
-                    date_a = row.select_one("td.show-for-small a")
-                    if date_a:
-                        raw_date = date_a.text.strip()
+                cols = row.find_all("td")
+
+                # Pobierz datę i godzinę (jeśli obecne)
+                date_str = ""
+                if len(cols) >= 2:
+                    raw_date = cols[0].text.strip()
+                    raw_time = cols[1].text.strip()
+
+                    date_match = re.search(r"\d{2}\.\d{2}\.\d{4}", raw_date)
+                    if date_match:
                         try:
-                            parsed_date = datetime.datetime.strptime(raw_date, "%d.%m.%Y")
-                            current_date = parsed_date.strftime("%d/%m/%Y")
-                        except Exception:
-                            current_date = "21/03/2137"
+                            parsed_date = datetime.datetime.strptime(date_match.group(), "%d.%m.%Y")
+                            date_str = parsed_date.strftime("%d/%m/%Y")
+                        except:
+                            pass  # zostaw pustą datę
 
-                    time_text = row.select_one("td.show-for-small")
-                    if time_text:
-                        match = re.search(r"\d{2}:\d{2}", time_text.text)
-                        current_time = match.group() if match else "21:37"
+                    time_match = re.search(r"\d{2}:\d{2}", raw_time)
+                    if time_match:
+                        current_time = time_match.group()
 
-                elif row.select("td.hauptlink"):
+                # Wiersz z meczem
+                if row.select("td.hauptlink"):
                     try:
-                        cols = row.find_all("td")
                         score_text = cols[4].text.strip()
-
-                        if re.match(r"\d+:\d+", score_text):
-                            continue
+                        if score_text != "-:-":
+                            continue  # mecz już się odbył
 
                         home_raw = ' '.join(cols[2].text.split())
                         home_team = re.sub(r"\(\d+\.\)\s*", "", home_raw)
@@ -325,28 +328,25 @@ def scrape_fixtures():
                         away_raw = ' '.join(cols[6].text.split())
                         away_team = re.sub(r"\(\d+\.\)\s*", "", away_raw)
 
-                        date = current_date if current_date else "21/03/2137"
-                        time = current_time if current_time else "21:37"
-
                         all_fixtures.append({
                             "league": league_name,
                             "round": round_number,
-                            "date": date,
-                            "time": time,
+                            "date": date_str,  # może być pusta
+                            "time": current_time if current_time else "",
                             "home_team": home_team,
                             "away_team": away_team
                         })
 
                     except Exception as e:
-                        print(f"Error extracting match row: {e}")
+                        print(f"Błąd przy przetwarzaniu meczu: {e}")
                         continue
 
-    # Zapis do CSV
+    # Zapis do pliku CSV
     with open('upcoming_fixtures.csv', mode='w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=["league", "round", "date", "time", "home_team", "away_team"])
         writer.writeheader()
         writer.writerows(all_fixtures)
 
-    print("✅ Upcoming fixtures saved to 'upcoming_fixtures.csv'")
+    print("✅ Zapisano dane do 'upcoming_fixtures.csv'")
 
 scrape_fixtures()

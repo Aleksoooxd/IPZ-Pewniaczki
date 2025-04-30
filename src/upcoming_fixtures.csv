@@ -1,292 +1,293 @@
 league,round,date,time,home_team,away_team
-Premier League,34,21/03/2137,58:30,Nottm Forest,Brentford 
-Premier League,35,21/03/2137,59:00,Man City,Wolves 
-Premier League,35,21/03/2137,54:00,Aston Villa,Fulham 
-Premier League,35,21/03/2137,54:00,Everton,Ipswich 
-Premier League,35,21/03/2137,54:00,Leicester,Southampton 
-Premier League,35,21/03/2137,21:37,Arsenal,Bournemouth 
-Premier League,35,21/03/2137,53:00,Brentford,Man Utd 
-Premier League,35,21/03/2137,53:00,Brighton,Newcastle 
-Premier League,35,21/03/2137,53:00,West Ham,Tottenham 
-Premier League,35,21/03/2137,21:37,Chelsea,Liverpool 
-Premier League,35,21/03/2137,59:00,Crystal Palace,Nottm Forest 
-Premier League,36,21/03/2137,54:00,Bournemouth,Aston Villa
-Premier League,36,21/03/2137,54:00,Fulham,Everton
-Premier League,36,21/03/2137,54:00,Ipswich,Brentford
-Premier League,36,21/03/2137,54:00,Southampton,Man City
-Premier League,36,21/03/2137,54:00,Wolves,Brighton
-Premier League,36,21/03/2137,51:00,Newcastle,Chelsea
-Premier League,36,21/03/2137,21:37,Man Utd,West Ham
-Premier League,36,21/03/2137,21:37,Nottm Forest,Leicester
-Premier League,36,21/03/2137,21:37,Tottenham,Crystal Palace
-Premier League,36,21/03/2137,21:37,Liverpool,Arsenal
-Premier League,37,21/03/2137,59:00,Chelsea,Man Utd
-Premier League,37,21/03/2137,51:00,Everton,Southampton
-Premier League,37,21/03/2137,21:37,West Ham,Nottm Forest
-Premier League,37,21/03/2137,21:37,Aston Villa,Tottenham
-Premier League,37,21/03/2137,21:37,Brentford,Fulham
-Premier League,37,21/03/2137,21:37,Crystal Palace,Wolves
-Premier League,37,21/03/2137,21:37,Leicester,Ipswich
-Premier League,37,21/03/2137,21:37,Arsenal,Newcastle
-Premier League,37,21/03/2137,21:37,Man City,Bournemouth
-Premier League,37,21/03/2137,59:00,Brighton,Liverpool
-Premier League,38,21/03/2137,55:00,Bournemouth,Leicester
-Premier League,38,21/03/2137,55:00,Fulham,Man City
-Premier League,38,21/03/2137,55:00,Ipswich,West Ham
-Premier League,38,21/03/2137,55:00,Liverpool,Crystal Palace
-Premier League,38,21/03/2137,55:00,Man Utd,Aston Villa
-Premier League,38,21/03/2137,55:00,Newcastle,Everton
-Premier League,38,21/03/2137,55:00,Nottm Forest,Chelsea
-Premier League,38,21/03/2137,55:00,Southampton,Arsenal
-Premier League,38,21/03/2137,55:00,Tottenham,Brighton
-Premier League,38,21/03/2137,55:00,Wolves,Brentford
-La Liga,34,21/03/2137,59:00,Rayo Vallecano,Getafe 
-La Liga,34,21/03/2137,52:00,Alavés,Atlético Madrid 
-La Liga,34,21/03/2137,21:37,Villarreal,CA Osasuna 
-La Liga,34,21/03/2137,21:37,UD Las Palmas,Valencia 
-La Liga,34,21/03/2137,21:37,Real Valladolid,Barcelona 
-La Liga,34,21/03/2137,52:00,Real Madrid,Celta de Vigo 
-La Liga,34,21/03/2137,21:37,Sevilla FC,CD Leganés 
-La Liga,34,21/03/2137,21:37,Espanyol,Real Betis 
-La Liga,34,21/03/2137,21:37,Real Sociedad,Athletic 
-La Liga,34,21/03/2137,59:00,Girona,RCD Mallorca 
-La Liga,35,21/03/2137,59:00,UD Las Palmas,Rayo Vallecano
-La Liga,35,21/03/2137,52:00,Valencia,Getafe
-La Liga,35,21/03/2137,21:37,Celta de Vigo,Sevilla FC
-La Liga,35,21/03/2137,21:37,RCD Mallorca,Real Valladolid
-La Liga,35,21/03/2137,12:00,Atlético Madrid,Real Sociedad
-La Liga,35,21/03/2137,12:00,Girona,Villarreal
-La Liga,35,21/03/2137,12:00,Athletic,Alavés
-La Liga,35,21/03/2137,12:00,CD Leganés,Espanyol
-La Liga,35,21/03/2137,21:37,Barcelona,Real Madrid
-La Liga,35,21/03/2137,21:37,Real Betis,CA Osasuna
-La Liga,36,21/03/2137,12:00,Alavés,Valencia
-La Liga,36,21/03/2137,12:00,CA Osasuna,Atlético Madrid
-La Liga,36,21/03/2137,12:00,Real Sociedad,Celta de Vigo
-La Liga,36,21/03/2137,12:00,Real Valladolid,Girona
-La Liga,36,21/03/2137,12:00,Real Madrid,RCD Mallorca
-La Liga,36,21/03/2137,12:00,Sevilla FC,UD Las Palmas
-La Liga,36,21/03/2137,12:00,Villarreal,CD Leganés
-La Liga,36,21/03/2137,57:00,Rayo Vallecano,Real Betis
-La Liga,36,21/03/2137,21:37,Espanyol,Barcelona
-La Liga,36,21/03/2137,21:37,Getafe,Athletic
-La Liga,37,21/03/2137,12:00,Atlético Madrid,Real Betis
-La Liga,37,21/03/2137,12:00,Barcelona,Villarreal
-La Liga,37,21/03/2137,12:00,Celta de Vigo,Rayo Vallecano
-La Liga,37,21/03/2137,12:00,Valencia,Athletic
-La Liga,37,21/03/2137,12:00,RCD Mallorca,Getafe
-La Liga,37,21/03/2137,12:00,Real Sociedad,Girona
-La Liga,37,21/03/2137,12:00,Sevilla FC,Real Madrid
-La Liga,37,21/03/2137,12:00,Real Valladolid,Alavés
-La Liga,37,21/03/2137,12:00,UD Las Palmas,CD Leganés
-La Liga,37,21/03/2137,12:00,CA Osasuna,Espanyol
-La Liga,38,21/03/2137,12:00,Athletic,Barcelona
-La Liga,38,21/03/2137,12:00,Real Betis,Valencia
-La Liga,38,21/03/2137,12:00,Real Madrid,Real Sociedad
-La Liga,38,21/03/2137,12:00,Alavés,CA Osasuna
-La Liga,38,21/03/2137,12:00,CD Leganés,Real Valladolid
-La Liga,38,21/03/2137,12:00,Espanyol,UD Las Palmas
-La Liga,38,21/03/2137,12:00,Girona,Atlético Madrid
-La Liga,38,21/03/2137,12:00,Getafe,Celta de Vigo
-La Liga,38,21/03/2137,12:00,Rayo Vallecano,RCD Mallorca
-La Liga,38,21/03/2137,12:00,Villarreal,Sevilla FC
-Bundesliga,32,21/03/2137,58:30,Heidenheim,VfL Bochum 
-Bundesliga,32,21/03/2137,53:30,RB Leipzig,Bayern Munich 
-Bundesliga,32,21/03/2137,53:30,Bor. M'gladbach,TSG Hoffenheim 
-Bundesliga,32,21/03/2137,53:30,Union Berlin,Werder Bremen 
-Bundesliga,32,21/03/2137,53:30,FC St. Pauli,VfB Stuttgart 
-Bundesliga,32,21/03/2137,21:37,Bor. Dortmund,VfL Wolfsburg 
-Bundesliga,32,21/03/2137,53:30,FC Augsburg,Holstein Kiel 
-Bundesliga,32,21/03/2137,21:37,SC Freiburg,B. Leverkusen 
-Bundesliga,32,21/03/2137,21:37,1.FSV Mainz 05,E. Frankfurt 
-Bundesliga,33,21/03/2137,58:30,VfL Wolfsburg,TSG Hoffenheim
-Bundesliga,33,21/03/2137,53:30,Werder Bremen,RB Leipzig
-Bundesliga,33,21/03/2137,53:30,Union Berlin,Heidenheim
-Bundesliga,33,21/03/2137,53:30,VfL Bochum,1.FSV Mainz 05
-Bundesliga,33,21/03/2137,53:30,Holstein Kiel,SC Freiburg
-Bundesliga,33,21/03/2137,21:37,Bayern Munich,Bor. M'gladbach
-Bundesliga,33,21/03/2137,53:30,B. Leverkusen,Bor. Dortmund
-Bundesliga,33,21/03/2137,21:37,E. Frankfurt,FC St. Pauli
-Bundesliga,33,21/03/2137,21:37,VfB Stuttgart,FC Augsburg
-Bundesliga,34,21/03/2137,53:30,RB Leipzig,VfB Stuttgart
-Bundesliga,34,21/03/2137,53:30,Bor. Dortmund,Holstein Kiel
-Bundesliga,34,21/03/2137,53:30,TSG Hoffenheim,Bayern Munich
-Bundesliga,34,21/03/2137,53:30,SC Freiburg,E. Frankfurt
-Bundesliga,34,21/03/2137,53:30,FC Augsburg,Union Berlin
-Bundesliga,34,21/03/2137,53:30,1.FSV Mainz 05,B. Leverkusen
-Bundesliga,34,21/03/2137,53:30,Heidenheim,Werder Bremen
-Bundesliga,34,21/03/2137,53:30,Bor. M'gladbach,VfL Wolfsburg
-Bundesliga,34,21/03/2137,53:30,FC St. Pauli,VfL Bochum
-Serie A,35,21/03/2137,58:45,Torino,Venezia 
-Serie A,35,21/03/2137,53:00,Cagliari,Udinese 
-Serie A,35,21/03/2137,53:00,Parma,Como 
-Serie A,35,21/03/2137,21:37,Lecce,Napoli 
-Serie A,35,21/03/2137,21:37,Inter,Hellas Verona 
-Serie A,35,21/03/2137,12:30,FC Empoli,Lazio 
-Serie A,35,21/03/2137,21:37,Monza,Atalanta BC 
-Serie A,35,21/03/2137,21:37,AS Roma,Fiorentina 
-Serie A,35,21/03/2137,21:37,Bologna,Juventus 
-Serie A,35,21/03/2137,58:45,Genoa,AC Milan 
-Serie A,36,21/03/2137,58:45,AC Milan,Bologna
-Serie A,36,21/03/2137,53:00,Como,Cagliari
-Serie A,36,21/03/2137,21:37,Lazio,Juventus
-Serie A,36,21/03/2137,21:37,FC Empoli,Parma
-Serie A,36,21/03/2137,12:30,Udinese,Monza
-Serie A,36,21/03/2137,21:37,Hellas Verona,Lecce
-Serie A,36,21/03/2137,21:37,Torino,Inter
-Serie A,36,21/03/2137,21:37,Napoli,Genoa
-Serie A,36,21/03/2137,56:30,Venezia,Fiorentina
-Serie A,36,21/03/2137,21:37,Atalanta BC,AS Roma
-Serie A,37,21/03/2137,53:00,Cagliari,Venezia
-Serie A,37,21/03/2137,53:00,Fiorentina,Bologna
-Serie A,37,21/03/2137,53:00,Genoa,Atalanta BC
-Serie A,37,21/03/2137,53:00,Hellas Verona,Como
-Serie A,37,21/03/2137,53:00,Inter,Lazio
-Serie A,37,21/03/2137,53:00,Juventus,Udinese
-Serie A,37,21/03/2137,53:00,Lecce,Torino
-Serie A,37,21/03/2137,53:00,Monza,FC Empoli
-Serie A,37,21/03/2137,53:00,Parma,Napoli
-Serie A,37,21/03/2137,53:00,AS Roma,AC Milan
-Serie A,38,21/03/2137,53:00,Atalanta BC,Parma
-Serie A,38,21/03/2137,53:00,Bologna,Genoa
-Serie A,38,21/03/2137,53:00,Como,Inter
-Serie A,38,21/03/2137,53:00,FC Empoli,Hellas Verona
-Serie A,38,21/03/2137,53:00,Lazio,Lecce
-Serie A,38,21/03/2137,53:00,AC Milan,Monza
-Serie A,38,21/03/2137,53:00,Napoli,Cagliari
-Serie A,38,21/03/2137,53:00,Torino,AS Roma
-Serie A,38,21/03/2137,53:00,Udinese,Fiorentina
-Serie A,38,21/03/2137,53:00,Venezia,Juventus
-Ligue 1,32,21/03/2137,58:45,OGC Nice,Stade Reims 
-Ligue 1,32,21/03/2137,55:00,R. Strasbourg,Paris SG 
-Ligue 1,32,21/03/2137,21:37,Toulouse,Stade Rennais 
-Ligue 1,32,21/03/2137,21:37,Saint-Étienne,Monaco 
-Ligue 1,32,21/03/2137,53:00,FC Nantes,Angers SCO 
-Ligue 1,32,21/03/2137,21:37,Olympique Lyon,Lens 
-Ligue 1,32,21/03/2137,21:37,Stade Brestois,Montpellier 
-Ligue 1,32,21/03/2137,21:37,AJ Auxerre,Le Havre AC 
-Ligue 1,32,21/03/2137,21:37,LOSC Lille,Marseille 
-Ligue 1,33,21/03/2137,59:00,Stade Reims,Saint-Étienne
-Ligue 1,33,21/03/2137,59:00,AJ Auxerre,FC Nantes
-Ligue 1,33,21/03/2137,59:00,Angers SCO,R. Strasbourg
-Ligue 1,33,21/03/2137,59:00,Le Havre AC,Marseille
-Ligue 1,33,21/03/2137,59:00,Stade Rennais,OGC Nice
-Ligue 1,33,21/03/2137,59:00,Montpellier,Paris SG
-Ligue 1,33,21/03/2137,59:00,Toulouse,Lens
-Ligue 1,33,21/03/2137,59:00,Stade Brestois,LOSC Lille
-Ligue 1,33,21/03/2137,59:00,Monaco,Olympique Lyon
-Ligue 1,34,21/03/2137,58:00,Marseille,Stade Rennais
-Ligue 1,34,21/03/2137,21:37,Olympique Lyon,Angers SCO
-Ligue 1,34,21/03/2137,21:37,OGC Nice,Stade Brestois
-Ligue 1,34,21/03/2137,21:37,Saint-Étienne,Toulouse
-Ligue 1,34,21/03/2137,21:37,LOSC Lille,Stade Reims
-Ligue 1,34,21/03/2137,21:37,R. Strasbourg,Le Havre AC
-Ligue 1,34,21/03/2137,21:37,FC Nantes,Montpellier
-Ligue 1,34,21/03/2137,21:37,Lens,Monaco
-Ligue 1,34,21/03/2137,21:37,Paris SG,AJ Auxerre
-Eredivisie,31,21/03/2137,54:30,NEC Nijmegen,Willem II 
-Eredivisie,31,21/03/2137,21:37,Heracles Almelo,Feyenoord 
-Eredivisie,31,21/03/2137,21:37,FC Groningen,RKC Waalwijk 
-Eredivisie,31,21/03/2137,21:37,PSV Eindhoven,Fortuna Sittard 
-Eredivisie,31,21/03/2137,12:15,NAC Breda,PEC Zwolle 
-Eredivisie,31,21/03/2137,21:37,Go Ahead Eagles,AZ Alkmaar 
-Eredivisie,31,21/03/2137,21:37,Sparta R.,Twente FC 
-Eredivisie,32,21/03/2137,58:00,Willem II,Heracles Almelo 
-Eredivisie,32,21/03/2137,54:30,RKC Waalwijk,Heerenveen 
-Eredivisie,32,21/03/2137,21:37,Fortuna Sittard,NAC Breda 
-Eredivisie,32,21/03/2137,21:37,Almere City,Sparta R. 
-Eredivisie,32,21/03/2137,12:15,PEC Zwolle,Go Ahead Eagles 
-Eredivisie,32,21/03/2137,21:37,Twente FC,FC Utrecht 
-Eredivisie,32,21/03/2137,21:37,Feyenoord,PSV Eindhoven 
-Eredivisie,32,21/03/2137,21:37,Ajax,NEC Nijmegen 
-Eredivisie,32,21/03/2137,21:37,AZ Alkmaar,FC Groningen 
-Eredivisie,33,21/03/2137,58:00,Almere City,Fortuna Sittard
-Eredivisie,33,21/03/2137,58:00,FC Groningen,Ajax
-Eredivisie,33,21/03/2137,58:00,Twente FC,AZ Alkmaar
-Eredivisie,33,21/03/2137,58:00,FC Utrecht,Sparta R.
-Eredivisie,33,21/03/2137,58:00,Feyenoord,RKC Waalwijk
-Eredivisie,33,21/03/2137,58:00,Go Ahead Eagles,Heerenveen
-Eredivisie,33,21/03/2137,58:00,NEC Nijmegen,NAC Breda
-Eredivisie,33,21/03/2137,58:00,PSV Eindhoven,Heracles Almelo
-Eredivisie,33,21/03/2137,58:00,Willem II,PEC Zwolle
-Eredivisie,34,21/03/2137,52:30,Ajax,Twente FC
-Eredivisie,34,21/03/2137,52:30,AZ Alkmaar,Almere City
-Eredivisie,34,21/03/2137,52:30,Fortuna Sittard,FC Utrecht
-Eredivisie,34,21/03/2137,52:30,Heracles Almelo,NEC Nijmegen
-Eredivisie,34,21/03/2137,52:30,NAC Breda,Willem II
-Eredivisie,34,21/03/2137,52:30,PEC Zwolle,FC Groningen
-Eredivisie,34,21/03/2137,52:30,RKC Waalwijk,Go Ahead Eagles
-Eredivisie,34,21/03/2137,52:30,Heerenveen,Feyenoord
-Eredivisie,34,21/03/2137,52:30,Sparta R.,PSV Eindhoven
-Liga I,32,21/03/2137,59:15,FC Porto,Moreirense 
-Liga I,32,21/03/2137,54:30,Farense,Famalicão 
-Liga I,32,21/03/2137,54:30,Nacional,Vit. Guimarães 
-Liga I,32,21/03/2137,21:37,SC Braga,Santa Clara 
-Liga I,32,21/03/2137,21:37,Estoril Praia,Benfica 
-Liga I,32,21/03/2137,54:30,Rio Ave,Estrela Amadora 
-Liga I,32,21/03/2137,21:37,Arouca,Casa Pia 
-Liga I,32,21/03/2137,21:37,Sporting CP,Gil Vicente 
-Liga I,32,21/03/2137,59:15,Avs FS,Boavista 
-Liga I,33,21/03/2137,54:30,Nacional,Rio Ave
-Liga I,33,21/03/2137,54:30,Santa Clara,Famalicão
-Liga I,33,21/03/2137,21:37,Benfica,Sporting CP
-Liga I,33,21/03/2137,21:37,Gil Vicente,Arouca
-Liga I,33,21/03/2137,21:37,Casa Pia,SC Braga
-Liga I,33,21/03/2137,54:30,Estrela Amadora,Avs FS
-Liga I,33,21/03/2137,21:37,Vit. Guimarães,Farense
-Liga I,33,21/03/2137,21:37,Moreirense,Estoril Praia
-Liga I,33,21/03/2137,21:37,Boavista,FC Porto
-Liga I,34,21/03/2137,12:00,Farense,Santa Clara
-Liga I,34,21/03/2137,12:00,Arouca,Boavista
-Liga I,34,21/03/2137,12:00,Avs FS,Moreirense
-Liga I,34,21/03/2137,12:00,FC Porto,Nacional
-Liga I,34,21/03/2137,12:00,Famalicão,Casa Pia
-Liga I,34,21/03/2137,12:00,SC Braga,Benfica
-Liga I,34,21/03/2137,12:00,Sporting CP,Vit. Guimarães
-Liga I,34,21/03/2137,12:00,Rio Ave,Gil Vicente
-Liga I,34,21/03/2137,12:00,Estoril Praia,Estrela Amadora
-Futbol Ligi 1,34,21/03/2137,57:00,Antalyaspor,Konyaspor 
-Futbol Ligi 1,34,21/03/2137,53:00,C. Rizespor,Gaziantep FK 
-Futbol Ligi 1,34,21/03/2137,53:00,Alanyaspor,Kayserispor 
-Futbol Ligi 1,34,21/03/2137,21:37,Galatasaray,Sivasspor 
-Futbol Ligi 1,34,21/03/2137,21:37,Hatayspor,Basaksehir 
-Futbol Ligi 1,34,21/03/2137,53:00,Samsunspor,Eyüpspor 
-Futbol Ligi 1,34,21/03/2137,21:37,Adana Demirspor,Göztepe 
-Futbol Ligi 1,34,21/03/2137,21:37,Fenerbahce,Besiktas 
-Futbol Ligi 1,34,21/03/2137,57:00,Kasimpasa,Trabzonspor 
-Futbol Ligi 1,35,21/03/2137,12:00,Sivasspor,Bodrum FK
-Futbol Ligi 1,35,21/03/2137,12:00,Besiktas,Adana Demirspor
-Futbol Ligi 1,35,21/03/2137,12:00,Kayserispor,Antalyaspor
-Futbol Ligi 1,35,21/03/2137,12:00,Konyaspor,C. Rizespor
-Futbol Ligi 1,35,21/03/2137,12:00,Trabzonspor,Galatasaray
-Futbol Ligi 1,35,21/03/2137,12:00,Basaksehir,Fenerbahce
-Futbol Ligi 1,35,21/03/2137,12:00,Eyüpspor,Kasimpasa
-Futbol Ligi 1,35,21/03/2137,12:00,Göztepe,Hatayspor
-Futbol Ligi 1,35,21/03/2137,12:00,Gaziantep FK,Alanyaspor
-Futbol Ligi 1,36,21/03/2137,12:00,Bodrum FK,Trabzonspor
-Futbol Ligi 1,36,21/03/2137,12:00,Galatasaray,Kayserispor
-Futbol Ligi 1,36,21/03/2137,12:00,C. Rizespor,Göztepe
-Futbol Ligi 1,36,21/03/2137,12:00,Samsunspor,Sivasspor
-Futbol Ligi 1,36,21/03/2137,12:00,Adana Demirspor,Hatayspor
-Futbol Ligi 1,36,21/03/2137,12:00,Antalyaspor,Gaziantep FK
-Futbol Ligi 1,36,21/03/2137,12:00,Kasimpasa,Basaksehir
-Futbol Ligi 1,36,21/03/2137,12:00,Alanyaspor,Besiktas
-Futbol Ligi 1,36,21/03/2137,12:00,Fenerbahce,Eyüpspor
-Futbol Ligi 1,37,21/03/2137,12:00,Besiktas,C. Rizespor
-Futbol Ligi 1,37,21/03/2137,12:00,Hatayspor,Fenerbahce
-Futbol Ligi 1,37,21/03/2137,12:00,Kayserispor,Bodrum FK
-Futbol Ligi 1,37,21/03/2137,12:00,Konyaspor,Alanyaspor
-Futbol Ligi 1,37,21/03/2137,12:00,Trabzonspor,Samsunspor
-Futbol Ligi 1,37,21/03/2137,12:00,Eyüpspor,Antalyaspor
-Futbol Ligi 1,37,21/03/2137,12:00,Basaksehir,Adana Demirspor
-Futbol Ligi 1,37,21/03/2137,12:00,Gaziantep FK,Kasimpasa
-Futbol Ligi 1,37,21/03/2137,12:00,Göztepe,Galatasaray
-Futbol Ligi 1,38,21/03/2137,12:00,Bodrum FK,Besiktas
-Futbol Ligi 1,38,21/03/2137,12:00,Galatasaray,Basaksehir
-Futbol Ligi 1,38,21/03/2137,12:00,C. Rizespor,Hatayspor
-Futbol Ligi 1,38,21/03/2137,12:00,Fenerbahce,Konyaspor
-Futbol Ligi 1,38,21/03/2137,12:00,Samsunspor,Kayserispor
-Futbol Ligi 1,38,21/03/2137,12:00,Adana Demirspor,Gaziantep FK
-Futbol Ligi 1,38,21/03/2137,12:00,Antalyaspor,Trabzonspor
-Futbol Ligi 1,38,21/03/2137,12:00,Kasimpasa,Göztepe
-Futbol Ligi 1,38,21/03/2137,12:00,Alanyaspor,Sivasspor
+Premier League,34,,,Nottm Forest,Brentford 
+Premier League,35,,,Man City,Wolves 
+Premier League,35,,,Aston Villa,Fulham 
+Premier League,35,,,Everton,Ipswich 
+Premier League,35,,,Leicester,Southampton 
+Premier League,35,,,Arsenal,Bournemouth 
+Premier League,35,,,Brentford,Man Utd 
+Premier League,35,,,Brighton,Newcastle 
+Premier League,35,,,West Ham,Tottenham 
+Premier League,35,,,Chelsea,Liverpool 
+Premier League,35,,,Crystal Palace,Nottm Forest 
+Premier League,36,,,Bournemouth,Aston Villa
+Premier League,36,,,Fulham,Everton
+Premier League,36,,,Ipswich,Brentford
+Premier League,36,,,Southampton,Man City
+Premier League,36,,,Wolves,Brighton
+Premier League,36,,,Newcastle,Chelsea
+Premier League,36,,,Man Utd,West Ham
+Premier League,36,,,Nottm Forest,Leicester
+Premier League,36,,,Tottenham,Crystal Palace
+Premier League,36,,,Liverpool,Arsenal
+Premier League,37,,,Chelsea,Man Utd
+Premier League,37,,,Everton,Southampton
+Premier League,37,,,West Ham,Nottm Forest
+Premier League,37,,,Aston Villa,Tottenham
+Premier League,37,,,Brentford,Fulham
+Premier League,37,,,Crystal Palace,Wolves
+Premier League,37,,,Leicester,Ipswich
+Premier League,37,,,Arsenal,Newcastle
+Premier League,37,,,Man City,Bournemouth
+Premier League,37,,,Brighton,Liverpool
+Premier League,38,,,Bournemouth,Leicester
+Premier League,38,,,Fulham,Man City
+Premier League,38,,,Ipswich,West Ham
+Premier League,38,,,Liverpool,Crystal Palace
+Premier League,38,,,Man Utd,Aston Villa
+Premier League,38,,,Newcastle,Everton
+Premier League,38,,,Nottm Forest,Chelsea
+Premier League,38,,,Southampton,Arsenal
+Premier League,38,,,Tottenham,Brighton
+Premier League,38,,,Wolves,Brentford
+La Liga,34,,,Rayo Vallecano,Getafe 
+La Liga,34,,,Alavés,Atlético Madrid 
+La Liga,34,,,Villarreal,CA Osasuna 
+La Liga,34,,,UD Las Palmas,Valencia 
+La Liga,34,,,Real Valladolid,Barcelona 
+La Liga,34,,,Real Madrid,Celta de Vigo 
+La Liga,34,,,Sevilla FC,CD Leganés 
+La Liga,34,,,Espanyol,Real Betis 
+La Liga,34,,,Real Sociedad,Athletic 
+La Liga,34,,,Girona,RCD Mallorca 
+La Liga,35,,,UD Las Palmas,Rayo Vallecano
+La Liga,35,,,Valencia,Getafe
+La Liga,35,,,Celta de Vigo,Sevilla FC
+La Liga,35,,,RCD Mallorca,Real Valladolid
+La Liga,35,,12:00,Atlético Madrid,Real Sociedad
+La Liga,35,,12:00,Girona,Villarreal
+La Liga,35,,12:00,Athletic,Alavés
+La Liga,35,,12:00,CD Leganés,Espanyol
+La Liga,35,,12:00,Barcelona,Real Madrid
+La Liga,35,,12:00,Real Betis,CA Osasuna
+La Liga,36,,12:00,Alavés,Valencia
+La Liga,36,,12:00,CA Osasuna,Atlético Madrid
+La Liga,36,,12:00,Real Sociedad,Celta de Vigo
+La Liga,36,,12:00,Real Valladolid,Girona
+La Liga,36,,12:00,Real Madrid,RCD Mallorca
+La Liga,36,,12:00,Sevilla FC,UD Las Palmas
+La Liga,36,,12:00,Villarreal,CD Leganés
+La Liga,36,,12:00,Rayo Vallecano,Real Betis
+La Liga,36,,12:00,Espanyol,Barcelona
+La Liga,36,,12:00,Getafe,Athletic
+La Liga,37,,12:00,Atlético Madrid,Real Betis
+La Liga,37,,12:00,Barcelona,Villarreal
+La Liga,37,,12:00,Celta de Vigo,Rayo Vallecano
+La Liga,37,,12:00,Valencia,Athletic
+La Liga,37,,12:00,RCD Mallorca,Getafe
+La Liga,37,,12:00,Real Sociedad,Girona
+La Liga,37,,12:00,Sevilla FC,Real Madrid
+La Liga,37,,12:00,Real Valladolid,Alavés
+La Liga,37,,12:00,UD Las Palmas,CD Leganés
+La Liga,37,,12:00,CA Osasuna,Espanyol
+La Liga,38,,12:00,Athletic,Barcelona
+La Liga,38,,12:00,Real Betis,Valencia
+La Liga,38,,12:00,Real Madrid,Real Sociedad
+La Liga,38,,12:00,Alavés,CA Osasuna
+La Liga,38,,12:00,CD Leganés,Real Valladolid
+La Liga,38,,12:00,Espanyol,UD Las Palmas
+La Liga,38,,12:00,Girona,Atlético Madrid
+La Liga,38,,12:00,Getafe,Celta de Vigo
+La Liga,38,,12:00,Rayo Vallecano,RCD Mallorca
+La Liga,38,,12:00,Villarreal,Sevilla FC
+Bundesliga,32,,,Heidenheim,VfL Bochum 
+Bundesliga,32,,,RB Leipzig,Bayern Munich 
+Bundesliga,32,,,Bor. M'gladbach,TSG Hoffenheim 
+Bundesliga,32,,,Union Berlin,Werder Bremen 
+Bundesliga,32,,,FC St. Pauli,VfB Stuttgart 
+Bundesliga,32,,,Bor. Dortmund,VfL Wolfsburg 
+Bundesliga,32,,,FC Augsburg,Holstein Kiel 
+Bundesliga,32,,,SC Freiburg,B. Leverkusen 
+Bundesliga,32,,,1.FSV Mainz 05,E. Frankfurt 
+Bundesliga,33,,,VfL Wolfsburg,TSG Hoffenheim
+Bundesliga,33,,,Werder Bremen,RB Leipzig
+Bundesliga,33,,,Union Berlin,Heidenheim
+Bundesliga,33,,,VfL Bochum,1.FSV Mainz 05
+Bundesliga,33,,,Holstein Kiel,SC Freiburg
+Bundesliga,33,,,Bayern Munich,Bor. M'gladbach
+Bundesliga,33,,,B. Leverkusen,Bor. Dortmund
+Bundesliga,33,,,E. Frankfurt,FC St. Pauli
+Bundesliga,33,,,VfB Stuttgart,FC Augsburg
+Bundesliga,34,,,RB Leipzig,VfB Stuttgart
+Bundesliga,34,,,Bor. Dortmund,Holstein Kiel
+Bundesliga,34,,,TSG Hoffenheim,Bayern Munich
+Bundesliga,34,,,SC Freiburg,E. Frankfurt
+Bundesliga,34,,,FC Augsburg,Union Berlin
+Bundesliga,34,,,1.FSV Mainz 05,B. Leverkusen
+Bundesliga,34,,,Heidenheim,Werder Bremen
+Bundesliga,34,,,Bor. M'gladbach,VfL Wolfsburg
+Bundesliga,34,,,FC St. Pauli,VfL Bochum
+Serie A,35,,,Torino,Venezia 
+Serie A,35,,,Cagliari,Udinese 
+Serie A,35,,,Parma,Como 
+Serie A,35,,,Lecce,Napoli 
+Serie A,35,,,Inter,Hellas Verona 
+Serie A,35,,12:30,FC Empoli,Lazio 
+Serie A,35,,12:30,Monza,Atalanta BC 
+Serie A,35,,12:30,AS Roma,Fiorentina 
+Serie A,35,,12:30,Bologna,Juventus 
+Serie A,35,,12:30,Genoa,AC Milan 
+Serie A,36,,,AC Milan,Bologna
+Serie A,36,,,Como,Cagliari
+Serie A,36,,,Lazio,Juventus
+Serie A,36,,,FC Empoli,Parma
+Serie A,36,,12:30,Udinese,Monza
+Serie A,36,,12:30,Hellas Verona,Lecce
+Serie A,36,,12:30,Torino,Inter
+Serie A,36,,12:30,Napoli,Genoa
+Serie A,36,,12:30,Venezia,Fiorentina
+Serie A,36,,12:30,Atalanta BC,AS Roma
+Serie A,37,,,Cagliari,Venezia
+Serie A,37,,,Fiorentina,Bologna
+Serie A,37,,,Genoa,Atalanta BC
+Serie A,37,,,Hellas Verona,Como
+Serie A,37,,,Inter,Lazio
+Serie A,37,,,Juventus,Udinese
+Serie A,37,,,Lecce,Torino
+Serie A,37,,,Monza,FC Empoli
+Serie A,37,,,Parma,Napoli
+Serie A,37,,,AS Roma,AC Milan
+Serie A,38,,,Atalanta BC,Parma
+Serie A,38,,,Bologna,Genoa
+Serie A,38,,,Como,Inter
+Serie A,38,,,FC Empoli,Hellas Verona
+Serie A,38,,,Lazio,Lecce
+Serie A,38,,,AC Milan,Monza
+Serie A,38,,,Napoli,Cagliari
+Serie A,38,,,Torino,AS Roma
+Serie A,38,,,Udinese,Fiorentina
+Serie A,38,,,Venezia,Juventus
+Ligue 1,32,,,OGC Nice,Stade Reims 
+Ligue 1,32,,,R. Strasbourg,Paris SG 
+Ligue 1,32,,,Toulouse,Stade Rennais 
+Ligue 1,32,,,Saint-Étienne,Monaco 
+Ligue 1,32,,,FC Nantes,Angers SCO 
+Ligue 1,32,,,Olympique Lyon,Lens 
+Ligue 1,32,,,Stade Brestois,Montpellier 
+Ligue 1,32,,,AJ Auxerre,Le Havre AC 
+Ligue 1,32,,,LOSC Lille,Marseille 
+Ligue 1,33,,,Stade Reims,Saint-Étienne
+Ligue 1,33,,,AJ Auxerre,FC Nantes
+Ligue 1,33,,,Angers SCO,R. Strasbourg
+Ligue 1,33,,,Le Havre AC,Marseille
+Ligue 1,33,,,Stade Rennais,OGC Nice
+Ligue 1,33,,,Montpellier,Paris SG
+Ligue 1,33,,,Toulouse,Lens
+Ligue 1,33,,,Stade Brestois,LOSC Lille
+Ligue 1,33,,,Monaco,Olympique Lyon
+Ligue 1,34,,,Marseille,Stade Rennais
+Ligue 1,34,,,Olympique Lyon,Angers SCO
+Ligue 1,34,,,OGC Nice,Stade Brestois
+Ligue 1,34,,,Saint-Étienne,Toulouse
+Ligue 1,34,,,LOSC Lille,Stade Reims
+Ligue 1,34,,,R. Strasbourg,Le Havre AC
+Ligue 1,34,,,FC Nantes,Montpellier
+Ligue 1,34,,,Paris SG,AJ Auxerre
+Ligue 1,34,,,Lens,Monaco
+Eredivisie,31,,12:15,NEC Nijmegen,Willem II 
+Eredivisie,31,,12:15,Heracles Almelo,Feyenoord 
+Eredivisie,31,,12:15,FC Groningen,RKC Waalwijk 
+Eredivisie,31,,12:15,PSV Eindhoven,Fortuna Sittard 
+Eredivisie,31,,12:15,NAC Breda,PEC Zwolle 
+Eredivisie,31,,12:15,Go Ahead Eagles,AZ Alkmaar 
+Eredivisie,31,,12:15,Sparta R.,Twente FC 
+Eredivisie,32,,,Willem II,Heracles Almelo 
+Eredivisie,32,,,RKC Waalwijk,Heerenveen 
+Eredivisie,32,,,Fortuna Sittard,NAC Breda 
+Eredivisie,32,,,Almere City,Sparta R. 
+Eredivisie,32,,12:15,PEC Zwolle,Go Ahead Eagles 
+Eredivisie,32,,12:15,Twente FC,FC Utrecht 
+Eredivisie,32,,12:15,Feyenoord,PSV Eindhoven 
+Eredivisie,32,,12:15,Ajax,NEC Nijmegen 
+Eredivisie,32,,12:15,AZ Alkmaar,FC Groningen 
+Eredivisie,33,,,Almere City,Fortuna Sittard
+Eredivisie,33,,,FC Groningen,Ajax
+Eredivisie,33,,,Twente FC,AZ Alkmaar
+Eredivisie,33,,,FC Utrecht,Sparta R.
+Eredivisie,33,,,Feyenoord,RKC Waalwijk
+Eredivisie,33,,,Go Ahead Eagles,Heerenveen
+Eredivisie,33,,,NEC Nijmegen,NAC Breda
+Eredivisie,33,,,PSV Eindhoven,Heracles Almelo
+Eredivisie,33,,,Willem II,PEC Zwolle
+Eredivisie,34,,,Ajax,Twente FC
+Eredivisie,34,,,AZ Alkmaar,Almere City
+Eredivisie,34,,,Fortuna Sittard,FC Utrecht
+Eredivisie,34,,,Heracles Almelo,NEC Nijmegen
+Eredivisie,34,,,NAC Breda,Willem II
+Eredivisie,34,,,PEC Zwolle,FC Groningen
+Eredivisie,34,,,RKC Waalwijk,Go Ahead Eagles
+Eredivisie,34,,,Heerenveen,Feyenoord
+Eredivisie,34,,,Sparta R.,PSV Eindhoven
+Liga I,31,,,Casa Pia,Estoril Praia 
+Liga I,32,,,FC Porto,Moreirense 
+Liga I,32,,,Farense,Famalicão 
+Liga I,32,,,Nacional,Vit. Guimarães 
+Liga I,32,,,SC Braga,Santa Clara 
+Liga I,32,,,Estoril Praia,Benfica 
+Liga I,32,,,Rio Ave,Estrela Amadora 
+Liga I,32,,,Arouca,Casa Pia 
+Liga I,32,,,Sporting CP,Gil Vicente 
+Liga I,32,,,Avs FS,Boavista 
+Liga I,33,,,Nacional,Rio Ave
+Liga I,33,,,Santa Clara,Famalicão
+Liga I,33,,,Benfica,Sporting CP
+Liga I,33,,,Gil Vicente,Arouca
+Liga I,33,,,Casa Pia,SC Braga
+Liga I,33,,,Estrela Amadora,Avs FS
+Liga I,33,,,Vit. Guimarães,Farense
+Liga I,33,,,Moreirense,Estoril Praia
+Liga I,33,,,Boavista,FC Porto
+Liga I,34,,12:00,Farense,Santa Clara
+Liga I,34,,12:00,Arouca,Boavista
+Liga I,34,,12:00,Avs FS,Moreirense
+Liga I,34,,12:00,FC Porto,Nacional
+Liga I,34,,12:00,Famalicão,Casa Pia
+Liga I,34,,12:00,SC Braga,Benfica
+Liga I,34,,12:00,Sporting CP,Vit. Guimarães
+Liga I,34,,12:00,Rio Ave,Gil Vicente
+Liga I,34,,12:00,Estoril Praia,Estrela Amadora
+Futbol Ligi 1,34,,,Antalyaspor,Konyaspor 
+Futbol Ligi 1,34,,,C. Rizespor,Gaziantep FK 
+Futbol Ligi 1,34,,,Alanyaspor,Kayserispor 
+Futbol Ligi 1,34,,,Galatasaray,Sivasspor 
+Futbol Ligi 1,34,,,Hatayspor,Basaksehir 
+Futbol Ligi 1,34,,,Samsunspor,Eyüpspor 
+Futbol Ligi 1,34,,,Adana Demirspor,Göztepe 
+Futbol Ligi 1,34,,,Fenerbahce,Besiktas 
+Futbol Ligi 1,34,,,Kasimpasa,Trabzonspor 
+Futbol Ligi 1,35,,12:00,Sivasspor,Bodrum FK
+Futbol Ligi 1,35,,12:00,Besiktas,Adana Demirspor
+Futbol Ligi 1,35,,12:00,Kayserispor,Antalyaspor
+Futbol Ligi 1,35,,12:00,Konyaspor,C. Rizespor
+Futbol Ligi 1,35,,12:00,Trabzonspor,Galatasaray
+Futbol Ligi 1,35,,12:00,Basaksehir,Fenerbahce
+Futbol Ligi 1,35,,12:00,Eyüpspor,Kasimpasa
+Futbol Ligi 1,35,,12:00,Göztepe,Hatayspor
+Futbol Ligi 1,35,,12:00,Gaziantep FK,Alanyaspor
+Futbol Ligi 1,36,,12:00,Bodrum FK,Trabzonspor
+Futbol Ligi 1,36,,12:00,Galatasaray,Kayserispor
+Futbol Ligi 1,36,,12:00,C. Rizespor,Göztepe
+Futbol Ligi 1,36,,12:00,Samsunspor,Sivasspor
+Futbol Ligi 1,36,,12:00,Adana Demirspor,Hatayspor
+Futbol Ligi 1,36,,12:00,Antalyaspor,Gaziantep FK
+Futbol Ligi 1,36,,12:00,Kasimpasa,Basaksehir
+Futbol Ligi 1,36,,12:00,Alanyaspor,Besiktas
+Futbol Ligi 1,36,,12:00,Fenerbahce,Eyüpspor
+Futbol Ligi 1,37,,12:00,Besiktas,C. Rizespor
+Futbol Ligi 1,37,,12:00,Hatayspor,Fenerbahce
+Futbol Ligi 1,37,,12:00,Kayserispor,Bodrum FK
+Futbol Ligi 1,37,,12:00,Konyaspor,Alanyaspor
+Futbol Ligi 1,37,,12:00,Trabzonspor,Samsunspor
+Futbol Ligi 1,37,,12:00,Eyüpspor,Antalyaspor
+Futbol Ligi 1,37,,12:00,Basaksehir,Adana Demirspor
+Futbol Ligi 1,37,,12:00,Gaziantep FK,Kasimpasa
+Futbol Ligi 1,37,,12:00,Göztepe,Galatasaray
+Futbol Ligi 1,38,,12:00,Bodrum FK,Besiktas
+Futbol Ligi 1,38,,12:00,Galatasaray,Basaksehir
+Futbol Ligi 1,38,,12:00,C. Rizespor,Hatayspor
+Futbol Ligi 1,38,,12:00,Fenerbahce,Konyaspor
+Futbol Ligi 1,38,,12:00,Samsunspor,Kayserispor
+Futbol Ligi 1,38,,12:00,Adana Demirspor,Gaziantep FK
+Futbol Ligi 1,38,,12:00,Antalyaspor,Trabzonspor
+Futbol Ligi 1,38,,12:00,Kasimpasa,Göztepe
+Futbol Ligi 1,38,,12:00,Alanyaspor,Sivasspor
