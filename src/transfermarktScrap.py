@@ -1,3 +1,5 @@
+import csv
+
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -26,6 +28,20 @@ leagues_dict = {
     'Liga I': "liga-nos/startseite/wettbewerb/PO1",
     'Futbol Ligi 1': "super-lig/startseite/wettbewerb/TR1",
     'Ethniki Katigoria': "super-league-1/startseite/wettbewerb/GR1"
+}
+
+leagues_fixtures_dict = {
+    'Premier League': "premier-league/gesamtspielplan/wettbewerb/GB1/saison_id/2024",
+    'La Liga': "laliga/gesamtspielplan/wettbewerb/ES1/saison_id/2024",
+    'Bundesliga': "bundesliga/gesamtspielplan/wettbewerb/L1/saison_id/2024",
+    'Serie A': "serie-a/gesamtspielplan/wettbewerb/IT1/saison_id/2024",
+    'Ligue 1': "ligue-1/gesamtspielplan/wettbewerb/FR1/saison_id/2024",
+    'SPremier League': "scottish-premiership/gesamtspielplan/wettbewerb/SC1/saison_id/2024",
+    'Eredivisie': "eredivisie/gesamtspielplan/wettbewerb/NL1/saison_id/2024",
+    'Jupiler League': "jupiler-pro-league/gesamtspielplan/wettbewerb/BE1/saison_id/2024",
+    'Liga I': "liga-nos/gesamtspielplan/wettbewerb/PO1/saison_id/2024",
+    'Futbol Ligi 1': "super-lig/gesamtspielplan/wettbewerb/TR1/saison_id/2024",
+    'Ethniki Katigoria': "super-league-1/gesamtspielplan/wettbewerb/GR1/saison_id/2024"
 }
 
 season_dict = {}
@@ -249,3 +265,88 @@ def scrape_transfermarkt():
         print(f"Error during scraping: {e}")
         with app.app_context():
             db.session.rollback()
+
+
+def scrape_fixtures():
+    all_fixtures = []
+
+    for league_name, url_path in leagues_fixtures_dict.items():
+        url = site + url_path
+        print(f"Scraping fixtures from {url} for {league_name}")
+        response = requests.get(url, headers=headers)
+        if response.status_code != 200:
+            print(f"Failed to fetch fixtures for {league_name}")
+            continue
+
+        soup = BeautifulSoup(response.text, "html.parser")
+        boxes = soup.select("div.box")  # <- ważne! przechodzimy po boxach (kolejkach)
+
+        for box in boxes:
+            # Pobieramy numer kolejki
+            headline = box.select_one("div.content-box-headline")
+            round_number = headline.text.strip() if headline else "N/A"
+            round_number = re.sub(r"[^\d]", "", round_number)  # zostaw tylko cyfry
+
+            table = box.select_one("table")
+            if not table:
+                continue
+
+            rows = table.select("tbody > tr")
+            current_date = None
+            current_time = None
+
+            for row in rows:
+                if row.get("class") and "bg_blau_20" in row.get("class", []):
+                    date_a = row.select_one("td.show-for-small a")
+                    if date_a:
+                        raw_date = date_a.text.strip()
+                        try:
+                            parsed_date = datetime.datetime.strptime(raw_date, "%d.%m.%Y")
+                            current_date = parsed_date.strftime("%d/%m/%Y")
+                        except Exception:
+                            current_date = "21/03/2137"
+
+                    time_text = row.select_one("td.show-for-small")
+                    if time_text:
+                        match = re.search(r"\d{2}:\d{2}", time_text.text)
+                        current_time = match.group() if match else "21:37"
+
+                elif row.select("td.hauptlink"):
+                    try:
+                        cols = row.find_all("td")
+                        score_text = cols[4].text.strip()
+
+                        if re.match(r"\d+:\d+", score_text):
+                            continue
+
+                        home_raw = ' '.join(cols[2].text.split())
+                        home_team = re.sub(r"\(\d+\.\)\s*", "", home_raw)
+
+                        away_raw = ' '.join(cols[6].text.split())
+                        away_team = re.sub(r"\(\d+\.\)\s*", "", away_raw)
+
+                        date = current_date if current_date else "21/03/2137"
+                        time = current_time if current_time else "21:37"
+
+                        all_fixtures.append({
+                            "league": league_name,
+                            "round": round_number,
+                            "date": date,
+                            "time": time,
+                            "home_team": home_team,
+                            "away_team": away_team
+                        })
+
+                    except Exception as e:
+                        print(f"Error extracting match row: {e}")
+                        continue
+
+    # Zapis do CSV
+    with open('upcoming_fixtures.csv', mode='w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=["league", "round", "date", "time", "home_team", "away_team"])
+        writer.writeheader()
+        writer.writerows(all_fixtures)
+
+    print("✅ Upcoming fixtures saved to 'upcoming_fixtures.csv'")
+
+scrape_fixtures()
