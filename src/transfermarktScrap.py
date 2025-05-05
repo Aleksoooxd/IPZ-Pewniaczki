@@ -31,23 +31,23 @@ leagues_dict = {
 }
 
 leagues_fixtures_dict = {
-    'Premier League': "premier-league/gesamtspielplan/wettbewerb/GB1/saison_id/2024",
-    'La Liga': "laliga/gesamtspielplan/wettbewerb/ES1/saison_id/2024",
-    'Bundesliga': "bundesliga/gesamtspielplan/wettbewerb/L1/saison_id/2024",
-    'Serie A': "serie-a/gesamtspielplan/wettbewerb/IT1/saison_id/2024",
-    'Ligue 1': "ligue-1/gesamtspielplan/wettbewerb/FR1/saison_id/2024",
-    'SPremier League': "scottish-premiership/gesamtspielplan/wettbewerb/SC1/saison_id/2024",
-    'Eredivisie': "eredivisie/gesamtspielplan/wettbewerb/NL1/saison_id/2024",
-    'Jupiler League': "jupiler-pro-league/gesamtspielplan/wettbewerb/BE1/saison_id/2024",
-    'Liga I': "liga-nos/gesamtspielplan/wettbewerb/PO1/saison_id/2024",
-    'Futbol Ligi 1': "super-lig/gesamtspielplan/wettbewerb/TR1/saison_id/2024",
-    'Ethniki Katigoria': "super-league-1/gesamtspielplan/wettbewerb/GR1/saison_id/2024"
+    'Premier League': "premier-league/gesamtspielplan/wettbewerb/GB1",
+    'La Liga': "laliga/gesamtspielplan/wettbewerb/ES1",
+    'Bundesliga': "bundesliga/gesamtspielplan/wettbewerb/L1",
+    'Serie A': "serie-a/gesamtspielplan/wettbewerb/IT1",
+    'Ligue 1': "ligue-1/gesamtspielplan/wettbewerb/FR1",
+    'SPremier League': "scottish-premiership/gesamtspielplan/wettbewerb/SC1",
+    'Eredivisie': "eredivisie/gesamtspielplan/wettbewerb/NL1",
+    'Jupiler League': "jupiler-pro-league/gesamtspielplan/wettbewerb/BE1",
+    'Liga I': "liga-nos/gesamtspielplan/wettbewerb/PO1",
+    'Futbol Ligi 1': "super-lig/gesamtspielplan/wettbewerb/TR1",
+    'Ethniki Katigoria': "super-league-1/gesamtspielplan/wettbewerb/GR1"
 }
 
 season_dict = {}
 for year in range(2004, curr_year + 1):
     season_dict[f'{year}/{(year % 100) + 1}'] = f"/saison_id/{year}"
-
+last_season_key = list(season_dict.keys())[-1]
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
 }
@@ -271,7 +271,7 @@ def scrape_fixtures():
     all_fixtures = []
 
     for league_name, url_path in leagues_fixtures_dict.items():
-        url = site + url_path
+        url = site + url_path + season_dict[last_season_key]
         print(f"Scraping fixtures from {url} for {league_name}")
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
@@ -292,54 +292,62 @@ def scrape_fixtures():
                 continue
 
             rows = table.select("tbody > tr")
-            current_time = None  # tylko godzina może być dziedziczona
-
+            rows = [row for row in rows if 'bg_blau_20' not in row.get('class', [])]
+            last_date = 'N/A'
+            last_time = 'N/A'
             for row in rows:
-                cols = row.find_all("td")
+                date = row.select_one("td.hide-for-small a")
+                time = row.select_one("td.zentriert.hide-for-small")
+                if date is not None:
+                    if date.text.strip() is not None:
+                        last_date = date.text.strip()
+                if time is not None:
+                    if time.text.strip() is not None and time.text.strip() != "":
+                        last_time = time.text.strip()
+                print(last_date, last_time)
 
                 # Pobierz datę i godzinę (jeśli obecne)
-                date_str = ""
-                if len(cols) >= 2:
-                    raw_date = cols[0].text.strip()
-                    raw_time = cols[1].text.strip()
+                # if len(cols) >= 2:
+                #     raw_date = cols[0].text.strip()
+                #     raw_time = cols[1].text.strip()
 
-                    date_match = re.search(r"\d{2}\.\d{2}\.\d{4}", raw_date)
-                    if date_match:
-                        try:
-                            parsed_date = datetime.datetime.strptime(date_match.group(), "%d.%m.%Y")
-                            date_str = parsed_date.strftime("%d/%m/%Y")
-                        except:
-                            pass  # zostaw pustą datę
-
-                    time_match = re.search(r"\d{2}:\d{2}", raw_time)
-                    if time_match:
-                        current_time = time_match.group()
-
-                # Wiersz z meczem
-                if row.select("td.hauptlink"):
-                    try:
-                        score_text = cols[4].text.strip()
-                        if score_text != "-:-":
-                            continue  # mecz już się odbył
-
-                        home_raw = ' '.join(cols[2].text.split())
-                        home_team = re.sub(r"\(\d+\.\)\s*", "", home_raw)
-
-                        away_raw = ' '.join(cols[6].text.split())
-                        away_team = re.sub(r"\(\d+\.\)\s*", "", away_raw)
-
-                        all_fixtures.append({
-                            "league": league_name,
-                            "round": round_number,
-                            "date": date_str,  # może być pusta
-                            "time": current_time if current_time else "",
-                            "home_team": home_team,
-                            "away_team": away_team
-                        })
-
-                    except Exception as e:
-                        print(f"Błąd przy przetwarzaniu meczu: {e}")
-                        continue
+                #     date_match = re.search(r"\d{2}\.\d{2}\.\d{4}", raw_date)
+                #     if date_match:
+                #         try:
+                #             parsed_date = datetime.datetime.strptime(date_match.group(), "%d.%m.%Y")
+                #             date_str = parsed_date.strftime("%d/%m/%Y")
+                #         except:
+                #             pass  # zostaw pustą datę
+                #
+                #     time_match = re.search(r"\d{2}:\d{2}", raw_time)
+                #     if time_match:
+                #         current_time = time_match.group()
+                #
+                # # Wiersz z meczem
+                # if row.select("td.hauptlink"):
+                #     try:
+                #         score_text = cols[4].text.strip()
+                #         if score_text != "-:-":
+                #             continue  # mecz już się odbył
+                #
+                #         home_raw = ' '.join(cols[2].text.split())
+                #         home_team = re.sub(r"\(\d+\.\)\s*", "", home_raw)
+                #
+                #         away_raw = ' '.join(cols[6].text.split())
+                #         away_team = re.sub(r"\(\d+\.\)\s*", "", away_raw)
+                #
+                #         all_fixtures.append({
+                #             "league": league_name,
+                #             "round": round_number,
+                #             "date": date_str,  # może być pusta
+                #             "time": current_time if current_time else "",
+                #             "home_team": home_team,
+                #             "away_team": away_team
+                #         })
+                #
+                #     except Exception as e:
+                #         print(f"Błąd przy przetwarzaniu meczu: {e}")
+                #         continue
 
     # Zapis do pliku CSV
     with open('upcoming_fixtures.csv', mode='w', newline='', encoding='utf-8') as f:
