@@ -15,7 +15,7 @@ from sqlalchemy.exc import IntegrityError
 
 site = "https://www.transfermarkt.com/"
 curr_year = (datetime.datetime.now().year - 1) if datetime.datetime.now().month < 8 else datetime.datetime.now().year
-
+today = datetime.datetime.today()
 leagues_dict = {
     'Premier League': "premier-league/startseite/wettbewerb/GB1",
     'La Liga': "laliga/startseite/wettbewerb/ES1",
@@ -266,7 +266,15 @@ def scrape_transfermarkt():
         with app.app_context():
             db.session.rollback()
 
-
+def convert_date(date_str):
+    if isinstance(date_str, str):
+        splited = date_str.split("/")
+        date_str = splited[0]+"/"+splited[1]+"/"+"20"+splited[2]
+    return datetime.datetime.strptime(date_str, "%m/%d/%Y")
+def convert_time(time_str):
+    if isinstance(time_str, str):
+        time_str =  datetime.datetime.strptime(time_str, "%I:%M %p").strftime("%H:%M")
+    return time_str
 def scrape_fixtures():
     all_fixtures = []
 
@@ -298,56 +306,32 @@ def scrape_fixtures():
             for row in rows:
                 date = row.select_one("td.hide-for-small a")
                 time = row.select_one("td.zentriert.hide-for-small")
+                hteam = row.select_one("td.text-right.no-border-rechts.hauptlink a")
+                ateam = row.select_one("td.no-border-links.hauptlink a")
+                if hteam is None and ateam is None:
+                    continue
                 if date is not None:
                     if date.text.strip() is not None:
                         last_date = date.text.strip()
+                        last_date = convert_date(last_date)
+
                 if time is not None:
                     if time.text.strip() is not None and time.text.strip() != "":
                         last_time = time.text.strip()
-                print(last_date, last_time)
+                        last_time = convert_time(last_time)
+                home_team = hteam.text.strip()
+                away_team = ateam.text.strip()
+                if last_date < today:
+                    continue
 
-                # Pobierz datę i godzinę (jeśli obecne)
-                # if len(cols) >= 2:
-                #     raw_date = cols[0].text.strip()
-                #     raw_time = cols[1].text.strip()
-
-                #     date_match = re.search(r"\d{2}\.\d{2}\.\d{4}", raw_date)
-                #     if date_match:
-                #         try:
-                #             parsed_date = datetime.datetime.strptime(date_match.group(), "%d.%m.%Y")
-                #             date_str = parsed_date.strftime("%d/%m/%Y")
-                #         except:
-                #             pass  # zostaw pustą datę
-                #
-                #     time_match = re.search(r"\d{2}:\d{2}", raw_time)
-                #     if time_match:
-                #         current_time = time_match.group()
-                #
-                # # Wiersz z meczem
-                # if row.select("td.hauptlink"):
-                #     try:
-                #         score_text = cols[4].text.strip()
-                #         if score_text != "-:-":
-                #             continue  # mecz już się odbył
-                #
-                #         home_raw = ' '.join(cols[2].text.split())
-                #         home_team = re.sub(r"\(\d+\.\)\s*", "", home_raw)
-                #
-                #         away_raw = ' '.join(cols[6].text.split())
-                #         away_team = re.sub(r"\(\d+\.\)\s*", "", away_raw)
-                #
-                #         all_fixtures.append({
-                #             "league": league_name,
-                #             "round": round_number,
-                #             "date": date_str,  # może być pusta
-                #             "time": current_time if current_time else "",
-                #             "home_team": home_team,
-                #             "away_team": away_team
-                #         })
-                #
-                #     except Exception as e:
-                #         print(f"Błąd przy przetwarzaniu meczu: {e}")
-                #         continue
+                all_fixtures.append({
+                            "league": league_name,
+                            "round": round_number,
+                            "date": last_date,
+                            "time": last_time,
+                            "home_team": home_team,
+                            "away_team": away_team
+                })
 
     # Zapis do pliku CSV
     with open('upcoming_fixtures.csv', mode='w', newline='', encoding='utf-8') as f:
@@ -357,4 +341,4 @@ def scrape_fixtures():
 
     print("✅ Zapisano dane do 'upcoming_fixtures.csv'")
 
-scrape_fixtures()
+#scrape_fixtures()
