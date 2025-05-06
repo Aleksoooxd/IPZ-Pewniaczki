@@ -325,7 +325,7 @@ def scrape_fixtures():
                     continue
 
                 all_fixtures.append({
-                            "league": league_name,
+                            "league": league_name.lower(),
                             "round": round_number,
                             "date": last_date,
                             "time": last_time,
