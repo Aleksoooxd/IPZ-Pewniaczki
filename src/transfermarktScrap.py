@@ -94,7 +94,8 @@ club_name_mapping = {
     'CF Os Belenenses': 'Belenses',
     'RC Lens': 'Lens',
     'Roda JC Kerkrade': 'Roda',
-    'Roda JC': 'Roda'
+    'Roda JC': 'Roda',
+    'Málaga CF': 'Malaga'
 }
 
 def normalize_club_name(club_name):

@@ -2,7 +2,7 @@ import urllib
 
 class Config:
     SERVER = 'ipz-pewniaczki2.database.windows.net'
-    DATABASE = 'ipz-pewniaczki-db'
+    DATABASE = 'IPZ-Pewniaczki'
     USERNAME = 'admin_'
     PASSWORD = 'IPZ_pewniaczki'
 

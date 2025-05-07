@@ -75,7 +75,8 @@ football_mapping = {
         "Feirense ": "Feirense",
         "Sparta": "Sparta Rotterdam",
         "OFI": "OFI Crete",
-        "Roda JC": "Roda"
+        "Roda JC": "Roda",
+        "CF Belenenses": "Belenses"
 }
 
 def extract_team_names(csv_content):
