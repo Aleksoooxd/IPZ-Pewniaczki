@@ -187,6 +187,8 @@
                     date: new Date(match.date).toISOString().split('T')[0],
                     homeTeam: match.home_team,
                     awayTeam: match.away_team,
+                    hgoals: match.home_goals,
+                    agoals: match.away_goals,
                     league: match.league
                 }));
             } catch (err) {
@@ -226,9 +228,10 @@
                         const matchCard = document.createElement('div');
                         matchCard.classList.add('match-card');
                         matchCard.innerHTML = `
-                            <span class="match-time">${match.time}</span>
                             <span class="team">${match.homeTeam}</span>
-                            <span class="vs">vs</span>
+                            <span class="teamgoals">${match.hgoals}</span>
+                            <span class="vs">-</span>
+                            <span class="teamgoals">${match.agoals}</span>
                             <span class="team">${match.awayTeam}</span>
                             <button class="button predict-button">Typuj</button>
                         `;

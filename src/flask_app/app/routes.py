@@ -64,7 +64,9 @@ def get_matches():
         FootballMatch.date,
         HomeTeam.name.label('home_team'),
         AwayTeam.name.label('away_team'),
-        League.code.label('league')
+        League.code.label('league'),
+        FootballMatch.fthg.label('home_goals'),
+        FootballMatch.ftag.label('away_goals')
     ).join(
         HomeTeam, FootballMatch.home_team_id == HomeTeam.team_id
     ).join(
@@ -78,7 +80,9 @@ def get_matches():
             "date": m.date.strftime('%Y-%m-%d'),
             "home_team": m.home_team,
             "away_team": m.away_team,
-            "league": m.league
+            "league": m.league,
+            "home_goals": m.home_goals,
+            "away_goals": m.away_goals
         } for m in matches
     ]
 
