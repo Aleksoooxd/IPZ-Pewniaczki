@@ -1,5 +1,6 @@
 import csv
-
+import copy
+from fuzzywuzzy import process
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -7,12 +8,8 @@ import datetime
 from concurrent.futures import ThreadPoolExecutor
 import re
 from sqlalchemy import select
-
-from flask_app.app.db import db, app, Team, League, Season, TeamLeague, TeamValue
-import os
-from threading import Lock
+from flask_app.app.db import db, app, Team, League, Season, TeamLeague, TeamValue, FutureMatch
 from sqlalchemy.exc import IntegrityError
-
 site = "https://www.transfermarkt.com/"
 curr_year = (datetime.datetime.now().year - 1) if datetime.datetime.now().month < 8 else datetime.datetime.now().year
 today = datetime.datetime.today()
@@ -42,14 +39,6 @@ leagues_fixtures_dict = {
     'Liga I': "liga-nos/gesamtspielplan/wettbewerb/PO1",
     'Futbol Ligi 1': "super-lig/gesamtspielplan/wettbewerb/TR1",
     'Ethniki Katigoria': "super-league-1/gesamtspielplan/wettbewerb/GR1"
-}
-
-season_dict = {}
-for year in range(2004, curr_year + 1):
-    season_dict[f'{year}/{(year % 100) + 1}'] = f"/saison_id/{year}"
-last_season_key = list(season_dict.keys())[-1]
-headers = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
 }
 
 club_name_mapping = {
@@ -95,8 +84,21 @@ club_name_mapping = {
     'RC Lens': 'Lens',
     'Roda JC Kerkrade': 'Roda',
     'Roda JC': 'Roda',
-    'Málaga CF': 'Malaga'
+    'Málaga CF': 'Malaga',
+    'Paris SG': 'Paris Saint-Germain',
+    'Twente FC': 'Twente Enschede FC',
+    'Alavés': 'Deportivo Alavés'
+
 }
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
+}
+
+season_dict = {}
+for year in range(2004, curr_year + 1):
+    season_dict[f'{year}/{(year % 100) + 1}'] = f"/saison_id/{year}"
+last_season_key = list(season_dict.keys())[-1]
 
 def normalize_club_name(club_name):
     cleaned_name = ' '.join(club_name.strip().split())
@@ -253,13 +255,33 @@ def scrape_leagues():
                 )
         for future in futures:
             future.result()
+
 def get_all_teams_from_db():
     with app.app_context():
         teams = db.session.query(Team).all()
         return [team.name for team in teams]
+
+def get_current_season():
+    current_year = datetime.datetime.now().year
+    if datetime.datetime.now().month < 8:
+        season = f"{current_year - 1}/{str(current_year)[-2:]}"
+    else:
+        season = f"{current_year}/{str(current_year + 1)[-2:]}"
+    return season
+
+def get_all_teams_current_season_from_db():
+    with app.app_context():
+        current_season = get_current_season()
+        season = db.session.query(Season).filter(Season.name == current_season).first()
+        if not season:
+            return []
+        teams = db.session.query(Team.name).join(TeamLeague).filter(TeamLeague.season_id == season.season_id).all()
+        return [team.name for team in teams]
+
 def scrape_transfermarkt():
     try:
         scrape_leagues()
+        scrape_fixtures()
         print("Data successfully saved to database")
         print(get_all_teams_from_db())
     except Exception as e:
@@ -272,10 +294,39 @@ def convert_date(date_str):
         splited = date_str.split("/")
         date_str = splited[0]+"/"+splited[1]+"/"+"20"+splited[2]
     return datetime.datetime.strptime(date_str, "%m/%d/%Y")
+
 def convert_time(time_str):
     if isinstance(time_str, str):
         time_str =  datetime.datetime.strptime(time_str, "%I:%M %p").strftime("%H:%M")
     return time_str
+
+def get_league_id(session, league_name):
+    league = db.session.execute(
+        select(League)
+        .where(League.code == league_name)
+        .with_for_update()
+    ).scalar_one_or_none()
+    if not league:
+        return None
+    return league
+def get_team_id(session, team_name):
+    team = db.session.execute(
+        select(Team)
+        .where(Team.name == team_name)
+        .with_for_update()
+    ).scalar_one_or_none()
+    if not team:
+        return None
+    return team
+def get_season_id(session, season_name):
+    season = db.session.execute(
+        select(Season)
+        .where(Season.name == season_name)
+        .with_for_update()
+    ).scalar_one_or_none()
+    if not season:
+        return None
+    return season
 def scrape_fixtures():
     all_fixtures = []
 
@@ -291,10 +342,9 @@ def scrape_fixtures():
         boxes = soup.select("div.box")
 
         for box in boxes:
-            # Pobieramy numer kolejki
             headline = box.select_one("div.content-box-headline")
-            round_number = headline.text.strip() if headline else "N/A"
-            round_number = re.sub(r"[^\d]", "", round_number)
+            matchday = headline.text.strip() if headline else "N/A"
+            matchday = re.sub(r"[^\d]", "", matchday)
 
             table = box.select_one("table")
             if not table:
@@ -327,19 +377,98 @@ def scrape_fixtures():
 
                 all_fixtures.append({
                             "league": league_name.lower(),
-                            "round": round_number,
+                            "season": get_current_season(),
+                            "matchday": matchday,
                             "date": last_date,
                             "time": last_time,
                             "home_team": home_team,
                             "away_team": away_team
                 })
+    db_teams = get_all_teams_current_season_from_db()
+    transfermarkt_teams = set()
+    all_fixtures = apply_team_mapping(all_fixtures, club_name_mapping)
+    for fixture in all_fixtures:
+        transfermarkt_teams.add(fixture["home_team"])
+        transfermarkt_teams.add(fixture["away_team"])
+    transfermarkt_teams = list(transfermarkt_teams)
+    normalizedtm = set()
+    for team in transfermarkt_teams:
+        normalizedtm.add(normalize_club_name(team))
+    mapping = create_team_name_mapping(db_teams,normalizedtm)
+    all_fixtures = apply_team_mapping(all_fixtures,mapping)
+    with app.app_context():
+        for fixture in all_fixtures:
+            league = get_league_id(db.session, fixture['league'])
+            season = get_season_id(db.session, fixture['season'])
+            home_team = get_team_id(db.session, fixture['home_team'])
+            away_team = get_team_id(db.session, fixture['away_team'])
+            if home_team is None or away_team is None or league is None or season is None:
+                print("Missing team/league/home_team/away_team")
+                continue
+            futurematch = db.session.execute(
+                select(FutureMatch)
+                .where(FutureMatch.home_team_id == home_team.team_id, FutureMatch.away_team_id == away_team.team_id,
+                       FutureMatch.date == fixture['date'])
+                .with_for_update()
+            ).scalar_one_or_none()
+            if not futurematch:
+                futurematch = FutureMatch(
+                    home_team_id=home_team.team_id,
+                    away_team_id=away_team.team_id,
+                    season_id=season.season_id,
+                    league_id=league.league_id,
+                    date=fixture['date'],
+                    time=fixture['time'],
+                    matchday=fixture['matchday']
+                )
+                db.session.add(futurematch)
+                db.session.flush()
+                db.session.commit()
+                print(f'Inserted match data for {fixture["home_team"]} vs {fixture["away_team"]}')
+            else:
+                print(f'Skipping match match data for {fixture["home_team"]} vs {fixture["away_team"]}, already exists')
+                continue
 
-    # Zapis do pliku CSV
-    with open('upcoming_fixtures.csv', mode='w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=["league", "round", "date", "time", "home_team", "away_team"])
-        writer.writeheader()
-        writer.writerows(all_fixtures)
+def apply_team_mapping(fixtures, mapping):
+    for fixture in fixtures:
+        fixture["home_team"] = mapping.get(fixture["home_team"], fixture["home_team"])
+        fixture["away_team"] = mapping.get(fixture["away_team"], fixture["away_team"])
+    return fixtures
 
-    print("✅ Zapisano dane do 'upcoming_fixtures.csv'")
-
-#scrape_fixtures()
+def create_team_name_mapping(db_teams, scrapped_teams):
+    list_2 = sorted(list(db_teams))
+    list_1 = sorted(list(scrapped_teams))
+    temp_list_1 = copy.deepcopy(list_1)
+    temp_list_2 = copy.deepcopy(list_2)
+    THRESHOLD = 95
+    correct = {}
+    while temp_list_1 and temp_list_2:
+        mapping = {}
+        for club in temp_list_1:
+            match, score = process.extractOne(club, temp_list_2)
+            if score >= THRESHOLD:
+                mapping[club] = match
+            else:
+                mapping[club] = None
+        matched = {k: v for k, v in mapping.items() if v is not None}
+        unmatched = {k: v for k, v in mapping.items() if v is None}
+        correct.update(matched)
+        for key, value in matched.items():
+            if key in temp_list_1:
+                temp_list_1.remove(key)
+            if value in temp_list_2:
+                temp_list_2.remove(value)
+        if unmatched:
+            THRESHOLD -= 1
+            if THRESHOLD < 0:
+                break
+        else:
+            break
+    print(f"\nTotal teams in football-data: {len(list_1)}")
+    print(f"Total teams in database: {len(list_2)}")
+    print(f"Initial matches found: {len(correct)}")
+    print(f"Remaining unmapped in football-data: {len(temp_list_1)}")
+    print(f"Remaining unmapped in database: {len(temp_list_2)}")
+    print(f"Remaining unmapped in database: {temp_list_2}")
+    print(f'Mapped teams: {correct}')
+    return correct

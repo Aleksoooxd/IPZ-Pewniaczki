@@ -1,12 +1,8 @@
-import os
 import pandas as pd
-import copy
-from fuzzywuzzy import process
 from unidecode import unidecode
 import numpy as np
 from scipy.stats import entropy
 import datetime
-import shutil
 def shannon_index(values):
     probabilities = values / np.sum(values)
     return np.round(entropy(probabilities, base=2),4)
@@ -34,3 +30,4 @@ def calculate_consensus(row, columns):
         return 'A'
     else:
         return 'No Consensus'
+

@@ -40,6 +40,7 @@ class League(db.Model):
 
     team_leagues = relationship("TeamLeague", back_populates="league")
     matches = relationship("FootballMatch", back_populates="league")
+    future_match = relationship("FutureMatch", back_populates="league")
 
 
 class Season(db.Model):
@@ -51,7 +52,7 @@ class Season(db.Model):
     team_leagues = relationship("TeamLeague", back_populates="season")
     matches = relationship("FootballMatch", back_populates="season")
     team_values = relationship("TeamValue", back_populates="season")
-
+    future_match = relationship("FutureMatch", back_populates="season")
 
 class TeamLeague(db.Model):
     __tablename__ = 'team_league'
@@ -110,6 +111,21 @@ class FootballMatch(db.Model):
     form_data = relationship("MatchForm", back_populates="match")
     predictions = relationship("Predicted", back_populates="match")
 
+class FutureMatch(db.Model):
+    __tablename__ = 'future_match'
+    match_id = Column(Integer, primary_key=True)
+    league_id = Column(Integer, ForeignKey('league.league_id'))
+    season_id = Column(Integer, ForeignKey('season.season_id'))
+    matchday = Column(Integer)
+    date = Column(Date)
+    time = Column(String(5))  # Time stored in HH:MM format
+    home_team_id = Column(Integer, ForeignKey('team.team_id'))
+    away_team_id = Column(Integer, ForeignKey('team.team_id'))
+
+    league = relationship("League", back_populates="future_match")
+    season = relationship("Season", back_populates="future_match")
+    home_team = relationship("Team", foreign_keys=[home_team_id])
+    away_team = relationship("Team", foreign_keys=[away_team_id])
 
 class MatchStats(db.Model):
     __tablename__ = 'match_stats'
@@ -174,6 +190,7 @@ class Predicted(db.Model):
     confidence = Column(Float)
 
     match = relationship("FootballMatch", back_populates="predictions")
+
 
 
 if __name__ == "__main__":
