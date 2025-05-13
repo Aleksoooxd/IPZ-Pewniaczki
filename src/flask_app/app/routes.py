@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from sqlalchemy.orm import aliased
 
-from .db import db, FootballMatch, Team, League
+from .db import db, FootballMatch, Team, League, FutureMatch
 
 main = Blueprint('main', __name__)
 @main.route('/')
@@ -60,7 +60,8 @@ def get_matches():
     HomeTeam = aliased(Team)
     AwayTeam = aliased(Team)
 
-    matches = db.session.query(
+    # Przeszłe mecze
+    past_matches = db.session.query(
         FootballMatch.date,
         HomeTeam.name.label('home_team'),
         AwayTeam.name.label('away_team'),
@@ -73,7 +74,24 @@ def get_matches():
         AwayTeam, FootballMatch.away_team_id == AwayTeam.team_id
     ).join(
         League, FootballMatch.league_id == League.league_id
-    ).all()
+    )
+
+    future_matches = db.session.query(
+        FutureMatch.date,
+        HomeTeam.name.label('home_team'),
+        AwayTeam.name.label('away_team'),
+        League.code.label('league'),
+        db.literal(None).label('home_goals'),
+        db.literal(None).label('away_goals')
+    ).join(
+        HomeTeam, FutureMatch.home_team_id == HomeTeam.team_id
+    ).join(
+        AwayTeam, FutureMatch.away_team_id == AwayTeam.team_id
+    ).join(
+        League, FutureMatch.league_id == League.league_id
+    )
+
+    matches = past_matches.union_all(future_matches).all()
 
     result = [
         {
