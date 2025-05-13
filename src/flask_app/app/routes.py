@@ -30,7 +30,6 @@ def get_matches():
     HomeTeam = aliased(Team)
     AwayTeam = aliased(Team)
 
-
     past_matches = db.session.query(
         FootballMatch.date,
         HomeTeam.name.label('home_team'),
@@ -69,8 +68,8 @@ def get_matches():
             "home_team": m.home_team,
             "away_team": m.away_team,
             "league": m.league,
-            "home_goals": '-',
-            "away_goals": '-'
+            "home_goals": m.home_goals if m.home_goals is not None else '-',
+            "away_goals": m.away_goals if m.away_goals is not None else '-'
         } for m in matches
     ]
 
