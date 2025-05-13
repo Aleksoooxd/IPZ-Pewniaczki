@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify,abort
 from sqlalchemy.orm import aliased
 
 from .db import db, FootballMatch, Team, League, FutureMatch
@@ -10,57 +10,27 @@ def home():
 
 @main.route('/main')
 def mainpage():
-    return render_template('MainPage.html')
-
-@main.route('/premierleague')
-def premierleague():
-    return render_template('premierleague.html')
-
-@main.route('/bundesliga')
-def bundesliga():
-    return render_template('bundesliga.html')
-
-@main.route('/laliga')
-def laliga():
-    return render_template('laliga.html')
-
-@main.route('/ligue1')
-def ligue1():
-    return render_template('ligue1.html')
-
-@main.route('/seriea')
-def seriea():
-    return render_template('seriea.html')
-
-@main.route('/eredivisie')
-def eredivisie():
-    return render_template('eredivisie.html')
-
-@main.route('/scotishpremierleague')
-def scotishpremierleague():
-    return render_template('scotishpremierleague.html')
-
-@main.route('/greecesuperleague')
-def greecesuperleague():
-    return render_template('greecesuperleague.html')
-@main.route('/jupilerleague')
-def jupilerleague():
-    return render_template('jupilerleague.html')
-
-@main.route('/superleauge')
-def superleauge():
-    return render_template('superleauge.html')
-
-@main.route('/leaugeportugal')
-def leaugeportugal():
-    return render_template('leaugeportugal.html')
+    league_names = {
+        "Premierleague": "premier league",
+        "Bundesliga": "Bundesliga",
+        "Eredivisie": "Eredivisie",
+        "EthnikiKatigoria": "Grecja: Ethniki Katigoria",
+        "FutbolLig1": "Turcja: 1. Lig",
+        "JupiterLeague": "Belgia: Jupiler League",
+        "LaLiga": "Hiszpania: La Liga",
+        "Ligue1": "Francja: Ligue 1",
+        "LigaI": "Rumunia: Liga I",
+        "ScotishPremierLeague": "Szkocja: Premiership",
+        "SerieA": "Włochy: Serie A"
+    }
+    return render_template('MainPage.html', league_names=league_names)
 
 @main.route('/matches')
 def get_matches():
     HomeTeam = aliased(Team)
     AwayTeam = aliased(Team)
 
-    # Przeszłe mecze
+
     past_matches = db.session.query(
         FootballMatch.date,
         HomeTeam.name.label('home_team'),
@@ -99,13 +69,45 @@ def get_matches():
             "home_team": m.home_team,
             "away_team": m.away_team,
             "league": m.league,
-            "home_goals": m.home_goals,
-            "away_goals": m.away_goals
+            "home_goals": '-',
+            "away_goals": '-'
         } for m in matches
     ]
 
     return jsonify(result)
 
+
+LEAGUE_URL_MAP = {
+    "Premierleague": "premier league",
+    "Bundesliga": "bundesliga",
+    "Eredivisie": "eredivisie",
+    "EthnikiKatigoria": "ethniki katigoria",
+    "FutbolLig1": "futbol ligi 1",
+    "JupiterLeague": "jupiler league",
+    "LaLiga": "la liga",
+    "Ligue1": "ligue 1",
+    "LigaI": "liga i",
+    "PremierLeague": "premier league",
+    "SerieA": "serie a",
+    "ScotishPremierLeague": "spremier league"
+}
+
+@main.route('/league/<league_code>')
+def league_view(league_code):
+    db_code = LEAGUE_URL_MAP.get(league_code)
+    if not db_code:
+        abort(404, description=f"Nieznana liga: {league_code}")
+
+    league = League.query.filter_by(code=db_code).first_or_404()
+
+    teams = db.session.query(Team).join(
+        FootballMatch,
+        ((FootballMatch.league_id == league.league_id) &
+         ((FootballMatch.home_team_id == Team.team_id) |
+          (FootballMatch.away_team_id == Team.team_id)))
+    ).distinct().order_by(Team.name).all()
+
+    return render_template('league_view.html', league=league, teams=teams)
 
 @main.route('/test_db')
 def test_db():

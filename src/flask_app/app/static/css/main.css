@@ -1,0 +1,105 @@
+
+.container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 20px;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+
+.league-container {
+  width: 250px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 15px;
+  color: black;
+  flex-shrink: 0;
+}
+
+.league-selection h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.league-button {
+  display: block;
+  width: 94%;
+  padding: 10px;
+  background-color: #ffcccc;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  margin: 5px 0;
+  transition: background-color 0.2s;
+}
+
+.league-button:hover {
+  background-color: #ff9999;
+}
+
+
+.main-content {
+  flex-grow: 1;
+}
+
+
+.date-container {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+.matches {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+.match-card {
+  background-color: white;
+  color: black;
+  padding: 10px 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
+}
+
+
+.match-card .team {
+  font-weight: bold;
+  flex: 1;
+  text-align: center;
+}
+
+.match-card .teamgoals,
+.match-card .vs {
+  width: 50px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.predict-button {
+  margin-left: 10px;
+  white-space: nowrap;
+}
+
+
+.league-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  margin: 20px 0 10px;
+  border-bottom: 2px solid white;
+  padding-bottom: 5px;
+}

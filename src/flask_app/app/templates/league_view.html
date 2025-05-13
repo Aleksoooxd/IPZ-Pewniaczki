@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}{{ league.code }} - Liga{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}">
+{% endblock %}
+
+{% block content %}
+<h2>{{ league.code }}</h2>
+
+
+
+<div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; Wybierz Ligę</div>
+
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
+  <h3>Ligi</h3>
+  <ul class="sidebar-links">
+    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">Premier league</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}">Bundesliga</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}">Eredivisie</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">Ethniki Katigoria</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='FutbolLig1') }}">Futbol Lig 1</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='JupiterLeague') }}">Jupiler League</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}">La Liga</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}">Ligue 1</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}">Liga I</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">Scottish Premier League</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}">Serie A</a></li>
+
+    <li class="sidebar-divider"></li>
+     <li><a href="{{ url_for('main.mainpage') }}">🏠 Main Page</a></li>
+  </ul>
+</div>
+
+<div class="league-container">
+  <div class="team-list">
+    <h3>Drużyny</h3>
+    <ul>
+      {% for team in teams %}
+      <li class="team-item" onclick="showTeam('{{ team.name }}')">{{ team.name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="team-details" id="team-details">
+    <p>🛈 Kliknij drużynę, aby zobaczyć szczegóły</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  function showTeam(teamName) {
+    const details = document.getElementById('team-details');
+    details.innerHTML = `<h2>${teamName}</h2><p>(Szczegóły drużyny wkrótce...)</p>`;
+  }
+</script>
+
+
+<script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.classList.toggle("open");
+  }
+
+  function showTeam(teamName) {
+    const details = document.getElementById('team-details');
+    details.innerHTML = `<h2>${teamName}</h2><p>(Szczegóły drużyny wkrótce...)</p>`;
+  }
+</script>
+{% endblock %}

@@ -1,251 +1,119 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pewniaczki</title>
-    <style>
-        body {
-            background: repeating-linear-gradient(
-                to right,
-                #006400, #006400 50px,
-                #008000 50px, #008000 100px
-            );
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        .container {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-        }
-        .button {
-            background-color: white;
-            color: black;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-        }
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .date-container {
-            margin-bottom: 20px;
-        }
-        .date-picker {
-            font-size: 16px;
-            padding: 10px;
-            background-color: white;
-            color: black;
-            border-radius: 5px;
-            border: none;
-        }
-        .league-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 220px;
-            position: absolute;
-            top: 50px;
-            left: 20px;
-        }
-        .logo-placeholder img {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            margin-bottom: 10px;
-        }
-        .league-selection {
-            background-color: white;
-            color: black;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-        .league-button {
-            background-color: #ffcccc;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
-            border: none;
-            width: 100%;
-            text-align: center;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .matches {
-            flex-grow: 1;
-            margin-left: 250px;
-            text-align: left;
-        }
+{% extends "base.html" %}
 
-        .match-card {
-            background-color: white;
-            color: black;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .match-time {
-            font-weight: bold;
-            width: 80px;
-            text-align: center;
-        }
-        .team {
-            font-weight: bold;
-            flex: 1;
-            text-align: center;
-        }
-        .vs {
-            width: 50px;
-            text-align: center;
-            font-weight: bold;
-        }
-        .predict-button {
-            margin-left: 10px;
-            white-space: nowrap;
-        }
+{% block title %}Pewniaczki - Mecze{% endblock %}
 
-        .league-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            margin-top: 30px;
-            margin-left: 10px;
-            border-bottom: 2px solid white;
-            padding-bottom: 5px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Pewniaczki</h1>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="league-container">
+    <div class="league-selection">
+      <h2>Wybierz Ligę</h2>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='Premierleague') }}">Premier league</a>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='Bundesliga') }}">Bundesliga</a>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='Eredivisie') }}">Eredivisie</a>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">Ethniki Katigoria</a>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='FutbolLig1') }}">Futbol Lig 1</a>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='JupiterLeague') }}">Jupiler League</a>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='LaLiga') }}">La Liga</a>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='Ligue1') }}">Ligue 1</a>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='LigaI') }}">Liga I</a>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">Scottish Premier League</a>
+      <a class="league-button" href="{{ url_for('main.league_view', league_code='SerieA') }}">Serie A</a>
+    </div>
+  </div>
+
+
+  <div class="main-content">
     <div class="date-container">
-        <label for="date-picker">Wybierz datę:</label>
-        <input type="date" id="date-picker" class="date-picker">
-        <button class="button" onclick="fetchMatches()">Zatwierdź</button>
+      <label for="date-picker">Wybierz datę:</label>
+      <input type="date" id="date-picker" class="date-picker">
+      <button class="button" onclick="fetchMatches()">Zatwierdź</button>
     </div>
 
-    <div class="container">
-        <div class="league-container">
-            <div class="logo-placeholder">
-                <img src="../static/pewniaczkilogo.png" alt="Logo">
-            </div>
-            <div class="league-selection">
-                <h1>Wybierz Ligę</h1>
-                <button class="league-button">Bundesliga</button>
-                <button class="league-button">Eredivise</button>
-                <button class="league-button">EthnikiKatigoria</button>
-                <button class="league-button">FutbolLig1</button>
-                <button class="league-button">JupiterLeague</button>
-                <button class="league-button">LaLiga</button>
-                <button class="league-button">Ligue1</button>
-                <button class="league-button">LigaI</button>
-                <button class="league-button">Scotish Premier League</button>
-                <button class="league-button">SerieA</button>
-            </div>
-        </div>
+    <div class="matches" id="matches-container">
 
-        <div class="matches" id="matches-container"></div>
     </div>
+  </div>
+</div>
+{% endblock %}
 
-    <script>
-        let allMatches = [];
+{% block script %}
+<script>
+  let allMatches = [];
 
-        const leagueNames = {
-    Bundesliga: "Bundesliga",
-    Eredivise: "Eredivisie",
-    EthnikiKatigoria: "Grecja: Ethniki Katigoria",
-    FutbolLig1: "Turcja: 1. Lig",
-    JupiterLeague: "Belgia: Jupiler League",
-    LaLiga: "Hiszpania: La Liga",
-    Ligue1: "Francja: Ligue 1",
-    LigaI: "Rumunia: Liga I",
-    "Scottish Premier League": "Szkocja: Premiership",
-    SerieA: "Włochy: Serie A"
-};
+  const leagueNames = {{ league_names | tojson }};
 
+  async function fetchAllMatches() {
+    try {
+      const response = await fetch('/matches');
+      const data = await response.json();
 
-        async function fetchAllMatches() {
-            try {
-                const response = await fetch('/matches');
-                const data = await response.json();
+      allMatches = data.map(match => ({
+        date: new Date(match.date).toISOString().split('T')[0],
+        homeTeam: match.home_team,
+        awayTeam: match.away_team,
+        hgoals: match.home_goals,
+        agoals: match.away_goals,
+        league: match.league
+      }));
+    } catch (err) {
+      console.error("Błąd pobierania meczów:", err);
+    }
+  }
 
-                allMatches = data.map(match => ({
-                    date: new Date(match.date).toISOString().split('T')[0],
-                    homeTeam: match.home_team,
-                    awayTeam: match.away_team,
-                    hgoals: match.home_goals,
-                    agoals: match.away_goals,
-                    league: match.league
-                }));
-            } catch (err) {
-                console.error("Błąd pobierania meczów:", err);
-            }
+  async function fetchMatches() {
+    if (allMatches.length === 0) {
+      await fetchAllMatches();
+    }
+
+    const selectedDate = document.getElementById('date-picker').value;
+    const matchesContainer = document.getElementById('matches-container');
+    matchesContainer.innerHTML = '';
+
+    const filteredMatches = allMatches.filter(match => match.date === selectedDate);
+
+    if (filteredMatches.length === 0) {
+      matchesContainer.innerHTML = '<p>Brak meczów dla wybranej daty.</p>';
+    } else {
+      const matchesByLeague = {};
+      filteredMatches.forEach(match => {
+        if (!matchesByLeague[match.league]) {
+          matchesByLeague[match.league] = [];
         }
+        matchesByLeague[match.league].push(match);
+      });
 
-        async function fetchMatches() {
-            if (allMatches.length === 0) {
-                await fetchAllMatches();
-            }
+      for (const league in matchesByLeague) {
+        const leagueTitle = document.createElement('h2');
+        leagueTitle.classList.add('league-title');
+        leagueTitle.textContent = leagueNames[league] || league;
+        matchesContainer.appendChild(leagueTitle);
 
-            const selectedDate = document.getElementById('date-picker').value;
-            const matchesContainer = document.getElementById('matches-container');
-            matchesContainer.innerHTML = ''; // Wyczyść poprzednie mecze
+        matchesByLeague[league].forEach(match => {
+          const matchCard = document.createElement('div');
+          matchCard.classList.add('match-card');
+          matchCard.innerHTML = `
+            <span class="team">${match.homeTeam}</span>
+            <span class="teamgoals">${match.hgoals}</span>
+            <span class="vs">-</span>
+            <span class="teamgoals">${match.agoals}</span>
+            <span class="team">${match.awayTeam}</span>
+            <button class="button predict-button">Typuj</button>
+          `;
+          matchesContainer.appendChild(matchCard);
+        });
+      }
+    }
+  }
 
-            const filteredMatches = allMatches.filter(match => match.date === selectedDate);
-
-            if (filteredMatches.length === 0) {
-                matchesContainer.innerHTML = '<p>Brak meczów dla wybranej daty.</p>';
-            } else {
-                const matchesByLeague = {};
-                filteredMatches.forEach(match => {
-                    if (!matchesByLeague[match.league]) {
-                        matchesByLeague[match.league] = [];
-                    }
-                    matchesByLeague[match.league].push(match);
-                });
-
-                for (const league in matchesByLeague) {
-                    const leagueTitle = document.createElement('h2');
-                    leagueTitle.classList.add('league-title');
-                    leagueTitle.textContent = leagueNames[league] || league;
-                    matchesContainer.appendChild(leagueTitle);
-
-                    matchesByLeague[league].forEach(match => {
-                        const matchCard = document.createElement('div');
-                        matchCard.classList.add('match-card');
-                        matchCard.innerHTML = `
-                            <span class="team">${match.homeTeam}</span>
-                            <span class="teamgoals">${match.hgoals}</span>
-                            <span class="vs">-</span>
-                            <span class="teamgoals">${match.agoals}</span>
-                            <span class="team">${match.awayTeam}</span>
-                            <button class="button predict-button">Typuj</button>
-                        `;
-                        matchesContainer.appendChild(matchCard);
-                    });
-                }
-            }
-        }
-
-        window.onload = function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('date-picker').value = today;
-            fetchAllMatches();
-        };
-    </script>
-</body>
-</html>
+  window.onload = function () {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date-picker').value = today;
+    fetchAllMatches();
+  };
+</script>
+{% endblock %}
