@@ -64,56 +64,64 @@
       console.error("Błąd pobierania meczów:", err);
     }
   }
-
-  async function fetchMatches() {
-    if (allMatches.length === 0) {
-      await fetchAllMatches();
-    }
-
+async function fetchMatches() {
     const selectedDate = document.getElementById('date-picker').value;
     const matchesContainer = document.getElementById('matches-container');
     matchesContainer.innerHTML = '';
 
-    const filteredMatches = allMatches.filter(match => match.date === selectedDate);
+    try {
+        const response = await fetch(`/api/matches?date=${selectedDate}`);
+        const data = await response.json();
 
-    if (filteredMatches.length === 0) {
-      matchesContainer.innerHTML = '<p>Brak meczów dla wybranej daty.</p>';
-    } else {
-      const matchesByLeague = {};
-      filteredMatches.forEach(match => {
-        if (!matchesByLeague[match.league]) {
-          matchesByLeague[match.league] = [];
+        if (data.error) {
+            matchesContainer.innerHTML = `<p>${data.error}</p>`;
+            return;
         }
-        matchesByLeague[match.league].push(match);
-      });
 
-      for (const league in matchesByLeague) {
-        const leagueTitle = document.createElement('h2');
-        leagueTitle.classList.add('league-title');
-        leagueTitle.textContent = leagueNames[league] || league;
-        matchesContainer.appendChild(leagueTitle);
+        if (data.length === 0) {
+            matchesContainer.innerHTML = '<p>Brak meczów dla wybranej daty.</p>';
+            return;
+        }
 
-        matchesByLeague[league].forEach(match => {
-          const matchCard = document.createElement('div');
-          matchCard.classList.add('match-card');
-          matchCard.innerHTML = `
-            <span class="team">${match.homeTeam}</span>
-            <span class="teamgoals">${match.hgoals}</span>
-            <span class="vs">-</span>
-            <span class="teamgoals">${match.agoals}</span>
-            <span class="team">${match.awayTeam}</span>
-            <button class="button predict-button">Typuj</button>
-          `;
-          matchesContainer.appendChild(matchCard);
+        const matchesByLeague = {};
+        data.forEach(match => {
+            if (!matchesByLeague[match.league]) {
+                matchesByLeague[match.league] = [];
+            }
+            matchesByLeague[match.league].push(match);
         });
-      }
-    }
-  }
 
-  window.onload = function () {
+        for (const league in matchesByLeague) {
+            const leagueTitle = document.createElement('h2');
+            leagueTitle.classList.add('league-title');
+            leagueTitle.textContent = leagueNames[league] || league;
+            matchesContainer.appendChild(leagueTitle);
+
+            matchesByLeague[league].forEach(match => {
+                const matchCard = document.createElement('div');
+                matchCard.classList.add('match-card');
+                matchCard.innerHTML = `
+                    <span class="team">${match.home_team}</span>
+                    <span class="teamgoals">${match.home_goals ?? ''}</span>
+                    <span class="vs">-</span>
+                    <span class="teamgoals">${match.away_goals ?? ''}</span>
+                    <span class="team">${match.away_team}</span>
+                    <button class="button predict-button">Typuj</button>
+                `;
+                matchesContainer.appendChild(matchCard);
+            });
+        }
+    } catch (err) {
+        console.error("Błąd pobierania meczów:", err);
+        matchesContainer.innerHTML = '<p>Wystąpił błąd przy ładowaniu meczów.</p>';
+    }
+}
+
+window.onload = function() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('date-picker').value = today;
-    fetchAllMatches();
-  };
+    fetchMatches();
+};
+
 </script>
 {% endblock %}

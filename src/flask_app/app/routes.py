@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify,abort
 from sqlalchemy.orm import aliased
+from datetime import datetime
 
 from .db import db, FootballMatch, Team, League, FutureMatch
 
@@ -25,11 +26,23 @@ def mainpage():
     }
     return render_template('MainPage.html', league_names=league_names)
 
-@main.route('/matches')
+
+@main.route('/api/matches')
 def get_matches():
+    date_param = request.args.get('date')  # Format: YYYY-MM-DD
+
+    if not date_param:
+        return jsonify({"error": "Missing 'date' parameter"}), 400
+
+    try:
+        match_date = datetime.strptime(date_param, "%Y-%m-%d").date()
+    except ValueError:
+        return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
+
     HomeTeam = aliased(Team)
     AwayTeam = aliased(Team)
 
+    # POBIERANIE MECZÓW Z DANEGO DNIA
     past_matches = db.session.query(
         FootballMatch.date,
         HomeTeam.name.label('home_team'),
@@ -43,7 +56,7 @@ def get_matches():
         AwayTeam, FootballMatch.away_team_id == AwayTeam.team_id
     ).join(
         League, FootballMatch.league_id == League.league_id
-    )
+    ).filter(FootballMatch.date == match_date)
 
     future_matches = db.session.query(
         FutureMatch.date,
@@ -58,7 +71,7 @@ def get_matches():
         AwayTeam, FutureMatch.away_team_id == AwayTeam.team_id
     ).join(
         League, FutureMatch.league_id == League.league_id
-    )
+    ).filter(FutureMatch.date == match_date)
 
     matches = past_matches.union_all(future_matches).all()
 
@@ -68,12 +81,13 @@ def get_matches():
             "home_team": m.home_team,
             "away_team": m.away_team,
             "league": m.league,
-            "home_goals": m.home_goals if m.home_goals is not None else '-',
-            "away_goals": m.away_goals if m.away_goals is not None else '-'
+            "home_goals": m.home_goals,
+            "away_goals": m.away_goals
         } for m in matches
     ]
 
     return jsonify(result)
+
 
 
 LEAGUE_URL_MAP = {
