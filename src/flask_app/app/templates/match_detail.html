@@ -3,39 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ match.home_team.name }} vs {{ match.away_team.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/detale.css') }}">
 </head>
 <body>
-    <h1>{{ match.home_team.name }} vs {{ match.away_team.name }}</h1>
-    <p>Status: {{ status }}</p>
-    <p>Data meczu: {{ match.date }}</p>
-    <p>Wynik: {{ match.fthg }} - {{ match.ftag }} ({{ match.result or 'brak' }})</p>
+    <div class="container">
 
-    <h2>Forma drużyn</h2>
-    <p>{{ match.home_team.name }}: {{ home_form.form_last_5 if home_form else 'Brak danych' }}</p>
-    <p>{{ match.away_team.name }}: {{ away_form.form_last_5 if away_form else 'Brak danych' }}</p>
+        <div class="match-card">
+            <h1 class="match-title">
+                {{ match.home_team.name }}
+                <span class="score">{{ match.fthg }} - {{ match.ftag }}</span>
+                {{ match.away_team.name }}
+            </h1>
 
-    <h2>Wartość drużyn</h2>
-    <p>{{ match.home_team.name }}: {{ home_value or 'Brak danych' }}</p>
-    <p>{{ match.away_team.name }}: {{ away_value or 'Brak danych' }}</p>
+            <p class="match-info"><strong>Status:</strong> {{ status }}</p>
+            <p class="match-info"><strong>Data meczu:</strong> {{ match.date }}</p>
+            <p class="match-info"><strong>Wynik:</strong> {{ match.result or 'brak' }}</p>
 
-    <h2>Statystyki meczu</h2>
-    <h3>{{ match.home_team.name }}</h3>
-    <p>Mean: {{ home_stats.mean if home_stats else 'Brak danych' }}</p>
-    <p>Std: {{ home_stats.std if home_stats else 'Brak danych' }}</p>
+            <div class="match-section">
+                <h2>Forma drużyn</h2>
+                <p><strong>{{ match.home_team.name }}:</strong> {{ home_form.form_last_5 if home_form else 'Brak danych' }}</p>
+                <p><strong>{{ match.away_team.name }}:</strong> {{ away_form.form_last_5 if away_form else 'Brak danych' }}</p>
+            </div>
 
-    <h3>{{ match.away_team.name }}</h3>
-    <p>Mean: {{ away_stats.mean if away_stats else 'Brak danych' }}</p>
-    <p>Std: {{ away_stats.std if away_stats else 'Brak danych' }}</p>
+            <div class="match-section">
+                <h2>Wartość drużyn</h2>
+                <p><strong>{{ match.home_team.name }}:</strong> {{ home_value or 'Brak danych' }}</p>
+                <p><strong>{{ match.away_team.name }}:</strong> {{ away_value or 'Brak danych' }}</p>
+            </div>
 
-    <h2>Predykcje</h2>
-    <ul>
-        {% for p in predictions %}
-        <li>{{ p.predicted_result }} (Pewność: {{ p.confidence }})</li>
-        {% else %}
-        <li>Brak predykcji</li>
-        {% endfor %}
-    </ul>
+            <div class="match-section">
+                <h2>Statystyki meczu</h2>
+                <div class="team-stats">
+                    <div>
+                        <h3>{{ match.home_team.name }}</h3>
+                        <p>Mean: {{ home_stats.mean if home_stats else 'Brak danych' }}</p>
+                        <p>Std: {{ home_stats.std if home_stats else 'Brak danych' }}</p>
+                    </div>
+                    <div>
+                        <h3>{{ match.away_team.name }}</h3>
+                        <p>Mean: {{ away_stats.mean if away_stats else 'Brak danych' }}</p>
+                        <p>Std: {{ away_stats.std if away_stats else 'Brak danych' }}</p>
+                    </div>
+                </div>
+            </div>
 
-    <a href="/">Wróć do listy meczów</a>
+            <div class="match-section">
+                <h2>Predykcje</h2>
+                <ul class="predictions-list">
+                    {% for p in predictions %}
+                        <li>{{ p.predicted_result }} <span class="confidence">(Pewność: {{ p.confidence }})</span></li>
+                    {% else %}
+                        <li>Brak predykcji</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="back-link">
+                <a href="/" class="button">⬅ Wróć do listy meczów</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
