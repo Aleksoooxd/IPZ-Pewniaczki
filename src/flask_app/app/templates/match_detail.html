@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ match.home_team.name }} vs {{ match.away_team.name }}</title>
+</head>
+<body>
+    <h1>{{ match.home_team.name }} vs {{ match.away_team.name }}</h1>
+    <p>Status: {{ status }}</p>
+    <p>Data meczu: {{ match.date }}</p>
+    <p>Wynik: {{ match.fthg }} - {{ match.ftag }} ({{ match.result or 'brak' }})</p>
+
+    <h2>Forma drużyn</h2>
+    <p>{{ match.home_team.name }}: {{ home_form.form_last_5 if home_form else 'Brak danych' }}</p>
+    <p>{{ match.away_team.name }}: {{ away_form.form_last_5 if away_form else 'Brak danych' }}</p>
+
+    <h2>Wartość drużyn</h2>
+    <p>{{ match.home_team.name }}: {{ home_value or 'Brak danych' }}</p>
+    <p>{{ match.away_team.name }}: {{ away_value or 'Brak danych' }}</p>
+
+    <h2>Statystyki meczu</h2>
+    <h3>{{ match.home_team.name }}</h3>
+    <p>Mean: {{ home_stats.mean if home_stats else 'Brak danych' }}</p>
+    <p>Std: {{ home_stats.std if home_stats else 'Brak danych' }}</p>
+
+    <h3>{{ match.away_team.name }}</h3>
+    <p>Mean: {{ away_stats.mean if away_stats else 'Brak danych' }}</p>
+    <p>Std: {{ away_stats.std if away_stats else 'Brak danych' }}</p>
+
+    <h2>Predykcje</h2>
+    <ul>
+        {% for p in predictions %}
+        <li>{{ p.predicted_result }} (Pewność: {{ p.confidence }})</li>
+        {% else %}
+        <li>Brak predykcji</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/">Wróć do listy meczów</a>
+</body>
+</html>

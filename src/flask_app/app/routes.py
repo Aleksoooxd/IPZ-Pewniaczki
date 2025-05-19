@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify,abort
 from sqlalchemy.orm import aliased
 from datetime import datetime
+from flask import render_template, abort
+
 
 from .db import db, FootballMatch, Team, League, FutureMatch
 
@@ -29,7 +31,7 @@ def mainpage():
 
 @main.route('/api/matches')
 def get_matches():
-    date_param = request.args.get('date')  # Format: YYYY-MM-DD
+    date_param = request.args.get('date')
 
     if not date_param:
         return jsonify({"error": "Missing 'date' parameter"}), 400
@@ -44,6 +46,7 @@ def get_matches():
 
     # POBIERANIE MECZÓW Z DANEGO DNIA
     past_matches = db.session.query(
+        FootballMatch.match_id,  # <-- dodaj to
         FootballMatch.date,
         HomeTeam.name.label('home_team'),
         AwayTeam.name.label('away_team'),
@@ -59,6 +62,7 @@ def get_matches():
     ).filter(FootballMatch.date == match_date)
 
     future_matches = db.session.query(
+        FutureMatch.match_id,
         FutureMatch.date,
         HomeTeam.name.label('home_team'),
         AwayTeam.name.label('away_team'),
@@ -77,6 +81,7 @@ def get_matches():
 
     result = [
         {
+            "match_id": m.match_id,
             "date": m.date.strftime('%Y-%m-%d'),
             "home_team": m.home_team,
             "away_team": m.away_team,
@@ -104,6 +109,40 @@ LEAGUE_URL_MAP = {
     "SerieA": "serie a",
     "ScotishPremierLeague": "spremier league"
 }
+
+
+
+@main.route('/match/<int:match_id>')
+def match_detail(match_id):
+    match = FootballMatch.query.filter_by(match_id=match_id).first()
+    if not match:
+        abort(404)
+
+    home_form = {f.team_side: f for f in match.form_data}.get('home')
+    away_form = {f.team_side: f for f in match.form_data}.get('away')
+
+    home_stats = {s.team_side: s for s in match.match_stats}.get('home')
+    away_stats = {s.team_side: s for s in match.match_stats}.get('away')
+
+    home_value = match.home_value_ref.value if match.home_value_ref else None
+    away_value = match.away_value_ref.value if match.away_value_ref else None
+
+    predictions = match.predictions
+
+    from datetime import date
+    if match.result:
+        status = "finished"
+    elif match.date > date.today():
+        status = "upcoming"
+    else:
+        status = "live"  # lub inna logika
+
+    return render_template('match_detail.html', match=match,
+                           home_form=home_form, away_form=away_form,
+                           home_stats=home_stats, away_stats=away_stats,
+                           home_value=home_value, away_value=away_value,
+                           predictions=predictions, status=status)
+
 
 @main.route('/league/<league_code>')
 def league_view(league_code):
