@@ -1,67 +1,124 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ match.home_team.name }} vs {{ match.away_team.name }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/detale.css') }}">
-</head>
-<body>
-    <div class="container">
+{% extends "base.html" %}
 
-        <div class="match-card">
-            <h1 class="match-title">
-                {{ match.home_team.name }}
-                <span class="score">{{ match.fthg }} - {{ match.ftag }}</span>
-                {{ match.away_team.name }}
-            </h1>
+{% block title %}{{ match.home_team.name }} vs {{ match.away_team.name }}{% endblock %}
 
-            <p class="match-info"><strong>Status:</strong> {{ status }}</p>
-            <p class="match-info"><strong>Data meczu:</strong> {{ match.date }}</p>
-            <p class="match-info"><strong>Wynik:</strong> {{ match.result or 'brak' }}</p>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/detale.css') }}">
+<style>
+  .match-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .team-column {
+    background-color: #214216;
+    padding: 20px;
+    border-radius: 8px;
+  }
 
-            <div class="match-section">
-                <h2>Forma drużyn</h2>
-                <p><strong>{{ match.home_team.name }}:</strong> {{ home_form.form_last_5 if home_form else 'Brak danych' }}</p>
-                <p><strong>{{ match.away_team.name }}:</strong> {{ away_form.form_last_5 if away_form else 'Brak danych' }}</p>
-            </div>
+  .middle-column {
+    background-color: #2c672b;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .match-title {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .score {
+    font-size: 1.5em;
+    padding: 0 15px;
+  }
+  
+  .team-header {
+    text-align: center;
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+</style>
+{% endblock %}
 
-            <div class="match-section">
-                <h2>Wartość drużyn</h2>
-                <p><strong>{{ match.home_team.name }}:</strong> {{ home_value or 'Brak danych' }}</p>
-                <p><strong>{{ match.away_team.name }}:</strong> {{ away_value or 'Brak danych' }}</p>
-            </div>
+{% block content %}
+<div class="container">
+  <h1 class="match-title">
+    {{ match.home_team.name }}
+    <span class="score">{{ match.fthg }} - {{ match.ftag }}</span>
+    {{ match.away_team.name }}
+  </h1>
 
-            <div class="match-section">
-                <h2>Statystyki meczu</h2>
-                <div class="team-stats">
-                    <div>
-                        <h3>{{ match.home_team.name }}</h3>
-                        <p>Mean: {{ home_stats.mean if home_stats else 'Brak danych' }}</p>
-                        <p>Std: {{ home_stats.std if home_stats else 'Brak danych' }}</p>
-                    </div>
-                    <div>
-                        <h3>{{ match.away_team.name }}</h3>
-                        <p>Mean: {{ away_stats.mean if away_stats else 'Brak danych' }}</p>
-                        <p>Std: {{ away_stats.std if away_stats else 'Brak danych' }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="match-section">
-                <h2>Predykcje</h2>
-                <ul class="predictions-list">
-                    {% for p in predictions %}
-                        <li>{{ p.predicted_result }} <span class="confidence">(Pewność: {{ p.confidence }})</span></li>
-                    {% else %}
-                        <li>Brak predykcji</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <div class="back-link">
-                <a href="/" class="button">⬅ Wróć do listy meczów</a>
-            </div>
-        </div>
+  <div class="match-container">
+    <!-- Left Column - Home Team Stats -->
+    <div class="team-column">
+      <h2 class="team-header">{{ match.home_team.name }}</h2>
+      
+      <div class="team-section">
+        <h3>Forma</h3>
+        <p>{{ home_form.form_last_5 if home_form else 'Brak danych' }}</p>
+      </div>
+      
+      <div class="team-section">
+        <h3>Wartość</h3>
+        <p>{% if home_value %}{{ home_value }} M €{% else %}Brak danych{% endif %}</p>
+      </div>
+      
+      <div class="team-section">
+        <h3>Statystyki</h3>
+        <p>Mean: {{ home_stats.mean if home_stats else 'Brak danych' }}</p>
+        <p>Std: {{ home_stats.std if home_stats else 'Brak danych' }}</p>
+      </div>
     </div>
-</body>
-</html>
+    
+    <!-- Middle Column - Match Details & Predictions -->
+    <div class="middle-column">
+      <div class="match-info-section">
+        <h3>Informacje o meczu</h3>
+        <p><strong>Status:</strong> {{ status }}</p>
+        <p><strong>Data meczu:</strong> {{ match.date }}</p>
+        <p><strong>Wynik:</strong> {{ match.result or 'brak' }}</p>
+      </div>
+      
+      <div class="predictions-section">
+        <h3>Predykcje</h3>
+        <ul class="predictions-list">
+          {% for p in predictions %}
+            <li>{{ p.predicted_result }} <span class="confidence">(Pewność: {{ p.confidence }})</span></li>
+          {% else %}
+            <li>Brak predykcji</li>
+          {% endfor %}
+        </ul>
+      </div>
+      
+      <div class="back-link">
+        <a href="/main?date={{ match.date }}" class="button">⬅ Wróć do listy meczów</a>
+      </div>
+    </div>
+    
+    <!-- Right Column - Away Team Stats -->
+    <div class="team-column">
+      <h2 class="team-header">{{ match.away_team.name }}</h2>
+      
+      <div class="team-section">
+        <h3>Forma</h3>
+        <p>{{ away_form.form_last_5 if away_form else 'Brak danych' }}</p>
+      </div>
+      
+      <div class="team-section">
+        <h3>Wartość</h3>
+        <p>{% if away_value %}{{ away_value }} M €{% else %}Brak danych{% endif %}</p>
+      </div>
+      
+      <div class="team-section">
+        <h3>Statystyki</h3>
+        <p>Mean: {{ away_stats.mean if away_stats else 'Brak danych' }}</p>
+        <p>Std: {{ away_stats.std if away_stats else 'Brak danych' }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

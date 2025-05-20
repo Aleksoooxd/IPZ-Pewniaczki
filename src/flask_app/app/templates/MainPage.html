@@ -120,8 +120,19 @@ async function fetchMatches() {
 }
 
 window.onload = function() {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('date-picker').value = today;
+    // Check for date parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const dateParam = urlParams.get('date');
+
+    // Set date picker value
+    const datePicker = document.getElementById('date-picker');
+    if (dateParam) {
+        datePicker.value = dateParam;
+    } else {
+        const today = new Date().toISOString().split('T')[0];
+        datePicker.value = today;
+    }
+
     fetchMatches();
 };
 
