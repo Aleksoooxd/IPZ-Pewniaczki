@@ -11,7 +11,7 @@ import pandas as pd
 from fuzzywuzzy import process
 from sqlalchemy import select
 from unidecode import unidecode
-from flask_app.app.db import db, app, FootballMatch, MatchStats, MatchForm, Team, League, Season, TeamValue
+from flask_app.app.db import db, app, FootballMatch, MatchStats, MatchForm, Team, League, Season, TeamValue, FutureMatch
 from src.helpfunctions import hhi_index,shannon_index, coefficient_of_variation, gini_index, calculate_consensus
 from src.transfermarktScrap import get_all_teams_from_db
 
@@ -156,7 +156,7 @@ def get_season(date):
         raise ValueError("The 'date' parameter must be a pandas.Timestamp or datetime.date object.")
 
     year = date.year
-    if date.month >= 8:
+    if date.month >= 7:
         if year >= 2009:
             return f"{year}/{(year + 1) % 100:02d}"
         else:
@@ -485,7 +485,9 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                         )
                         db.session.add(match)
                         db.session.flush()
+                        check_and_remove_future_match(db.session, home_team.team_id, away_team.team_id, row['Date'])
                     else:
+
                         print(
                             f'Skipping match {_} match data for {row["HomeTeam"]} vs {row["AwayTeam"]}, already exists')
                         continue
@@ -543,6 +545,22 @@ def detect_encoding(byte_content):
     result = chardet.detect(byte_content)
     return result['encoding']
 
+def check_and_remove_future_match(session, home_team_id, away_team_id, match_date):
+    future_match = session.execute(
+        select(FutureMatch)
+        .where(FutureMatch.home_team_id == home_team_id,
+               FutureMatch.away_team_id == away_team_id,
+               FutureMatch.date == match_date)
+        .with_for_update()
+    ).scalar_one_or_none()
+
+    if future_match:
+        print(f"Match found in FutureMatch table. Removing it as it's now a past match.")
+        session.delete(future_match)
+        session.commit()
+        return True
+
+    return False
 
 def correct_date_format(val):
     if isinstance(val, str) and len(val) == 8:
