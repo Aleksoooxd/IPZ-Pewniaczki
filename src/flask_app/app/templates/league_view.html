@@ -38,11 +38,15 @@
 <div class="league-container">
   <div class="team-list">
     <h3>Drużyny</h3>
-    <ul>
-      {% for team in teams %}
-      <li class="team-item" onclick="showTeam('{{ team.name }}')">{{ team.name }}</li>
-      {% endfor %}
-    </ul>
+<ul>
+  {% for team in teams %}
+    <li>
+      <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name) }}">
+        {{ team.name }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
   </div>
 
   <div class="team-details" id="team-details">

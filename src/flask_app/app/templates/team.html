@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}{{ team_name }} - Szczegóły Drużyny{% endblock %}
+
+{% block content %}
+<h2>{{ team_name }}</h2>
+<p>Szczegóły drużyny z ligi {{ league_name }} wkrótce...</p>
+<a href="{{ url_for('main.league_view', league_code=league_code) }}">← Powrót do ligi</a>
+{% endblock %}

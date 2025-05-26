@@ -13,6 +13,7 @@ main = Blueprint('main', __name__)
 def home():
     return render_template('index.html')
 
+
 @main.route('/main')
 def mainpage():
     league_names = {
@@ -113,6 +114,21 @@ LEAGUE_URL_MAP = {
     "ScotishPremierLeague": "spremier league"
 }
 
+LEAGUE_NAME_TO_URL= {
+  "premier league": "Premierleague",
+  "bundesliga": "Bundesliga",
+  "eredivisie": "Eredivisie",
+  "ethniki katigoria": "EthnikiKatigoria",
+  "futbol ligi 1": "FutbolLig1",
+  "jupiler league": "JupiterLeague",
+  "la liga": "LaLiga",
+  "ligue 1": "Ligue1",
+  "liga i": "LigaI",
+  "serie a": "SerieA",
+  "spremier league": "ScotishPremierLeague"
+}
+
+
 
 
 @main.route('/match/<string:match_type>/<int:match_id>')
@@ -191,6 +207,10 @@ def match_detail(match_type, match_id):
                            home_value=home_value, away_value=away_value,
                            predictions=predictions, status=status)
 
+@main.route('/league/<league_code>/team/<team_name>')
+def team_view(league_code, team_name):
+    # logika
+    return render_template('team.html', league_code=league_code, team_name=team_name)
 
 
 @main.route('/league/<league_code>')
@@ -208,7 +228,13 @@ def league_view(league_code):
           (FootballMatch.away_team_id == Team.team_id)))
     ).distinct().order_by(Team.name).all()
 
-    return render_template('league_view.html', league=league, teams=teams)
+    return render_template(
+        'league_view.html',
+        league=league,
+        teams=teams,
+        league_name_to_url=LEAGUE_NAME_TO_URL
+    )
+
 
 @main.route('/test_db')
 def test_db():
