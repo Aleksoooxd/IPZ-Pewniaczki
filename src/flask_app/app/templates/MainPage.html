@@ -4,29 +4,34 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}">
 {% endblock %}
 
 {% block content %}
+<div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; Wybierz Ligę</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
+  <h3>Ligi</h3>
+  <ul class="sidebar-links">
+    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">Premier league</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}">Bundesliga</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}">Eredivisie</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">Ethniki Katigoria</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='FutbolLig1') }}">Futbol Lig 1</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='JupiterLeague') }}">Jupiler League</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}">La Liga</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}">Ligue 1</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}">Liga I</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">Scottish Premier League</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}">Serie A</a></li>
+
+    <li class="sidebar-divider"></li>
+    <li><a href="{{ url_for('main.mainpage') }}">🏠 Main Page</a></li>
+  </ul>
+</div>
+
 <div class="container">
-
-  <div class="league-container">
-    <div class="league-selection">
-      <h2>Wybierz Ligę</h2>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='Premierleague') }}">Premier league</a>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='Bundesliga') }}">Bundesliga</a>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='Eredivisie') }}">Eredivisie</a>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">Ethniki Katigoria</a>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='FutbolLig1') }}">Futbol Lig 1</a>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='JupiterLeague') }}">Jupiler League</a>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='LaLiga') }}">La Liga</a>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='Ligue1') }}">Ligue 1</a>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='LigaI') }}">Liga I</a>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">Scottish Premier League</a>
-      <a class="league-button" href="{{ url_for('main.league_view', league_code='SerieA') }}">Serie A</a>
-    </div>
-  </div>
-
-
   <div class="main-content">
     <div class="date-container">
       <label for="date-picker">Wybierz datę:</label>
@@ -35,7 +40,7 @@
     </div>
 
     <div class="matches" id="matches-container">
-
+      <!-- Tu będą ładowane mecze -->
     </div>
   </div>
 </div>
@@ -43,8 +48,12 @@
 
 {% block script %}
 <script>
-  let allMatches = [];
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.classList.toggle("open");
+  }
 
+  let allMatches = [];
   const leagueNames = {{ league_names | tojson }};
 
   async function fetchAllMatches() {
@@ -64,77 +73,75 @@
       console.error("Błąd pobierania meczów:", err);
     }
   }
-async function fetchMatches() {
+
+  async function fetchMatches() {
     const selectedDate = document.getElementById('date-picker').value;
     const matchesContainer = document.getElementById('matches-container');
     matchesContainer.innerHTML = '';
 
     try {
-        const response = await fetch(`/api/matches?date=${selectedDate}`);
-        const data = await response.json();
+      const response = await fetch(`/api/matches?date=${selectedDate}`);
+      const data = await response.json();
 
-        if (data.error) {
-            matchesContainer.innerHTML = `<p>${data.error}</p>`;
-            return;
+      if (data.error) {
+        matchesContainer.innerHTML = `<p>${data.error}</p>`;
+        return;
+      }
+
+      if (data.length === 0) {
+        matchesContainer.innerHTML = '<p>Brak meczów dla wybranej daty.</p>';
+        return;
+      }
+
+      const matchesByLeague = {};
+      data.forEach(match => {
+        if (!matchesByLeague[match.league]) {
+          matchesByLeague[match.league] = [];
         }
+        matchesByLeague[match.league].push(match);
+      });
 
-        if (data.length === 0) {
-            matchesContainer.innerHTML = '<p>Brak meczów dla wybranej daty.</p>';
-            return;
-        }
+      for (const league in matchesByLeague) {
+        const leagueTitle = document.createElement('h2');
+        leagueTitle.classList.add('league-title');
+        leagueTitle.textContent = leagueNames[league] || league;
+        matchesContainer.appendChild(leagueTitle);
 
-        const matchesByLeague = {};
-        data.forEach(match => {
-            if (!matchesByLeague[match.league]) {
-                matchesByLeague[match.league] = [];
-            }
-            matchesByLeague[match.league].push(match);
+        matchesByLeague[league].forEach(match => {
+          const matchCard = document.createElement('a');
+          matchCard.classList.add('match-card');
+          matchCard.href = `/match/${match.match_type}/${match.match_id}`;
+          matchCard.innerHTML = `
+            <span class="match-id">ID: ${match.match_id}</span>
+            <span class="team">${match.home_team}</span>
+            <span class="teamgoals">${match.home_goals ?? ''}</span>
+            <span class="vs">-</span>
+            <span class="teamgoals">${match.away_goals ?? ''}</span>
+            <span class="team">${match.away_team}</span>
+            <button class="button predict-button">Typuj</button>
+          `;
+          matchesContainer.appendChild(matchCard);
         });
-
-        for (const league in matchesByLeague) {
-            const leagueTitle = document.createElement('h2');
-            leagueTitle.classList.add('league-title');
-            leagueTitle.textContent = leagueNames[league] || league;
-            matchesContainer.appendChild(leagueTitle);
-
-            matchesByLeague[league].forEach(match => {
-                const matchCard = document.createElement('a');
-                matchCard.classList.add('match-card');
-                matchCard.href = `/match/${match.match_type}/${match.match_id}`;
-                matchCard.innerHTML = `
-                    <span class="match-id">ID: ${match.match_id}</span>
-                    <span class="team">${match.home_team}</span>
-                    <span class="teamgoals">${match.home_goals ?? ''}</span>
-                    <span class="vs">-</span>
-                    <span class="teamgoals">${match.away_goals ?? ''}</span>
-                    <span class="team">${match.away_team}</span>
-                    <button class="button predict-button">Typuj</button>
-                `;
-                matchesContainer.appendChild(matchCard);
-            });
-        }
+      }
     } catch (err) {
-        console.error("Błąd pobierania meczów:", err);
-        matchesContainer.innerHTML = '<p>Wystąpił błąd przy ładowaniu meczów.</p>';
+      console.error("Błąd pobierania meczów:", err);
+      matchesContainer.innerHTML = '<p>Wystąpił błąd przy ładowaniu meczów.</p>';
     }
-}
+  }
 
-window.onload = function() {
-    // Check for date parameter in URL
+  window.onload = function () {
     const urlParams = new URLSearchParams(window.location.search);
     const dateParam = urlParams.get('date');
 
-    // Set date picker value
     const datePicker = document.getElementById('date-picker');
     if (dateParam) {
-        datePicker.value = dateParam;
+      datePicker.value = dateParam;
     } else {
-        const today = new Date().toISOString().split('T')[0];
-        datePicker.value = today;
+      const today = new Date().toISOString().split('T')[0];
+      datePicker.value = today;
     }
 
     fetchMatches();
-};
-
+  };
 </script>
 {% endblock %}
