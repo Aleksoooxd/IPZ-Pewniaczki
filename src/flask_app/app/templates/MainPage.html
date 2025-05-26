@@ -100,7 +100,7 @@ async function fetchMatches() {
             matchesByLeague[league].forEach(match => {
                 const matchCard = document.createElement('a');
                 matchCard.classList.add('match-card');
-                matchCard.href = `/match/${match.match_id}`; // tutaj dynamicznie podstawiasz id
+                matchCard.href = `/match/${match.match_type}/${match.match_id}`;
                 matchCard.innerHTML = `
                     <span class="match-id">ID: ${match.match_id}</span>
                     <span class="team">${match.home_team}</span>

@@ -3,8 +3,10 @@ from sqlalchemy.orm import aliased
 from datetime import datetime
 from flask import render_template, abort
 
+from sqlalchemy import or_
 
-from .db import db, FootballMatch, Team, League, FutureMatch
+
+from .db import db, FootballMatch, Team, League, FutureMatch , TeamValue, Predicted
 
 main = Blueprint('main', __name__)
 @main.route('/')
@@ -82,6 +84,7 @@ def get_matches():
     result = [
         {
             "match_id": m.match_id,
+            "match_type": "past" if m.home_goals is not None else "future",  # prosty sposób
             "date": m.date.strftime('%Y-%m-%d'),
             "home_team": m.home_team,
             "away_team": m.away_team,
@@ -112,36 +115,82 @@ LEAGUE_URL_MAP = {
 
 
 
-@main.route('/match/<int:match_id>')
-def match_detail(match_id):
-    match = FootballMatch.query.filter_by(match_id=match_id).first()
+@main.route('/match/<string:match_type>/<int:match_id>')
+def match_detail(match_type, match_id):
+    from datetime import date
+    from sqlalchemy.orm.exc import NoResultFound
+
+    if match_type == "past":
+        match = FootballMatch.query.filter_by(match_id=match_id).first()
+    elif match_type == "future":
+        match = FutureMatch.query.filter_by(match_id=match_id).first()
+    else:
+        abort(404)
+
     if not match:
         abort(404)
 
-    home_form = {f.team_side: f for f in match.form_data}.get('home')
-    away_form = {f.team_side: f for f in match.form_data}.get('away')
-
-    home_stats = {s.team_side: s for s in match.match_stats}.get('home')
-    away_stats = {s.team_side: s for s in match.match_stats}.get('away')
-
-    home_value = match.home_value_ref.value if match.home_value_ref else None
-    away_value = match.away_value_ref.value if match.away_value_ref else None
-
-    predictions = match.predictions
-
-    from datetime import date
-    if match.result:
+    if hasattr(match, 'result') and match.result:
         status = "finished"
     elif match.date > date.today():
         status = "upcoming"
     else:
-        status = "live"  # lub inna logika
+        status = "live"
+
+    if isinstance(match, FutureMatch):
+        season_id = match.season.season_id
+        home_team_id = match.home_team.team_id
+        away_team_id = match.away_team.team_id
+
+        # Wartość rynkowa
+        home_value_obj = TeamValue.query.filter_by(team_id=home_team_id, season_id=season_id).first()
+        away_value_obj = TeamValue.query.filter_by(team_id=away_team_id, season_id=season_id).first()
+
+        home_value = home_value_obj.value if home_value_obj else None
+        away_value = away_value_obj.value if away_value_obj else None
+
+
+        home_form = FootballMatch.query.filter(
+            or_(
+                FootballMatch.home_team_id == home_team_id,
+                FootballMatch.away_team_id == home_team_id
+            ),
+            FootballMatch.season_id == season_id,
+            FootballMatch.date < match.date
+        ).order_by(FootballMatch.date.desc()).limit(5).all()
+
+        away_form = FootballMatch.query.filter(
+            or_(
+                FootballMatch.home_team_id == away_team_id,
+                FootballMatch.away_team_id == away_team_id
+            ),
+            FootballMatch.season_id == season_id,
+            FootballMatch.date < match.date
+        ).order_by(FootballMatch.date.desc()).limit(5).all()
+
+        # Predykcje – tylko jeśli masz model Prediction
+
+
+        predictions = Predicted.query.filter_by(match_id=match_id).all()
+
+        home_stats = None
+        away_stats = None
+    else:
+        # Przeszły mecz – normalne relacje
+        home_form = match.form_data
+        away_form = match.form_data
+        home_stats = match.match_stats
+        away_stats = match.match_stats
+        home_value = match.home_value_ref.value if match.home_value_ref else None
+        away_value = match.away_value_ref.value if match.away_value_ref else None
+        predictions = match.predictions
 
     return render_template('match_detail.html', match=match,
                            home_form=home_form, away_form=away_form,
                            home_stats=home_stats, away_stats=away_stats,
                            home_value=home_value, away_value=away_value,
                            predictions=predictions, status=status)
+
 
 
 @main.route('/league/<league_code>')
