@@ -154,7 +154,7 @@ def match_detail(match_type, match_id):
     else:
         status = "live"
 
-    # Init
+    # Init variables
     home_form = None
     away_form = None
     home_stats = None
@@ -165,44 +165,25 @@ def match_detail(match_type, match_id):
     away_elo = None
     predictions = []
     h2h_data = None
+    home_h2h_data = None
+    away_h2h_data = None
 
     if isinstance(match, FutureMatch):
         season_id = match.season.season_id
         home_team_id = match.home_team.team_id
         away_team_id = match.away_team.team_id
 
-        # Elo ratings (latest)
+        # Elo
         home_elo_obj = TeamElo.query.filter_by(team_id=home_team_id).order_by(desc(TeamElo.last_updated)).first()
         away_elo_obj = TeamElo.query.filter_by(team_id=away_team_id).order_by(desc(TeamElo.last_updated)).first()
         home_elo = home_elo_obj.rating if home_elo_obj else None
         away_elo = away_elo_obj.rating if away_elo_obj else None
 
-        # Market value
+        # Value
         home_value_obj = TeamValue.query.filter_by(team_id=home_team_id, season_id=season_id).first()
         away_value_obj = TeamValue.query.filter_by(team_id=away_team_id, season_id=season_id).first()
         home_value = home_value_obj.value if home_value_obj else None
         away_value = away_value_obj.value if away_value_obj else None
-
-        # Form data (linked by match_id + team_side)
-        home_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='home').first()
-        away_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='away').first()
-
-        # Stats (if applicable for future matches)
-        home_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='home').first()
-        away_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='away').first()
-
-        # Predictions
-        predictions = Predicted.query.filter_by(match_id=match_id).all()
-
-        # H2H data (we pick from home_form if exists)
-        home_h2h_data = home_form if home_form and home_form.h2h_matches else None
-        away_h2h_data = away_form if away_form and away_form.h2h_matches else None
-
-
-    else:
-        # FootballMatch (past)
-        home_elo = match.home_elo
-        away_elo = match.away_elo
 
         # Form
         home_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='home').first()
@@ -212,15 +193,35 @@ def match_detail(match_type, match_id):
         home_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='home').first()
         away_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='away').first()
 
-        # Value
+        # Predictions
+        predictions = Predicted.query.filter_by(match_id=match_id).all()
+
+        # H2H per team side
+        home_h2h_data = home_form if home_form and home_form.h2h_matches else None
+        away_h2h_data = away_form if away_form and away_form.h2h_matches else None
+
+    else:
+        # Past match
+        home_elo = match.home_elo
+        away_elo = match.away_elo
+
+        home_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='home').first()
+        away_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='away').first()
+
+        home_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='home').first()
+        away_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='away').first()
+
         home_value = match.home_value_ref.value if match.home_value_ref else None
         away_value = match.away_value_ref.value if match.away_value_ref else None
 
-        # Predictions
         predictions = match.predictions
 
-        # H2H data
-        h2h_data = home_form if home_form and home_form.h2h_matches else None
+        # H2H per team side
+        home_h2h_data = home_form if home_form and home_form.h2h_matches else None
+        away_h2h_data = away_form if away_form and away_form.h2h_matches else None
+
+        # Optional summary H2H (shared)
+        h2h_data = home_h2h_data or away_h2h_data
 
     return render_template('match_detail.html',
                            match=match,
@@ -234,7 +235,10 @@ def match_detail(match_type, match_id):
                            home_elo=home_elo,
                            away_elo=away_elo,
                            predictions=predictions,
-                           h2h_data=h2h_data)
+                           h2h_data=h2h_data,
+                           home_h2h_data=home_h2h_data,
+                           away_h2h_data=away_h2h_data)
+
 
 @main.route('/league/<league_code>/team/<team_name>')
 def team_view(league_code, team_name):

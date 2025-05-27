@@ -15,6 +15,8 @@
     {{ match.away_team.name }}
   </h1>
 
+
+
   <div class="match-container">
     <!-- Left Column - Home Team Stats -->
     <div class="team-column">
@@ -32,16 +34,15 @@
 
       <div class="team-section">
         <h3>Forma</h3>
-        <p>{% if home_form %}{{ home_form.form_last_5 }}{% else %}Brak danych{% endif %}</p>
-        <p>
-          {% if home_form %}
+        <p style="font-size: 10px;font-style: italic">ostatnie 5 meczów / sezonu:</p></p>
+        {% if home_form %}
+          <p>{{ home_form.form_last_5 }} / {{ home_form.form_season }}</p>
           <h3>Gole</h3>
-          <p style="font-size: 10px;font-style: italic">w ostatnich 5 meczach / sezonie: </p>
+          <p style="font-size: 10px;font-style: italic">w ostatnich 5 meczach / sezonie:</p>
           <p>{{ home_form.goals_last_5|round(0) }} / {{ home_form.goals_season|round(0) }}</p>
-          {% else %}
-            Brak danych
-          {% endif %}
-        </p>
+        {% else %}
+          <p>Brak danych</p>
+        {% endif %}
       </div>
 
       <div class="team-section">
@@ -50,9 +51,8 @@
       </div>
 
       <div class="team-section">
-        <h3>Statystyki</h3>
-        <p>Mean: {% if home_stats %}{{ home_stats.mean | round(2) }}{% else %}Brak danych{% endif %}</p>
-        <p>Std: {% if home_stats %}{{ home_stats.std | round(2) }}{% else %}Brak danych{% endif %}</p>
+        <h3>Średnie kursy bukmacherów</h3>
+        <p> {% if home_stats %}{{ home_stats.mean | round(2) }}{% else %}Brak danych{% endif %}</p>
       </div>
     </div>
 
@@ -63,23 +63,21 @@
         <p><strong>Status:</strong> {{ status }}</p>
         <p><strong>Data meczu:</strong> {{ match.date }}</p>
         <p><strong>Wynik:</strong> {{ match.result or 'brak' }}</p>
+          <p style="text-align: center; font-size: 14px; margin-top: 10px;">
+          <strong>Niespodzianka:</strong>
+          {% if match.is_surprise %}
+            ✅
+          {% else %}
+            ❌
+          {% endif %}
+        </p>
       </div>
 
       <div class="h2h-section">
         <h3>Bezpośrednie mecze (H2H)</h3>
         {% if h2h_data %}
           <p><strong>Mecze:</strong> {{ h2h_data.h2h_matches }}</p>
-<!--          <p><strong>Bilans:</strong>-->
-<!--            {{ h2h_data.h2h_wins }}W /-->
-<!--            {{ h2h_data.h2h_draws }}R /-->
-<!--            {{ h2h_data.h2h_losses }}P-->
-<!--          </p>-->
-          <p><strong>Gole:</strong>
-            {{ h2h_data.h2h_goals_for }} : {{ h2h_data.h2h_goals_against }}
-          </p>
-<!--          <p><strong>Punkty z ostatnich 5:</strong>-->
-<!--            {{ h2h_data.h2h_last_5_points }}-->
-<!--          </p>-->
+          <p><strong>Gole:</strong> {{ h2h_data.h2h_goals_for }} : {{ h2h_data.h2h_goals_against }}</p>
         {% else %}
           <p>Brak danych H2H</p>
         {% endif %}
@@ -117,16 +115,14 @@
 
       <div class="team-section">
         <h3>Forma</h3>
-        <p>{% if away_form %}{{ away_form.form_last_5 }}{% else %}Brak danych{% endif %}</p>
-        <p>
-          {% if away_form %}
+        {% if away_form %}
+          <p>{{ away_form.form_last_5 }} / {{ away_form.form_season }}</p>
           <h3>Gole</h3>
-          <p style="font-size: 10px;font-style: italic">w ostatnich 5 meczach / sezonie: </p>
-         <p>{{ away_form.goals_last_5|round(0) }} / {{ away_form.goals_season|round(0) }}</p>
-          {% else %}
-            Brak danych
-          {% endif %}
-        </p>
+          <p style="font-size: 10px;font-style: italic">w ostatnich 5 meczach / sezonie:</p>
+          <p>{{ away_form.goals_last_5|round(0) }} / {{ away_form.goals_season|round(0) }}</p>
+        {% else %}
+          <p>Brak danych</p>
+        {% endif %}
       </div>
 
       <div class="team-section">
@@ -135,9 +131,8 @@
       </div>
 
       <div class="team-section">
-        <h3>Statystyki</h3>
-        <p>Mean: {% if away_stats %}{{ away_stats.mean | round(2) }}{% else %}Brak danych{% endif %}</p>
-        <p>Std: {% if away_stats %}{{ away_stats.std | round(2) }}{% else %}Brak danych{% endif %}</p>
+        <h3>Średnie kursy bukmacherów</h3>
+        <p>{% if away_stats %}{{ away_stats.mean | round(2) }}{% else %}Brak danych{% endif %}</p>
       </div>
     </div>
   </div>
