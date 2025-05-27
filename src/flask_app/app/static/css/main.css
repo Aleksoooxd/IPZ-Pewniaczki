@@ -103,3 +103,66 @@
   border-bottom: 2px solid white;
   padding-bottom: 5px;
 }
+
+
+.sidebar-toggle {
+  font-size: 18px;
+  padding: 10px 20px;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  width: fit-content;
+  border-radius: 5px;
+  margin: 10px 0;
+  z-index: 1001;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 250px;
+  height: 100%;
+  background-color: white;
+  color: black;
+  padding: 20px;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+  transition: left 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-close {
+  font-size: 20px;
+  text-align: right;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.sidebar-links {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-links li {
+  margin: 10px 0;
+}
+
+.sidebar-links a {
+  color: black;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.sidebar-links a:hover {
+  text-decoration: underline;
+}
