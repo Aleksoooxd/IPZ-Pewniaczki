@@ -12,6 +12,7 @@ def create_match_dataframe_sql():
     """
     Efficiently creates a DataFrame of football matches, stats, values, and form by
     using SQLAlchemy Core for correct column names and pd.read_sql_query.
+    Now includes ELO ratings and changes.
     """
     with app.app_context():
         engine = db.engine
@@ -42,7 +43,14 @@ def create_match_dataframe_sql():
                 FootballMatch.is_suprise_h.label('is_surprise_h'),
                 FootballMatch.is_suprise_d.label('is_surprise_d'),
                 FootballMatch.is_suprise_a.label('is_surprise_a'),
-                FootballMatch.consensus
+                FootballMatch.consensus,
+                # Add ELO columns
+                FootballMatch.home_elo,
+                FootballMatch.away_elo,
+                FootballMatch.home_elo_change,
+                FootballMatch.away_elo_change,
+                # Calculate ELO difference
+                (FootballMatch.home_elo - FootballMatch.away_elo).label('elo_difference')
             )
             .outerjoin(League, FootballMatch.league)
             .outerjoin(Season, FootballMatch.season)
@@ -98,11 +106,43 @@ def create_match_dataframe_sql():
             df_form_pivot = df_form_pivot.reset_index()
             df_main = df_main.merge(df_form_pivot, on='match_id', how='left')
 
+        # Add derived ELO features
+        if 'home_elo' in df_main and 'away_elo' in df_main:
+            # Calculate win probability based on ELO
+            df_main['home_win_probability'] = 1.0 / (1.0 + 10 ** ((df_main['away_elo'] - (df_main['home_elo'] + 100)) / 400))
+            df_main['draw_probability'] = 1 - df_main['home_win_probability'] - (1.0 / (1.0 + 10 ** ((df_main['home_elo'] - df_main['away_elo']) / 400)))
+            df_main['away_win_probability'] = 1.0 / (1.0 + 10 ** ((df_main['home_elo'] + 100 - df_main['away_elo']) / 400))
+
         return df_main
 
 
+def drop_non_predictive_columns(df):
+    """
+    Drop columns that are typically not statistically significant for prediction models.
+    """
+    # Columns to drop - identifiers and metadata
+    non_predictive_cols = [
+        'match_id',  # Unique identifier
+        'date',  # Date information
+        'home_team',  # Team name strings
+        'away_team',  # Team name strings
+        'home_matchday',  # Sequential information
+        'away_matchday',  # Sequential information
+        'league',  # League identifier
+        'season',  # Season identifier
+    ]
+
+    # Only drop columns that exist in the dataframe
+    cols_to_drop = [col for col in non_predictive_cols if col in df.columns]
+
+    print(f"Dropping non-predictive columns: {cols_to_drop}")
+    return df.drop(columns=cols_to_drop)
+
 def main():
     df = create_match_dataframe_sql()
+    df = drop_non_predictive_columns(df)
+    import seaborn as sns
+    sns.pairplot(df, hue='result')
     csv_path = 'matches_data.csv'
     df.to_csv(csv_path, index=False)
     print(f"DataFrame saved to {csv_path}")
