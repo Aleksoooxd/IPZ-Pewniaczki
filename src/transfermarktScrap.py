@@ -201,49 +201,86 @@ def get_or_create_team_value(session, team_id, season_id, value_str):
             return None
     return team_value
 
-def fetch_league_data(league_name, season_name, path, spath):
+
+def fetch_league_data(league_name, season_name, path, spath, max_retries=20, retry_delay=15):
     url = site + path + spath
-    print(f"Fetching: {league_name}, Season: {season_name}, URL: {url}")
-    with requests.Session() as session:
-        response = session.get(url, headers=headers)
-        if response.status_code != 200:
-            print(f"Error fetching data for {league_name} {season_name}: {response.status_code}")
-            return None
-        soup = BeautifulSoup(response.text, 'html.parser')
-        club_names = soup.find_all('td', class_='hauptlink no-border-links')
-        club_values = soup.find_all('td', class_='rechts')
-        with app.app_context():
-            league = get_or_create_league(db.session, league_name)
-            season = get_or_create_season(db.session, season_name)
-            for i, name_td in enumerate(club_names):
-                try:
-                    original_club_name = name_td.text.strip()
-                    normalized_club_name = normalize_club_name(original_club_name)
-                    club_value_str = club_values[((i + 1) * 2) + 1].text.strip()
-                    team = get_or_create_team(db.session, normalized_club_name)
-                    get_or_create_team_value(db.session, team.team_id, season.season_id, club_value_str)
-                    team_league = db.session.query(TeamLeague).filter_by(
-                        team_id=team.team_id,
-                        league_id=league.league_id,
-                        season_id=season.season_id
-                    ).first()
-                    if not team_league:
-                        team_league = TeamLeague(
-                            team_id=team.team_id,
-                            league_id=league.league_id,
-                            season_id=season.season_id
-                        )
-                        db.session.add(team_league)
-                        db.session.commit()
-                except IndexError:
-                    continue
-                except IntegrityError as e:
-                    db.session.rollback()
-                    print(f"Database error for {normalized_club_name}: {e}")
-                    continue
-                except Exception as e:
-                    print(f"Unexpected error for {normalized_club_name}: {e}")
-                    continue
+    retries = 0
+
+    while retries <= max_retries:
+        try:
+            print(f"Fetching: {league_name}, Season: {season_name}, URL: {url} (Attempt {retries + 1})")
+            with requests.Session() as session:
+                response = session.get(url, headers=headers)
+
+                if response.status_code == 200:
+                    soup = BeautifulSoup(response.text, 'html.parser')
+                    club_names = soup.find_all('td', class_='hauptlink no-border-links')
+                    club_values = soup.find_all('td', class_='rechts')
+
+                    # If we found club data, process it
+                    if club_names and club_values:
+                        with app.app_context():
+                            league = get_or_create_league(db.session, league_name)
+                            season = get_or_create_season(db.session, season_name)
+
+                            for i, name_td in enumerate(club_names):
+                                try:
+                                    original_club_name = name_td.text.strip()
+                                    normalized_club_name = normalize_club_name(original_club_name)
+                                    club_value_str = club_values[((i + 1) * 2) + 1].text.strip()
+
+                                    team = get_or_create_team(db.session, normalized_club_name)
+                                    get_or_create_team_value(db.session, team.team_id, season.season_id, club_value_str)
+
+                                    team_league = db.session.query(TeamLeague).filter_by(
+                                        team_id=team.team_id,
+                                        league_id=league.league_id,
+                                        season_id=season.season_id
+                                    ).first()
+
+                                    if not team_league:
+                                        team_league = TeamLeague(
+                                            team_id=team.team_id,
+                                            league_id=league.league_id,
+                                            season_id=season.season_id
+                                        )
+                                        db.session.add(team_league)
+                                        db.session.commit()
+                                except IndexError:
+                                    continue
+                                except IntegrityError as e:
+                                    db.session.rollback()
+                                    print(f"Database error for {normalized_club_name}: {e}")
+                                    continue
+                                except Exception as e:
+                                    print(f"Unexpected error for {normalized_club_name}: {e}")
+                                    continue
+                        # Successfully processed data, return
+                        return True
+                    else:
+                        print(f"No club data found for {league_name} {season_name} (Attempt {retries + 1})")
+                else:
+                    print(
+                        f"Error fetching data for {league_name} {season_name}: {response.status_code} (Attempt {retries + 1})")
+
+            # Increase retry delay with each attempt (exponential backoff)
+            wait_time = retry_delay * (2 ** retries)
+            print(f"Retrying in {wait_time} seconds...")
+            import time
+            time.sleep(wait_time)
+            retries += 1
+
+        except requests.exceptions.RequestException as e:
+            print(f"Request error for {league_name} {season_name}: {e} (Attempt {retries + 1})")
+            # Increase retry delay with each attempt
+            wait_time = retry_delay * (2 ** retries)
+            print(f"Retrying in {wait_time} seconds...")
+            import time
+            time.sleep(wait_time)
+            retries += 1
+
+    print(f"Failed to fetch data for {league_name} {season_name} after {max_retries} retries")
+    return False
 
 def scrape_leagues():
     with ThreadPoolExecutor(max_workers=10) as executor:

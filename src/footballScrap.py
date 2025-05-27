@@ -290,6 +290,90 @@ def create_placement_columns(dataframe):
             dataframe.at[index, 'AwayGoalsSeason'] = away_goals_season
 
     return dataframe
+
+
+def calculate_head2head_stats(session, home_team_id, away_team_id, match_date):
+    """Calculate head-to-head statistics between two teams up to a specific date."""
+    # Get all previous matches between these teams
+    previous_matches = session.execute(
+        select(FootballMatch)
+        .where(
+            ((FootballMatch.home_team_id == home_team_id) & (FootballMatch.away_team_id == away_team_id) |
+             (FootballMatch.home_team_id == away_team_id) & (FootballMatch.away_team_id == home_team_id)),
+            FootballMatch.date < match_date
+        )
+        .order_by(FootballMatch.date.desc())
+    ).scalars().all()
+
+    # Initialize stats
+    home_stats = {
+        'h2h_matches': len(previous_matches),
+        'h2h_wins': 0,
+        'h2h_draws': 0,
+        'h2h_losses': 0,
+        'h2h_goals_for': 0,
+        'h2h_goals_against': 0,
+        'h2h_last_5_points': 0
+    }
+
+    away_stats = copy.deepcopy(home_stats)
+
+    # Calculate stats
+    last_5_count = 0
+    for match in previous_matches:
+        if last_5_count >= 5:
+            break
+
+        if match.home_team_id == home_team_id and match.away_team_id == away_team_id:
+            # Original orientation
+            if match.result == 'H':
+                home_stats['h2h_wins'] += 1
+                away_stats['h2h_losses'] += 1
+                if last_5_count < 5:
+                    home_stats['h2h_last_5_points'] += 3
+            elif match.result == 'A':
+                home_stats['h2h_losses'] += 1
+                away_stats['h2h_wins'] += 1
+                if last_5_count < 5:
+                    away_stats['h2h_last_5_points'] += 3
+            else:  # Draw
+                home_stats['h2h_draws'] += 1
+                away_stats['h2h_draws'] += 1
+                if last_5_count < 5:
+                    home_stats['h2h_last_5_points'] += 1
+                    away_stats['h2h_last_5_points'] += 1
+
+            home_stats['h2h_goals_for'] += match.fthg
+            home_stats['h2h_goals_against'] += match.ftag
+            away_stats['h2h_goals_for'] += match.ftag
+            away_stats['h2h_goals_against'] += match.fthg
+        else:
+            # Reversed orientation
+            if match.result == 'H':
+                away_stats['h2h_wins'] += 1
+                home_stats['h2h_losses'] += 1
+                if last_5_count < 5:
+                    away_stats['h2h_last_5_points'] += 3
+            elif match.result == 'A':
+                away_stats['h2h_losses'] += 1
+                home_stats['h2h_wins'] += 1
+                if last_5_count < 5:
+                    home_stats['h2h_last_5_points'] += 3
+            else:  # Draw
+                away_stats['h2h_draws'] += 1
+                home_stats['h2h_draws'] += 1
+                if last_5_count < 5:
+                    away_stats['h2h_last_5_points'] += 1
+                    home_stats['h2h_last_5_points'] += 1
+
+            away_stats['h2h_goals_for'] += match.fthg
+            away_stats['h2h_goals_against'] += match.ftag
+            home_stats['h2h_goals_for'] += match.ftag
+            home_stats['h2h_goals_against'] += match.fthg
+
+        last_5_count += 1
+
+    return {'home': home_stats, 'away': away_stats}
 def calculate_statistics_and_consensus(data):
     bookmakers_columns = {
         "AllBookmakers": {
@@ -512,15 +596,19 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                                 stats_data=stats_data
                             )
                     # Forma drużyn
+                    h2h_stats = calculate_head2head_stats(db.session, home_team.team_id, away_team.team_id, row['Date'])
+
+                    # Then modify the MatchForm creation/update section
                     for side in ['home', 'away']:
                         prefix = side.capitalize()
                         match_form = db.session.execute(
                             select(MatchForm)
                             .where(MatchForm.match_id == match.match_id, MatchForm.team_side == side)
-                            .with_for_update().with_for_update()
+                            .with_for_update()
                         ).scalar_one_or_none()
+
                         if not match_form:
-                            match_form = match_form = MatchForm(
+                            match_form = MatchForm(
                                 match_id=match.match_id,
                                 team_side=side,
                                 form_last_3=row[f'{prefix}Form3'],
@@ -530,7 +618,15 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                                 goals_last_5=row[f'{prefix}Goals5'],
                                 goals_season=row[f'{prefix}GoalsSeason'],
                                 team_placement=row[f'{prefix}TeamPlacement'],
-                                team_strength=None
+                                team_strength=None,
+                                # Add head-to-head statistics
+                                h2h_matches=h2h_stats[side]['h2h_matches'],
+                                h2h_wins=h2h_stats[side]['h2h_wins'],
+                                h2h_draws=h2h_stats[side]['h2h_draws'],
+                                h2h_losses=h2h_stats[side]['h2h_losses'],
+                                h2h_goals_for=h2h_stats[side]['h2h_goals_for'],
+                                h2h_goals_against=h2h_stats[side]['h2h_goals_against'],
+                                h2h_last_5_points=h2h_stats[side]['h2h_last_5_points']
                             )
                             db.session.add(match_form)
                             db.session.flush()

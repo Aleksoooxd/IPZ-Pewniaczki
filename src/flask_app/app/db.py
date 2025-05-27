@@ -15,9 +15,7 @@ db = SQLAlchemy(app, session_options={'autoflush': False})
 
 from sqlalchemy import create_engine, Column, Integer, String, Date, Float, Boolean, ForeignKey, select
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-
-
+from sqlalchemy.orm import relationship, backref
 
 
 class Team(db.Model):
@@ -91,6 +89,10 @@ class FootballMatch(db.Model):
     result = Column(String)
     home_matchday = Column(Integer)
     away_matchday = Column(Integer)
+    home_elo = Column(Float, nullable=True)
+    away_elo = Column(Float, nullable=True)
+    home_elo_change = Column(Float, nullable=True)
+    away_elo_change = Column(Float, nullable=True)
     fthg = Column(Integer)
     ftag = Column(Integer)
     home_value_id = Column(Integer, ForeignKey('team_value.value_id'))  # Updated ForeignKey
@@ -177,7 +179,13 @@ class MatchForm(db.Model):
     goals_season = Column(Float)
     team_placement = Column(Integer)
     team_strength = Column(Float)
-
+    h2h_matches = db.Column(db.Integer, nullable=True)
+    h2h_wins = db.Column(db.Integer, nullable=True)
+    h2h_draws = db.Column(db.Integer, nullable=True)
+    h2h_losses = db.Column(db.Integer, nullable=True)
+    h2h_goals_for = db.Column(db.Integer, nullable=True)
+    h2h_goals_against = db.Column(db.Integer, nullable=True)
+    h2h_last_5_points = db.Column(db.Integer, nullable=True)
     match = relationship("FootballMatch", back_populates="form_data")
 
 
@@ -190,7 +198,15 @@ class Predicted(db.Model):
     confidence = Column(Float)
 
     match = relationship("FootballMatch", back_populates="predictions")
+class TeamElo(db.Model):
+    __tablename__ = 'team_elo'
 
+    elo_id = Column(Integer, primary_key=True)
+    team_id = Column(Integer, ForeignKey('team.team_id'), nullable=False)
+    rating = Column(Float, nullable=False, default=1500.0)
+    last_updated = Column(Date, nullable=False)
+
+    team = relationship("Team", backref=backref("elo_ratings", order_by=last_updated))
 
 
 if __name__ == "__main__":
