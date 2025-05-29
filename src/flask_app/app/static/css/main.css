@@ -1,3 +1,123 @@
+/* Sidebar Toggle Button */
+.sidebar-toggle {
+  font-size: 1.1em;
+  padding: 10px 20px;
+  background-color: var(--card-bg-light);
+  color: var(--text-color-light);
+  cursor: pointer;
+  width: fit-content;
+  border-radius: 8px;
+  margin: 10px 0; /* Adjust margin as needed for positioning on the page */
+  z-index: 1001; /* Ensure it's above other content */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  position: sticky; /* Make it sticky */
+  top: 15px; /* Position from top */
+  left: 0;
+}
+
+body.dark-mode .sidebar-toggle {
+    background-color: var(--card-bg-dark);
+    color: var(--text-color-dark);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px; /* Hidden by default */
+  width: 280px; /* Slightly wider sidebar */
+  height: 100%;
+  background-color: var(--card-bg-light);
+  color: var(--text-color-light);
+  padding: 25px;
+  box-shadow: 3px 0 10px rgba(0,0,0,0.2);
+  transition: left 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  z-index: 2000; /* Higher z-index to overlap sidebar-toggle */
+  overflow-y: auto;
+}
+
+body.dark-mode .sidebar {
+    background-color: var(--card-bg-dark);
+    color: var(--text-color-dark);
+    box-shadow: 4px 0 15px rgba(0,0,0,0.4);
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-close {
+  font-size: 1.8em; /* Larger close icon */
+  text-align: right;
+  cursor: pointer;
+  margin-bottom: 20px;
+  color: var(--text-color-light);
+}
+
+body.dark-mode .sidebar-close {
+    color: var(--text-color-dark);
+}
+
+.sidebar h3 {
+  margin-top: 0;
+  text-align: center;
+  color: var(--accent-color-light); /* Accent color for sidebar heading */
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+body.dark-mode .sidebar h3 {
+    color: var(--accent-color-dark);
+    border-color: var(--border-color-dark);
+}
+
+.sidebar-links {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-links li {
+  margin: 12px 0;
+}
+
+.sidebar-links a {
+  color: var(--text-color-light);
+  text-decoration: none;
+  font-weight: 500;
+  display: block;
+  padding: 8px 10px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode .sidebar-links a {
+    color: var(--text-color-dark);
+}
+
+
+.sidebar-links a:hover {
+  background-color: rgba(var(--accent-color-light), 0.1);
+  color: var(--accent-color-light);
+}
+
+body.dark-mode .sidebar-links a:hover {
+    background-color: rgba(var(--accent-color-dark), 0.1);
+    color: var(--accent-color-dark);
+}
+
+.sidebar-divider {
+    border-top: 1px solid var(--border-color-light);
+    margin: 20px 0;
+}
+
+body.dark-mode .sidebar-divider {
+    border-color: var(--border-color-dark);
+}
+
+/* Pozostałe style z main.css */
 .main-content-wrapper {
   display: flex;
   flex-direction: column;

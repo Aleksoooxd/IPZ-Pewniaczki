@@ -1,29 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}{{ league.code }} - Liga{% endblock %}
+{% block title %}{{ league.code | replace("premier league", "Premier League") | replace("spremier league", "Scottish Premiership") | title }} - Liga{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> {# Dodajemy main.css dla spójnych styli sidebara #}
 {% endblock %}
 
 {% block content %}
-<div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; Wybierz Ligę</div>
+<button class="sidebar-toggle" onclick="toggleSidebar()">&#9776; Wybierz Ligę</button>
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
   <h3>Ligi</h3>
   <ul class="sidebar-links">
-    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">Premier League</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}">Bundesliga</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}">Eredivisie</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">Ethniki Katigoria</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='FutbolLig1') }}">Futbol Lig 1</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='JupiterLeague') }}">Jupiler League</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}">La Liga</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}">Ligue 1</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}">Liga I</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">Scottish Premiership</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}">Serie A</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}" data-league-code="premier league">Premier League</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}" data-league-code="bundesliga">Bundesliga</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}" data-league-code="eredivisie">Eredivisie</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}" data-league-code="ethniki katigoria">Ethniki Katigoria</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='FutbolLig1') }}" data-league-code="futbol ligi 1">Futbol Lig 1</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='JupiterLeague') }}" data-league-code="jupiler league">Jupiler League</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}" data-league-code="la liga">La Liga</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}" data-league-code="ligue 1">Ligue 1</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}" data-league-code="liga i">Liga I</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}" data-league-code="spremier league">Scottish Premiership</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}" data-league-code="serie a">Serie A</a></li>
     <li class="sidebar-divider"></li>
      <li><a href="{{ url_for('main.mainpage') }}">🏠 Strona Główna</a></li>
   </ul>
@@ -32,7 +33,7 @@
 <div class="league-content-wrapper">
   <h2 class="page-title">{{ league.code | replace("premier league", "Premier League") | replace("spremier league", "Scottish Premiership") | title }}</h2>
 
-  <div class="team-list card"> {# Added 'card' class #}
+  <div class="team-list card">
     <h3>Drużyny w lidze</h3>
     <ul class="team-links">
       {% for team in teams %}
@@ -41,6 +42,8 @@
             {{ team.name }}
           </a>
         </li>
+      {% else %}
+        <li>Brak drużyn dla tej ligi.</li>
       {% endfor %}
     </ul>
   </div>
@@ -53,5 +56,18 @@
     const sidebar = document.getElementById("sidebar");
     sidebar.classList.toggle("open");
   }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Pobieramy kod ligi z Flaska, upewniając się, że jest w tej samej formie (np. małe litery) jak w data-league-code
+    const currentLeagueCode = "{{ league.code | lower }}";
+    const sidebarLinks = document.querySelectorAll('.sidebar-links a');
+
+    sidebarLinks.forEach(link => {
+      // Sprawdzamy atrybut data-league-code
+      if (link.dataset.leagueCode === currentLeagueCode) {
+        link.classList.add('active-league');
+      }
+    });
+  });
 </script>
 {% endblock %}

@@ -1,3 +1,74 @@
+/* Sidebar Toggle Button - Ensure it's always visible and on top */
+/* Styles moved to main.css for global consistency */
+
+/* Sidebar - General styles moved to main.css for global consistency */
+
+/* Active league highlighting - this style is specific to league_view */
+.sidebar-links a.active-league {
+    background-color: var(--primary-button-bg-light); /* Domyślny kolor podświetlenia */
+    color: white;
+    font-weight: 700;
+    pointer-events: none; /* Make it unclickable */
+
+    /* Style dla flagi jako tła */
+    background-size: 25px auto; /* Rozmiar flagi */
+    background-position: 95% center; /* Pozycja flagi (np. po prawej stronie) */
+    background-repeat: no-repeat; /* Nie powtarzaj obrazka */
+    padding-right: 40px; /* Zwiększ padding, aby tekst nie nachodził na flagę */
+}
+
+body.dark-mode .sidebar-links a.active-league {
+    background-color: var(--primary-button-bg-dark);
+}
+
+
+/* Dynamiczne tło dla każdej ligi (dodaj tyle, ile masz lig) */
+.sidebar-links a[data-league-code="premier league"].active-league {
+    background-image: url('../flags/premier-league.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+.sidebar-links a[data-league-code="la liga"].active-league {
+    background-image: url('../flags/la-liga.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+.sidebar-links a[data-league-code="bundesliga"].active-league {
+    background-image: url('../flags/bundesliga.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+.sidebar-links a[data-league-code="serie a"].active-league {
+    background-image: url('../flags/serie-a.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+.sidebar-links a[data-league-code="ligue 1"].active-league {
+    background-image: url('../flags/ligue-1.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+.sidebar-links a[data-league-code="spremier league"].active-league {
+    background-image: url('../flags/scottish-premiership.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+.sidebar-links a[data-league-code="eredivisie"].active-league {
+    background-image: url('../flags/eredivisie.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+.sidebar-links a[data-league-code="jupiler league"].active-league {
+    background-image: url('../flags/jupiler-league.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+.sidebar-links a[data-league-code="liga i"].active-league {
+    background-image: url('../flags/liga-i.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+.sidebar-links a[data-league-code="futbol ligi 1"].active-league {
+    background-image: url('../flags/futbol-ligi-1.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+.sidebar-links a[data-league-code="ethniki katigoria"].active-league {
+    background-image: url('../flags/ethniki-katigoria.png'); /* POPRAWIONA ŚCIEŻKA */
+}
+
+
+/* Rest of league.css (unchanged from previous update for league-specific elements) */
 .league-content-wrapper {
     display: flex;
     flex-direction: column;
