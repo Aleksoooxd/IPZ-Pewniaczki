@@ -1,91 +1,53 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  font-family: 'Segoe UI', sans-serif;
-  background: repeating-linear-gradient(
-    90deg,
-    #2ecc71,
-    #2ecc71 60px,
-    #27ae60 60px,
-    #27ae60 120px
-  );
-  color: white;
-  position: relative;
-}
-
-
-.mid-line, .center-circle, .penalty-box {
-  position: absolute;
-  background: white;
-  opacity: 0.1;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.mid-line {
-  top: 0;
-  left: 50%;
-  width: 4px;
-  height: 100%;
-  transform: translateX(-2px);
-}
-
-.center-circle {
-  top: 50%;
-  left: 50%;
-  width: 200px;
-  height: 200px;
-  margin-left: -100px;
-  margin-top: -100px;
-  border: 4px solid white;
-  border-radius: 50%;
-}
-
-.penalty-box {
-  width: 100px;
-  height: 180px;
-  border: 4px solid white;
-  top: 50%;
-  transform: translateY(-90px);
-}
-
-.left-box { left: 0; border-right: none; }
-.right-box { right: 0; border-left: none; }
-
+/* No more complex field lines, let base.css handle background */
 
 .wrapper {
-  height: 100%;
+  height: 100vh; /* Full viewport height */
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1;
-  position: relative;
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .wrapper img {
-  width: 150px;
-  margin-bottom: 10px;
+  width: 180px; /* Slightly larger logo */
+  margin-bottom: 25px;
+  filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
 }
 
-.wrapper h2 {
-  font-size: 2em;
-  margin: 20px 0 10px;
+.tagline {
+    font-size: 1.4em;
+    font-weight: 400;
+    margin-bottom: 30px;
+    color: var(--text-color-light); /* Inherit from base */
 }
 
-footer {
-  position: absolute;
-  bottom: 10px;
-  width: 100%;
-  text-align: center;
-  z-index: 1;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 5px 0;
-  font-size: 0.9em;
+body.dark-mode .tagline {
+    color: var(--text-color-dark);
+}
+
+.status-heading {
+  font-size: 2.8em; /* Larger, more impactful heading */
+  margin: 30px 0 15px;
+  color: var(--accent-color-light); /* Green accent */
+  letter-spacing: 1px;
+}
+
+body.dark-mode .status-heading {
+    color: var(--accent-color-dark);
+}
+
+.status-message {
+  font-size: 1.2em;
+  font-weight: 300;
+  color: var(--text-color-light); /* Inherit from base */
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+body.dark-mode .status-message {
+    color: var(--text-color-dark);
 }

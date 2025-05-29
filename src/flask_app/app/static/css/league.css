@@ -1,128 +1,119 @@
-.dropdown-container {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.dropdown-select {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: none;
-  min-width: 250px;
-}
-
-.league-container {
-  display: flex;
-  gap: 30px;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
+.league-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
 }
 
 .team-list {
-  width: 300px;
-  background-color: white;
-  color: black;
-  padding: 20px;
-  border-radius: 10px;
+  width: 100%;
+  max-width: 500px; /* Limit width for team list */
+  padding: 30px;
+  box-sizing: border-box; /* Include padding in width */
 }
 
 .team-list h3 {
   margin-top: 0;
   text-align: center;
+  font-size: 1.6em;
+  color: var(--accent-color-light);
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color-light);
 }
 
-.team-item {
-  padding: 8px;
-  cursor: pointer;
-  border-bottom: 1px solid #ccc;
+body.dark-mode .team-list h3 {
+    color: var(--accent-color-dark);
+    border-color: var(--border-color-dark);
 }
 
-.team-item:hover {
-  background-color: #f0f0f0;
+.team-links {
+    list-style: none;
+    padding: 0;
+    max-height: 600px; /* Limit height for scrollability */
+    overflow-y: auto;
+    border: 1px solid var(--border-color-light);
+    border-radius: 8px;
+    padding: 10px;
 }
 
-.team-details {
-  flex-grow: 1;
-  background-color: white;
-  color: black;
-  min-height: 200px;
-  padding: 20px;
+body.dark-mode .team-links {
+    border-color: var(--border-color-dark);
+}
+
+.team-links li {
+    margin: 0;
+}
+
+.team-links a {
+    display: block;
+    padding: 12px 15px;
+    color: var(--text-color-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+body.dark-mode .team-links a {
+    color: var(--text-color-dark);
+    border-color: var(--border-color-dark);
+}
+
+.team-links li:last-child a {
+    border-bottom: none; /* No border for the last item */
+}
+
+.team-links a:hover {
+    background-color: rgba(var(--accent-color-light), 0.08);
+    color: var(--accent-color-light);
+}
+
+body.dark-mode .team-links a:hover {
+    background-color: rgba(var(--accent-color-dark), 0.08);
+    color: var(--accent-color-dark);
+}
+
+/* Scrollbar styling for team-links */
+.team-links::-webkit-scrollbar {
+  width: 8px;
+}
+
+.team-links::-webkit-scrollbar-track {
+  background: var(--background-color-light);
   border-radius: 10px;
-  width: 100%;
-  max-width: 600px;
 }
 
+body.dark-mode .team-links::-webkit-scrollbar-track {
+  background: var(--background-color-dark);
+}
+
+
+.team-links::-webkit-scrollbar-thumb {
+  background: var(--secondary-button-bg-light);
+  border-radius: 10px;
+}
+
+body.dark-mode .team-links::-webkit-scrollbar-thumb {
+  background: var(--secondary-button-bg-dark);
+}
+
+.team-links::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-button-hover-light);
+}
+body.dark-mode .team-links::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-button-hover-dark);
+}
+
+/* Hidden team-details, as it's now a separate page */
+.team-details {
+    display: none;
+}
+
+/* Media Queries for responsiveness */
 @media (max-width: 768px) {
-  .league-container {
-    flex-direction: column;
-    align-items: center;
+  .team-list {
+    padding: 15px;
   }
-
-  .team-details {
-    max-width: 100%;
-  }
-}
-
-
-.sidebar-toggle {
-  font-size: 18px;
-  padding: 10px 20px;
-  background-color: white;
-  color: black;
-  cursor: pointer;
-  width: fit-content;
-  border-radius: 5px;
-  margin: 10px 0;
-  z-index: 1001;
-}
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -300px;
-  width: 250px;
-  height: 100%;
-  background-color: white;
-  color: black;
-  padding: 20px;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.2);
-  transition: left 0.3s ease;
-  z-index: 1000;
-  overflow-y: auto;
-}
-
-.sidebar.open {
-  left: 0;
-}
-
-.sidebar-close {
-  font-size: 20px;
-  text-align: right;
-  cursor: pointer;
-  margin-bottom: 10px;
-}
-
-.sidebar h3 {
-  margin-top: 0;
-  text-align: center;
-}
-
-.sidebar-links {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar-links li {
-  margin: 10px 0;
-}
-
-.sidebar-links a {
-  color: black;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.sidebar-links a:hover {
-  text-decoration: underline;
 }

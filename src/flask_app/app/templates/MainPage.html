@@ -4,7 +4,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}"> {# Keep for sidebar styles #}
 {% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@
   <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
   <h3>Ligi</h3>
   <ul class="sidebar-links">
-    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">Premier league</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">Premier League</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}">Bundesliga</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}">Eredivisie</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">Ethniki Katigoria</a></li>
@@ -23,72 +23,55 @@
     <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}">La Liga</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}">Ligue 1</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}">Liga I</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">Scottish Premier League</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">Scottish Premiership</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}">Serie A</a></li>
     <li class="sidebar-divider"></li>
-    <li><a href="{{ url_for('main.mainpage') }}">🏠 Main Page</a></li>
+    <li><a href="{{ url_for('main.mainpage') }}">🏠 Strona Główna</a></li>
   </ul>
 </div>
 
-<div class="container">
-  <div class="main-content">
-    <div class="date-container">
+<div class="main-content-wrapper"> {# New wrapper for main content #}
+    <div class="date-container card"> {# Added 'card' class #}
       <label for="date-picker">Wybierz datę:</label>
       <input type="date" id="date-picker" class="date-picker">
-      <button class="button" onclick="fetchMatches()">Zatwierdź</button>
+      <button class="button primary" onclick="fetchMatches()">Pokaż mecze</button> {# Changed button class #}
     </div>
 
     <div class="matches" id="matches-container">
-      <!-- Tu będą ładowane mecze -->
-    </div>
-  </div>
+      </div>
 </div>
 {% endblock %}
 
-{% block script %}
+{% block extra_script %}
 <script>
   function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
     sidebar.classList.toggle("open");
   }
 
-  let allMatches = [];
   const leagueNames = {{ league_names | tojson }};
-
-  async function fetchAllMatches() {
-    try {
-      const response = await fetch('/matches');
-      const data = await response.json();
-
-      allMatches = data.map(match => ({
-        date: new Date(match.date).toISOString().split('T')[0],
-        homeTeam: match.home_team,
-        awayTeam: match.away_team,
-        hgoals: match.home_goals,
-        agoals: match.away_goals,
-        league: match.league
-      }));
-    } catch (err) {
-      console.error("Błąd pobierania meczów:", err);
-    }
-  }
 
   async function fetchMatches() {
     const selectedDate = document.getElementById('date-picker').value;
     const matchesContainer = document.getElementById('matches-container');
-    matchesContainer.innerHTML = '';
+    matchesContainer.innerHTML = ''; // Clear previous matches
+
+    if (!selectedDate) {
+      matchesContainer.innerHTML = '<p class="info-message">Proszę wybrać datę.</p>';
+      return;
+    }
 
     try {
       const response = await fetch(`/api/matches?date=${selectedDate}`);
       const data = await response.json();
 
       if (data.error) {
-        matchesContainer.innerHTML = `<p>${data.error}</p>`;
+        matchesContainer.innerHTML = `<p class="error-message">${data.error}</p>`;
         return;
       }
 
       if (data.length === 0) {
-        matchesContainer.innerHTML = '<p>Brak meczów dla wybranej daty.</p>';
+        matchesContainer.innerHTML = '<p class="info-message">Brak meczów dla wybranej daty.</p>';
         return;
       }
 
@@ -101,30 +84,52 @@
       });
 
       for (const league in matchesByLeague) {
+        const leagueSection = document.createElement('div');
+        leagueSection.classList.add('league-section');
+
         const leagueTitle = document.createElement('h2');
         leagueTitle.classList.add('league-title');
-        leagueTitle.textContent = leagueNames[league] || league;
-        matchesContainer.appendChild(leagueTitle);
+        leagueTitle.textContent = leagueNames[league] || league.toUpperCase(); // Display actual league name
+        leagueSection.appendChild(leagueTitle);
+
+        const leagueMatchesContainer = document.createElement('div');
+        leagueMatchesContainer.classList.add('league-matches-grid'); // New grid for matches
 
         matchesByLeague[league].forEach(match => {
           const matchCard = document.createElement('a');
           matchCard.classList.add('match-card');
           matchCard.href = `/match/${match.match_type}/${match.match_id}`;
+
+          // Determine status text and color
+          let statusText = '';
+          let statusClass = '';
+          if (match.home_goals !== null && match.away_goals !== null) {
+              statusText = `Wynik: ${match.home_goals} - ${match.away_goals}`;
+              statusClass = 'status-finished';
+          } else {
+              statusText = 'Nadchodzący mecz';
+              statusClass = 'status-upcoming';
+          }
+
           matchCard.innerHTML = `
-            <span class="match-id">ID: ${match.match_id}</span>
-            <span class="team">${match.home_team}</span>
-            <span class="teamgoals">${match.home_goals ?? ''}</span>
-            <span class="vs">-</span>
-            <span class="teamgoals">${match.away_goals ?? ''}</span>
-            <span class="team">${match.away_team}</span>
-            <button class="button predict-button">Typuj</button>
+            <div class="match-teams">
+              <span class="team home-team">${match.home_team}</span>
+              <span class="vs-separator">vs</span>
+              <span class="team away-team">${match.away_team}</span>
+            </div>
+            <div class="match-info">
+              <span class="match-league">${leagueNames[match.league] || match.league.toUpperCase()}</span>
+              <span class="match-status ${statusClass}">${statusText}</span>
+            </div>
           `;
-          matchesContainer.appendChild(matchCard);
+          leagueMatchesContainer.appendChild(matchCard);
         });
+        leagueSection.appendChild(leagueMatchesContainer);
+        matchesContainer.appendChild(leagueSection);
       }
     } catch (err) {
       console.error("Błąd pobierania meczów:", err);
-      matchesContainer.innerHTML = '<p>Wystąpił błąd przy ładowaniu meczów.</p>';
+      matchesContainer.innerHTML = '<p class="error-message">Wystąpił błąd przy ładowaniu meczów.</p>';
     }
   }
 

@@ -1,0 +1,18 @@
+.team-detail-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    text-align: center;
+}
+
+.team-detail-container .page-title {
+    margin-bottom: 20px;
+}
+
+.team-detail-container .info-message {
+    margin-bottom: 30px;
+}
+
+.team-detail-container .button {
+    margin-top: 20px;
+}

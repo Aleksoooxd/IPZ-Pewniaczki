@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{% block title %}Pewniaczki{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -13,6 +14,10 @@
       <img src="/static/pewniaczkilogo.png" alt="Logo" />
       <p>Predykcje wyników meczów piłkarskich</p>
     </div>
+    <button id="theme-toggle" class="theme-toggle">
+      <span class="icon light-icon">☀️</span>
+      <span class="icon dark-icon">🌙</span>
+    </button>
   </header>
 
   <main class="container">
@@ -23,6 +28,7 @@
     &copy; 2025 Pewniaczki ⚽ Wszystkie prawa zastrzeżone.
   </footer>
 
-  {% block script %}{% endblock %}
+  <script src="{{ url_for('static', filename='js/theme-toggle.js') }}"></script>
+  {% block extra_script %}{% endblock %}
 </body>
 </html>

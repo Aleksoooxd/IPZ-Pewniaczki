@@ -7,18 +7,13 @@
 {% endblock %}
 
 {% block content %}
-<h2>{{ league.code }}</h2>
-
-
-
 <div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; Wybierz Ligę</div>
-
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
   <h3>Ligi</h3>
   <ul class="sidebar-links">
-    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">Premier league</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">Premier League</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}">Bundesliga</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}">Eredivisie</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">Ethniki Katigoria</a></li>
@@ -27,52 +22,36 @@
     <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}">La Liga</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}">Ligue 1</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}">Liga I</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">Scottish Premier League</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">Scottish Premiership</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}">Serie A</a></li>
-
     <li class="sidebar-divider"></li>
-     <li><a href="{{ url_for('main.mainpage') }}">🏠 Main Page</a></li>
+     <li><a href="{{ url_for('main.mainpage') }}">🏠 Strona Główna</a></li>
   </ul>
 </div>
 
-<div class="league-container">
-  <div class="team-list">
-    <h3>Drużyny</h3>
-<ul>
-  {% for team in teams %}
-    <li>
-      <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name) }}">
-        {{ team.name }}
-      </a>
-    </li>
-  {% endfor %}
-</ul>
-  </div>
+<div class="league-content-wrapper">
+  <h2 class="page-title">{{ league.code | replace("premier league", "Premier League") | replace("spremier league", "Scottish Premiership") | title }}</h2>
 
-  <div class="team-details" id="team-details">
-    <p>🛈 Kliknij drużynę, aby zobaczyć szczegóły</p>
+  <div class="team-list card"> {# Added 'card' class #}
+    <h3>Drużyny w lidze</h3>
+    <ul class="team-links">
+      {% for team in teams %}
+        <li>
+          <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name) }}">
+            {{ team.name }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
   </div>
 </div>
 {% endblock %}
 
-{% block script %}
-<script>
-  function showTeam(teamName) {
-    const details = document.getElementById('team-details');
-    details.innerHTML = `<h2>${teamName}</h2><p>(Szczegóły drużyny wkrótce...)</p>`;
-  }
-</script>
-
-
+{% block extra_script %}
 <script>
   function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
     sidebar.classList.toggle("open");
-  }
-
-  function showTeam(teamName) {
-    const details = document.getElementById('team-details');
-    details.innerHTML = `<h2>${teamName}</h2><p>(Szczegóły drużyny wkrótce...)</p>`;
   }
 </script>
 {% endblock %}

@@ -1,23 +1,17 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Test bazy danych</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
-        .status {
-            padding: 15px;
-            border-radius: 5px;
-            background-color: #f4f4f4;
-            font-size: 1.2em;
-        }
-    </style>
-</head>
-<body>
-    <h1>Test połączenia z bazą danych</h1>
-    <div class="status">{{ status }}</div>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Test bazy danych{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/test_db.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="test-db-container card">
+    <h1 class="page-title">Test połączenia z bazą danych</h1>
+    <div class="status-message {{ 'success' if '✅' in status else 'error' if '❌' in status else 'warning' }}">
+        {{ status }}
+    </div>
+    <a href="{{ url_for('main.home') }}" class="button secondary">← Wróć do strony głównej</a>
+</div>
+{% endblock %}

@@ -1,135 +1,212 @@
-
-.container {
+.main-content-wrapper {
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+  flex-direction: column;
+  gap: 25px;
   width: 100%;
-  padding: 20px;
-  gap: 20px;
-  box-sizing: border-box;
 }
-
-
-.league-container {
-  width: 250px;
-  background-color: white;
-  border-radius: 12px;
-  padding: 15px;
-  color: black;
-  flex-shrink: 0;
-}
-
-.league-selection h2 {
-  margin-top: 0;
-  text-align: center;
-}
-
-.league-button {
-  display: block;
-  width: 94%;
-  padding: 10px;
-  background-color: #ffcccc;
-  color: black;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 5px;
-  margin: 5px 0;
-  transition: background-color 0.2s;
-}
-
-.league-button:hover {
-  background-color: #ff9999;
-}
-
-
-.main-content {
-  flex-grow: 1;
-}
-
 
 .date-container {
-  margin-bottom: 20px;
   display: flex;
-  align-items: center;
-  gap: 10px;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
+  justify-content: center; /* Center align items */
+  padding: 20px;
+}
+
+.date-container label {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.date-picker {
+    padding: 10px 15px;
+    border: 1px solid var(--border-color-light);
+    border-radius: 8px;
+    font-size: 1em;
+    color: var(--text-color-light);
+    background-color: var(--background-color-light);
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .date-picker {
+    border-color: var(--border-color-dark);
+    background-color: var(--background-color-dark);
+    color: var(--text-color-dark);
 }
 
 
 .matches {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
+}
+
+.league-section {
+    background-color: var(--card-bg-light); /* Use card background for league sections */
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .league-section {
+    background-color: var(--card-bg-dark);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.league-title {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: var(--accent-color-light); /* Accent color for titles */
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color-light);
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+body.dark-mode .league-title {
+    color: var(--accent-color-dark);
+    border-color: var(--border-color-dark);
+}
+
+.league-matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 20px;
 }
 
 
 .match-card {
-  background-color: white;
-  color: black;
-  padding: 10px 15px;
-  border-radius: 8px;
+  background-color: var(--background-color-light); /* Lighter background for individual cards */
+  color: var(--text-color-light);
+  padding: 15px 20px;
+  border-radius: 10px;
   display: flex;
+  flex-direction: column; /* Stack elements vertically */
   align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  flex-wrap: wrap;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .match-card {
+    background-color: #4a6572; /* Darker background for individual cards */
+    color: var(--text-color-dark);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+}
+
+.match-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+body.dark-mode .match-card:hover {
+    box-shadow: 0 8px 18px rgba(0,0,0,0.5);
+}
+
+.match-teams {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.match-teams .team {
+    flex-grow: 1;
+}
+
+.match-teams .vs-separator {
+    font-weight: 400;
+    color: #888;
+}
+
+.match-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.9em;
+    color: #666;
+}
+
+body.dark-mode .match-info {
+    color: #bbb;
+}
+
+.match-league {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.match-status {
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: white;
+}
+
+.status-finished {
+    background-color: var(--secondary-button-bg-light); /* Gray for finished */
+}
+body.dark-mode .status-finished {
+    background-color: var(--secondary-button-bg-dark);
+}
+
+.status-upcoming {
+    background-color: var(--primary-button-bg-light); /* Blue for upcoming */
+}
+body.dark-mode .status-upcoming {
+    background-color: var(--primary-button-bg-dark);
 }
 
 
-.match-card .team {
-  font-weight: bold;
-  flex: 1;
-  text-align: center;
-}
-
-.match-card .teamgoals,
-.match-card .vs {
-  width: 50px;
-  text-align: center;
-  font-weight: bold;
-}
-
-.predict-button {
-  margin-left: 10px;
-  white-space: nowrap;
-}
-
-
-.league-title {
-  font-size: 20px;
-  font-weight: bold;
-  color: white;
-  margin: 20px 0 10px;
-  border-bottom: 2px solid white;
-  padding-bottom: 5px;
-}
-
-
+/* Sidebar Styles (from league.css, but relevant here too) */
 .sidebar-toggle {
-  font-size: 18px;
+  font-size: 1.1em;
   padding: 10px 20px;
-  background-color: white;
-  color: black;
+  background-color: var(--card-bg-light);
+  color: var(--text-color-light);
   cursor: pointer;
   width: fit-content;
-  border-radius: 5px;
+  border-radius: 8px;
   margin: 10px 0;
   z-index: 1001;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .sidebar-toggle {
+    background-color: var(--card-bg-dark);
+    color: var(--text-color-dark);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
 }
 
 .sidebar {
   position: fixed;
   top: 0;
   left: -300px;
-  width: 250px;
+  width: 280px; /* Slightly wider sidebar */
   height: 100%;
-  background-color: white;
-  color: black;
-  padding: 20px;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.2);
-  transition: left 0.3s ease;
+  background-color: var(--card-bg-light);
+  color: var(--text-color-light);
+  padding: 25px;
+  box-shadow: 3px 0 10px rgba(0,0,0,0.2);
+  transition: left 0.3s ease, background-color 0.3s ease, color 0.3s ease;
   z-index: 1000;
   overflow-y: auto;
+}
+
+body.dark-mode .sidebar {
+    background-color: var(--card-bg-dark);
+    color: var(--text-color-dark);
+    box-shadow: 4px 0 15px rgba(0,0,0,0.4);
 }
 
 .sidebar.open {
@@ -137,15 +214,29 @@
 }
 
 .sidebar-close {
-  font-size: 20px;
+  font-size: 1.8em; /* Larger close icon */
   text-align: right;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  color: var(--text-color-light);
+}
+
+body.dark-mode .sidebar-close {
+    color: var(--text-color-dark);
 }
 
 .sidebar h3 {
   margin-top: 0;
   text-align: center;
+  color: var(--accent-color-light); /* Accent color for sidebar heading */
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+body.dark-mode .sidebar h3 {
+    color: var(--accent-color-dark);
+    border-color: var(--border-color-dark);
 }
 
 .sidebar-links {
@@ -154,15 +245,39 @@
 }
 
 .sidebar-links li {
-  margin: 10px 0;
+  margin: 12px 0;
 }
 
 .sidebar-links a {
-  color: black;
+  color: var(--text-color-light);
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 500;
+  display: block;
+  padding: 8px 10px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+body.dark-mode .sidebar-links a {
+    color: var(--text-color-dark);
+}
+
+
 .sidebar-links a:hover {
-  text-decoration: underline;
+  background-color: rgba(var(--accent-color-light), 0.1);
+  color: var(--accent-color-light);
+}
+
+body.dark-mode .sidebar-links a:hover {
+    background-color: rgba(var(--accent-color-dark), 0.1);
+    color: var(--accent-color-dark);
+}
+
+.sidebar-divider {
+    border-top: 1px solid var(--border-color-light);
+    margin: 20px 0;
+}
+
+body.dark-mode .sidebar-divider {
+    border-color: var(--border-color-dark);
 }
