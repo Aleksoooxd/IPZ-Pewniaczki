@@ -14,6 +14,7 @@
   <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
   <h3>Ligi</h3>
   <ul class="sidebar-links">
+    {# Add data-league-code attribute to each league link #}
     <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}" data-league-code="premier league">Premier League</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}" data-league-code="bundesliga">Bundesliga</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}" data-league-code="eredivisie">Eredivisie</a></li>

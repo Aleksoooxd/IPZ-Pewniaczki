@@ -148,7 +148,32 @@ body.dark-mode .sidebar-divider {
     background-color: var(--background-color-light);
     transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
+.league-title {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: var(--accent-color-light); /* Accent color for titles */
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color-light);
+  transition: color 0.3s ease, border-color 0.3s ease;
+  display: flex; /* Make it a flex container to align flag and text */
+  align-items: center; /* Vertically align items */
+  justify-content: center; /* Center horizontally */
+  gap: 10px; /* Space between flag and text */
+}
 
+body.dark-mode .league-title {
+    color: var(--accent-color-dark);
+    border-color: var(--border-color-dark);
+}
+
+.league-flag {
+    width: 30px; /* Adjust flag size as needed */
+    height: auto;
+    vertical-align: middle; /* Align with text baseline */
+}
 body.dark-mode .date-picker {
     border-color: var(--border-color-dark);
     background-color: var(--background-color-dark);

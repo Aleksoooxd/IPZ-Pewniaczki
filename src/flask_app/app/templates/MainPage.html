@@ -51,6 +51,21 @@
 
   const leagueNames = {{ league_names | tojson }};
 
+  // Corrected mapping: keys match the 'league' value returned from the API (lowercase with spaces or hyphens)
+  const leagueFlagMap = {
+    "premier league": "premier-league.png",
+    "bundesliga": "bundesliga.png",
+    "eredivisie": "eredivisie.png",
+    "ethniki katigoria": "ethniki-katigoria.png",
+    "futbol ligi 1": "futbol-ligi-1.png",
+    "jupiler league": "jupiler-league.png",
+    "la liga": "la-liga.png",
+    "ligue 1": "ligue-1.png",
+    "liga i": "liga-i.png",
+    "spremier league": "scottish-premiership.png", // Corrected key for Scottish Premiership
+    "serie a": "serie-a.png"
+  };
+
   async function fetchMatches() {
     const selectedDate = document.getElementById('date-picker').value;
     const matchesContainer = document.getElementById('matches-container');
@@ -83,19 +98,31 @@
         matchesByLeague[match.league].push(match);
       });
 
-      for (const league in matchesByLeague) {
+      for (const leagueCodeFromAPI in matchesByLeague) { // Use a new variable name for clarity
         const leagueSection = document.createElement('div');
         leagueSection.classList.add('league-section');
 
         const leagueTitle = document.createElement('h2');
         leagueTitle.classList.add('league-title');
-        leagueTitle.textContent = leagueNames[league] || league.toUpperCase(); // Display actual league name
+        // Use the proper display name from leagueNames object, or default to uppercase API code
+        leagueTitle.textContent = leagueNames[Object.keys(leagueNames).find(key => leagueNames[key] === leagueCodeFromAPI)] || leagueCodeFromAPI.toUpperCase();
+
+        // Add flag to league title
+        const flagFileName = leagueFlagMap[leagueCodeFromAPI]; // Use the API code as the key for the map
+        if (flagFileName) {
+          const flagImg = document.createElement('img');
+          flagImg.src = `{{ url_for('static', filename='flags/') }}${flagFileName}`;
+          flagImg.alt = `${leagueNames[Object.keys(leagueNames).find(key => leagueNames[key] === leagueCodeFromAPI)] || leagueCodeFromAPI} Flag`; // Dynamic alt text
+          flagImg.classList.add('league-flag'); // Add a class for styling the flag
+          leagueTitle.prepend(flagImg); // Add flag before the text
+        }
+
         leagueSection.appendChild(leagueTitle);
 
         const leagueMatchesContainer = document.createElement('div');
         leagueMatchesContainer.classList.add('league-matches-grid'); // New grid for matches
 
-        matchesByLeague[league].forEach(match => {
+        matchesByLeague[leagueCodeFromAPI].forEach(match => {
           const matchCard = document.createElement('a');
           matchCard.classList.add('match-card');
           matchCard.href = `/match/${match.match_type}/${match.match_id}`;
@@ -118,7 +145,7 @@
               <span class="team away-team">${match.away_team}</span>
             </div>
             <div class="match-info">
-              <span class="match-league">${leagueNames[match.league] || match.league.toUpperCase()}</span>
+              <span class="match-league">${leagueNames[Object.keys(leagueNames).find(key => leagueNames[key] === match.league)] || match.league.toUpperCase()}</span>
               <span class="match-status ${statusClass}">${statusText}</span>
             </div>
           `;
