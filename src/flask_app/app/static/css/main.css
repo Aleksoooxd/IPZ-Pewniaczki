@@ -427,7 +427,7 @@ body.dark-mode .sidebar-divider {
     border-color: var(--border-color-dark);
 }
 .team-logo-inline {
-  height: 18px;
-  margin-right: 6px;
+  height: 30px;
+  margin-right: 3px;
   vertical-align: middle;
 }

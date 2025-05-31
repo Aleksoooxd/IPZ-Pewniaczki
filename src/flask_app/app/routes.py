@@ -42,7 +42,7 @@ def get_matches():
     try:
         match_date = datetime.strptime(date_param, "%Y-%m-%d").date()
     except ValueError:
-        return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
+        return jsonify({"error": "Invalid date format. UseYYYY-MM-DD."}), 400
 
     HomeTeam = aliased(Team)
     AwayTeam = aliased(Team)
@@ -249,8 +249,19 @@ def match_detail(match_type, match_id):
 
 @main.route('/league/<league_code>/team/<team_name>')
 def team_view(league_code, team_name):
-    # logika
-    return render_template('team.html', league_code=league_code, team_name=team_name)
+    # Fetch the team object to get its ID
+    team = db.session.query(Team).filter_by(name=team_name).first()
+    team_id = team.team_id if team else None
+
+    # Determine a more user-friendly league name for display in the template
+    display_league_name = LEAGUE_URL_MAP.get(league_code)
+    if display_league_name:
+        display_league_name = display_league_name.replace("premier league", "Premier League").replace("spremier league", "Scottish Premiership").title()
+    else:
+        display_league_name = league_code.replace("premierleague", "Premier League").replace("scotishpremierleague", "Scottish Premiership").title()
+
+
+    return render_template('team.html', league_code=league_code, team_name=team_name, team_id=team_id, league_name=display_league_name)
 
 
 @main.route('/league/<league_code>')
@@ -291,5 +302,3 @@ def test_db():
         status = f"❌ Błąd połączenia z bazą danych: {str(e)}"
 
     return render_template('test_db.html', status=status)
-
-

@@ -7,6 +7,10 @@
 
 .team-detail-container .page-title {
     margin-bottom: 20px;
+    display: flex; /* Enable flexbox for alignment */
+    align-items: center; /* Vertically align items */
+    justify-content: center; /* Center horizontally */
+    gap: 15px; /* Space between logo and text */
 }
 
 .team-detail-container .info-message {
@@ -15,4 +19,10 @@
 
 .team-detail-container .button {
     margin-top: 20px;
+}
+
+.team-logo-large {
+    width: 80px; /* Adjust size as needed */
+    height: auto;
+    vertical-align: middle;
 }

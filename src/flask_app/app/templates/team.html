@@ -8,7 +8,12 @@
 
 {% block content %}
 <div class="team-detail-container card">
-  <h2 class="page-title">{{ team_name }}</h2>
+  <h2 class="page-title">
+    {% if team_id %}
+    <img src="{{ url_for('static', filename='logos/' ~ team_id ~ '.png') }}" alt="{{ team_name }} logo" class="team-logo-large">
+    {% endif %}
+    {{ team_name }}
+  </h2>
   <p class="info-message">Szczegóły drużyny z ligi {{ league_name }} wkrótce...</p>
   <a href="{{ url_for('main.league_view', league_code=league_code) }}" class="button secondary">← Powrót do ligi</a>
 </div>
