@@ -3,7 +3,7 @@ from sqlalchemy.orm import aliased
 from datetime import datetime
 from flask import render_template, abort
 
-from sqlalchemy import or_
+from sqlalchemy import or_, desc
 
 
 from .db import db, FootballMatch, Team, League, FutureMatch , TeamValue, Predicted,MatchStats,MatchForm,TeamElo
@@ -174,11 +174,15 @@ def match_detail(match_type, match_id):
     h2h_data = None
     home_h2h_data = None
     away_h2h_data = None
+    home_last_3_matches = [] # Added for last 3 matches
+    away_last_3_matches = [] # Added for last 3 matches
+
 
     if isinstance(match, FutureMatch):
         season_id = match.season.season_id
         home_team_id = match.home_team.team_id
         away_team_id = match.away_team.team_id
+        match_date_for_h3h = match.date # Use future match date for h2h and last 3 matches
 
         # Elo
         home_elo_obj = TeamElo.query.filter_by(team_id=home_team_id).order_by(desc(TeamElo.last_updated)).first()
@@ -207,10 +211,42 @@ def match_detail(match_type, match_id):
         home_h2h_data = home_form if home_form and home_form.h2h_matches else None
         away_h2h_data = away_form if away_form and away_form.h2h_matches else None
 
+        # Fetch last 3 matches for future matches (assuming they are past matches relative to the future match date)
+        HomeTeamAlias = aliased(Team)
+        AwayTeamAlias = aliased(Team)
+
+        home_last_3_matches = db.session.query(
+            FootballMatch, HomeTeamAlias.name.label('home_team_name'), AwayTeamAlias.name.label('away_team_name')
+        ).outerjoin(
+            HomeTeamAlias, FootballMatch.home_team_id == HomeTeamAlias.team_id
+        ).outerjoin(
+            AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
+        ).filter(
+            or_(FootballMatch.home_team_id == home_team_id, FootballMatch.away_team_id == home_team_id),
+            FootballMatch.date < match_date_for_h3h # Only matches before the current future match
+        ).order_by(
+            desc(FootballMatch.date)
+        ).limit(3).all()
+
+        away_last_3_matches = db.session.query(
+            FootballMatch, HomeTeamAlias.name.label('home_team_name'), AwayTeamAlias.name.label('away_team_name')
+        ).outerjoin(
+            HomeTeamAlias, FootballMatch.home_team_id == HomeTeamAlias.team_id
+        ).outerjoin(
+            AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
+        ).filter(
+            or_(FootballMatch.home_team_id == away_team_id, FootballMatch.away_team_id == away_team_id),
+            FootballMatch.date < match_date_for_h3h # Only matches before the current future match
+        ).order_by(
+            desc(FootballMatch.date)
+        ).limit(3).all()
+
+
     else:
         # Past match
         home_elo = match.home_elo
         away_elo = match.away_elo
+        match_date_for_h3h = match.date # Use the past match date for h2h and last 3 matches
 
         home_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='home').first()
         away_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='away').first()
@@ -230,6 +266,37 @@ def match_detail(match_type, match_id):
         # Optional summary H2H (shared)
         h2h_data = home_h2h_data or away_h2h_data
 
+        # Fetch last 3 matches for past matches
+        HomeTeamAlias = aliased(Team)
+        AwayTeamAlias = aliased(Team)
+
+        home_last_3_matches = db.session.query(
+            FootballMatch, HomeTeamAlias.name.label('home_team_name'), AwayTeamAlias.name.label('away_team_name')
+        ).outerjoin(
+            HomeTeamAlias, FootballMatch.home_team_id == HomeTeamAlias.team_id
+        ).outerjoin(
+            AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
+        ).filter(
+            or_(FootballMatch.home_team_id == match.home_team_id, FootballMatch.away_team_id == match.home_team_id),
+            FootballMatch.date < match_date_for_h3h # Only matches before the current past match
+        ).order_by(
+            desc(FootballMatch.date)
+        ).limit(3).all()
+
+        away_last_3_matches = db.session.query(
+            FootballMatch, HomeTeamAlias.name.label('home_team_name'), AwayTeamAlias.name.label('away_team_name')
+        ).outerjoin(
+            HomeTeamAlias, FootballMatch.home_team_id == HomeTeamAlias.team_id
+        ).outerjoin(
+            AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
+        ).filter(
+            or_(FootballMatch.home_team_id == match.away_team_id, FootballMatch.away_team_id == match.away_team_id),
+            FootballMatch.date < match_date_for_h3h # Only matches before the current past match
+        ).order_by(
+            desc(FootballMatch.date)
+        ).limit(3).all()
+
+
     return render_template('match_detail.html',
                            match=match,
                            status=status,
@@ -244,7 +311,9 @@ def match_detail(match_type, match_id):
                            predictions=predictions,
                            h2h_data=h2h_data,
                            home_h2h_data=home_h2h_data,
-                           away_h2h_data=away_h2h_data)
+                           away_h2h_data=away_h2h_data,
+                           home_last_3_matches=home_last_3_matches, # Passed
+                           away_last_3_matches=away_last_3_matches) # Passed
 
 
 @main.route('/league/<league_code>/team/<team_name>')

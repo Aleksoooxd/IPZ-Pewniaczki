@@ -259,3 +259,140 @@ body.dark-mode .confidence {
     margin-right: 3px;
     vertical-align: middle;
 }
+
+/* Last Matches Section Styling */
+.last-matches-section {
+    margin-top: 30px; /* Add some space above this section */
+    padding: 20px; /* Increased padding */
+    background-color: var(--background-color-light); /* Background color */
+    border-radius: 12px; /* Match card border-radius */
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); /* Subtle inner shadow */
+    border: 1px solid var(--border-color-light); /* Border to clearly define the section */
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .last-matches-section {
+    background-color: var(--header-bg-dark); /* A slightly different background for dark mode */
+    border-color: var(--border-color-dark);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+}
+
+
+.last-matches-section h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    /* Remove border-top from previous steps if it was here, as it's now handled by the section container */
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.last-matches-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Stack cards vertically by default */
+    gap: 15px; /* Space between match cards */
+}
+
+/* Style for individual past match cards */
+.past-match-card {
+    background-color: var(--card-bg-light); /* Use card background for inner cards */
+    color: var(--text-color-light);
+    padding: 12px 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* Smaller shadow than main cards */
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .past-match-card {
+    background-color: var(--background-color-dark); /* Adjust background for dark mode */
+    color: var(--text-color-dark);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.past-match-card:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+body.dark-mode .past-match-card:hover {
+    box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+}
+
+.past-match-teams {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-align: center;
+    flex-wrap: wrap; /* Allow team names to wrap if long */
+    justify-content: center;
+}
+
+.past-match-teams .team {
+    flex-shrink: 0; /* Prevent shrinking team names too much */
+}
+
+.past-match-teams .vs-separator {
+    font-weight: 400;
+    color: #888;
+    font-size: 0.9em;
+}
+
+body.dark-mode .past-match-teams .vs-separator {
+    color: #bbb;
+}
+
+.past-match-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+body.dark-mode .past-match-info {
+    color: #bbb;
+}
+
+.past-match-score {
+    font-weight: 700;
+    color: var(--text-color-light);
+}
+body.dark-mode .past-match-score {
+    color: var(--text-color-dark);
+}
+
+.past-match-result {
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 700;
+    color: white;
+    min-width: 20px; /* Ensure consistent width */
+    text-align: center;
+}
+
+/* Corrected colors for Win/Draw/Loss badges from team's perspective */
+.outcome-win { background-color: #28a745; } /* Green */
+.outcome-draw { background-color: #6c757d; } /* Gray */
+.outcome-loss { background-color: #dc3545; } /* Red */
+
+
+/* Responsive adjustments for last matches grid */
+@media (min-width: 768px) {
+    .last-matches-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 2 columns on wider screens */
+    }
+}
+@media (min-width: 1024px) {
+    /* If the main grid is 3 columns, consider stacking these in their own columns */
+    .team-column .last-matches-grid {
+        grid-template-columns: 1fr; /* Stack them within the team column */
+    }
+}
