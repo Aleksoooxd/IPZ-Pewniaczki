@@ -139,15 +139,17 @@
           }
 
           matchCard.innerHTML = `
-            <div class="match-teams">
-              <span class="team home-team">${match.home_team}</span>
-              <span class="vs-separator">vs</span>
-              <span class="team away-team">${match.away_team}</span>
-            </div>
-            <div class="match-info">
-              <span class="match-league">${leagueNames[Object.keys(leagueNames).find(key => leagueNames[key] === match.league)] || match.league.toUpperCase()}</span>
-              <span class="match-status ${statusClass}">${statusText}</span>
-            </div>
+                <div class="match-teams">
+          <span class="team home-team">
+            <img src="/static/logos/${match.home_team_id}.png" alt="${match.home_team} logo" class="team-logo-inline">
+            ${match.home_team}
+          </span>
+          <span class="vs-separator">vs</span>
+          <span class="team away-team">
+            <img src="/static/logos/${match.away_team_id}.png" alt="${match.away_team} logo" class="team-logo-inline">
+            ${match.away_team}
+          </span>
+        </div>
           `;
           leagueMatchesContainer.appendChild(matchCard);
         });

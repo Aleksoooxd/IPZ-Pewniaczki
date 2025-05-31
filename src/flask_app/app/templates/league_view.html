@@ -39,10 +39,11 @@
     <ul class="team-links">
       {% for team in teams %}
         <li>
-          <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name) }}">
-            {{ team.name }}
-          </a>
-        </li>
+    <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name) }}">
+      <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.name }} logo" class="team-logo-inline">
+      {{ team.name }}
+    </a>
+  </li>
       {% else %}
         <li>Brak drużyn dla tej ligi.</li>
       {% endfor %}

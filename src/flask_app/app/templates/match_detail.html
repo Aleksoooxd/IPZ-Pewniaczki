@@ -22,7 +22,10 @@
 
   <div class="match-grid">
     <div class="team-column home-team-column card">
-      <h2 class="team-header">{{ match.home_team.name }}
+      <h2 class="team-header">
+  <img src="{{ url_for('static', filename='logos/' ~ match.home_team.team_id ~ '.png') }}" alt="{{ match.home_team.name }} logo" class="team-logo">
+
+  {{ match.home_team.name }}
         {% if home_form and home_form.team_placement %}
           <span class="team-placement">({{ home_form.team_placement }}. miejsce)</span>
         {% endif %}
@@ -108,7 +111,11 @@
     </div>
 
     <div class="team-column away-team-column card">
-      <h2 class="team-header">{{ match.away_team.name }}
+      <h2 class="team-header">
+  <img src="{{ url_for('static', filename='logos/' ~ match.away_team.team_id ~ '.png') }}" alt="{{ match.away_team.name }} logo" class="team-logo">
+
+  {{ match.away_team.name }}
+
         {% if away_form and away_form.team_placement %}
           <span class="team-placement">({{ away_form.team_placement }}. miejsce)</span>
         {% endif %}
