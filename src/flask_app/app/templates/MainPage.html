@@ -150,6 +150,10 @@
             ${match.away_team}
           </span>
         </div>
+        <div class="match-info">
+              <span class="match-league">${leagueNames[Object.keys(leagueNames).find(key => leagueNames[key] === match.league)] || match.league.toUpperCase()}</span>
+              <span class="match-status ${statusClass}">${statusText}</span>
+            </div>
           `;
           leagueMatchesContainer.appendChild(matchCard);
         });
