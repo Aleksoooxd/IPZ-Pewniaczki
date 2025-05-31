@@ -47,12 +47,14 @@ def get_matches():
     HomeTeam = aliased(Team)
     AwayTeam = aliased(Team)
 
-    # POBIERANIE MECZÓW Z DANEGO DNIA
+    # PAST MATCHES
     past_matches = db.session.query(
-        FootballMatch.match_id,  # <-- dodaj to
+        FootballMatch.match_id,
         FootballMatch.date,
         HomeTeam.name.label('home_team'),
+        HomeTeam.team_id.label('home_team_id'),
         AwayTeam.name.label('away_team'),
+        AwayTeam.team_id.label('away_team_id'),
         League.code.label('league'),
         FootballMatch.fthg.label('home_goals'),
         FootballMatch.ftag.label('away_goals')
@@ -64,11 +66,14 @@ def get_matches():
         League, FootballMatch.league_id == League.league_id
     ).filter(FootballMatch.date == match_date)
 
+    # FUTURE MATCHES
     future_matches = db.session.query(
         FutureMatch.match_id,
         FutureMatch.date,
         HomeTeam.name.label('home_team'),
+        HomeTeam.team_id.label('home_team_id'),
         AwayTeam.name.label('away_team'),
+        AwayTeam.team_id.label('away_team_id'),
         League.code.label('league'),
         db.literal(None).label('home_goals'),
         db.literal(None).label('away_goals')
@@ -80,15 +85,18 @@ def get_matches():
         League, FutureMatch.league_id == League.league_id
     ).filter(FutureMatch.date == match_date)
 
+    # COMBINE
     matches = past_matches.union_all(future_matches).all()
 
     result = [
         {
             "match_id": m.match_id,
-            "match_type": "past" if m.home_goals is not None else "future",  # prosty sposób
+            "match_type": "past" if m.home_goals is not None else "future",
             "date": m.date.strftime('%Y-%m-%d'),
             "home_team": m.home_team,
+            "home_team_id": m.home_team_id,
             "away_team": m.away_team,
+            "away_team_id": m.away_team_id,
             "league": m.league,
             "home_goals": m.home_goals,
             "away_goals": m.away_goals

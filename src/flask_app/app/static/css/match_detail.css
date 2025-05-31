@@ -252,3 +252,9 @@ body.dark-mode .confidence {
     margin-top: 30px;
     text-align: center;
 }
+
+.team-logo {
+    height: 24px;
+    margin-right: 10px;
+    vertical-align: middle;
+}

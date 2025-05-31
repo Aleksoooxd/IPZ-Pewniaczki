@@ -188,3 +188,9 @@ body.dark-mode .team-links::-webkit-scrollbar-thumb:hover {
     padding: 15px;
   }
 }
+
+.team-logo-inline {
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
