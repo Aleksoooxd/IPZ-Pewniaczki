@@ -61,30 +61,25 @@ async def extract_lineups(base_url):
     awayp = awayp[:11]
     return homep,awayp
 async def main():# Przykład użycia
-    filepath = os.path.join("..",'Data', 'FinalData', 'AllBookmakers','AllLeagues.csv')
-    df = pd.read_csv(filepath)
-    lineup_columns = [f"H{i}" for i in range(1, 12)] + [f"A{i}" for i in range(1, 12)]
-    for col in lineup_columns:
-        df[col] = None
-    for index, row in df.iterrows():
-        if index > 4000:
-            home_team = row['HomeTeam']
-            away_team = row['AwayTeam']
-            match_date = str(row['Date'])
-            lineups_link = await find_match_link(home_team, away_team, match_date)
+    hometeam = 'Manchester United'
+    ht_logo = await get_team_logo(hometeam)
+    print(ht_logo)
 
-            if lineups_link is None:
-                print(f"Match {index}, " f"HT: {home_team}", " ", f"AT: {away_team}", "failed - no match link")
-                continue
-            home_lineup, away_lineup = await extract_lineups(lineups_link)
-            if home_lineup is None or away_lineup is None:
-                print(f"Match {index}, " f"HT: {home_team}", " ", f"AT: {away_team}", "failed - no lineups link")
-                continue
-            lineups = home_lineup + away_lineup
-            for ind,col in enumerate(lineup_columns):
-                df.at[index, col] = lineups[ind]
-            #df.at[index, lineup_columns[:11]] = home_lineup
-            #df.at[index, lineup_columns[11:]] = away_lineup
-            print(f"Match {index}, " f"HT: {home_team}", " ", f"AT: {away_team}", "processed")
-    df.to_csv(filepath,index=False)
-asyncio.run(main())
+
+async def get_team_logo(team_name):
+    api_key = "123"
+    formatted_team_name = team_name.replace(" ", "%20")
+    url = f"https://www.thesportsdb.com/api/v1/json/{api_key}/searchteams.php?t={formatted_team_name}"
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+    if response.status_code != 200:
+        return None
+
+    data = response.json()
+    if data and data.get('teams'):
+        team_info = data['teams'][0]
+        return team_info['strBadge']
+    return None
+if __name__ == "__main__":
+    asyncio.run(main())
