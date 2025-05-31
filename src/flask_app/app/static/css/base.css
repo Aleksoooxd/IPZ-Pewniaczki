@@ -101,6 +101,24 @@ body.dark-mode .logo p {
     color: var(--text-color-dark);
 }
 
+.logo a {
+    text-decoration: none;
+    color: inherit;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.logo a:hover,
+.logo a:active,
+.logo a:focus {
+    text-decoration: none;
+    color: inherit;
+    background-color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+
+
 footer {
     background-color: var(--footer-bg-light);
     padding: 15px 20px;
