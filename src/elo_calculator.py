@@ -1,7 +1,8 @@
 import datetime
-import copy # Keep copy for deepcopy in calculate_head2head_stats
+import copy
 from sqlalchemy import select
-from flask_app.app.db import db, app, Team, FootballMatch, TeamElo, MatchForm # Import MatchForm
+from flask_app.app.db import db, app, Team, FootballMatch, TeamElo, MatchForm
+
 
 def calculate_elo_change(home_elo, away_elo, result, goal_diff=None):
     K = 40
@@ -28,107 +29,39 @@ def calculate_elo_change(home_elo, away_elo, result, goal_diff=None):
 
     return home_change, away_change
 
-# New function: calculate_head2head_stats (moved from footballScrap.py)
-def calculate_head2head_stats(session, home_team_id, away_team_id, match_date):
-    """Calculate head-to-head statistics between two teams up to a specific date."""
-    # Get all previous matches between these teams
-    previous_matches = session.execute(
-        select(FootballMatch)
-        .where(
-            ((FootballMatch.home_team_id == home_team_id) & (FootballMatch.away_team_id == away_team_id) |
-             (FootballMatch.home_team_id == away_team_id) & (FootballMatch.away_team_id == home_team_id)),
-            FootballMatch.date < match_date
-        )
-        .order_by(FootballMatch.date.desc())
-    ).scalars().all()
-
-    # Initialize stats
-    home_stats = {
-        'h2h_matches': len(previous_matches),
-        'h2h_wins': 0,
-        'h2h_draws': 0,
-        'h2h_losses': 0,
-        'h2h_goals_for': 0,
-        'h2h_goals_against': 0,
-        'h2h_last_5_points': 0
-    }
-
-    away_stats = copy.deepcopy(home_stats)
-
-    # Calculate stats
-    last_5_count = 0
-    for match in previous_matches:
-        if last_5_count >= 5:
-            break
-
-        # Determine if the home_team_id in the *current* H2H match is the 'home' or 'away' team in the *previous* match
-        is_home_team_in_prev_match_home = (match.home_team_id == home_team_id)
-        is_away_team_in_prev_match_away = (match.away_team_id == away_team_id)
-
-        if is_home_team_in_prev_match_home and is_away_team_in_prev_match_away: # Previous match was home_team vs away_team
-            if match.result == 'H':
-                home_stats['h2h_wins'] += 1
-                away_stats['h2h_losses'] += 1
-                if last_5_count < 5:
-                    home_stats['h2h_last_5_points'] += 3
-            elif match.result == 'A':
-                home_stats['h2h_losses'] += 1
-                away_stats['h2h_wins'] += 1
-                if last_5_count < 5:
-                    away_stats['h2h_last_5_points'] += 3
-            else:  # Draw
-                home_stats['h2h_draws'] += 1
-                away_stats['h2h_draws'] += 1
-                if last_5_count < 5:
-                    home_stats['h2h_last_5_points'] += 1
-                    away_stats['h2h_last_5_points'] += 1
-
-            home_stats['h2h_goals_for'] += match.fthg
-            home_stats['h2h_goals_against'] += match.ftag
-            away_stats['h2h_goals_for'] += match.ftag
-            away_stats['h2h_goals_against'] += match.fthg
-        else: # Previous match was away_team vs home_team (reversed)
-            if match.result == 'H': # Previous match home team won (which is our away team)
-                away_stats['h2h_wins'] += 1
-                home_stats['h2h_losses'] += 1
-                if last_5_count < 5:
-                    away_stats['h2h_last_5_points'] += 3
-            elif match.result == 'A': # Previous match away team won (which is our home team)
-                away_stats['h2h_losses'] += 1
-                home_stats['h2h_wins'] += 1
-                if last_5_count < 5:
-                    home_stats['h2h_last_5_points'] += 3
-            else:  # Draw
-                away_stats['h2h_draws'] += 1
-                home_stats['h2h_draws'] += 1
-                if last_5_count < 5:
-                    away_stats['h2h_last_5_points'] += 1
-                    home_stats['h2h_last_5_points'] += 1
-
-            away_stats['h2h_goals_for'] += match.fthg
-            away_stats['h2h_goals_against'] += match.ftag
-            home_stats['h2h_goals_for'] += match.ftag
-            home_stats['h2h_goals_against'] += match.fthg
-
-        last_5_count += 1
-
-    return {'home': home_stats, 'away': away_stats}
-
 
 def process_all_matches_for_elo():
     with app.app_context():
-        print("Starting ELO and H2H calculation process...")
+        print("Starting ELO and H2H calculation process (optimized and reset-friendly)...")
 
+        # Inicjalizacja ELO dla wszystkich drużyn
         teams = db.session.execute(select(Team)).scalars().all()
         teams_elo = {team.team_id: 1500.0 for team in teams}
 
-        # Process matches chronologically
+        # Wczytaj wszystkie MatchForm do pamięci, aby uniknąć zapytań w pętli
+        # Klucz: (match_id, team_side) -> MatchForm object
+        all_match_forms = {}
+        for mf in db.session.execute(select(MatchForm)).scalars().all():
+            all_match_forms[(mf.match_id, mf.team_side)] = mf
+
+        # Słownik do przechowywania aktualnych statystyk H2H dla par drużyn
+        # Klucz: frozenset({team_id1, team_id2})
+        # Wartość: {'home_team_id': stats_for_home, 'away_team_id': stats_for_away}
+        # Gdzie stats_for_team = {'h2h_matches': ..., 'h2h_wins': ..., 'h2h_draws': ..., 'h2h_losses': ..., 'h2h_goals_for': ..., 'h2h_goals_against': ..., 'last_5_points': []}
+        h2h_current_stats = {}
+
+        # Pobierz wszystkie mecze chronologicznie
         matches = db.session.execute(
             select(FootballMatch)
             .order_by(FootballMatch.date, FootballMatch.match_id)
         ).scalars().all()
 
         print(f"Processing {len(matches)} matches for ELO and H2H calculation")
+
+        # Listy do operacji bulk_save_objects i bulk_update_mappings
+        team_elo_to_add = []
+        match_form_updates = []
+        football_match_updates = []
 
         for i, match in enumerate(matches):
             if not match.result:
@@ -137,84 +70,159 @@ def process_all_matches_for_elo():
             home_team_id = match.home_team_id
             away_team_id = match.away_team_id
 
-            # ELO Calculation
-            home_elo = teams_elo.get(home_team_id, 1500.0)
-            away_elo = teams_elo.get(away_team_id, 1500.0)
+            # --- ELO Calculation ---
+            # Pobierz aktualne ELO
+            current_home_elo = teams_elo.get(home_team_id, 1500.0)
+            current_away_elo = teams_elo.get(away_team_id, 1500.0)
 
-            # Update match with ELO before current match (historical ELO)
-            match.home_elo = home_elo
-            match.away_elo = away_elo
+            # Przypisz ELO przed meczem do obiektu FootballMatch
+            match.home_elo = current_home_elo
+            match.away_elo = current_away_elo
 
             goal_diff = abs(match.fthg - match.ftag) if match.fthg is not None and match.ftag is not None else 0
-            home_change, away_change = calculate_elo_change(home_elo, away_elo, match.result, goal_diff)
+            home_change, away_change = calculate_elo_change(current_home_elo, current_away_elo, match.result, goal_diff)
 
+            # Przypisz zmianę ELO
             match.home_elo_change = home_change
             match.away_elo_change = away_change
 
-            # Update in-memory ELO ratings for future matches
-            teams_elo[home_team_id] = home_elo + home_change
-            teams_elo[away_team_id] = away_elo + away_change
+            # Zaktualizuj ELO w pamięci dla przyszłych meczów
+            teams_elo[home_team_id] += home_change
+            teams_elo[away_team_id] += away_change
 
-            # Store ELO history
-            db.session.add(TeamElo(
+            # Zbierz rekordy TeamElo do zbiorczego dodania
+            team_elo_to_add.append(TeamElo(
                 team_id=home_team_id,
-                rating=teams_elo[home_team_id],
+                rating=teams_elo[home_team_id],  # ELO po meczu
                 last_updated=match.date
             ))
-            db.session.add(TeamElo(
+            team_elo_to_add.append(TeamElo(
                 team_id=away_team_id,
-                rating=teams_elo[away_team_id],
+                rating=teams_elo[away_team_id],  # ELO po meczu
                 last_updated=match.date
             ))
 
-            # H2H Calculation and Update MatchForm
-            h2h_stats = calculate_head2head_stats(db.session, home_team_id, away_team_id, match.date)
+            # Zbierz aktualizacje FootballMatch do zbiorczej aktualizacji
+            football_match_updates.append({
+                'match_id': match.match_id,
+                'home_elo': match.home_elo,
+                'away_elo': match.away_elo,
+                'home_elo_change': match.home_elo_change,
+                'away_elo_change': match.away_elo_change
+            })
 
-            for side, stats in h2h_stats.items():
-                match_form = db.session.execute(
-                    select(MatchForm)
-                    .where(MatchForm.match_id == match.match_id, MatchForm.team_side == side)
-                ).scalar_one_or_none()
+            # --- H2H Calculation and Update MatchForm ---
+            team_pair_key = frozenset({home_team_id, away_team_id})
 
-                if match_form:
-                    match_form.h2h_matches = stats['h2h_matches']
-                    match_form.h2h_wins = stats['h2h_wins']
-                    match_form.h2h_draws = stats['h2h_draws']
-                    match_form.h2h_losses = stats['h2h_losses']
-                    match_form.h2h_goals_for = stats['h2h_goals_for']
-                    match_form.h2h_goals_against = stats['h2h_goals_against']
-                    match_form.h2h_last_5_points = stats['h2h_last_5_points']
-                else:
-                    # This case should ideally not happen if MatchForm is created in footballScrap
-                    # before this function is called, but adding for robustness.
-                    print(f"Warning: MatchForm for match_id {match.match_id}, side {side} not found. Creating a new one.")
-                    new_form_entry = MatchForm(
-                        match_id=match.match_id,
-                        team_side=side,
-                        form_last_3=0,  # Default or derive if possible
-                        form_last_5=0,
-                        form_season=0,
-                        goals_last_3=0,
-                        goals_last_5=0,
-                        goals_season=0,
-                        team_placement=0,
-                        h2h_matches=stats['h2h_matches'],
-                        h2h_wins=stats['h2h_wins'],
-                        h2h_draws=stats['h2h_draws'],
-                        h2h_losses=stats['h2h_losses'],
-                        h2h_goals_for=stats['h2h_goals_for'],
-                        h2h_goals_against=stats['h2h_goals_against'],
-                        h2h_last_5_points=stats['h2h_last_5_points']
-                    )
-                    db.session.add(new_form_entry)
-            db.session.add(match) # Add the match object to session with updated ELO
-            if i % 1000 == 0:
-                print(f"Processed {i}/{len(matches)} matches")
-                db.session.commit() # Commit periodically
+            # Inicjalizacja H2H dla nowej pary drużyn, jeśli to ich pierwszy mecz
+            if team_pair_key not in h2h_current_stats:
+                h2h_current_stats[team_pair_key] = {
+                    home_team_id: {'h2h_matches': 0, 'h2h_wins': 0, 'h2h_draws': 0, 'h2h_losses': 0, 'h2h_goals_for': 0,
+                                   'h2h_goals_against': 0, 'last_5_points': []},
+                    away_team_id: {'h2h_matches': 0, 'h2h_wins': 0, 'h2h_draws': 0, 'h2h_losses': 0, 'h2h_goals_for': 0,
+                                   'h2h_goals_against': 0, 'last_5_points': []}
+                }
 
-        db.session.commit() # Final commit
+            # Pobranie aktualnych (przed tym meczem) statystyk H2H dla każdej drużyny w parze
+            # Ważne: to są statystyki PRZED aktualnie przetwarzanym meczem
+            h2h_home_pre_match = copy.deepcopy(h2h_current_stats[team_pair_key][home_team_id])
+            h2h_away_pre_match = copy.deepcopy(h2h_current_stats[team_pair_key][away_team_id])
+
+            # Obliczanie h2h_last_5_points na podstawie listy 'last_5_points' z danych pre-match
+            h2h_home_pre_match['h2h_last_5_points'] = sum(h2h_home_pre_match['last_5_points'])
+            h2h_away_pre_match['h2h_last_5_points'] = sum(h2h_away_pre_match['last_5_points'])
+
+            # Znajdź obiekty MatchForm w pamięci (wczytane na początku)
+            home_match_form = all_match_forms.get((match.match_id, 'home'))
+            away_match_form = all_match_forms.get((match.match_id, 'away'))
+
+            if home_match_form:
+                match_form_updates.append({
+                    'form_id': home_match_form.form_id,
+                    'h2h_matches': h2h_home_pre_match['h2h_matches'],
+                    'h2h_wins': h2h_home_pre_match['h2h_wins'],
+                    'h2h_draws': h2h_home_pre_match['h2h_draws'],
+                    'h2h_losses': h2h_home_pre_match['h2h_losses'],
+                    'h2h_goals_for': h2h_home_pre_match['h2h_goals_for'],
+                    'h2h_goals_against': h2h_home_pre_match['h2h_goals_against'],
+                    'h2h_last_5_points': h2h_home_pre_match['h2h_last_5_points']
+                    # Pamiętaj, aby nie nadpisywać innych pól, które MatchForm już posiada!
+                    # bulk_update_mappings aktualizuje tylko podane pola.
+                })
+            if away_match_form:
+                match_form_updates.append({
+                    'form_id': away_match_form.form_id,
+                    'h2h_matches': h2h_away_pre_match['h2h_matches'],
+                    'h2h_wins': h2h_away_pre_match['h2h_wins'],
+                    'h2h_draws': h2h_away_pre_match['h2h_draws'],
+                    'h2h_losses': h2h_away_pre_match['h2h_losses'],
+                    'h2h_goals_for': h2h_away_pre_match['h2h_goals_for'],
+                    'h2h_goals_against': h2h_away_pre_match['h2h_goals_against'],
+                    'h2h_last_5_points': h2h_away_pre_match['h2h_last_5_points']
+                })
+
+            # --- ZAKTUALIZUJ statystyki H2H w pamięci o WYNIK BIEŻĄCEGO MECZU ---
+            # To są statystyki, które będą używane dla KOLEJNYCH meczów tej pary
+            current_home_h2h_in_memory = h2h_current_stats[team_pair_key][home_team_id]
+            current_away_h2h_in_memory = h2h_current_stats[team_pair_key][away_team_id]
+
+            current_home_h2h_in_memory['h2h_matches'] += 1
+            current_away_h2h_in_memory['h2h_matches'] += 1
+
+            home_points_earned = 0
+            away_points_earned = 0
+
+            if match.result == 'H':
+                current_home_h2h_in_memory['h2h_wins'] += 1
+                current_away_h2h_in_memory['h2h_losses'] += 1
+                home_points_earned = 3
+                away_points_earned = 0
+            elif match.result == 'D':
+                current_home_h2h_in_memory['h2h_draws'] += 1
+                current_away_h2h_in_memory['h2h_draws'] += 1
+                home_points_earned = 1
+                away_points_earned = 1
+            elif match.result == 'A':
+                current_home_h2h_in_memory['h2h_losses'] += 1
+                current_away_h2h_in_memory['h2h_wins'] += 1
+                home_points_earned = 0
+                away_points_earned = 3
+
+            current_home_h2h_in_memory['h2h_goals_for'] += match.fthg if match.fthg is not None else 0
+            current_home_h2h_in_memory['h2h_goals_against'] += match.ftag if match.ftag is not None else 0
+            current_away_h2h_in_memory['h2h_goals_for'] += match.ftag if match.ftag is not None else 0
+            current_away_h2h_in_memory['h2h_goals_against'] += match.fthg if match.fthg is not None else 0
+
+            # Zaktualizuj listę ostatnich 5 punktów
+            current_home_h2h_in_memory['last_5_points'].insert(0, home_points_earned)
+            if len(current_home_h2h_in_memory['last_5_points']) > 5:
+                current_home_h2h_in_memory['last_5_points'].pop()
+
+            current_away_h2h_in_memory['last_5_points'].insert(0, away_points_earned)
+            if len(current_away_h2h_in_memory['last_5_points']) > 5:
+                current_away_h2h_in_memory['last_5_points'].pop()
+
+            # Okresowe zatwierdzanie do bazy danych
+            if (i + 1) % 1000 == 0:
+                print(f"Processed {i + 1}/{len(matches)} matches, performing batch update.")
+                if team_elo_to_add:
+                    db.session.bulk_save_objects(team_elo_to_add)
+                    team_elo_to_add = []
+                if match_form_updates:
+                    db.session.bulk_update_mappings(MatchForm, match_form_updates)
+                    match_form_updates = []
+                if football_match_updates:
+                    db.session.bulk_update_mappings(FootballMatch, football_match_updates)
+                    football_match_updates = []
+                db.session.commit()
+
+        # Ostateczne zatwierdzenie wszelkich pozostałych danych
+        print("Finalizing batch updates...")
+        if team_elo_to_add:
+            db.session.bulk_save_objects(team_elo_to_add)
+        if match_form_updates:
+            db.session.bulk_update_mappings(MatchForm, match_form_updates)
+        if football_match_updates:
+            db.session.bulk_update_mappings(FootballMatch, football_match_updates)
+        db.session.commit()
         print("ELO and H2H calculation complete")
-
-
-if __name__ == "__main__":
-    process_all_matches_for_elo()

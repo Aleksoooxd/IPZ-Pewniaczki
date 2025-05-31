@@ -144,11 +144,10 @@
 
       <div class="h2h-section">
         <h3>Bezpośrednie Mecze (H2H)</h3>
-        {% if h2h_data and h2h_data.h2h_matches is not none %}
-          <p><strong>Mecze:</strong> {{ h2h_data.h2h_matches }}</p>
-          <p><strong>Wygrane H:</strong> {{ h2h_data.h2h_wins }} | <strong>Remisy:</strong> {{ h2h_data.h2h_draws }} | <strong>Wygrane A:</strong> {{ h2h_data.h2h_losses }}</p>
-          <p><strong>Gole (H:A):</strong> {{ h2h_data.h2h_goals_for }} : {{ h2h_data.h2h_goals_against }}</p>
-          <p><strong>Punkty z ostatnich 5 H2H:</strong> {{ h2h_data.h2h_last_5_points }}</p>
+        {% if home_h2h_data and home_h2h_data.h2h_matches is not none %}
+          <p><strong>Mecze:</strong> {{ home_h2h_data.h2h_matches }}</p>
+          <p><strong>Wygrane H:</strong> {{ home_h2h_data.h2h_wins }} | <strong>Remisy:</strong> {{ home_h2h_data.h2h_draws }} | <strong>Wygrane A:</strong> {{ home_h2h_data.h2h_losses }}</p>
+          <p><strong>Gole (H:A):</strong> {{ home_h2h_data.h2h_goals_for }} : {{ home_h2h_data.h2h_goals_against }}</p>
         {% else %}
           <p>Brak danych H2H</p>
         {% endif %}
