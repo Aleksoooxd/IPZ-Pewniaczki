@@ -254,7 +254,8 @@ body.dark-mode .confidence {
 }
 
 .team-logo {
-    height: 24px;
-    margin-right: 10px;
+    width: auto;
+    height: 40px;
+    margin-right: 3px;
     vertical-align: middle;
 }
