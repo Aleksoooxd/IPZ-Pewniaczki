@@ -7,12 +7,7 @@ def main():
         print("2. Scrape top 11 leagues")
         print("3. Scrape transfermarkt")
         print("4. Calculate ELO for all matches")
-        print("5. Generate top bookmakers")
-        print("6. Calculate consensus")
-        print("7. Generate all in order")
-        print("8. Calculate place in table")
-        print("9. Do testowania roznych rzeczy")
-        print("0. Quit")
+        print("5. Generate ALL")
         choice = input("Enter your choice: ")
         if choice == '1':
             scrape_transfermarkt()
@@ -23,8 +18,10 @@ def main():
             scrape_transfermarkt()
         elif choice == '4':
             process_all_matches_for_elo()
-        elif choice == '9':
-            pass
+        elif choice == '5':
+            #scrape_transfermarkt()
+            correct_scrape_top_11()
+            process_all_matches_for_elo()
         else:
             break
 if __name__ == "__main__":

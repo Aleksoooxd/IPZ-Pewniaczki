@@ -178,7 +178,6 @@ class MatchForm(db.Model):
     goals_last_5 = Column(Float)
     goals_season = Column(Float)
     team_placement = Column(Integer)
-    team_strength = Column(Float)
     h2h_matches = db.Column(db.Integer, nullable=True)
     h2h_wins = db.Column(db.Integer, nullable=True)
     h2h_draws = db.Column(db.Integer, nullable=True)

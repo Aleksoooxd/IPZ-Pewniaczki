@@ -17,7 +17,7 @@ def home():
 @main.route('/main')
 def mainpage():
     league_names = {
-        "Premierleague": "premier league",
+        "Premierleague": "Premier league",
         "Bundesliga": "Bundesliga",
         "Eredivisie": "Eredivisie",
         "EthnikiKatigoria": "Grecja: Ethniki Katigoria",
@@ -109,7 +109,6 @@ LEAGUE_URL_MAP = {
     "LaLiga": "la liga",
     "Ligue1": "ligue 1",
     "LigaI": "liga i",
-    "PremierLeague": "premier league",
     "SerieA": "serie a",
     "ScotishPremierLeague": "spremier league"
 }
