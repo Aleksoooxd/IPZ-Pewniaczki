@@ -128,9 +128,9 @@ body.dark-mode .sidebar-divider {
 .date-container {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 15px;
-  justify-content: center; /* Center align items */
+  align-items: center; /* Wyrównuje elementy w pionie */
+  gap: 15px; /* Odstępy między elementami */
+  justify-content: center; /* Wyśrodkowuje elementy poziomo */
   padding: 20px;
 }
 
@@ -430,4 +430,22 @@ body.dark-mode .sidebar-divider {
   height: 30px;
   margin-right: 3px;
   vertical-align: middle;
+}
+
+/* Usunięto sekcję .filter-sort-controls, ponieważ kontener ten został usunięty z HTML */
+/* Stąd nie ma już potrzeby definiować jej stylów */
+
+/* Dostosowanie stylów dla elementów select i label w date-container */
+.date-container label {
+    /* Utrzymujemy istniejące style dla etykiet */
+    font-size: 1.1em;
+    font-weight: 600;
+    /* Dodajmy trochę przestrzeni, aby tekst nie przylegał do inputów/selectów */
+    margin-right: 5px;
+    margin-left: 10px; /* Dla lepszego odstępu od poprzedniego elementu */
+}
+
+/* Pierwsza etykieta (Wybierz datę) nie potrzebuje margin-left */
+.date-container label:first-of-type {
+    margin-left: 0;
 }

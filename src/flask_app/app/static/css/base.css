@@ -70,13 +70,13 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtelny cień */
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 body.dark-mode header {
     background-color: var(--header-bg-dark);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4); /* Subtelny ciemny cień */
 }
 
 .logo {
@@ -125,14 +125,14 @@ footer {
     font-size: 0.9em;
     text-align: center;
     color: var(--text-color-light);
-    box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.05); /* Subtelny cień od dołu */
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 body.dark-mode footer {
     background-color: var(--footer-bg-dark);
     color: var(--text-color-dark);
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.3); /* Subtelny ciemny cień od dołu */
 }
 
 /* General Card Styling */
@@ -140,14 +140,16 @@ body.dark-mode footer {
     background-color: var(--card-bg-light);
     border-radius: 12px;
     padding: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    /* Zaktualizowane cienie */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Bardziej widoczny cień */
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     color: var(--text-color-light);
 }
 
 body.dark-mode .card {
     background-color: var(--card-bg-dark);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    /* Zaktualizowane cienie dla trybu ciemnego */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* Ciemniejszy cień dla trybu ciemnego */
     color: var(--text-color-dark);
 }
 

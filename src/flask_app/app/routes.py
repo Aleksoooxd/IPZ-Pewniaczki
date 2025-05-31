@@ -20,14 +20,14 @@ def mainpage():
         "Premierleague": "Premier league",
         "Bundesliga": "Bundesliga",
         "Eredivisie": "Eredivisie",
-        "EthnikiKatigoria": "Grecja: Ethniki Katigoria",
-        "FutbolLig1": "Turcja: 1. Lig",
-        "JupiterLeague": "Belgia: Jupiler League",
-        "LaLiga": "Hiszpania: La Liga",
-        "Ligue1": "Francja: Ligue 1",
-        "LigaI": "Rumunia: Liga I",
-        "ScotishPremierLeague": "Szkocja: Premiership",
-        "SerieA": "Włochy: Serie A"
+        "EthnikiKatigoria": "Ethniki Katigoria",
+        "FutbolLig1": "1. Lig",
+        "JupiterLeague": "Jupiler League",
+        "LaLiga": "La Liga",
+        "Ligue1": "Ligue 1",
+        "LigaI": "Liga I",
+        "ScotishPremierLeague": "Premiership",
+        "SerieA": "Serie A"
     }
     return render_template('MainPage.html', league_names=league_names)
 
