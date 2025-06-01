@@ -118,7 +118,7 @@ class FutureMatch(db.Model):
     match_id = Column(Integer, primary_key=True)
     league_id = Column(Integer, ForeignKey('league.league_id'))
     season_id = Column(Integer, ForeignKey('season.season_id'))
-    matchday = Column(Integer)
+    home_matchday = Column(Integer)
     date = Column(Date)
     time = Column(String(5))  # Time stored in HH:MM format
     home_team_id = Column(Integer, ForeignKey('team.team_id'))

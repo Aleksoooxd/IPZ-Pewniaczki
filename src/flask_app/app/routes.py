@@ -3,7 +3,7 @@ from sqlalchemy import or_, desc
 from sqlalchemy.orm import aliased
 from flask import Blueprint, render_template, request, abort, jsonify
 from .db import db, FootballMatch, Team, League, FutureMatch, TeamValue, Predicted, MatchStats, MatchForm, TeamElo, \
-    TeamLeague, Season  # Added TeamLeague, Season
+    TeamLeague, Season,PredictedFuture  # Added TeamLeague, Season
 
 main = Blueprint('main', __name__)
 
@@ -180,7 +180,7 @@ def match_detail(match_type, match_id):
     elif match.date > date.today():
         status = "upcoming"
     else:
-        status = "live"
+        status = "live"  # This would be more complex to determine truly live matches
 
     home_form = None
     away_form = None
@@ -191,42 +191,134 @@ def match_detail(match_type, match_id):
     home_elo = None
     away_elo = None
     predictions = []
-    h2h_data = None
     home_h2h_data = None
     away_h2h_data = None
     home_last_3_matches = []
     away_last_3_matches = []
 
-    if isinstance(match, FutureMatch):
-        season_id = match.season.season_id
-        home_team_id = match.home_team.team_id
-        away_team_id = match.away_team.team_id
-        match_date_for_h3h = match.date
+    # Common variables for both past and future matches
+    home_team_id = match.home_team_id
+    away_team_id = match.away_team_id
+    match_date_for_h3h = match.date
+    season_id = match.season.season_id if match.season else None  # For future matches, season might not be loaded initially
 
+    if isinstance(match, FutureMatch):
+        # Fetch latest ELO ratings
         home_elo_obj = TeamElo.query.filter_by(team_id=home_team_id).order_by(desc(TeamElo.last_updated)).first()
         away_elo_obj = TeamElo.query.filter_by(team_id=away_team_id).order_by(desc(TeamElo.last_updated)).first()
         home_elo = home_elo_obj.rating if home_elo_obj else None
         away_elo = away_elo_obj.rating if away_elo_obj else None
 
-        home_value_obj = TeamValue.query.filter_by(team_id=home_team_id, season_id=season_id).first()
-        away_value_obj = TeamValue.query.filter_by(team_id=away_team_id, season_id=season_id).first()
-        home_value = home_value_obj.value if home_value_obj else None
-        away_value = away_value_obj.value if away_value_obj else None
+        # Fetch latest team values (assuming season_id is available for the future match's season)
+        if season_id:
+            home_value_obj = TeamValue.query.filter_by(team_id=home_team_id, season_id=season_id).first()
+            away_value_obj = TeamValue.query.filter_by(team_id=away_team_id, season_id=season_id).first()
+            home_value = home_value_obj.value if home_value_obj else None
+            away_value = away_value_obj.value if away_value_obj else None
 
-        home_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='home').first()
-        away_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='away').first()
+        # Predictions for future matches
+        predictions = PredictedFuture.query.filter_by(match_id=match_id).all()
 
-        home_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='home').first()
-        away_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='away').first()
-
-        predictions = Predicted.query.filter_by(match_id=match_id).all()
-
-        home_h2h_data = home_form if home_form and home_form.h2h_matches else None
-        away_h2h_data = away_form if away_form and away_form.h2h_matches else None
-
+        # For future matches, fetch form and stats from the LATEST PAST MATCH of each team
         HomeTeamAlias = aliased(Team)
         AwayTeamAlias = aliased(Team)
 
+        # Home Team's last past match
+        latest_home_past_match = db.session.query(FootballMatch).filter(
+            or_(FootballMatch.home_team_id == home_team_id, FootballMatch.away_team_id == home_team_id),
+            FootballMatch.date < match_date_for_h3h,
+            FootballMatch.result.isnot(None)  # Ensure it's a finished match
+        ).order_by(desc(FootballMatch.date), desc(FootballMatch.match_id)).first()
+
+        if latest_home_past_match:
+            team_side_in_last_match = 'home' if latest_home_past_match.home_team_id == home_team_id else 'away'
+            home_form = MatchForm.query.filter_by(match_id=latest_home_past_match.match_id,
+                                                  team_side=team_side_in_last_match).first()
+            # No home_stats (bookmaker odds) for future matches
+
+        # Away Team's last past match
+        latest_away_past_match = db.session.query(FootballMatch).filter(
+            or_(FootballMatch.home_team_id == away_team_id, FootballMatch.away_team_id == away_team_id),
+            FootballMatch.date < match_date_for_h3h,
+            FootballMatch.result.isnot(None)  # Ensure it's a finished match
+        ).order_by(desc(FootballMatch.date), desc(FootballMatch.match_id)).first()
+
+        if latest_away_past_match:
+            team_side_in_last_match = 'home' if latest_away_past_match.home_team_id == away_team_id else 'away'
+            away_form = MatchForm.query.filter_by(match_id=latest_away_past_match.match_id,
+                                                  team_side=team_side_in_last_match).first()
+            # No away_stats (bookmaker odds) for future matches
+
+        # Calculate H2H for future matches based on historical data
+        past_h2h_matches = db.session.query(FootballMatch).filter(
+            or_(
+                (FootballMatch.home_team_id == home_team_id) & (FootballMatch.away_team_id == away_team_id),
+                (FootballMatch.home_team_id == away_team_id) & (FootballMatch.away_team_id == home_team_id)
+            ),
+            FootballMatch.date < match_date_for_h3h,
+            FootballMatch.result.isnot(None)
+        ).order_by(desc(FootballMatch.date)).all()
+
+        # Initialize H2H stats for display
+        h2h_matches_count = len(past_h2h_matches)
+        h2h_home_wins_count = 0
+        h2h_draws_count = 0
+        h2h_away_wins_count = 0
+        h2h_home_goals_for = 0
+        h2h_home_goals_against = 0
+        h2h_last_5_points_home = 0
+
+        # Calculate H2H statistics from the perspective of the HOME team of the current future match
+        for h2h_match in past_h2h_matches:
+            if h2h_match.home_team_id == home_team_id:  # Home team of future match was home in this h2h match
+                if h2h_match.result == 'H':
+                    h2h_home_wins_count += 1
+                    h2h_last_5_points_home += 3
+                elif h2h_match.result == 'D':
+                    h2h_draws_count += 1
+                    h2h_last_5_points_home += 1
+                else:  # h2h_match.result == 'A'
+                    h2h_away_wins_count += 1  # This is a loss for the current home team
+                    h2h_last_5_points_home += 0
+                h2h_home_goals_for += (h2h_match.fthg or 0)
+                h2h_home_goals_against += (h2h_match.ftag or 0)
+            else:  # Away team of future match was home in this h2h match (i.e., home team of future match was away)
+                if h2h_match.result == 'A':
+                    h2h_home_wins_count += 1
+                    h2h_last_5_points_home += 3
+                elif h2h_match.result == 'D':
+                    h2h_draws_count += 1
+                    h2h_last_5_points_home += 1
+                else:  # h2h_match.result == 'H'
+                    h2h_away_wins_count += 1  # This is a loss for the current home team
+                    h2h_last_5_points_home += 0
+                h2h_home_goals_for += (h2h_match.ftag or 0)
+                h2h_home_goals_against += (h2h_match.fthg or 0)
+
+        # Create a mock H2H data object for template rendering for the home team
+        home_h2h_data = {
+            'h2h_matches': h2h_matches_count,
+            'h2h_wins': h2h_home_wins_count,
+            'h2h_draws': h2h_draws_count,
+            'h2h_losses': h2h_matches_count - h2h_home_wins_count - h2h_draws_count,
+            # Losses from home team perspective
+            'h2h_goals_for': h2h_home_goals_for,
+            'h2h_goals_against': h2h_home_goals_against,
+            'h2h_last_5_points': h2h_last_5_points_home
+        }
+        # For the away team, the wins/losses are reversed, and goals for/against are swapped.
+        away_h2h_data = {
+            'h2h_matches': h2h_matches_count,
+            'h2h_wins': h2h_away_wins_count,  # Away team wins are home team's losses
+            'h2h_draws': h2h_draws_count,
+            'h2h_losses': h2h_home_wins_count,  # Away team losses are home team's wins
+            'h2h_goals_for': h2h_home_goals_against,  # Away team's goals for are home team's goals against
+            'h2h_goals_against': h2h_home_goals_for,  # Away team's goals against are home team's goals for
+            'h2h_last_5_points': h2h_last_5_points_home
+            # This would need more complex logic to represent away's last 5 if different
+        }
+
+        # Last 3 matches for home and away teams (from past matches)
         home_last_3_matches = db.session.query(
             FootballMatch, HomeTeamAlias.name.label('home_team_name'), AwayTeamAlias.name.label('away_team_name')
         ).outerjoin(
@@ -235,7 +327,8 @@ def match_detail(match_type, match_id):
             AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
         ).filter(
             or_(FootballMatch.home_team_id == home_team_id, FootballMatch.away_team_id == home_team_id),
-            FootballMatch.date < match_date_for_h3h
+            FootballMatch.date < match_date_for_h3h,
+            FootballMatch.result.isnot(None)  # Only finished matches
         ).order_by(
             desc(FootballMatch.date)
         ).limit(3).all()
@@ -248,7 +341,8 @@ def match_detail(match_type, match_id):
             AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
         ).filter(
             or_(FootballMatch.home_team_id == away_team_id, FootballMatch.away_team_id == away_team_id),
-            FootballMatch.date < match_date_for_h3h
+            FootballMatch.date < match_date_for_h3h,
+            FootballMatch.result.isnot(None)  # Only finished matches
         ).order_by(
             desc(FootballMatch.date)
         ).limit(3).all()
@@ -257,7 +351,7 @@ def match_detail(match_type, match_id):
     else:  # If it's a past match (FootballMatch)
         home_elo = match.home_elo
         away_elo = match.away_elo
-        match_date_for_h3h = match.date
+        match_date_for_h3h = match.date  # Already set above
 
         home_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='home').first()
         away_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='away').first()
@@ -268,12 +362,10 @@ def match_detail(match_type, match_id):
         home_value = match.home_value_ref.value if match.home_value_ref else None
         away_value = match.away_value_ref.value if match.away_value_ref else None
 
-        predictions = match.predictions
+        predictions = match.predictions  # Predictions from the 'Predicted' table for past matches
 
         home_h2h_data = home_form if home_form and home_form.h2h_matches else None
         away_h2h_data = away_form if away_form and away_form.h2h_matches else None
-
-        h2h_data = home_h2h_data or away_h2h_data  # This seems to be a fallback, but home_h2h_data and away_h2h_data are used separately in template
 
         HomeTeamAlias = aliased(Team)
         AwayTeamAlias = aliased(Team)
@@ -309,15 +401,13 @@ def match_detail(match_type, match_id):
                            status=status,
                            home_form=home_form,
                            away_form=away_form,
-                           home_stats=home_stats,
-                           away_stats=away_stats,
+                           home_stats=home_stats,  # Will be None for future matches
+                           away_stats=away_stats,  # Will be None for future matches
                            home_value=home_value,
                            away_value=away_value,
                            home_elo=home_elo,
                            away_elo=away_elo,
                            predictions=predictions,
-                           h2h_data=h2h_data,
-                           # This is still here, but home_h2h_data and away_h2h_data are used in template
                            home_h2h_data=home_h2h_data,
                            away_h2h_data=away_h2h_data,
                            home_last_3_matches=home_last_3_matches,
