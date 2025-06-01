@@ -243,9 +243,9 @@ def match_detail(match_type, match_id):
         away_last_3_matches = db.session.query(
             FootballMatch, HomeTeamAlias.name.label('home_team_name'), AwayTeamAlias.name.label('away_team_name')
         ).outerjoin(
-            HomeTeamAlias, FootballMatch.home_team_id == HomeTeam.team_id
+            HomeTeamAlias, FootballMatch.home_team_id == HomeTeamAlias.team_id
         ).outerjoin(
-            AwayTeamAlias, FootballMatch.away_team_id == AwayTeam.team_id
+            AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
         ).filter(
             or_(FootballMatch.home_team_id == away_team_id, FootballMatch.away_team_id == away_team_id),
             FootballMatch.date < match_date_for_h3h
