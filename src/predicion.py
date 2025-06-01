@@ -150,6 +150,8 @@ def drop_non_predictive_columns(df):
         'away_matchday',  # Sequential information
         'league',  # League identifier
         'season',  # Season identifier
+        'home_goals',  # Raw goal counts
+        'away_goals',  # Raw goal counts
         # 'away_team_strength', # This column does not exist in the dataframe based on the provided code
         # 'home_team_strength', # This column does not exist in the dataframe based on the provided code
         'home_elo_change',
@@ -219,9 +221,9 @@ def train_neural_network(df_model, features_list, result_map):
     model = NeuralNet(input_size, num_classes)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.002)
 
-    num_epochs = 50  # You can adjust this
+    num_epochs = 100  # You can adjust this
 
     for epoch in range(num_epochs):
         model.train()
