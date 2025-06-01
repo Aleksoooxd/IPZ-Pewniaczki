@@ -8,7 +8,7 @@ class Config:
 
     ENCRYPT = 'yes'
     TRUST_SERVER_CERTIFICATE = 'no'
-    TIMEOUT = 30
+    TIMEOUT = 60
 
     params = urllib.parse.quote_plus(
         f"DRIVER=ODBC Driver 17 for SQL Server;"

@@ -1,14 +1,22 @@
 import pandas as pd
-from flask_app.app.db import db, app
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.optim as optim
 from sqlalchemy import select
 from sqlalchemy.orm import aliased
-import seaborn as sns
-import matplotlib.pyplot as plt
+from torch.utils.data import Dataset, DataLoader
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from tqdm import tqdm
+
+from flask_app.app.db import db, app, MatchStats, League, Season, Team
 from flask_app.app.db import (
-    FootballMatch, League, Season, Team, TeamValue,
-    MatchStats, MatchForm
+    FootballMatch, FutureMatch, TeamValue, MatchForm, Predicted
 )
 
+
+# ( ... existing create_match_dataframe_sql and drop_non_predictive_columns functions ... )
 
 def create_match_dataframe_sql():
     """
@@ -96,7 +104,14 @@ def create_match_dataframe_sql():
             MatchForm.goals_last_5,
             MatchForm.goals_season,
             MatchForm.team_placement,
-            MatchForm.team_strength
+            MatchForm.h2h_wins,
+            MatchForm.h2h_draws,
+            MatchForm.h2h_losses,
+            MatchForm.h2h_matches,
+            MatchForm.h2h_goals_for,
+            MatchForm.h2h_goals_against,
+            MatchForm.h2h_last_5_points
+            # MatchForm.team_strength # This column does not exist in MatchForm definition in db.py
         )
         df_form = pd.read_sql_query(stmt_form, engine)
         if not df_form.empty:
@@ -111,9 +126,12 @@ def create_match_dataframe_sql():
         # Add derived ELO features
         if 'home_elo' in df_main and 'away_elo' in df_main:
             # Calculate win probability based on ELO
-            df_main['home_win_probability'] = 1.0 / (1.0 + 10 ** ((df_main['away_elo'] - (df_main['home_elo'] + 100)) / 400))
-            df_main['draw_probability'] = 1 - df_main['home_win_probability'] - (1.0 / (1.0 + 10 ** ((df_main['home_elo'] - df_main['away_elo']) / 400)))
-            df_main['away_win_probability'] = 1.0 / (1.0 + 10 ** ((df_main['home_elo'] + 100 - df_main['away_elo']) / 400))
+            df_main['home_win_probability'] = 1.0 / (
+                        1.0 + 10 ** ((df_main['away_elo'] - (df_main['home_elo'] + 100)) / 400))
+            df_main['draw_probability'] = 1 - df_main['home_win_probability'] - (
+                        1.0 / (1.0 + 10 ** ((df_main['home_elo'] - df_main['away_elo']) / 400)))
+            df_main['away_win_probability'] = 1.0 / (
+                        1.0 + 10 ** ((df_main['home_elo'] + 100 - df_main['away_elo']) / 400))
 
         return df_main
 
@@ -132,8 +150,8 @@ def drop_non_predictive_columns(df):
         'away_matchday',  # Sequential information
         'league',  # League identifier
         'season',  # Season identifier
-        'away_team_strength',
-        'home_team_strength',
+        # 'away_team_strength', # This column does not exist in the dataframe based on the provided code
+        # 'home_team_strength', # This column does not exist in the dataframe based on the provided code
         'home_elo_change',
         'away_elo_change',
         'is_surprise',  # Boolean flags
@@ -145,37 +163,239 @@ def drop_non_predictive_columns(df):
     print(f"Dropping non-predictive columns: {cols_to_drop}")
     return df.drop(columns=cols_to_drop)
 
+
+# New additions for PyTorch
+class MatchDataset(Dataset):
+    def __init__(self, features, targets=None):
+        self.features = torch.tensor(features, dtype=torch.float32)
+        self.targets = torch.tensor(targets, dtype=torch.long) if targets is not None else None
+
+    def __len__(self):
+        return len(self.features)
+
+    def __getitem__(self, idx):
+        if self.targets is not None:
+            return self.features[idx], self.targets[idx]
+        return self.features[idx]
+
+
+class NeuralNet(nn.Module):
+    def __init__(self, input_size, num_classes):
+        super(NeuralNet, self).__init__()
+        self.fc1 = nn.Linear(input_size, 128)
+        self.relu1 = nn.ReLU()
+        self.dropout1 = nn.Dropout(0.3)
+        self.fc2 = nn.Linear(128, 64)
+        self.relu2 = nn.ReLU()
+        self.dropout2 = nn.Dropout(0.3)
+        self.fc3 = nn.Linear(64, num_classes)
+
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.relu1(x)
+        x = self.dropout1(x)
+        x = self.fc2(x)
+        x = self.relu2(x)
+        x = self.dropout2(x)
+        x = self.fc3(x)
+        return x
+
+
+def train_neural_network(df_model, features_list, result_map):
+    X = df_model[features_list].values
+    y = df_model['target'].values
+
+    # Scale features
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42, stratify=y)
+
+    train_dataset = MatchDataset(X_train, y_train)
+    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+
+    input_size = X_train.shape[1]
+    num_classes = len(result_map)
+    model = NeuralNet(input_size, num_classes)
+
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+    num_epochs = 50  # You can adjust this
+
+    for epoch in range(num_epochs):
+        model.train()
+        for i, (inputs, labels) in enumerate(train_loader):
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        # You might want to add validation steps here
+        print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}')
+
+    return model, scaler
+
+
+def predict_future_matches_nn(model, scaler, features_list, result_map):
+    with app.app_context():
+        engine = db.engine
+
+        # Get all football matches
+        matches_to_predict_df = create_match_dataframe_sql()
+
+        # Identify which matches already have predictions
+        existing_predictions_df = pd.read_sql_table('predicted', engine)
+        if not existing_predictions_df.empty:
+            predicted_match_ids = existing_predictions_df['match_id'].unique()
+            # Filter out matches that already have predictions
+            matches_to_predict_df = matches_to_predict_df[~matches_to_predict_df['match_id'].isin(predicted_match_ids)]
+
+        # Store match_ids before dropping columns
+        match_ids = matches_to_predict_df['match_id'].copy()
+
+        # Apply the same non-predictive column dropping as in training
+        matches_to_predict_df_processed = drop_non_predictive_columns(matches_to_predict_df.copy())
+
+        # Add match_id back to the processed dataframe
+        matches_to_predict_df_processed['match_id'] = match_ids
+
+        # Handle 'consensus' column - one-hot encode if it's categorical
+        # Ensure 'consensus' column is processed if it exists in the dataframe
+        if 'consensus' in matches_to_predict_df_processed.columns and matches_to_predict_df_processed['consensus'].dtype == 'object':
+            matches_to_predict_df_processed = pd.get_dummies(matches_to_predict_df_processed, columns=['consensus'], prefix='consensus')
+
+        # After get_dummies, ensure all expected dummy columns from features_list are present
+        # and any extra ones are removed.
+        # Identify dummy columns related to 'consensus' that are expected in features_list
+        expected_consensus_dummy_cols = [col for col in features_list if col.startswith('consensus_')]
+
+        # Add missing expected dummy columns with 0
+        for col in expected_consensus_dummy_cols:
+            if col not in matches_to_predict_df_processed.columns:
+                matches_to_predict_df_processed[col] = 0
+
+        # Remove any dummy columns that are in matches_to_predict_df_processed but not in expected_consensus_dummy_cols
+        # This handles cases where prediction data has categories not seen in training
+        current_consensus_dummy_cols = [col for col in matches_to_predict_df_processed.columns if col.startswith('consensus_')]
+        extra_dummy_cols_to_drop = [col for col in current_consensus_dummy_cols if col not in expected_consensus_dummy_cols]
+        if extra_dummy_cols_to_drop:
+            matches_to_predict_df_processed.drop(columns=extra_dummy_cols_to_drop, inplace=True)
+
+        # Filter out rows with missing data required for prediction after processing
+        matches_to_predict_df_processed.dropna(subset=features_list, inplace=True)
+
+        # Prepare the features for prediction
+        X_to_predict = matches_to_predict_df_processed[features_list].values
+        X_to_predict_scaled = scaler.transform(X_to_predict)  # Use the same scaler as training
+
+        predict_dataset = MatchDataset(X_to_predict_scaled)
+        predict_loader = DataLoader(predict_dataset, batch_size=64, shuffle=False)
+
+        label_map = {0: 'H', 1: 'D', 2: 'A'}
+        predictions_to_save = []
+
+        model.eval()  # Set model to evaluation mode
+        with torch.no_grad():
+            # Keep track of the original match_ids corresponding to the predicted batches
+            original_indices = matches_to_predict_df_processed.index.tolist()
+
+            for i, inputs in enumerate(tqdm(predict_loader, desc="Processing matches", unit="batch")):
+                outputs = model(inputs)
+                probabilities = torch.softmax(outputs, dim=1)
+                confidences, predicted_classes = torch.max(probabilities, 1)
+
+                # Map back to original match_ids
+                # Get the slice of original indices for the current batch
+                batch_original_indices = original_indices[i * predict_loader.batch_size: (i + 1) * predict_loader.batch_size]
+                batch_match_ids = matches_to_predict_df_processed.loc[batch_original_indices]['match_id'].tolist()
+
+
+                for j in range(len(batch_match_ids)):
+                    match_id = batch_match_ids[j]
+                    predicted_label = label_map[predicted_classes[j].item()]
+                    confidence = confidences[j].item()
+
+                    # Add new prediction to the list, to be saved or updated later
+                    predictions_to_save.append({
+                        'match_id': match_id,
+                        'predicted_result': predicted_label,
+                        'confidence': confidence
+                    })
+
+        # Process predictions to save/update in DB
+        with db.session.begin_nested():  # Use nested transaction for efficiency
+            for pred_data in tqdm(predictions_to_save, desc="Saving predictions to database", unit="prediction"):
+                match_id = pred_data['match_id']
+                predicted_label = pred_data['predicted_result']
+                confidence = pred_data['confidence']
+
+                existing_prediction = db.session.execute(
+                    select(Predicted).filter_by(match_id=match_id)
+                ).scalar_one_or_none()
+
+                if existing_prediction:
+                    existing_prediction.predicted_result = predicted_label
+                    existing_prediction.confidence = confidence
+                else:
+                    prediction = Predicted(
+                        match_id=match_id,
+                        predicted_result=predicted_label,
+                        confidence=confidence
+                    )
+                    db.session.add(prediction)
+        db.session.commit()
+        return pd.DataFrame(predictions_to_save)
+
+
 def main():
     df = create_match_dataframe_sql()
     df = drop_non_predictive_columns(df)
-    important_columns = ['result', 'home_goals', 'away_goals', 'home_elo', 'away_elo','elo_difference',
-                         'home_win_probability', 'draw_probability', 'away_win_probability','home_value', 'away_value','home_form_last_3', 'away_form_last_3','home_form_last_5', 'away_form_last_5','home_form_season', 'away_form_season','home_team_placement', 'away_team_placement','home_goals_last_3', 'away_goals_last_3','home_goals_last_5', 'away_goals_last_5','home_goals_season', 'away_goals_season','home_mean', 'away_mean','home_std', 'away_std','home_shannon', 'away_shannon','home_cv', 'away_cv','home_gini', 'away_gini','home_hhi', 'away_hhi']
-    csv_path = 'matches_data.csv'
-    df.to_csv(csv_path, index=False)
-    print(f"DataFrame saved to {csv_path}")
-    plt.rcParams.update({'font.size': 12})
-    g = sns.pairplot(
-        df[important_columns],
-        hue='result',
-        diag_kind='kde',
-        height=3.5,  # Increase size of each subplot
-        aspect=1.2,  # Slightly wider than tall
-        plot_kws={'alpha': 0.6, 's': 80},  # Larger and semi-transparent markers
-        diag_kws={'linewidth': 2, 'alpha': 0.8}
-    )
 
-    # Improve legend and labels
-    g._legend.set_title("Match Result", fontsize=14)
-    plt.subplots_adjust(top=0.95)
+    # Define the features that will be used for training
+    # This list should match the columns available after dropping non-predictive columns
+    features_list = [
+        'home_value', 'away_value', 'home_form_season', 'away_form_season',
+        'home_elo', 'away_elo', 'elo_difference',
+        'home_win_probability', 'draw_probability', 'away_win_probability',
+        'home_form_last_3', 'away_form_last_3',
+        'home_form_last_5', 'away_form_last_5',
+        'home_goals_last_3', 'away_goals_last_3',
+        'home_goals_last_5', 'away_goals_last_5',
+        'home_goals_season', 'away_goals_season',
+        'home_mean', 'away_mean',
+        'home_std', 'away_std',
+        'home_shannon', 'away_shannon',
+        'home_cv', 'away_cv',
+        'home_gini', 'away_gini',
+        'home_hhi', 'away_hhi',
+        'consensus','home_h2h_wins', 'home_h2h_draws', 'home_h2h_losses','home_h2h_matches','home_h2h_goals_for','home_h2h_goals_against','home_h2h_last_5_points'
+        # Assuming consensus can be one-hot encoded if not numeric
+    ]
 
-    # Save the plot with higher resolution
-    plot_path = 'matches_pairplot.png'
-    g.savefig(plot_path, bbox_inches='tight', dpi=400)
-    print(f"Pairplot saved to {plot_path}")
+    # Filter df_model to only include relevant columns
+    # Ensure 'target' column exists and is mapped to numerical values
+    result_map = {'H': 0, 'D': 1, 'A': 2}
+    df['target'] = df['result'].map(result_map)
+    df_model = df.dropna(subset=features_list + ['target'])  # Ensure no NaNs in features or target
 
-    plt.show()
+    # Handle 'consensus' column - one-hot encode if it's categorical
+    if 'consensus' in features_list and df_model['consensus'].dtype == 'object':
+        df_model = pd.get_dummies(df_model, columns=['consensus'], prefix='consensus')
+        # Update features_list to include the new dummy variables
+        features_list.remove('consensus')
+        features_list.extend([col for col in df_model.columns if col.startswith('consensus_')])
 
+    print("Training Neural Network model...")
+    model, scaler = train_neural_network(df_model, features_list, result_map)
 
+    print("Predicting future matches with Neural Network...")
+    df_predictions = predict_future_matches_nn(model, scaler, features_list, result_map)
+
+    print("✅ Zapisano predykcje do bazy danych:")
+    print(df_predictions.head())
 
 
 if __name__ == '__main__':
