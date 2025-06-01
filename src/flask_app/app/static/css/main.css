@@ -22,30 +22,30 @@ body.dark-mode .sidebar-toggle {
     box-shadow: 0 3px 8px rgba(0,0,0,0.3);
 }
 
-/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -300px; /* Hidden by default */
-  width: 280px; /* Slightly wider sidebar */
+  left: -280px; /* Upewnij się, że ta wartość jest równa szerokości sidebara */
+  width: 280px;
   height: 100%;
   background-color: var(--card-bg-light);
   color: var(--text-color-light);
   padding: 25px;
-  box-shadow: 3px 0 10px rgba(0,0,0,0.2);
-  transition: left 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-  z-index: 2000; /* Higher z-index to overlap sidebar-toggle */
+  box-shadow: none; /* USUŃ CIEŃ W STANIE ZAMKNIĘTYM */
+  transition: left 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  z-index: 2000;
   overflow-y: auto;
+    box-sizing: border-box; /* DODAĆ TĘ LINIĘ */
 }
-
 body.dark-mode .sidebar {
     background-color: var(--card-bg-dark);
     color: var(--text-color-dark);
-    box-shadow: 4px 0 15px rgba(0,0,0,0.4);
+    box-shadow: none; /* USUŃ CIEŃ W STANIE ZAMKNIĘTYM DLA DARK MODE */
 }
 
 .sidebar.open {
   left: 0;
+    box-shadow: 3px 0 10px rgba(0,0,0,0.2);
 }
 
 .sidebar-close {
@@ -95,6 +95,10 @@ body.dark-mode .sidebar h3 {
 
 body.dark-mode .sidebar-links a {
     color: var(--text-color-dark);
+}
+
+body.dark-mode .sidebar.open { /* Apply dark mode shadow when open */
+    box-shadow: 4px 0 15px rgba(0,0,0,0.4);
 }
 
 
