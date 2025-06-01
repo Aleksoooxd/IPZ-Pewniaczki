@@ -34,18 +34,29 @@
 <div class="league-content-wrapper">
   <h2 class="page-title">{{ league.code | replace("premier league", "Premier League") | replace("spremier league", "Scottish Premiership") | title }}</h2>
 
+  <div class="season-filter-container card">
+      <label for="season-select">Wybierz sezon:</label>
+      <select id="season-select" onchange="changeSeason()">
+          <option value="all_seasons" {% if selected_season == 'all_seasons' %}selected{% endif %}>Wszystkie sezony</option>
+          {% for season_name in available_seasons %}
+              <option value="{{ season_name }}" {% if selected_season == season_name %}selected{% endif %}>{{ season_name }}</option>
+          {% endfor %}
+      </select>
+  </div>
+
   <div class="team-list card">
     <h3>Drużyny w lidze</h3>
     <ul class="team-links">
       {% for team in teams %}
         <li>
-    <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name) }}">
+    {# Path now includes the selected_season with '/' replaced by space #}
+    <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name, season_name=selected_season | replace('/', ' ')) }}">
       <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.name }} logo" class="team-logo-inline">
       {{ team.name }}
     </a>
   </li>
       {% else %}
-        <li>Brak drużyn dla tej ligi.</li>
+        <li>Brak drużyn dla tej ligi w wybranym sezonie.</li>
       {% endfor %}
     </ul>
   </div>
@@ -71,5 +82,13 @@
       }
     });
   });
+
+  function changeSeason() {
+      const seasonSelect = document.getElementById('season-select');
+      const selectedSeason = seasonSelect.value;
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('season', selectedSeason);
+      window.location.href = currentUrl.toString();
+  }
 </script>
 {% endblock %}

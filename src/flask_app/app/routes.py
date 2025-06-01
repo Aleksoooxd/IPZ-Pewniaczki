@@ -1,3 +1,5 @@
+# src/flask_app/app/routes.py
+
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify,abort
 from sqlalchemy.orm import aliased
 from datetime import datetime
@@ -6,7 +8,8 @@ from flask import render_template, abort
 from sqlalchemy import or_, desc
 
 
-from .db import db, FootballMatch, Team, League, FutureMatch , TeamValue, Predicted,MatchStats,MatchForm,TeamElo
+from .db import db, FootballMatch, Team, League, FutureMatch , TeamValue, Predicted,MatchStats,MatchForm,TeamElo, TeamLeague, Season
+
 
 main = Blueprint('main', __name__)
 @main.route('/')
@@ -136,6 +139,13 @@ LEAGUE_NAME_TO_URL= {
 }
 
 
+def get_current_season_name():
+    current_year = datetime.now().year
+    if datetime.now().month < 8:
+        season = f"{current_year - 1}/{str(current_year)[-2:]}"
+    else:
+        season = f"{current_year}/{str(current_year + 1)[-2:]}"
+    return season
 
 
 @main.route('/match/<string:match_type>/<int:match_id>')
@@ -174,15 +184,15 @@ def match_detail(match_type, match_id):
     h2h_data = None
     home_h2h_data = None
     away_h2h_data = None
-    home_last_3_matches = [] # Added for last 3 matches
-    away_last_3_matches = [] # Added for last 3 matches
+    home_last_3_matches = []
+    away_last_3_matches = []
 
 
     if isinstance(match, FutureMatch):
         season_id = match.season.season_id
         home_team_id = match.home_team.team_id
         away_team_id = match.away_team.team_id
-        match_date_for_h3h = match.date # Use future match date for h2h and last 3 matches
+        match_date_for_h3h = match.date
 
         # Elo
         home_elo_obj = TeamElo.query.filter_by(team_id=home_team_id).order_by(desc(TeamElo.last_updated)).first()
@@ -223,7 +233,7 @@ def match_detail(match_type, match_id):
             AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
         ).filter(
             or_(FootballMatch.home_team_id == home_team_id, FootballMatch.away_team_id == home_team_id),
-            FootballMatch.date < match_date_for_h3h # Only matches before the current future match
+            FootballMatch.date < match_date_for_h3h
         ).order_by(
             desc(FootballMatch.date)
         ).limit(3).all()
@@ -231,12 +241,12 @@ def match_detail(match_type, match_id):
         away_last_3_matches = db.session.query(
             FootballMatch, HomeTeamAlias.name.label('home_team_name'), AwayTeamAlias.name.label('away_team_name')
         ).outerjoin(
-            HomeTeamAlias, FootballMatch.home_team_id == HomeTeamAlias.team_id
+            HomeTeamAlias, FootballMatch.home_team_id == HomeTeam.team_id
         ).outerjoin(
-            AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
+            AwayTeamAlias, FootballMatch.away_team_id == AwayTeam.team_id
         ).filter(
             or_(FootballMatch.home_team_id == away_team_id, FootballMatch.away_team_id == away_team_id),
-            FootballMatch.date < match_date_for_h3h # Only matches before the current future match
+            FootballMatch.date < match_date_for_h3h
         ).order_by(
             desc(FootballMatch.date)
         ).limit(3).all()
@@ -246,7 +256,7 @@ def match_detail(match_type, match_id):
         # Past match
         home_elo = match.home_elo
         away_elo = match.away_elo
-        match_date_for_h3h = match.date # Use the past match date for h2h and last 3 matches
+        match_date_for_h3h = match.date
 
         home_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='home').first()
         away_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='away').first()
@@ -278,7 +288,7 @@ def match_detail(match_type, match_id):
             AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
         ).filter(
             or_(FootballMatch.home_team_id == match.home_team_id, FootballMatch.away_team_id == match.home_team_id),
-            FootballMatch.date < match_date_for_h3h # Only matches before the current past match
+            FootballMatch.date < match_date_for_h3h
         ).order_by(
             desc(FootballMatch.date)
         ).limit(3).all()
@@ -291,7 +301,7 @@ def match_detail(match_type, match_id):
             AwayTeamAlias, FootballMatch.away_team_id == AwayTeamAlias.team_id
         ).filter(
             or_(FootballMatch.home_team_id == match.away_team_id, FootballMatch.away_team_id == match.away_team_id),
-            FootballMatch.date < match_date_for_h3h # Only matches before the current past match
+            FootballMatch.date < match_date_for_h3h
         ).order_by(
             desc(FootballMatch.date)
         ).limit(3).all()
@@ -312,12 +322,16 @@ def match_detail(match_type, match_id):
                            h2h_data=h2h_data,
                            home_h2h_data=home_h2h_data,
                            away_h2h_data=away_h2h_data,
-                           home_last_3_matches=home_last_3_matches, # Passed
-                           away_last_3_matches=away_last_3_matches) # Passed
+                           home_last_3_matches=home_last_3_matches,
+                           away_last_3_matches=away_last_3_matches)
 
 
-@main.route('/league/<league_code>/team/<team_name>')
-def team_view(league_code, team_name):
+@main.route('/league/<league_code>/team/<team_name>/<string:season_name>')
+def team_view(league_code, team_name, season_name):
+    # Note: If season_name (e.g., "2024 25") is used to query the Season table,
+    # it must be converted back to the database format (e.g., "2024/25").
+    # Example: db_season_name = season_name.replace(' ', '/') if season_name != 'all_seasons' else season_name
+
     # Fetch the team object to get its ID
     team = db.session.query(Team).filter_by(name=team_name).first()
     team_id = team.team_id if team else None
@@ -329,8 +343,7 @@ def team_view(league_code, team_name):
     else:
         display_league_name = league_code.replace("premierleague", "Premier League").replace("scotishpremierleague", "Scottish Premiership").title()
 
-
-    return render_template('team.html', league_code=league_code, team_name=team_name, team_id=team_id, league_name=display_league_name)
+    return render_template('team.html', league_code=league_code, team_name=team_name, team_id=team_id, league_name=display_league_name, season_name=season_name)
 
 
 @main.route('/league/<league_code>')
@@ -341,18 +354,38 @@ def league_view(league_code):
 
     league = League.query.filter_by(code=db_code).first_or_404()
 
-    teams = db.session.query(Team).join(
-        FootballMatch,
-        ((FootballMatch.league_id == league.league_id) &
-         ((FootballMatch.home_team_id == Team.team_id) |
-          (FootballMatch.away_team_id == Team.team_id)))
-    ).distinct().order_by(Team.name).all()
+    # Get all available seasons for the dropdown
+    all_seasons_db = db.session.query(Season.name).order_by(Season.name.desc()).all()
+    # Convert list of tuples to list of strings
+    available_seasons = [s[0] for s in all_seasons_db]
+
+    # Get selected season from request arguments, default to None (meaning all seasons)
+    selected_season_name = request.args.get('season')
+
+    teams_query = db.session.query(Team).join(TeamLeague) \
+        .filter(TeamLeague.league_id == league.league_id)
+
+    if selected_season_name and selected_season_name != "all_seasons":
+        season_obj = Season.query.filter_by(name=selected_season_name).first()
+        if season_obj:
+            teams_query = teams_query.filter(TeamLeague.season_id == season_obj.season_id)
+        else:
+            # If a specific season is requested but not found, fall back to all teams
+            print(f"Warning: Requested season '{selected_season_name}' not found.")
+            selected_season_name = "all_seasons"
+    else:
+        selected_season_name = "all_seasons"
+
+
+    teams = teams_query.distinct().order_by(Team.name).all()
 
     return render_template(
         'league_view.html',
         league=league,
         teams=teams,
-        league_name_to_url=LEAGUE_NAME_TO_URL
+        league_name_to_url=LEAGUE_NAME_TO_URL,
+        available_seasons=available_seasons,
+        selected_season=selected_season_name
     )
 
 
