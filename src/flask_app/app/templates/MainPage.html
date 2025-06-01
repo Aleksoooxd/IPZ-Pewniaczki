@@ -34,7 +34,7 @@
     <div class="date-container card"> {# Added 'card' class #}
       <label for="date-picker">Wybierz datę:</label>
       <input type="date" id="date-picker" class="date-picker">
-      <button class="button primary" onclick="fetchMatches()">Pokaż mecze</button>
+      <button class="button primary" onclick="redirectToMatches()">Pokaż mecze</button>
 
       {# Zmodyfikowana sekcja: usunięto div.filter-sort-controls #}
       <label for="league-filter">Filtruj ligę:</label>
@@ -89,6 +89,18 @@
     "spremier league": "scottish-premiership.png",
     "serie a": "serie-a.png"
   };
+
+  // --- NEW FUNCTION TO REDIRECT ---
+  function redirectToMatches() {
+    const selectedDate = document.getElementById('date-picker').value;
+    if (selectedDate) {
+      // Construct the URL with the selected date as a query parameter
+      window.location.href = `/main?date=${selectedDate}`;
+    } else {
+      alert('Proszę wybrać datę przed kliknięciem "Pokaż mecze".');
+    }
+  }
+  // --- END NEW FUNCTION ---
 
   async function fetchMatches() {
     const selectedDate = document.getElementById('date-picker').value;
@@ -241,7 +253,11 @@
       datePicker.value = today;
     }
 
-    fetchMatches();
+    // Call fetchMatches() only if a date parameter exists in the URL
+    // Otherwise, the initial page load will just show the date picker.
+    if (dateParam) {
+      fetchMatches();
+    }
   };
 </script>
 {% endblock %}

@@ -1,7 +1,7 @@
 import datetime
 from sqlalchemy import or_, desc
 from sqlalchemy.orm import aliased
-from flask import Blueprint, render_template, request, abort, jsonify
+from flask import Blueprint, render_template, request, abort, jsonify, redirect, url_for
 from .db import db, FootballMatch, Team, League, FutureMatch, TeamValue, Predicted, MatchStats, MatchForm, TeamElo, \
     TeamLeague, Season,PredictedFuture  # Added TeamLeague, Season
 
@@ -20,7 +20,13 @@ def home():
 def mainpage():
     """
     Renders the main page displaying matches, including a league selection sidebar.
+    Automatically redirects to today's date if no date is provided.
     """
+    date_param = request.args.get('date')
+    if not date_param:
+        today = datetime.date.today().strftime('%Y-%m-%d')
+        return redirect(url_for('main.mainpage', date=today)) # Redirect to today's date
+
     league_names = {
         "Premierleague": "Premier league",
         "Bundesliga": "Bundesliga",
@@ -34,7 +40,7 @@ def mainpage():
         "ScotishPremierLeague": "Premiership",
         "SerieA": "Serie A"
     }
-    return render_template('MainPage.html', league_names=league_names)
+    return render_template('MainPage.html', league_names=league_names) #
 
 
 @main.route('/api/matches')
