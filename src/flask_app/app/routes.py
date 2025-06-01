@@ -2,17 +2,25 @@ import datetime
 from sqlalchemy import or_, desc
 from sqlalchemy.orm import aliased
 from flask import Blueprint, render_template, request, abort, jsonify
-from .db import db, FootballMatch, Team, League, FutureMatch, TeamValue, Predicted, MatchStats, MatchForm, TeamElo, TeamLeague, Season # Added TeamLeague, Season
+from .db import db, FootballMatch, Team, League, FutureMatch, TeamValue, Predicted, MatchStats, MatchForm, TeamElo, \
+    TeamLeague, Season  # Added TeamLeague, Season
 
 main = Blueprint('main', __name__)
 
+
 @main.route('/')
 def home():
+    """
+    Renders the homepage of the application.
+    """
     return render_template('index.html')
 
 
 @main.route('/main')
 def mainpage():
+    """
+    Renders the main page displaying matches, including a league selection sidebar.
+    """
     league_names = {
         "Premierleague": "Premier league",
         "Bundesliga": "Bundesliga",
@@ -31,6 +39,10 @@ def mainpage():
 
 @main.route('/api/matches')
 def get_matches():
+    """
+    API endpoint to fetch football matches for a given date.
+    Combines past results and future fixtures.
+    """
     date_param = request.args.get('date')
 
     if not date_param:
@@ -39,7 +51,7 @@ def get_matches():
     try:
         match_date = datetime.datetime.strptime(date_param, "%Y-%m-%d").date()
     except ValueError:
-        return jsonify({"error": "Invalid date format. UseYYYY-MM-DD."}), 400
+        return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
 
     HomeTeam = aliased(Team)
     AwayTeam = aliased(Team)
@@ -133,6 +145,9 @@ LEAGUE_NAME_TO_URL = {
 
 
 def get_current_season_name():
+    """
+    Determines the current football season based on the current date.
+    """
     current_year = datetime.datetime.now().year
     if datetime.datetime.now().month < 8:
         season = f"{current_year - 1}/{str(current_year)[-2:]}"
@@ -143,6 +158,10 @@ def get_current_season_name():
 
 @main.route('/match/<string:match_type>/<int:match_id>')
 def match_detail(match_type, match_id):
+    """
+    Renders the detailed view for a single football match (past or future).
+    Displays various match statistics, team form, ELO ratings, and predictions.
+    """
     from datetime import date
     from sqlalchemy.orm.exc import NoResultFound
 
@@ -177,7 +196,6 @@ def match_detail(match_type, match_id):
     away_h2h_data = None
     home_last_3_matches = []
     away_last_3_matches = []
-
 
     if isinstance(match, FutureMatch):
         season_id = match.season.season_id
@@ -236,7 +254,7 @@ def match_detail(match_type, match_id):
         ).limit(3).all()
 
 
-    else:
+    else:  # If it's a past match (FootballMatch)
         home_elo = match.home_elo
         away_elo = match.away_elo
         match_date_for_h3h = match.date
@@ -255,7 +273,7 @@ def match_detail(match_type, match_id):
         home_h2h_data = home_form if home_form and home_form.h2h_matches else None
         away_h2h_data = away_form if away_form and away_form.h2h_matches else None
 
-        h2h_data = home_h2h_data or away_h2h_data
+        h2h_data = home_h2h_data or away_h2h_data  # This seems to be a fallback, but home_h2h_data and away_h2h_data are used separately in template
 
         HomeTeamAlias = aliased(Team)
         AwayTeamAlias = aliased(Team)
@@ -286,7 +304,6 @@ def match_detail(match_type, match_id):
             desc(FootballMatch.date)
         ).limit(3).all()
 
-
     return render_template('match_detail.html',
                            match=match,
                            status=status,
@@ -300,6 +317,7 @@ def match_detail(match_type, match_id):
                            away_elo=away_elo,
                            predictions=predictions,
                            h2h_data=h2h_data,
+                           # This is still here, but home_h2h_data and away_h2h_data are used in template
                            home_h2h_data=home_h2h_data,
                            away_h2h_data=away_h2h_data,
                            home_last_3_matches=home_last_3_matches,
@@ -308,25 +326,43 @@ def match_detail(match_type, match_id):
 
 @main.route('/league/<league_code>/team/<team_name>/<string:season_name>')
 def team_view(league_code, team_name, season_name):
+    """
+    Renders the team details page.
+    """
     team = db.session.query(Team).filter_by(name=team_name).first()
     team_id = team.team_id if team else None
 
     display_league_name = LEAGUE_URL_MAP.get(league_code)
     if display_league_name:
-        display_league_name = display_league_name.replace("premier league", "Premier League").replace("spremier league", "Scottish Premiership").title()
+        display_league_name = display_league_name.replace("premier league", "Premier League").replace("spremier league",
+                                                                                                      "Scottish Premiership").title()
     else:
-        display_league_name = league_code.replace("premierleague", "Premier League").replace("scotishpremierleague", "Scottish Premiership").title()
+        display_league_name = league_code.replace("premierleague", "Premier League").replace("scotishpremierleague",
+                                                                                             "Scottish Premiership").title()
 
-    return render_template('team.html', league_code=league_code, team_name=team_name, team_id=team_id, league_name=display_league_name, season_name=season_name)
+    return render_template('team.html', league_code=league_code, team_name=team_name, team_id=team_id,
+                           league_name=display_league_name, season_name=season_name)
 
 
 # New function to calculate standings
-def calculate_standings_for_league_and_season(league_id, season_id):
+def calculate_standings_for_league_and_season(league_id, season_id=None):
+    """
+    Calculates league standings for a given league and optionally a specific season.
+    If season_id is None, calculates all-time standings for the league.
+    """
     standings = {}
+
     # Fetch all matches for the given league and season, ordered by date and matchday
-    matches = db.session.query(FootballMatch)\
-        .filter(FootballMatch.league_id == league_id, FootballMatch.season_id == season_id)\
-        .order_by(FootballMatch.date, FootballMatch.home_matchday).all()
+    if season_id:
+        matches_query = db.session.query(FootballMatch) \
+            .filter(FootballMatch.league_id == league_id, FootballMatch.season_id == season_id) \
+            .order_by(FootballMatch.date, FootballMatch.home_matchday)
+    else:  # Calculate all-time standings if no season_id is provided
+        matches_query = db.session.query(FootballMatch) \
+            .filter(FootballMatch.league_id == league_id) \
+            .order_by(FootballMatch.date, FootballMatch.home_matchday)
+
+    matches = matches_query.all()
 
     for match in matches:
         home_team_id = match.home_team_id
@@ -335,14 +371,19 @@ def calculate_standings_for_league_and_season(league_id, season_id):
         away_goals = match.ftag if match.ftag is not None else 0
         result = match.result
 
-        # Initialize team data if not present
+        # Initialize team data if not present, including team_id
         if home_team_id not in standings:
-            # Fetch team name only once
-            home_team_name = db.session.get(Team, home_team_id).name
-            standings[home_team_id] = {'points': 0, 'played': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'goal_diff': 0, 'team_name': home_team_name}
+            home_team_obj = db.session.get(Team, home_team_id)  # Fetch the Team object
+            home_team_name = home_team_obj.name
+            standings[home_team_id] = {'points': 0, 'played': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0,
+                                       'goals_against': 0, 'goal_diff': 0, 'team_name': home_team_name,
+                                       'team_id': home_team_id}
         if away_team_id not in standings:
-            away_team_name = db.session.get(Team, away_team_id).name
-            standings[away_team_id] = {'points': 0, 'played': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'goal_diff': 0, 'team_name': away_team_name}
+            away_team_obj = db.session.get(Team, away_team_id)  # Fetch the Team object
+            away_team_name = away_team_obj.name
+            standings[away_team_id] = {'points': 0, 'played': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0,
+                                       'goals_against': 0, 'goal_diff': 0, 'team_name': away_team_name,
+                                       'team_id': away_team_id}
 
         # Update stats
         standings[home_team_id]['played'] += 1
@@ -364,14 +405,17 @@ def calculate_standings_for_league_and_season(league_id, season_id):
 
         standings[home_team_id]['goals_for'] += home_goals
         standings[home_team_id]['goals_against'] += away_goals
-        standings[home_team_id]['goal_diff'] = standings[home_team_id]['goals_for'] - standings[home_team_id]['goals_against']
+        standings[home_team_id]['goal_diff'] = standings[home_team_id]['goals_for'] - standings[home_team_id][
+            'goals_against']
 
         standings[away_team_id]['goals_for'] += away_goals
         standings[away_team_id]['goals_against'] += home_goals
-        standings[away_team_id]['goal_diff'] = standings[away_team_id]['goals_for'] - standings[away_team_id]['goals_against']
+        standings[away_team_id]['goal_diff'] = standings[away_team_id]['goals_for'] - standings[away_team_id][
+            'goals_against']
 
     # Sort and add position
-    sorted_standings = sorted(standings.values(), key=lambda x: (-x['points'], -x['goal_diff'], -x['goals_for'], x['team_name']))
+    sorted_standings = sorted(standings.values(),
+                              key=lambda x: (-x['points'], -x['goal_diff'], -x['goals_for'], x['team_name']))
     for i, team_data in enumerate(sorted_standings):
         team_data['position'] = i + 1
 
@@ -380,6 +424,10 @@ def calculate_standings_for_league_and_season(league_id, season_id):
 
 @main.route('/league/<league_code>')
 def league_view(league_code):
+    """
+    Renders the league view page, displaying teams and league standings for a selected season
+    or all-time standings.
+    """
     db_code = LEAGUE_URL_MAP.get(league_code)
     if not db_code:
         abort(404, description=f"Nieznana liga: {league_code}")
@@ -396,23 +444,25 @@ def league_view(league_code):
 
     # Initialize standings data to be empty
     current_season_standings = []
-    standings_season_display_name = "Wybierz sezon" # Default message for standings header
-
+    standings_season_display_name = "Wybierz sezon"  # Default message for standings header
 
     if selected_season_name and selected_season_name != "all_seasons":
         season_obj = Season.query.filter_by(name=selected_season_name).first()
         if season_obj:
             teams_query = teams_query.filter(TeamLeague.season_id == season_obj.season_id)
             current_season_standings = calculate_standings_for_league_and_season(league.league_id, season_obj.season_id)
-            standings_season_display_name = selected_season_name # Display selected season in standings header
+            standings_season_display_name = selected_season_name  # Display selected season in standings header
         else:
             print(f"Warning: Requested season '{selected_season_name}' not found for team filtering.")
-            selected_season_name = "all_seasons" # Fallback to 'all_seasons' for dropdown selection
+            selected_season_name = "all_seasons"  # Fallback to 'all_seasons' for dropdown selection
             # No standings calculated if season not found
     else:
         # Default behavior: if 'all_seasons' selected or no season, show all teams
         # For standings, default to not showing a table or show a message to select a season.
         selected_season_name = "all_seasons"
+        # Calculate all-time standings
+        current_season_standings = calculate_standings_for_league_and_season(league.league_id)
+        standings_season_display_name = "Wszech Czasów"  # New display name for all-time
 
     teams = teams_query.distinct().order_by(Team.name).all()
 
@@ -423,13 +473,16 @@ def league_view(league_code):
         league_name_to_url=LEAGUE_NAME_TO_URL,
         available_seasons=available_seasons,
         selected_season=selected_season_name,
-        standings=current_season_standings, # Pass standings data to the template
-        standings_season_display_name=standings_season_display_name # Pass name for standings header
+        standings=current_season_standings,  # Pass standings data to the template
+        standings_season_display_name=standings_season_display_name  # Pass name for standings header
     )
 
 
 @main.route('/test_db')
 def test_db():
+    """
+    Renders a page to test the database connection.
+    """
     from . import db
     from sqlalchemy import text
     status = ""
@@ -443,3 +496,4 @@ def test_db():
         status = f"❌ Błąd połączenia z bazą danych: {str(e)}"
 
     return render_template('test_db.html', status=status)
+

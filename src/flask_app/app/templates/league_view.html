@@ -84,7 +84,7 @@
                 {% for team in standings %}
                 <tr>
                     <td>{{ team.position }}</td>
-                    <td>
+                    <td class="team-name-cell"> {# Added class for left alignment #}
                       {# Assuming team_id is available in standings data to show logo #}
                       {% if team.team_id %}
                         <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.team_name }} logo" class="team-logo-inline">

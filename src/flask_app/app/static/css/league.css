@@ -291,7 +291,7 @@ body.dark-mode .standings-table h3 {
 .standings-table td {
     border: 1px solid var(--border-color-light);
     padding: 10px 8px;
-    text-align: center;
+    text-align: center; /* Default centering */
     font-size: 0.9em;
     white-space: nowrap; /* Prevent wrapping in table cells */
 }
@@ -347,6 +347,14 @@ body.dark-mode .standings-table tbody tr:hover {
 .standings-table td:last-child,
 .standings-table th:last-child {
     border-right: none; /* No border on the last column */
+}
+
+/* New style for left-aligned team name cell */
+.standings-table td.team-name-cell {
+    text-align: left; /* Override center alignment */
+    display: flex; /* Use flexbox to align image and text */
+    align-items: center; /* Vertically center image and text */
+    gap: 8px; /* Space between image and text */
 }
 
 /* Responsive adjustments */
