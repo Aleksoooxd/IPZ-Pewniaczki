@@ -128,6 +128,7 @@ class FutureMatch(db.Model):
     season = relationship("Season", back_populates="future_match")
     home_team = relationship("Team", foreign_keys=[home_team_id])
     away_team = relationship("Team", foreign_keys=[away_team_id])
+    future_predictions = relationship("PredictedFuture", back_populates="future_match")
 
 class MatchStats(db.Model):
     __tablename__ = 'match_stats'
@@ -206,7 +207,15 @@ class TeamElo(db.Model):
     last_updated = Column(Date, nullable=False)
 
     team = relationship("Team", backref=backref("elo_ratings", order_by=last_updated))
+class PredictedFuture(db.Model):
+    __tablename__ = 'predicted_future'
 
+    prediction_id = Column(Integer, primary_key=True)
+    match_id = Column(Integer, ForeignKey('future_match.match_id'))
+    predicted_result = Column(String)
+    confidence = Column(Float)
+
+    future_match = relationship("FutureMatch", back_populates="future_predictions")
 
 if __name__ == "__main__":
     with app.app_context():
