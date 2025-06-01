@@ -1,17 +1,11 @@
-# src/flask_app/app/routes.py
-
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify,abort
-from sqlalchemy.orm import aliased
-from datetime import datetime
-from flask import render_template, abort
-
+import datetime
 from sqlalchemy import or_, desc
-
-
-from .db import db, FootballMatch, Team, League, FutureMatch , TeamValue, Predicted,MatchStats,MatchForm,TeamElo, TeamLeague, Season
-
+from sqlalchemy.orm import aliased
+from flask import Blueprint, render_template, request, abort, jsonify
+from .db import db, FootballMatch, Team, League, FutureMatch, TeamValue, Predicted, MatchStats, MatchForm, TeamElo, TeamLeague, Season # Added TeamLeague, Season
 
 main = Blueprint('main', __name__)
+
 @main.route('/')
 def home():
     return render_template('index.html')
@@ -43,7 +37,7 @@ def get_matches():
         return jsonify({"error": "Missing 'date' parameter"}), 400
 
     try:
-        match_date = datetime.strptime(date_param, "%Y-%m-%d").date()
+        match_date = datetime.datetime.strptime(date_param, "%Y-%m-%d").date()
     except ValueError:
         return jsonify({"error": "Invalid date format. UseYYYY-MM-DD."}), 400
 
@@ -109,7 +103,6 @@ def get_matches():
     return jsonify(result)
 
 
-
 LEAGUE_URL_MAP = {
     "Premierleague": "premier league",
     "Bundesliga": "bundesliga",
@@ -124,24 +117,24 @@ LEAGUE_URL_MAP = {
     "ScotishPremierLeague": "spremier league"
 }
 
-LEAGUE_NAME_TO_URL= {
-  "premier league": "Premierleague",
-  "bundesliga": "Bundesliga",
-  "eredivisie": "Eredivisie",
-  "ethniki katigoria": "EthnikiKatigoria",
-  "futbol ligi 1": "FutbolLig1",
-  "jupiler league": "JupiterLeague",
-  "la liga": "LaLiga",
-  "ligue 1": "Ligue1",
-  "liga i": "LigaI",
-  "serie a": "SerieA",
-  "spremier league": "ScotishPremierLeague"
+LEAGUE_NAME_TO_URL = {
+    "premier league": "Premierleague",
+    "bundesliga": "Bundesliga",
+    "eredivisie": "Eredivisie",
+    "ethniki katigoria": "EthnikiKatigoria",
+    "futbol ligi 1": "FutbolLig1",
+    "jupiler league": "JupiterLeague",
+    "la liga": "LaLiga",
+    "ligue 1": "Ligue1",
+    "liga i": "LigaI",
+    "serie a": "SerieA",
+    "spremier league": "ScotishPremierLeague"
 }
 
 
 def get_current_season_name():
-    current_year = datetime.now().year
-    if datetime.now().month < 8:
+    current_year = datetime.datetime.now().year
+    if datetime.datetime.now().month < 8:
         season = f"{current_year - 1}/{str(current_year)[-2:]}"
     else:
         season = f"{current_year}/{str(current_year + 1)[-2:]}"
@@ -151,7 +144,6 @@ def get_current_season_name():
 @main.route('/match/<string:match_type>/<int:match_id>')
 def match_detail(match_type, match_id):
     from datetime import date
-    from sqlalchemy import or_, desc
     from sqlalchemy.orm.exc import NoResultFound
 
     if match_type == "past":
@@ -171,7 +163,6 @@ def match_detail(match_type, match_id):
     else:
         status = "live"
 
-    # Init variables
     home_form = None
     away_form = None
     home_stats = None
@@ -194,34 +185,27 @@ def match_detail(match_type, match_id):
         away_team_id = match.away_team.team_id
         match_date_for_h3h = match.date
 
-        # Elo
         home_elo_obj = TeamElo.query.filter_by(team_id=home_team_id).order_by(desc(TeamElo.last_updated)).first()
         away_elo_obj = TeamElo.query.filter_by(team_id=away_team_id).order_by(desc(TeamElo.last_updated)).first()
         home_elo = home_elo_obj.rating if home_elo_obj else None
         away_elo = away_elo_obj.rating if away_elo_obj else None
 
-        # Value
         home_value_obj = TeamValue.query.filter_by(team_id=home_team_id, season_id=season_id).first()
         away_value_obj = TeamValue.query.filter_by(team_id=away_team_id, season_id=season_id).first()
         home_value = home_value_obj.value if home_value_obj else None
         away_value = away_value_obj.value if away_value_obj else None
 
-        # Form
         home_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='home').first()
         away_form = MatchForm.query.filter_by(match_id=match.match_id, team_side='away').first()
 
-        # Stats
         home_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='home').first()
         away_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='away').first()
 
-        # Predictions
         predictions = Predicted.query.filter_by(match_id=match_id).all()
 
-        # H2H per team side
         home_h2h_data = home_form if home_form and home_form.h2h_matches else None
         away_h2h_data = away_form if away_form and away_form.h2h_matches else None
 
-        # Fetch last 3 matches for future matches (assuming they are past matches relative to the future match date)
         HomeTeamAlias = aliased(Team)
         AwayTeamAlias = aliased(Team)
 
@@ -253,7 +237,6 @@ def match_detail(match_type, match_id):
 
 
     else:
-        # Past match
         home_elo = match.home_elo
         away_elo = match.away_elo
         match_date_for_h3h = match.date
@@ -269,14 +252,11 @@ def match_detail(match_type, match_id):
 
         predictions = match.predictions
 
-        # H2H per team side
         home_h2h_data = home_form if home_form and home_form.h2h_matches else None
         away_h2h_data = away_form if away_form and away_form.h2h_matches else None
 
-        # Optional summary H2H (shared)
         h2h_data = home_h2h_data or away_h2h_data
 
-        # Fetch last 3 matches for past matches
         HomeTeamAlias = aliased(Team)
         AwayTeamAlias = aliased(Team)
 
@@ -328,15 +308,9 @@ def match_detail(match_type, match_id):
 
 @main.route('/league/<league_code>/team/<team_name>/<string:season_name>')
 def team_view(league_code, team_name, season_name):
-    # Note: If season_name (e.g., "2024 25") is used to query the Season table,
-    # it must be converted back to the database format (e.g., "2024/25").
-    # Example: db_season_name = season_name.replace(' ', '/') if season_name != 'all_seasons' else season_name
-
-    # Fetch the team object to get its ID
     team = db.session.query(Team).filter_by(name=team_name).first()
     team_id = team.team_id if team else None
 
-    # Determine a more user-friendly league name for display in the template
     display_league_name = LEAGUE_URL_MAP.get(league_code)
     if display_league_name:
         display_league_name = display_league_name.replace("premier league", "Premier League").replace("spremier league", "Scottish Premiership").title()
@@ -344,6 +318,64 @@ def team_view(league_code, team_name, season_name):
         display_league_name = league_code.replace("premierleague", "Premier League").replace("scotishpremierleague", "Scottish Premiership").title()
 
     return render_template('team.html', league_code=league_code, team_name=team_name, team_id=team_id, league_name=display_league_name, season_name=season_name)
+
+
+# New function to calculate standings
+def calculate_standings_for_league_and_season(league_id, season_id):
+    standings = {}
+    # Fetch all matches for the given league and season, ordered by date and matchday
+    matches = db.session.query(FootballMatch)\
+        .filter(FootballMatch.league_id == league_id, FootballMatch.season_id == season_id)\
+        .order_by(FootballMatch.date, FootballMatch.home_matchday).all()
+
+    for match in matches:
+        home_team_id = match.home_team_id
+        away_team_id = match.away_team_id
+        home_goals = match.fthg if match.fthg is not None else 0
+        away_goals = match.ftag if match.ftag is not None else 0
+        result = match.result
+
+        # Initialize team data if not present
+        if home_team_id not in standings:
+            # Fetch team name only once
+            home_team_name = db.session.get(Team, home_team_id).name
+            standings[home_team_id] = {'points': 0, 'played': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'goal_diff': 0, 'team_name': home_team_name}
+        if away_team_id not in standings:
+            away_team_name = db.session.get(Team, away_team_id).name
+            standings[away_team_id] = {'points': 0, 'played': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'goal_diff': 0, 'team_name': away_team_name}
+
+        # Update stats
+        standings[home_team_id]['played'] += 1
+        standings[away_team_id]['played'] += 1
+
+        if result == 'H':
+            standings[home_team_id]['points'] += 3
+            standings[home_team_id]['wins'] += 1
+            standings[away_team_id]['losses'] += 1
+        elif result == 'D':
+            standings[home_team_id]['points'] += 1
+            standings[away_team_id]['points'] += 1
+            standings[home_team_id]['draws'] += 1
+            standings[away_team_id]['draws'] += 1
+        elif result == 'A':
+            standings[away_team_id]['points'] += 3
+            standings[away_team_id]['wins'] += 1
+            standings[home_team_id]['losses'] += 1
+
+        standings[home_team_id]['goals_for'] += home_goals
+        standings[home_team_id]['goals_against'] += away_goals
+        standings[home_team_id]['goal_diff'] = standings[home_team_id]['goals_for'] - standings[home_team_id]['goals_against']
+
+        standings[away_team_id]['goals_for'] += away_goals
+        standings[away_team_id]['goals_against'] += home_goals
+        standings[away_team_id]['goal_diff'] = standings[away_team_id]['goals_for'] - standings[away_team_id]['goals_against']
+
+    # Sort and add position
+    sorted_standings = sorted(standings.values(), key=lambda x: (-x['points'], -x['goal_diff'], -x['goals_for'], x['team_name']))
+    for i, team_data in enumerate(sorted_standings):
+        team_data['position'] = i + 1
+
+    return sorted_standings
 
 
 @main.route('/league/<league_code>')
@@ -354,28 +386,33 @@ def league_view(league_code):
 
     league = League.query.filter_by(code=db_code).first_or_404()
 
-    # Get all available seasons for the dropdown
     all_seasons_db = db.session.query(Season.name).order_by(Season.name.desc()).all()
-    # Convert list of tuples to list of strings
     available_seasons = [s[0] for s in all_seasons_db]
 
-    # Get selected season from request arguments, default to None (meaning all seasons)
     selected_season_name = request.args.get('season')
 
     teams_query = db.session.query(Team).join(TeamLeague) \
         .filter(TeamLeague.league_id == league.league_id)
 
+    # Initialize standings data to be empty
+    current_season_standings = []
+    standings_season_display_name = "Wybierz sezon" # Default message for standings header
+
+
     if selected_season_name and selected_season_name != "all_seasons":
         season_obj = Season.query.filter_by(name=selected_season_name).first()
         if season_obj:
             teams_query = teams_query.filter(TeamLeague.season_id == season_obj.season_id)
+            current_season_standings = calculate_standings_for_league_and_season(league.league_id, season_obj.season_id)
+            standings_season_display_name = selected_season_name # Display selected season in standings header
         else:
-            # If a specific season is requested but not found, fall back to all teams
-            print(f"Warning: Requested season '{selected_season_name}' not found.")
-            selected_season_name = "all_seasons"
+            print(f"Warning: Requested season '{selected_season_name}' not found for team filtering.")
+            selected_season_name = "all_seasons" # Fallback to 'all_seasons' for dropdown selection
+            # No standings calculated if season not found
     else:
+        # Default behavior: if 'all_seasons' selected or no season, show all teams
+        # For standings, default to not showing a table or show a message to select a season.
         selected_season_name = "all_seasons"
-
 
     teams = teams_query.distinct().order_by(Team.name).all()
 
@@ -385,7 +422,9 @@ def league_view(league_code):
         teams=teams,
         league_name_to_url=LEAGUE_NAME_TO_URL,
         available_seasons=available_seasons,
-        selected_season=selected_season_name
+        selected_season=selected_season_name,
+        standings=current_season_standings, # Pass standings data to the template
+        standings_season_display_name=standings_season_display_name # Pass name for standings header
     )
 
 

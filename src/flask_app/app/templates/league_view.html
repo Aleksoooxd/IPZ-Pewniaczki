@@ -44,22 +44,79 @@
       </select>
   </div>
 
-  <div class="team-list card">
-    <h3>Drużyny w lidze</h3>
-    <ul class="team-links">
-      {% for team in teams %}
-        <li>
-    {# Path now includes the selected_season with '/' replaced by space #}
-    <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name, season_name=selected_season | replace('/', ' ')) }}">
-      <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.name }} logo" class="team-logo-inline">
-      {{ team.name }}
-    </a>
-  </li>
-      {% else %}
-        <li>Brak drużyn dla tej ligi w wybranym sezonie.</li>
-      {% endfor %}
-    </ul>
-  </div>
+  <div class="league-data-container"> {# New container to hold both team list and standings #}
+    <div class="team-list card">
+      <h3>Drużyny w lidze</h3>
+      <ul class="team-links">
+        {% for team in teams %}
+          <li>
+      <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name, season_name=selected_season | replace('/', ' ')) }}">
+        <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.name }} logo" class="team-logo-inline">
+        {{ team.name }}
+      </a>
+    </li>
+        {% else %}
+          <li>Brak drużyn dla tej ligi w wybranym sezonie.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    {# Standings Table Section #}
+    {% if standings %}
+    <div class="standings-table card">
+        <h3>Tabela Ligowa (Sezon: {{ standings_season_display_name }})</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Drużyna</th>
+                    <th>M</th>
+                    <th>Z</th>
+                    <th>R</th>
+                    <th>P</th>
+                    <th>GZ</th>
+                    <th>GS</th>
+                    <th>+/-</th>
+                    <th>Pkt</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in standings %}
+                <tr>
+                    <td>{{ team.position }}</td>
+                    <td>
+                      {# Assuming team_id is available in standings data to show logo #}
+                      {% if team.team_id %}
+                        <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.team_name }} logo" class="team-logo-inline">
+                      {% endif %}
+                      {{ team.team_name }}
+                    </td>
+                    <td>{{ team.played }}</td>
+                    <td>{{ team.wins }}</td>
+                    <td>{{ team.draws }}</td>
+                    <td>{{ team.losses }}</td>
+                    <td>{{ team.goals_for }}</td>
+                    <td>{{ team.goals_against }}</td>
+                    <td>{{ team.goal_diff }}</td>
+                    <td>{{ team.points }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% elif selected_season != 'all_seasons' %}
+    <div class="standings-table card">
+        <h3>Tabela Ligowa</h3>
+        <p class="info-message">Brak danych tabeli dla sezonu: {{ selected_season }}.</p>
+    </div>
+    {% else %}
+    <div class="standings-table card">
+        <h3>Tabela Ligowa</h3>
+        <p class="info-message">Wybierz konkretny sezon, aby wyświetlić tabelę ligową.</p>
+    </div>
+    {% endif %}
+
+  </div> {# End league-data-container #}
 </div>
 {% endblock %}
 
@@ -71,12 +128,10 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    // Pobieramy kod ligi z Flaska, upewniając się, że jest w tej samej formie (np. małe litery) jak w data-league-code
     const currentLeagueCode = "{{ league.code | lower }}";
     const sidebarLinks = document.querySelectorAll('.sidebar-links a');
 
     sidebarLinks.forEach(link => {
-      // Sprawdzamy atrybut data-league-code
       if (link.dataset.leagueCode === currentLeagueCode) {
         link.classList.add('active-league');
       }
