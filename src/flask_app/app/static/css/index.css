@@ -59,7 +59,7 @@ body.dark-mode .status-message {
 
 
 .wrapper {
-  height: 100vh; /* Full viewport height */
+  height: 80vh; /* Full viewport height */
   width: 100%;
   display: flex;
   flex-direction: column;
