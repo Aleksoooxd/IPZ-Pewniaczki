@@ -3,12 +3,12 @@
 {% block title %}{{ league.code | replace("premier league", "Premier League") | replace("spremier league", "Scottish Premiership") | title }} - Liga{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> {# Dodajemy main.css dla spójnych styli sidebara #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}"> {# Dodajemy main.css dla spójnych styli sidebara #}
 {% endblock %}
 
 {% block content %}
-<button class="sidebar-toggle" onclick="toggleSidebar()">&#9776; Wybierz Ligę</button>
+<div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; Wybierz Ligę</div>
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
@@ -30,20 +30,22 @@
      <li><a href="{{ url_for('main.mainpage') }}">🏠 Strona Główna</a></li>
   </ul>
 </div>
+<div class="season-filter-container card">
+    <div class="season-select-wrapper"> {# Nowy kontener dla wyboru sezonu #}
+        <label for="season-select">Wybierz sezon:</label>
+        <select id="season-select" onchange="changeSeason()">
+            <option value="all_seasons" {% if selected_season == 'all_seasons' %}selected{% endif %}>Wszystkie sezony</option>
+            {% for season_name in available_seasons %}
+                <option value="{{ season_name }}" {% if selected_season == season_name %}selected{% endif %}>{{ season_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="league-title-wrapper"> {# Nowy kontener dla nazwy ligi #}
+        <h2 class="page-title">{{ league.code | replace("premier league", "Premier League") | replace("spremier league", "Scottish Premiership") | title }}</h2>
+    </div>
+</div>
 
 <div class="league-content-wrapper">
-  <h2 class="page-title">{{ league.code | replace("premier league", "Premier League") | replace("spremier league", "Scottish Premiership") | title }}</h2>
-
-  <div class="season-filter-container card">
-      <label for="season-select">Wybierz sezon:</label>
-      <select id="season-select" onchange="changeSeason()">
-          <option value="all_seasons" {% if selected_season == 'all_seasons' %}selected{% endif %}>Wszystkie sezony</option>
-          {% for season_name in available_seasons %}
-              <option value="{{ season_name }}" {% if selected_season == season_name %}selected{% endif %}>{{ season_name }}</option>
-          {% endfor %}
-      </select>
-  </div>
-
   <div class="league-data-container"> {# New container to hold both team list and standings #}
     <div class="team-list card">
       <h3>Drużyny w lidze</h3>

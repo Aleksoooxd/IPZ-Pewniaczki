@@ -6,59 +6,6 @@ html, body {
 
 /* Existing styles for .wrapper and other elements */
 .wrapper {
-  height: 100vh; /* Full viewport height */
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.wrapper img {
-  width: 180px; /* Slightly larger logo */
-  margin-bottom: 25px;
-  filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
-}
-
-.tagline {
-    font-size: 1.4em;
-    font-weight: 400;
-    margin-bottom: 30px;
-    color: var(--text-color-light); /* Inherit from base */
-}
-
-body.dark-mode .tagline {
-    color: var(--text-color-dark);
-}
-
-.status-heading {
-  font-size: 2.8em; /* Larger, more impactful heading */
-  margin: 30px 0 15px;
-  color: var(--accent-color-light); /* Green accent */
-  letter-spacing: 1px;
-}
-
-body.dark-mode .status-heading {
-    color: var(--accent-color-dark);
-}
-
-.status-message {
-  font-size: 1.2em;
-  font-weight: 300;
-  color: var(--text-color-light); /* Inherit from base */
-  max-width: 600px;
-  line-height: 1.6;
-}
-
-body.dark-mode .status-message {
-    color: var(--text-color-dark);
-}
-
-
-.wrapper {
   height: 80vh; /* Full viewport height */
   width: 100%;
   display: flex;

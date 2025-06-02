@@ -1,8 +1,3 @@
-/* Sidebar Toggle Button - Ensure it's always visible and on top */
-/* Styles moved to main.css for global consistency */
-
-/* Sidebar - General styles moved to main.css for global consistency */
-
 /* Active league highlighting - this style is specific to league_view */
 .sidebar-links a.active-league {
     background-color: var(--primary-button-bg-light); /* Domyślny kolor podświetlenia */
@@ -196,13 +191,14 @@ body.dark-mode .team-links::-webkit-scrollbar-thumb:hover {
 }
 /* Add to league.css */
 .season-filter-container {
+    margin-top: 30px;
     margin-bottom: 25px;
     padding: 15px;
     text-align: center;
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
 }
 
 .season-filter-container label {
@@ -246,7 +242,7 @@ body.dark-mode .season-filter-container select:focus {
 
 .league-data-container {
     display: flex;
-    gap: 30px; /* Space between team list and standings table */
+    gap: 40px; /* Space between team list and standings table */
     width: 100%;
     align-items: flex-start; /* Align items to the top */
     flex-wrap: wrap; /* Allow wrapping on smaller screens */
@@ -367,5 +363,41 @@ body.dark-mode .standings-table tbody tr:hover {
     .standings-table {
         width: 100%; /* Full width for stacked elements */
         max-width: 600px; /* Max width for readability */
+    }
+}
+/* IPZ-Pewniaczki/src/flask_app/app/static/css/league.css */
+
+.season-filter-container {
+    display: flex; /* Użyj flexboxa */
+    justify-content: flex-start; /* Rozłóż elementy na końcach kontenera */
+    align-items: center; /* Wyśrodkuj elementy w pionie */
+    padding: 15px;
+    gap: 250px;
+    margin-bottom: 30px;
+    /* Inne style dla karty, np. border, box-shadow */
+}
+
+.season-select-wrapper,
+.league-title-wrapper {
+    /* Możesz dodać specyficzne style dla każdego z nich, jeśli potrzebujesz */
+}
+
+.season-select-wrapper label {
+    margin-right: 10px;
+}
+
+.page-title {
+    margin: 0; /* Usuń domyślny margines z h2, aby nie wpływał na układ flexbox */
+}
+
+/* Dostosuj media queries, jeśli potrzebujesz innego układu na mniejszych ekranach */
+@media (max-width: 768px) {
+    .season-filter-container {
+        flex-direction: column; /* Na mniejszych ekranach ułóż elementy w kolumnie */
+        align-items: flex-start; /* Wyrównaj do lewej */
+    }
+
+    .season-select-wrapper {
+        margin-bottom: 10px; /* Dodaj odstęp między elementami w kolumnie */
     }
 }
