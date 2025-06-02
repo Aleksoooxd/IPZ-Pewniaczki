@@ -31,35 +31,35 @@ body.dark-mode .sidebar-links a.active-league {
 }
 
 .sidebar-links a[data-league-code="serie a"].active-league {
-    background-image: url('../flags/serie-a.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/serie-a.png'); /* POPRAWIONA ŚCIEŚKA */
 }
 
 .sidebar-links a[data-league-code="ligue 1"].active-league {
-    background-image: url('../flags/ligue-1.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/ligue-1.png'); /* POPRAWIONA ŚCIEŚKA */
 }
 
 .sidebar-links a[data-league-code="spremier league"].active-league {
-    background-image: url('../flags/scottish-premiership.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/scottish-premiership.png'); /* POPRAWIONA ŚCIEŚKA */
 }
 
 .sidebar-links a[data-league-code="eredivisie"].active-league {
-    background-image: url('../flags/eredivisie.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/eredivisie.png'); /* POPRAWIONA ŚCIEŚKA */
 }
 
 .sidebar-links a[data-league-code="jupiler league"].active-league {
-    background-image: url('../flags/jupiler-league.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/jupiler-league.png'); /* POPRAWIONA ŚCIEŚKA */
 }
 
 .sidebar-links a[data-league-code="liga i"].active-league {
-    background-image: url('../flags/liga-i.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/liga-i.png'); /* POPRAWIONA ŚCIEŚKA */
 }
 
 .sidebar-links a[data-league-code="futbol ligi 1"].active-league {
-    background-image: url('../flags/futbol-ligi-1.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/futbol-ligi-1.png'); /* POPRAWIONA ŚCIEŚKA */
 }
 
 .sidebar-links a[data-league-code="ethniki katigoria"].active-league {
-    background-image: url('../flags/ethniki-katigoria.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/ethniki-katigoria.png'); /* POPRAWIONA ŚCIEŚKA */
 }
 
 
@@ -189,19 +189,39 @@ body.dark-mode .team-links::-webkit-scrollbar-thumb:hover {
   margin-right: 8px;
   vertical-align: middle;
 }
-/* Add to league.css */
-.season-filter-container {
-    margin-top: 30px;
-    margin-bottom: 25px;
-    padding: 15px;
-    text-align: center;
+
+/* Updated styles for the top section */
+.top-section-wrapper {
     display: flex;
-    justify-content: left;
-    align-items: center;
-    gap: 20px;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    gap: 40px; /* Space between the two cards */
+    justify-content: center; /* Center items horizontally when they wrap */
+    margin-bottom: 30px; /* Space below this wrapper */
+    margin-top: 30px;
+}
+
+.season-filter-container{
+    flex: 1; /* Allow them to grow and shrink */
+    min-width: 280px; /* Minimum width before wrapping */
+    max-width: 325px;
+    padding: 15px 25px; /* Adjust padding as needed */
+    text-align: center; /* Center content within each card */
+    display: flex; /* Use flexbox for internal alignment */
+    align-items: center; /* Vertically align items */
+    justify-content: center; /* Horizontally center content */
+}
+.league-title-container {
+    flex: 1; /* Allow them to grow and shrink */
+    min-width: 280px; /* Minimum width before wrapping */
+    padding: 15px 25px; /* Adjust padding as needed */
+    text-align: center; /* Center content within each card */
+    display: flex; /* Use flexbox for internal alignment */
+    align-items: center; /* Vertically align items */
+    justify-content: center; /* Horizontally center content */
 }
 
 .season-filter-container label {
+    margin-right: 10px; /* Space between label and select */
     font-size: 1.1em;
     font-weight: 600;
     color: var(--text-color-light);
@@ -238,8 +258,22 @@ body.dark-mode .season-filter-container select:focus {
     border-color: var(--primary-button-bg-dark);
     box-shadow: 0 0 0 3px rgba(var(--primary-button-bg-dark), 0.2);
 }
-/* Add to league.css */
 
+.league-title-container .page-title {
+    margin: 0; /* Remove default margin from h2 */
+    font-size: 2.2em; /* Ensure the title size is consistent */
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-color-light);
+    padding-bottom: 0; /* No border here */
+    border-bottom: none; /* No border here */
+}
+
+body.dark-mode .league-title-container .page-title {
+    color: var(--text-color-dark);
+}
+
+/* Original .league-data-container and its contents */
 .league-data-container {
     display: flex;
     gap: 40px; /* Space between team list and standings table */
@@ -367,37 +401,22 @@ body.dark-mode .standings-table tbody tr:hover {
 }
 /* IPZ-Pewniaczki/src/flask_app/app/static/css/league.css */
 
-.season-filter-container {
-    display: flex; /* Użyj flexboxa */
-    justify-content: flex-start; /* Rozłóż elementy na końcach kontenera */
-    align-items: center; /* Wyśrodkuj elementy w pionie */
-    padding: 15px;
-    gap: 250px;
-    margin-bottom: 30px;
-    /* Inne style dla karty, np. border, box-shadow */
-}
+/* Removed the old season-filter-container flex rules as it's now split */
+/* and the new .top-section-wrapper handles the flex layout */
 
-.season-select-wrapper,
-.league-title-wrapper {
-    /* Możesz dodać specyficzne style dla każdego z nich, jeśli potrzebujesz */
-}
+/* No change needed for .season-select-wrapper or .league-title-wrapper */
+/* as they are now just containers for their respective elements */
 
-.season-select-wrapper label {
-    margin-right: 10px;
-}
 
-.page-title {
-    margin: 0; /* Usuń domyślny margines z h2, aby nie wpływał na układ flexbox */
-}
-
-/* Dostosuj media queries, jeśli potrzebujesz innego układu na mniejszych ekranach */
+/* Adjusted media queries for the top section if needed */
 @media (max-width: 768px) {
-    .season-filter-container {
-        flex-direction: column; /* Na mniejszych ekranach ułóż elementy w kolumnie */
-        align-items: flex-start; /* Wyrównaj do lewej */
+    .top-section-wrapper {
+        flex-direction: column; /* Stack elements in a column on smaller screens */
+        gap: 20px; /* Adjust gap for stacked elements */
     }
-
-    .season-select-wrapper {
-        margin-bottom: 10px; /* Dodaj odstęp między elementami w kolumnie */
+    .season-filter-container,
+    .league-title-container {
+        width: 100%; /* Take full width when stacked */
+        max-width: 400px; /* Optional: limit max width for readability */
     }
 }

@@ -30,8 +30,10 @@
      <li><a href="{{ url_for('main.mainpage') }}">🏠 Strona Główna</a></li>
   </ul>
 </div>
-<div class="season-filter-container card">
-    <div class="season-select-wrapper"> {# Nowy kontener dla wyboru sezonu #}
+
+{# New container for season filter and league title #}
+<div class="top-section-wrapper">
+    <div class="season-filter-container card"> {# Existing season filter container #}
         <label for="season-select">Wybierz sezon:</label>
         <select id="season-select" onchange="changeSeason()">
             <option value="all_seasons" {% if selected_season == 'all_seasons' %}selected{% endif %}>Wszystkie sezony</option>
@@ -40,7 +42,7 @@
             {% endfor %}
         </select>
     </div>
-    <div class="league-title-wrapper"> {# Nowy kontener dla nazwy ligi #}
+    <div class="league-title-container card"> {# NEW container for league title #}
         <h2 class="page-title">{{ league.code | replace("premier league", "Premier League") | replace("spremier league", "Scottish Premiership") | title }}</h2>
     </div>
 </div>
