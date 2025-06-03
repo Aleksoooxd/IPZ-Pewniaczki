@@ -1,5 +1,4 @@
 import copy
-import os
 import numpy as np
 import chardet
 import requests
@@ -19,12 +18,12 @@ pd.set_option('future.no_silent_downcasting', True)
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
 }
-# Obliczenia związane z sezonami
+
 curr_year = (datetime.datetime.now().year-1) if datetime.datetime.now().month < 8 else datetime.datetime.now().year
 deadline = curr_year - 2009
 deadline2 = curr_year - 2004 - deadline
 
-# Generowanie kodów sezonów
+
 seasons = {}
 generate_season_entry = lambda year, offset: {
     f'{year - offset}/{year - offset + 1}': f"{year % 100 - offset}{year % 100 - offset + 1}"
@@ -156,18 +155,17 @@ def get_season(date):
         raise ValueError("The 'date' parameter must be a pandas.Timestamp or datetime.date object.")
 
     year = date.year
-    if date.month >= 7: # Season starts in this year (e.g., August 2024 for 2024/25 season)
+    if date.month >= 7:
         start_year = year
         end_year = year + 1
-    else: # Season started in the previous year (e.g., January 2025 for 2024/25 season)
+    else:
         start_year = year - 1
         end_year = year
 
-    # Format the season string based on whether the start_year is pre-2009 or 2009+
     if start_year >= 2009:
         return f"{start_year}/{end_year % 100:02d}"
-    else: # For older seasons, e.g., 2008/09
-        return f"{start_year}/{end_year % 100:01d}" # Using 01d for consistency with original if
+    else:
+        return f"{start_year}/{end_year % 100:01d}"
 
 
 def create_placement_columns(dataframe):
@@ -312,10 +310,9 @@ def calculate_statistics_and_consensus(data):
         }
     }
     for result_type, cols in bookmakers_columns["AllBookmakers"].items():
-        # Ensure all values are numeric, coercing errors to NaN
+
         numeric_data = data[cols].apply(pd.to_numeric, errors='coerce')
 
-        # Initialize columns to None to handle cases where no valid data exists
         data[f"{result_type}_Mean"] = None
         data[f"{result_type}_Std"] = None
         data[f"{result_type}_Shannon"] = None
@@ -323,24 +320,17 @@ def calculate_statistics_and_consensus(data):
         data[f"{result_type}_Gini"] = None
         data[f"{result_type}_HHI"] = None
 
-        # Iterate row by row for calculations to handle NaN values within each row
-        # only consider columns that are not entirely NaN for mean/std
-        # For custom functions, filter NaNs for each row
-
         for i, row in numeric_data.iterrows():
-            valid_values = row.dropna().to_numpy()  # Get non-NaN values for the current row
+            valid_values = row.dropna().to_numpy()
 
-            if len(valid_values) > 0:  # Only calculate if there are valid numbers
+            if len(valid_values) > 0:
                 data.loc[i, f"{result_type}_Mean"] = np.round(np.mean(valid_values), 4)
                 data.loc[i, f"{result_type}_Std"] = np.round(np.std(valid_values), 4)
-
-                # Pass the valid_values to custom functions
                 data.loc[i, f"{result_type}_Shannon"] = shannon_index(valid_values)
                 data.loc[i, f"{result_type}_CV"] = coefficient_of_variation(valid_values)
                 data.loc[i, f"{result_type}_Gini"] = gini_index(valid_values)
                 data.loc[i, f"{result_type}_HHI"] = hhi_index(valid_values)
             else:
-                # If no valid values, ensure calculated columns are NaN or None
                 data.loc[i, f"{result_type}_Mean"] = np.nan
                 data.loc[i, f"{result_type}_Std"] = np.nan
                 data.loc[i, f"{result_type}_Shannon"] = np.nan
@@ -423,21 +413,17 @@ def get_season_id(session, season_name):
     return season
 
 def add_matchday_to_season(df):
-    # Initialize a dictionary to keep track of the matchday count for each team
+
     matchday_counter = {}
 
-    # Create new columns for 'HomeMatchday' and 'AwayMatchday'
     df['HomeMatchday'] = pd.NA
     df['AwayMatchday'] = pd.NA
 
-    # Iterate through the DataFrame rows to calculate matchdays
-    # Use iterrows to get index for .loc, which is a safer way to assign
     for index, row in df.iterrows():
         season = row['Season']
         home_team = row['HomeTeam']
         away_team = row['AwayTeam']
 
-        # Initialize counters for the season if not present
         if season not in matchday_counter:
             matchday_counter[season] = {}
         if home_team not in matchday_counter[season]:
@@ -445,7 +431,6 @@ def add_matchday_to_season(df):
         if away_team not in matchday_counter[season]:
             matchday_counter[season][away_team] = 0
 
-        # Increment counters and assign values using .loc
         matchday_counter[season][home_team] += 1
         matchday_counter[season][away_team] += 1
 
@@ -496,15 +481,12 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
             df = create_placement_columns(df)
             df = calculate_statistics_and_consensus(df)
 
-            # Sort DataFrame by date to ensure chronological processing for ELO (if ELO were here)
+
             df = df.sort_values(by='Date')
 
             with app.app_context():
                 league = get_league_id(db.session, get_league(df))
                 season = get_season_id(db.session, get_seasons(df))
-
-                # ELO and H2H will be calculated and updated in elo_calculator.py after initial insertion
-                # So, we don't need to fetch team ELOs here or calculate h2h_stats here.
 
                 for _, row in df.iterrows():
                     if league is None or season is None:
@@ -520,7 +502,6 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                     if homet_value_id is None or awayt_value_id is None:
                         print(f"Skipping match {row['HomeTeam']} vs {row['AwayTeam']} - missing team values")
                         continue
-                    # Dodawanie meczu
                     match = db.session.execute(
                         select(FootballMatch)
                         .where(FootballMatch.home_team_id == home_team.team_id,FootballMatch.away_team_id == away_team.team_id, FootballMatch.date==row['Date'])
@@ -545,20 +526,19 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                             is_suprise_d=row['isSuprise_D'],
                             is_suprise_a=row['isSuprise_A'],
                             consensus=row['Consensus'],
-                            # ELO fields are now nullable and will be populated by elo_calculator
+
                             home_elo=None,
                             away_elo=None,
                             home_elo_change=None,
                             away_elo_change=None
                         )
                         db.session.add(match)
-                        db.session.flush() # Flush to get match.match_id
+                        db.session.flush()
                         check_and_remove_future_match(db.session, home_team.team_id, away_team.team_id, row['Date'])
                     else:
                         print(f'Skipping match data for {row["HomeTeam"]} vs {row["AwayTeam"]}, already exists')
                         continue
 
-                    # Indexy statystyczne dla Home, Draw i Away
                     for suffix in ['H', 'D', 'A']:
                         side = 'home' if suffix == 'H' else ('draw' if suffix == 'D' else 'away')
                         stats_data = {
@@ -577,7 +557,6 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                                 side=side,
                                 stats_data=stats_data
                             )
-                    # Forma drużyn (H2H data will be added by elo_calculator later)
                     for side in ['home', 'away']:
                         prefix = side.capitalize()
                         match_form = db.session.execute(
@@ -597,7 +576,6 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                                 goals_last_5=row[f'{prefix}Goals5'],
                                 goals_season=row[f'{prefix}GoalsSeason'],
                                 team_placement=row[f'{prefix}TeamPlacement'],
-                                # H2H fields are left as None/default here, they will be updated by elo_calculator
                                 h2h_matches=None,
                                 h2h_wins=None,
                                 h2h_draws=None,
@@ -607,7 +585,7 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
                                 h2h_last_5_points=None
                             )
                             db.session.add(match_form)
-                            db.session.flush() # Flush to ensure it's in the session before commit
+                            db.session.flush()
                     db.session.commit()
                     print(f'Inserted match data for {row["HomeTeam"]} vs {row["AwayTeam"]}')
             print(f"Data successfully inserted into the database for {countryInfo[1]} {seasonCode}")
@@ -655,13 +633,13 @@ def get_seasons(df):
     if len(seasons) == 1:
         return seasons[0]
     else:
-        # Handle case with multiple seasons or return the first one
+
         return seasons[0] if len(seasons) > 0 else None
 def get_league(df):
     leagues = df['Div'].unique()
     if len(leagues) == 0:
         return None
-    league = leagues[0]  # Take the first league if there are multiple
+    league = leagues[0]
     if league == 'E0':
         return 'premier league'
     elif league == 'SC0':

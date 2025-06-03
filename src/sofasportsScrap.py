@@ -60,7 +60,7 @@ async def extract_lineups(base_url):
     homep = homep[:11]
     awayp = awayp[:11]
     return homep,awayp
-async def main():# Przykład użycia
+async def main():
     hometeam = 'Manchester United'
     ht_logo = await get_team_logo(hometeam)
     print(ht_logo)

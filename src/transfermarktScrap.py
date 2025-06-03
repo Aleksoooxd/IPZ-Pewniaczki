@@ -217,7 +217,6 @@ def fetch_league_data(league_name, season_name, path, spath, max_retries=20, ret
                     club_names = soup.find_all('td', class_='hauptlink no-border-links')
                     club_values = soup.find_all('td', class_='rechts')
 
-                    # If we found club data, process it
                     if club_names and club_values:
                         with app.app_context():
                             league = get_or_create_league(db.session, league_name)
@@ -255,7 +254,6 @@ def fetch_league_data(league_name, season_name, path, spath, max_retries=20, ret
                                 except Exception as e:
                                     print(f"Unexpected error for {normalized_club_name}: {e}")
                                     continue
-                        # Successfully processed data, return
                         return True
                     else:
                         print(f"No club data found for {league_name} {season_name} (Attempt {retries + 1})")
@@ -263,7 +261,6 @@ def fetch_league_data(league_name, season_name, path, spath, max_retries=20, ret
                     print(
                         f"Error fetching data for {league_name} {season_name}: {response.status_code} (Attempt {retries + 1})")
 
-            # Increase retry delay with each attempt (exponential backoff)
             wait_time = retry_delay * (2 ** retries)
             print(f"Retrying in {wait_time} seconds...")
             import time
@@ -272,7 +269,6 @@ def fetch_league_data(league_name, season_name, path, spath, max_retries=20, ret
 
         except requests.exceptions.RequestException as e:
             print(f"Request error for {league_name} {season_name}: {e} (Attempt {retries + 1})")
-            # Increase retry delay with each attempt
             wait_time = retry_delay * (2 ** retries)
             print(f"Retrying in {wait_time} seconds...")
             import time

@@ -1,4 +1,3 @@
-import pandas as pd
 from unidecode import unidecode
 import numpy as np
 from scipy.stats import entropy

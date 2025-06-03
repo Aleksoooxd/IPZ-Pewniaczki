@@ -1,6 +1,6 @@
 from footballScrap import correct_scrape_top_11
 from transfermarktScrap import scrape_transfermarkt
-from elo_calculator import process_all_matches_for_elo  # Add this import
+from elo_calculator import process_all_matches_for_elo
 def main():
     while True:
         print("1. Scrape ALL")
