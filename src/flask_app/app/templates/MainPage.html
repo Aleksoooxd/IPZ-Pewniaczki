@@ -30,13 +30,11 @@
   </ul>
 </div>
 
-<div class="main-content-wrapper"> {# New wrapper for main content #}
-    <div class="date-container card"> {# Added 'card' class #}
+<div class="main-content-wrapper">
+    <div class="date-container card">
       <label for="date-picker">Wybierz datę:</label>
       <input type="date" id="date-picker" class="date-picker">
       <button class="button primary" onclick="redirectToMatches()">Pokaż mecze</button>
-
-      {# Zmodyfikowana sekcja: usunięto div.filter-sort-controls #}
       <label for="league-filter">Filtruj ligę:</label>
       <select id="league-filter" class="date-picker" onchange="fetchMatches()">
         <option value="">Wszystkie ligi</option>
@@ -61,7 +59,6 @@
     sidebar.classList.toggle("open");
   }
 
-  // Użyj obiektu, aby łatwo mapować kody lig na wyświetlane nazwy
   const leagueDisplayNames = {
     "premier league": "Premier League",
     "bundesliga": "Bundesliga",
@@ -90,17 +87,17 @@
     "serie a": "serie-a.png"
   };
 
-  // --- NEW FUNCTION TO REDIRECT ---
+
   function redirectToMatches() {
     const selectedDate = document.getElementById('date-picker').value;
     if (selectedDate) {
-      // Construct the URL with the selected date as a query parameter
+
       window.location.href = `/main?date=${selectedDate}`;
     } else {
       alert('Proszę wybrać datę przed kliknięciem "Pokaż mecze".');
     }
   }
-  // --- END NEW FUNCTION ---
+
 
   async function fetchMatches() {
     const selectedDate = document.getElementById('date-picker').value;
@@ -108,7 +105,7 @@
     const leagueFilter = document.getElementById('league-filter');
     const sortOrder = document.getElementById('sort-order');
 
-    matchesContainer.innerHTML = ''; // Clear previous matches
+    matchesContainer.innerHTML = '';
 
     if (!selectedDate) {
       matchesContainer.innerHTML = '<p class="info-message">Proszę wybrać datę.</p>';
@@ -129,8 +126,8 @@
         return;
       }
 
-      // Populate league filter options if not already populated
-      if (leagueFilter.options.length <= 1) { // Check if only "Wszystkie ligi" is present
+
+      if (leagueFilter.options.length <= 1) {
         const uniqueLeagues = new Set();
         data.forEach(match => uniqueLeagues.add(match.league));
         uniqueLeagues.forEach(leagueCode => {
@@ -141,14 +138,13 @@
         });
       }
 
-      // Apply filtering
+
       let filteredMatches = data;
       const selectedLeagueCode = leagueFilter.value;
       if (selectedLeagueCode) {
         filteredMatches = data.filter(match => match.league === selectedLeagueCode);
       }
 
-      // Apply sorting
       const selectedSortOrder = sortOrder.value;
       if (selectedSortOrder === 'league-asc') {
         filteredMatches.sort((a, b) => {
@@ -157,17 +153,13 @@
           return leagueA.localeCompare(leagueB);
         });
       } else if (selectedSortOrder === 'time-asc') {
-        // Assume 'time' property exists in match objects for future matches,
-        // or derive it from the date for past matches if needed.
-        // For simplicity, this assumes a 'time' property like 'HH:MM'.
+
         filteredMatches.sort((a, b) => {
-            const timeA = a.time || '00:00'; // Default to start of day if time is null (past matches)
+            const timeA = a.time || '00:00';
             const timeB = b.time || '00:00';
             return timeA.localeCompare(timeB);
         });
       }
-
-      // Group matches by league for display
       const matchesByLeague = {};
       filteredMatches.forEach(match => {
         if (!matchesByLeague[match.league]) {
@@ -253,8 +245,6 @@
       datePicker.value = today;
     }
 
-    // Call fetchMatches() only if a date parameter exists in the URL
-    // Otherwise, the initial page load will just show the date picker.
     if (dateParam) {
       fetchMatches();
     }

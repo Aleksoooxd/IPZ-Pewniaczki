@@ -4,7 +4,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/match_detail.css') }}">
-{# Link to main.css for match-card styling #}
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 {% endblock %}
 
@@ -60,43 +60,41 @@
         <p class="stat-value">{% if home_stats %}{{ home_stats.mean | round(2) }}{% else %}Brak danych{% endif %}</p>
       </div>
 
-      {# NEW SECTION: Last 3 Matches for Home Team #}
+
       <div class="stat-section last-matches-section">
         <h3>Ostatnie 3 Mecze</h3>
         {% if home_last_3_matches %}
-          <div class="last-matches-grid"> {# Use a grid for better layout #}
+          <div class="last-matches-grid">
             {% for m, home_name, away_name in home_last_3_matches %}
-                {# Determine result from current team's perspective #}
+
                 {% set current_team_result_class = '' %}
                 {% set current_team_outcome_text = '' %}
 
                 {% if m.result %}
-                    {% if m.home_team_id == match.home_team.team_id %} {# Current team was home in this past match #}
+                    {% if m.home_team_id == match.home_team.team_id %}
                         {% if m.result == 'H' %}
                             {% set current_team_result_class = 'outcome-win' %}
                             {% set current_team_outcome_text = 'W' %}
                         {% elif m.result == 'D' %}
                             {% set current_team_result_class = 'outcome-draw' %}
                             {% set current_team_outcome_text = 'D' %}
-                        {% else %} {# m.result == 'A' #}
+                        {% else %}
                             {% set current_team_result_class = 'outcome-loss' %}
                             {% set current_team_outcome_text = 'L' %}
                         {% endif %}
-                    {% else %} {# Current team was away in this past match #}
+                    {% else %}
                         {% if m.result == 'A' %}
                             {% set current_team_result_class = 'outcome-win' %}
                             {% set current_team_outcome_text = 'W' %}
                         {% elif m.result == 'D' %}
                             {% set current_team_result_class = 'outcome-draw' %}
                             {% set current_team_outcome_text = 'D' %}
-                        {% else %} {# m.result == 'H' #}
+                        {% else %}
                             {% set current_team_result_class = 'outcome-loss' %}
                             {% set current_team_outcome_text = 'L' %}
                         {% endif %}
                     {% endif %}
                 {% endif %}
-
-                {# Create an anchor tag for the match card #}
                 <a href="{{ url_for('main.match_detail', match_type='past', match_id=m.match_id) }}" class="past-match-card">
                     <div class="past-match-teams">
                         <span class="team">{{ home_name }}</span>
@@ -120,7 +118,6 @@
           <p>Brak danych o ostatnich meczach.</p>
         {% endif %}
       </div>
-      {# END NEW SECTION #}
 
     </div>
 
@@ -212,43 +209,42 @@
         <p class="stat-value">{% if away_stats %}{{ away_stats.mean | round(2) }}{% else %}Brak danych{% endif %}</p>
       </div>
 
-      {# NEW SECTION: Last 3 Matches for Away Team #}
+
       <div class="stat-section last-matches-section">
         <h3>Ostatnie 3 Mecze</h3>
         {% if away_last_3_matches %}
-          <div class="last-matches-grid"> {# Use a grid for better layout #}
+          <div class="last-matches-grid">
             {% for m, home_name, away_name in away_last_3_matches %}
-                {# Determine result from current team's perspective #}
+
                 {% set current_team_result_class = '' %}
                 {% set current_team_outcome_text = '' %}
 
                 {% if m.result %}
-                    {% if m.home_team_id == match.away_team.team_id %} {# Current team was home in this past match #}
+                    {% if m.home_team_id == match.away_team.team_id %}
                         {% if m.result == 'H' %}
                             {% set current_team_result_class = 'outcome-win' %}
                             {% set current_team_outcome_text = 'W' %}
                         {% elif m.result == 'D' %}
                             {% set current_team_result_class = 'outcome-draw' %}
                             {% set current_team_outcome_text = 'D' %}
-                        {% else %} {# m.result == 'A' #}
+                        {% else %}
                             {% set current_team_result_class = 'outcome-loss' %}
                             {% set current_team_outcome_text = 'L' %}
                         {% endif %}
-                    {% else %} {# Current team was away in this past match #}
+                    {% else %}
                         {% if m.result == 'A' %}
                             {% set current_team_result_class = 'outcome-win' %}
                             {% set current_team_outcome_text = 'W' %}
                         {% elif m.result == 'D' %}
                             {% set current_team_result_class = 'outcome-draw' %}
                             {% set current_team_outcome_text = 'D' %}
-                        {% else %} {# m.result == 'H' #}
+                        {% else %}
                             {% set current_team_result_class = 'outcome-loss' %}
                             {% set current_team_outcome_text = 'L' %}
                         {% endif %}
                     {% endif %}
                 {% endif %}
 
-                {# Create an anchor tag for the match card #}
                 <a href="{{ url_for('main.match_detail', match_type='past', match_id=m.match_id) }}" class="past-match-card">
                     <div class="past-match-teams">
                         <span class="team">{{ home_name }}</span>
@@ -272,7 +268,6 @@
           <p>Brak danych o ostatnich meczach.</p>
         {% endif %}
       </div>
-      {# END NEW SECTION #}
 
     </div>
   </div>

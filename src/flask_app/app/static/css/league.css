@@ -1,15 +1,13 @@
-/* Active league highlighting - this style is specific to league_view */
+
 .sidebar-links a.active-league {
-    background-color: var(--primary-button-bg-light); /* Domyślny kolor podświetlenia */
+    background-color: var(--primary-button-bg-light);
     color: white;
     font-weight: 700;
-    pointer-events: none; /* Make it unclickable */
-
-    /* Style dla flagi jako tła */
-    background-size: 25px auto; /* Rozmiar flagi */
-    background-position: 95% center; /* Pozycja flagi (np. po prawej stronie) */
-    background-repeat: no-repeat; /* Nie powtarzaj obrazka */
-    padding-right: 40px; /* Zwiększ padding, aby tekst nie nachodził na flagę */
+    pointer-events: none;
+    background-size: 25px auto;
+    background-position: 95% center;
+    background-repeat: no-repeat;
+    padding-right: 40px;
 }
 
 body.dark-mode .sidebar-links a.active-league {
@@ -17,53 +15,53 @@ body.dark-mode .sidebar-links a.active-league {
 }
 
 
-/* Dynamiczne tło dla każdej ligi (dodaj tyle, ile masz lig) */
+
 .sidebar-links a[data-league-code="premier league"].active-league {
-    background-image: url('../flags/premier-league.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/premier-league.png');
 }
 
 .sidebar-links a[data-league-code="la liga"].active-league {
-    background-image: url('../flags/la-liga.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/la-liga.png');
 }
 
 .sidebar-links a[data-league-code="bundesliga"].active-league {
-    background-image: url('../flags/bundesliga.png'); /* POPRAWIONA ŚCIEŻKA */
+    background-image: url('../flags/bundesliga.png');
 }
 
 .sidebar-links a[data-league-code="serie a"].active-league {
-    background-image: url('../flags/serie-a.png'); /* POPRAWIONA ŚCIEŚKA */
+    background-image: url('../flags/serie-a.png');
 }
 
 .sidebar-links a[data-league-code="ligue 1"].active-league {
-    background-image: url('../flags/ligue-1.png'); /* POPRAWIONA ŚCIEŚKA */
+    background-image: url('../flags/ligue-1.png');
 }
 
 .sidebar-links a[data-league-code="spremier league"].active-league {
-    background-image: url('../flags/scottish-premiership.png'); /* POPRAWIONA ŚCIEŚKA */
+    background-image: url('../flags/scottish-premiership.png');
 }
 
 .sidebar-links a[data-league-code="eredivisie"].active-league {
-    background-image: url('../flags/eredivisie.png'); /* POPRAWIONA ŚCIEŚKA */
+    background-image: url('../flags/eredivisie.png');
 }
 
 .sidebar-links a[data-league-code="jupiler league"].active-league {
-    background-image: url('../flags/jupiler-league.png'); /* POPRAWIONA ŚCIEŚKA */
+    background-image: url('../flags/jupiler-league.png');
 }
 
 .sidebar-links a[data-league-code="liga i"].active-league {
-    background-image: url('../flags/liga-i.png'); /* POPRAWIONA ŚCIEŚKA */
+    background-image: url('../flags/liga-i.png');
 }
 
 .sidebar-links a[data-league-code="futbol ligi 1"].active-league {
-    background-image: url('../flags/futbol-ligi-1.png'); /* POPRAWIONA ŚCIEŚKA */
+    background-image: url('../flags/futbol-ligi-1.png');
 }
 
 .sidebar-links a[data-league-code="ethniki katigoria"].active-league {
-    background-image: url('../flags/ethniki-katigoria.png'); /* POPRAWIONA ŚCIEŚKA */
+    background-image: url('../flags/ethniki-katigoria.png');
 }
 
 
-/* Rest of league.css (unchanged from previous update for league-specific elements) */
+
 .league-content-wrapper {
     display: flex;
     flex-direction: column;
@@ -74,9 +72,9 @@ body.dark-mode .sidebar-links a.active-league {
 
 .team-list {
   width: 100%;
-  max-width: 500px; /* Limit width for team list */
+  max-width: 500px;
   padding: 30px;
-  box-sizing: border-box; /* Include padding in width */
+  box-sizing: border-box;
 }
 
 .team-list h3 {
@@ -97,7 +95,7 @@ body.dark-mode .team-list h3 {
 .team-links {
     list-style: none;
     padding: 0;
-    max-height: 600px; /* Limit height for scrollability */
+    max-height: 600px;
     overflow-y: auto;
     border: 1px solid var(--border-color-light);
     border-radius: 8px;
@@ -128,7 +126,7 @@ body.dark-mode .team-links a {
 }
 
 .team-links li:last-child a {
-    border-bottom: none; /* No border for the last item */
+    border-bottom: none;
 }
 
 .team-links a:hover {
@@ -141,7 +139,7 @@ body.dark-mode .team-links a:hover {
     color: var(--accent-color-dark);
 }
 
-/* Scrollbar styling for team-links */
+
 .team-links::-webkit-scrollbar {
   width: 8px;
 }
@@ -172,12 +170,12 @@ body.dark-mode .team-links::-webkit-scrollbar-thumb:hover {
   background: var(--secondary-button-hover-dark);
 }
 
-/* Hidden team-details, as it's now a separate page */
+
 .team-details {
     display: none;
 }
 
-/* Media Queries for responsiveness */
+
 @media (max-width: 768px) {
   .team-list {
     padding: 15px;
@@ -190,38 +188,38 @@ body.dark-mode .team-links::-webkit-scrollbar-thumb:hover {
   vertical-align: middle;
 }
 
-/* Updated styles for the top section */
+
 .top-section-wrapper {
     display: flex;
-    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
-    gap: 40px; /* Space between the two cards */
-    justify-content: center; /* Center items horizontally when they wrap */
-    margin-bottom: 30px; /* Space below this wrapper */
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+    margin-bottom: 30px;
     margin-top: 30px;
 }
 
 .season-filter-container{
-    flex: 1; /* Allow them to grow and shrink */
-    min-width: 280px; /* Minimum width before wrapping */
+    flex: 1;
+    min-width: 280px;
     max-width: 325px;
-    padding: 15px 25px; /* Adjust padding as needed */
-    text-align: center; /* Center content within each card */
-    display: flex; /* Use flexbox for internal alignment */
-    align-items: center; /* Vertically align items */
-    justify-content: center; /* Horizontally center content */
+    padding: 15px 25px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .league-title-container {
-    flex: 1; /* Allow them to grow and shrink */
-    min-width: 280px; /* Minimum width before wrapping */
-    padding: 15px 25px; /* Adjust padding as needed */
-    text-align: center; /* Center content within each card */
-    display: flex; /* Use flexbox for internal alignment */
-    align-items: center; /* Vertically align items */
-    justify-content: center; /* Horizontally center content */
+    flex: 1;
+    min-width: 280px;
+    padding: 15px 25px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .season-filter-container label {
-    margin-right: 10px; /* Space between label and select */
+    margin-right: 10px;
     font-size: 1.1em;
     font-weight: 600;
     color: var(--text-color-light);
@@ -260,40 +258,40 @@ body.dark-mode .season-filter-container select:focus {
 }
 
 .league-title-container .page-title {
-    margin: 0; /* Remove default margin from h2 */
-    font-size: 2.2em; /* Ensure the title size is consistent */
+    margin: 0;
+    font-size: 2.2em;
     font-weight: 700;
     text-align: center;
     color: var(--text-color-light);
-    padding-bottom: 0; /* No border here */
-    border-bottom: none; /* No border here */
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
 body.dark-mode .league-title-container .page-title {
     color: var(--text-color-dark);
 }
 
-/* Original .league-data-container and its contents */
+
 .league-data-container {
     display: flex;
-    gap: 40px; /* Space between team list and standings table */
+    gap: 40px;
     width: 100%;
-    align-items: flex-start; /* Align items to the top */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    justify-content: center; /* Center items when they wrap */
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .league-data-container .team-list {
-    flex: 1; /* Allow team list to grow */
-    min-width: 300px; /* Minimum width for team list */
-    max-width: 500px; /* Max width if needed */
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
 }
 
 .standings-table {
-    flex: 2; /* Allow standings table to take more space */
-    min-width: 450px; /* Minimum width for table to be readable */
-    max-width: 100%; /* Ensure it doesn't overflow */
-    overflow-x: auto; /* Enable horizontal scrolling for small screens */
+    flex: 2;
+    min-width: 450px;
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 .standings-table h3 {
@@ -321,9 +319,9 @@ body.dark-mode .standings-table h3 {
 .standings-table td {
     border: 1px solid var(--border-color-light);
     padding: 10px 8px;
-    text-align: center; /* Default centering */
+    text-align: center;
     font-size: 0.9em;
-    white-space: nowrap; /* Prevent wrapping in table cells */
+    white-space: nowrap;
 }
 
 body.dark-mode .standings-table th,
@@ -335,7 +333,7 @@ body.dark-mode .standings-table td {
     background-color: var(--header-bg-light);
     color: var(--text-color-light);
     font-weight: 600;
-    position: sticky; /* Make header sticky for horizontal scroll */
+    position: sticky;
     top: 0;
     z-index: 10;
 }
@@ -351,7 +349,7 @@ body.dark-mode .standings-table th {
 }
 
 body.dark-mode .standings-table tbody tr:nth-child(odd) {
-    background-color: var(--card-bg-dark); /* Slightly darker shade for odd rows */
+    background-color: var(--card-bg-dark);
 }
 
 .standings-table tbody tr:nth-child(even) {
@@ -359,11 +357,11 @@ body.dark-mode .standings-table tbody tr:nth-child(odd) {
 }
 
 body.dark-mode .standings-table tbody tr:nth-child(even) {
-    background-color: var(--background-color-dark); /* Slightly lighter shade for even rows */
+    background-color: var(--background-color-dark);
 }
 
 .standings-table tbody tr:hover {
-    background-color: rgba(var(--accent-color-light), 0.05); /* Subtle hover effect */
+    background-color: rgba(var(--accent-color-light), 0.05);
 }
 
 body.dark-mode .standings-table tbody tr:hover {
@@ -372,51 +370,42 @@ body.dark-mode .standings-table tbody tr:hover {
 
 .standings-table td:first-child,
 .standings-table th:first-child {
-    border-left: none; /* No border on the first column */
+    border-left: none;
 }
 .standings-table td:last-child,
 .standings-table th:last-child {
-    border-right: none; /* No border on the last column */
+    border-right: none;
 }
 
-/* New style for left-aligned team name cell */
+
 .standings-table td.team-name-cell {
-    text-align: left; /* Override center alignment */
-    display: flex; /* Use flexbox to align image and text */
-    align-items: center; /* Vertically center image and text */
-    gap: 8px; /* Space between image and text */
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 992px) {
     .league-data-container {
-        flex-direction: column; /* Stack vertically on medium screens */
+        flex-direction: column;
         align-items: center;
     }
     .league-data-container .team-list,
     .standings-table {
-        width: 100%; /* Full width for stacked elements */
-        max-width: 600px; /* Max width for readability */
+        width: 100%;
+        max-width: 600px;
     }
 }
-/* IPZ-Pewniaczki/src/flask_app/app/static/css/league.css */
 
-/* Removed the old season-filter-container flex rules as it's now split */
-/* and the new .top-section-wrapper handles the flex layout */
-
-/* No change needed for .season-select-wrapper or .league-title-wrapper */
-/* as they are now just containers for their respective elements */
-
-
-/* Adjusted media queries for the top section if needed */
 @media (max-width: 768px) {
     .top-section-wrapper {
-        flex-direction: column; /* Stack elements in a column on smaller screens */
-        gap: 20px; /* Adjust gap for stacked elements */
+        flex-direction: column;
+        gap: 20px;
     }
     .season-filter-container,
     .league-title-container {
-        width: 100%; /* Take full width when stacked */
-        max-width: 400px; /* Optional: limit max width for readability */
+        width: 100%;
+        max-width: 400px;
     }
 }

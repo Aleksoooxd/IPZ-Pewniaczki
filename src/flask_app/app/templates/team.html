@@ -15,7 +15,6 @@
     {{ team_name }}
   </h2>
   <p class="info-message">Szczegóły drużyny z ligi {{ league_name }} wkrótce...</p>
-  {# Modified link: replace space back to slash for the season parameter #}
   <a href="{{ url_for('main.league_view', league_code=league_code, season=season_name | replace(' ', '/')) }}" class="button secondary">← Powrót do ligi</a>
 </div>
 {% endblock %}

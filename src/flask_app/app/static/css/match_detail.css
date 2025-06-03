@@ -11,7 +11,7 @@
     align-items: center;
     justify-content: center;
     gap: 15px;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+    flex-wrap: wrap;
     color: var(--text-color-light);
 }
 
@@ -20,9 +20,9 @@ body.dark-mode .match-title {
 }
 
 .match-title .team-name {
-    flex-basis: 300px; /* Give team names some space */
+    flex-basis: 300px;
     text-align: right;
-    white-space: nowrap; /* Prevent wrapping for team names */
+    white-space: nowrap;
 }
 
 .match-title .score-separator {
@@ -34,7 +34,7 @@ body.dark-mode .match-title {
 .match-title .score {
     font-size: 1.2em;
     padding: 5px 15px;
-    background-color: var(--primary-button-bg-light); /* Highlight score */
+    background-color: var(--primary-button-bg-light);
     border-radius: 8px;
     color: white;
 }
@@ -50,14 +50,14 @@ body.dark-mode .match-title .score {
 
 .match-grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr 1fr; /* Three columns: Home, Info/Pred, Away */
+    grid-template-columns: 1fr 1.5fr 1fr;
     gap: 30px;
-    align-items: flex-start; /* Align tops of columns */
+    align-items: flex-start;
 }
 
 @media (max-width: 1024px) {
     .match-grid {
-        grid-template-columns: 1fr; /* Stack columns on smaller screens */
+        grid-template-columns: 1fr;
     }
     .match-title .team-name {
         text-align: center;
@@ -137,12 +137,12 @@ body.dark-mode .stat-value {
     color: var(--text-color-dark);
 }
 
-/* Middle Column - Match Info & Predictions */
+
 .middle-column {
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Distribute sections vertically */
+    justify-content: space-between;
 }
 
 .info-section, .h2h-section, .predictions-section {
@@ -152,7 +152,7 @@ body.dark-mode .stat-value {
 }
 
 .middle-column > div:last-child {
-    border-bottom: none; /* No border for the last section */
+    border-bottom: none;
 }
 
 body.dark-mode .info-section, body.dark-mode .h2h-section, body.dark-mode .predictions-section {
@@ -164,7 +164,7 @@ body.dark-mode .info-section, body.dark-mode .h2h-section, body.dark-mode .predi
     font-size: 1.4em;
     font-weight: 600;
     margin-bottom: 15px;
-    color: var(--primary-button-bg-light); /* Accent color for middle column headings */
+    color: var(--primary-button-bg-light);
 }
 body.dark-mode .info-section h3, body.dark-mode .h2h-section h3, body.dark-mode .predictions-section h3 {
     color: var(--primary-button-bg-dark);
@@ -204,9 +204,9 @@ body.dark-mode .surprise-status {
     color: white;
 }
 
-.status-finished { background-color: #28a745; } /* Green */
-.status-upcoming { background-color: #007bff; } /* Blue */
-.status-live { background-color: #ffc107; color: #333; } /* Yellow */
+.status-finished { background-color: #28a745; }
+.status-upcoming { background-color: #007bff; }
+.status-live { background-color: #ffc107; color: #333; }
 
 .predictions-list {
     list-style: none;
@@ -236,9 +236,9 @@ body.dark-mode .predictions-list li {
     color: white;
 }
 
-.result-h { background-color: #28a745; } /* Green for Home win */
-.result-d { background-color: #6c757d; } /* Gray for Draw */
-.result-a { background-color: #dc3545; } /* Red for Away win */
+.result-h { background-color: #28a745; }
+.result-d { background-color: #6c757d; }
+.result-a { background-color: #dc3545; }
 
 .confidence {
     font-size: 0.9em;
@@ -260,19 +260,18 @@ body.dark-mode .confidence {
     vertical-align: middle;
 }
 
-/* Last Matches Section Styling */
 .last-matches-section {
-    margin-top: 30px; /* Add some space above this section */
-    padding: 20px; /* Increased padding */
-    background-color: var(--background-color-light); /* Background color */
-    border-radius: 12px; /* Match card border-radius */
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); /* Subtle inner shadow */
-    border: 1px solid var(--border-color-light); /* Border to clearly define the section */
+    margin-top: 30px;
+    padding: 20px;
+    background-color: var(--background-color-light);
+    border-radius: 12px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color-light);
     transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 body.dark-mode .last-matches-section {
-    background-color: var(--header-bg-dark); /* A slightly different background for dark mode */
+    background-color: var(--header-bg-dark);
     border-color: var(--border-color-dark);
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
 }
@@ -281,40 +280,38 @@ body.dark-mode .last-matches-section {
 .last-matches-section h3 {
     text-align: center;
     margin-bottom: 20px;
-    /* Remove border-top from previous steps if it was here, as it's now handled by the section container */
     border-bottom: none;
     padding-bottom: 0;
 }
 
 .last-matches-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Stack cards vertically by default */
-    gap: 15px; /* Space between match cards */
+    grid-template-columns: 1fr;
+    gap: 15px;
 }
 
-/* Style for individual past match cards */
 .past-match-card {
-    background-color: var(--card-bg-light); /* Use card background for inner cards */
+    background-color: var(--card-bg-light);
     color: var(--text-color-light);
     padding: 12px 15px;
     border-radius: 8px;
     display: flex;
-    flex-direction: column; /* Stack elements vertically */
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* Smaller shadow than main cards */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     text-decoration: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
 body.dark-mode .past-match-card {
-    background-color: var(--background-color-dark); /* Adjust background for dark mode */
+    background-color: var(--background-color-dark);
     color: var(--text-color-dark);
     box-shadow: 0 3px 8px rgba(0,0,0,0.3);
 }
 
 .past-match-card:hover {
-    transform: translateY(-2px); /* Slight lift on hover */
+    transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.12);
 }
 
@@ -330,12 +327,12 @@ body.dark-mode .past-match-card:hover {
     font-weight: 600;
     margin-bottom: 5px;
     text-align: center;
-    flex-wrap: wrap; /* Allow team names to wrap if long */
+    flex-wrap: wrap;
     justify-content: center;
 }
 
 .past-match-teams .team {
-    flex-shrink: 0; /* Prevent shrinking team names too much */
+    flex-shrink: 0;
 }
 
 .past-match-teams .vs-separator {
@@ -374,25 +371,22 @@ body.dark-mode .past-match-score {
     font-size: 0.8em;
     font-weight: 700;
     color: white;
-    min-width: 20px; /* Ensure consistent width */
+    min-width: 20px;
     text-align: center;
 }
 
-/* Corrected colors for Win/Draw/Loss badges from team's perspective */
-.outcome-win { background-color: #28a745; } /* Green */
-.outcome-draw { background-color: #6c757d; } /* Gray */
-.outcome-loss { background-color: #dc3545; } /* Red */
 
+.outcome-win { background-color: #28a745; }
+.outcome-draw { background-color: #6c757d; }
+.outcome-loss { background-color: #dc3545; }
 
-/* Responsive adjustments for last matches grid */
 @media (min-width: 768px) {
     .last-matches-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 2 columns on wider screens */
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 }
 @media (min-width: 1024px) {
-    /* If the main grid is 3 columns, consider stacking these in their own columns */
     .team-column .last-matches-grid {
-        grid-template-columns: 1fr; /* Stack them within the team column */
+        grid-template-columns: 1fr;
     }
 }

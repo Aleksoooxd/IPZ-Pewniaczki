@@ -8,21 +8,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   {% block extra_css %}{% endblock %}
 
-  {# IMMEDIATE STYLE TO PREVENT FOUC #}
   <style>
     body {
       visibility: hidden;
       opacity: 0;
       transition: opacity 0.5s ease-in-out;
     }
-    body.theme-loaded { /* This class will be added by theme-toggle.js */
+    body.theme-loaded {
       visibility: visible;
       opacity: 1;
     }
   </style>
-  {# END IMMEDIATE STYLE #}
-
-  {# REMOVED THE PREVIOUS INLINE SCRIPT HERE #}
 
 </head>
 <body>
@@ -45,7 +41,6 @@
     &copy; 2025 Pewniaczki ⚽ Wszystkie prawa zastrzeżone.
   </footer>
 
-  {# Keep theme-toggle.js here, but its content will be modified #}
   <script src="{{ url_for('static', filename='js/theme-toggle.js') }}"></script>
   {% block extra_script %}{% endblock %}
 </body>

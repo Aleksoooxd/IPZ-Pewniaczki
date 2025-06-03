@@ -14,7 +14,6 @@
   <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
   <h3>Ligi</h3>
   <ul class="sidebar-links">
-    {# Add data-league-code attribute to each league link #}
     <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}" data-league-code="premier league">Premier League</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}" data-league-code="bundesliga">Bundesliga</a></li>
     <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}" data-league-code="eredivisie">Eredivisie</a></li>
@@ -31,9 +30,8 @@
   </ul>
 </div>
 
-{# New container for season filter and league title #}
 <div class="top-section-wrapper">
-    <div class="season-filter-container card"> {# Existing season filter container #}
+    <div class="season-filter-container card">
         <label for="season-select">Wybierz sezon:</label>
         <select id="season-select" onchange="changeSeason()">
             <option value="all_seasons" {% if selected_season == 'all_seasons' %}selected{% endif %}>Wszystkie sezony</option>
@@ -42,13 +40,13 @@
             {% endfor %}
         </select>
     </div>
-    <div class="league-title-container card"> {# NEW container for league title #}
+    <div class="league-title-container card">
         <h2 class="page-title">{{ league.code | replace("premier league", "Premier League") | replace("spremier league", "Scottish Premiership") | title }}</h2>
     </div>
 </div>
 
 <div class="league-content-wrapper">
-  <div class="league-data-container"> {# New container to hold both team list and standings #}
+  <div class="league-data-container">
     <div class="team-list card">
       <h3>Drużyny w lidze</h3>
       <ul class="team-links">
@@ -64,8 +62,6 @@
         {% endfor %}
       </ul>
     </div>
-
-    {# Standings Table Section #}
     {% if standings %}
     <div class="standings-table card">
         <h3>Tabela Ligowa (Sezon: {{ standings_season_display_name }})</h3>
@@ -88,8 +84,8 @@
                 {% for team in standings %}
                 <tr>
                     <td>{{ team.position }}</td>
-                    <td class="team-name-cell"> {# Added class for left alignment #}
-                      {# Assuming team_id is available in standings data to show logo #}
+                    <td class="team-name-cell">
+
                       {% if team.team_id %}
                         <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.team_name }} logo" class="team-logo-inline">
                       {% endif %}
@@ -120,7 +116,7 @@
     </div>
     {% endif %}
 
-  </div> {# End league-data-container #}
+  </div>
 </div>
 {% endblock %}
 

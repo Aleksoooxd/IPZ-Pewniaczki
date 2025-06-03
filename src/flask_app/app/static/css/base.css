@@ -1,38 +1,37 @@
 :root {
-    /* Day Mode Colors */
-    --background-color-light: #f4f7f6; /* Soft off-white */
-    --text-color-light: #333; /* Dark gray for readability */
-    --header-bg-light: #e0e0e0; /* Lighter header */
-    --footer-bg-light: #e0e0e0; /* Lighter footer */
-    --card-bg-light: #ffffff; /* White cards */
-    --border-color-light: #ddd; /* Light gray borders */
-    --primary-button-bg-light: #007bff; /* Blue */
+
+    --background-color-light: #f4f7f6;
+    --text-color-light: #333;
+    --header-bg-light: #e0e0e0;
+    --footer-bg-light: #e0e0e0;
+    --card-bg-light: #ffffff;
+    --border-color-light: #ddd;
+    --primary-button-bg-light: #007bff;
     --primary-button-hover-light: #0056b3;
-    --secondary-button-bg-light: #6c757d; /* Gray */
+    --secondary-button-bg-light: #6c757d;
     --secondary-button-hover-light: #5a6268;
-    --accent-color-light: #28a745; /* Green for success/highlights */
-    --error-color-light: #dc3545; /* Red for errors */
-    --info-color-light: #17a2b8; /* Cyan for info */
-    --green-bg-primary-light: #006400; /* Darker green */
-    --green-bg-secondary-light: #008000; /* Lighter green */
+    --accent-color-light: #28a745;
+    --error-color-light: #dc3545;
+    --info-color-light: #17a2b8;
+    --green-bg-primary-light: #006400;
+    --green-bg-secondary-light: #008000;
 
 
-    /* Dark Mode Colors */
-    --background-color-dark: #2c3e50; /* Deep charcoal */
-    --text-color-dark: #ecf0f1; /* Light gray */
-    --header-bg-dark: #34495e; /* Slightly darker charcoal */
+    --background-color-dark: #2c3e50;
+    --text-color-dark: #ecf0f1;
+    --header-bg-dark: #34495e;
     --footer-bg-dark: #34495e;
-    --card-bg-dark: #3b506b; /* Darker blue-gray for cards */
-    --border-color-dark: #4a6572; /* Subtle dark border */
-    --primary-button-bg-dark: #61afef; /* Lighter blue */
+    --card-bg-dark: #3b506b;
+    --border-color-dark: #4a6572;
+    --primary-button-bg-dark: #61afef;
     --primary-button-hover-dark: #528fc7;
-    --secondary-button-bg-dark: #95a5a6; /* Medium gray */
+    --secondary-button-bg-dark: #95a5a6;
     --secondary-button-hover-dark: #7f8c8d;
-    --accent-color-dark: #2ecc71; /* Brighter green */
-    --error-color-dark: #e74c3c; /* Brighter red */
-    --info-color-dark: #3498db; /* Brighter blue */
-    --green-bg-primary-dark: #1e3c2c; /* Even darker green */
-    --green-bg-secondary-dark: #2d573d; /* Darker green */
+    --accent-color-dark: #2ecc71;
+    --error-color-dark: #e74c3c;
+    --info-color-dark: #3498db;
+    --green-bg-primary-dark: #1e3c2c;
+    --green-bg-secondary-dark: #2d573d;
 }
 
 body {
@@ -61,7 +60,7 @@ body:not(.dark-mode) {
     max-width: 1200px;
     margin: auto;
     padding: 20px;
-    flex-grow: 1; /* Allow content to grow */
+    flex-grow: 1;
 }
 
 header {
@@ -70,13 +69,13 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtelny cień */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 body.dark-mode header {
     background-color: var(--header-bg-dark);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4); /* Subtelny ciemny cień */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
 
 .logo {
@@ -125,35 +124,34 @@ footer {
     font-size: 0.9em;
     text-align: center;
     color: var(--text-color-light);
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.05); /* Subtelny cień od dołu */
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 body.dark-mode footer {
     background-color: var(--footer-bg-dark);
     color: var(--text-color-dark);
-    box-shadow: 0 -4px 12px rgba(0,0,0,0.3); /* Subtelny ciemny cień od dołu */
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
 }
 
-/* General Card Styling */
+
 .card {
     background-color: var(--card-bg-light);
     border-radius: 12px;
     padding: 25px;
-    /* Zaktualizowane cienie */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Bardziej widoczny cień */
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     color: var(--text-color-light);
 }
 
 body.dark-mode .card {
     background-color: var(--card-bg-dark);
-    /* Zaktualizowane cienie dla trybu ciemnego */
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* Ciemniejszy cień dla trybu ciemnego */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
     color: var(--text-color-dark);
 }
 
-/* General Button Styling */
+
 .button {
     display: inline-block;
     padding: 10px 20px;
@@ -202,7 +200,7 @@ body.dark-mode .button.secondary:hover {
     background-color: var(--secondary-button-hover-dark);
 }
 
-/* Page Titles */
+
 .page-title {
     font-size: 2.2em;
     font-weight: 700;
@@ -216,13 +214,13 @@ body.dark-mode .page-title {
 }
 
 
-/* Theme Toggle Button */
+
 .theme-toggle {
     background: none;
     border: none;
     font-size: 1.8em;
     cursor: pointer;
-    color: var(--text-color-light); /* Default color, adjust via JS/class */
+    color: var(--text-color-light);
     transition: color 0.3s ease;
     padding: 5px;
     border-radius: 50%;
@@ -242,22 +240,22 @@ body.dark-mode .theme-toggle {
 }
 
 .theme-toggle .light-icon {
-    display: inline-block; /* Show by default in light mode */
+    display: inline-block;
 }
 
 .theme-toggle .dark-icon {
-    display: none; /* Hide by default in light mode */
+    display: none;
 }
 
 body.dark-mode .theme-toggle .light-icon {
-    display: none; /* Hide in dark mode */
+    display: none;
 }
 
 body.dark-mode .theme-toggle .dark-icon {
-    display: inline-block; /* Show in dark mode */
+    display: inline-block;
 }
 
-/* Info/Error/Success Messages */
+
 .info-message, .error-message, .status-message {
     padding: 15px;
     border-radius: 8px;
@@ -300,7 +298,7 @@ body.dark-mode .status-message.success {
 }
 
 .status-message.warning {
-    background-color: rgba(255, 165, 0, 0.1); /* Orange for warning */
+    background-color: rgba(255, 165, 0, 0.1);
     color: orange;
     border: 1px solid orange;
 }

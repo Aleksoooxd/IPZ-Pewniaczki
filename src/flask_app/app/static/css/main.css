@@ -1,4 +1,4 @@
-/* Sidebar Toggle Button */
+
 .sidebar-toggle {
   font-size: 1.1em;
   padding: 10px 20px;
@@ -7,12 +7,12 @@
   cursor: pointer;
   width: fit-content;
   border-radius: 8px;
-  margin: 10px 0; /* Adjust margin as needed for positioning on the page */
-  z-index: 1001; /* Ensure it's above other content */
+  margin: 10px 0;
+  z-index: 1001;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-  position: sticky; /* Make it sticky */
-  top: 15px; /* Position from top */
+  position: sticky;
+  top: 15px;
   left: 0;
 }
 
@@ -25,22 +25,22 @@ body.dark-mode .sidebar-toggle {
 .sidebar {
   position: fixed;
   top: 0;
-  left: -280px; /* Upewnij się, że ta wartość jest równa szerokości sidebara */
+  left: -280px;
   width: 280px;
   height: 100%;
   background-color: var(--card-bg-light);
   color: var(--text-color-light);
   padding: 25px;
-  box-shadow: none; /* USUŃ CIEŃ W STANIE ZAMKNIĘTYM */
+  box-shadow: none;
   transition: left 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   z-index: 2000;
   overflow-y: auto;
-    box-sizing: border-box; /* DODAĆ TĘ LINIĘ */
+    box-sizing: border-box;
 }
 body.dark-mode .sidebar {
     background-color: var(--card-bg-dark);
     color: var(--text-color-dark);
-    box-shadow: none; /* USUŃ CIEŃ W STANIE ZAMKNIĘTYM DLA DARK MODE */
+    box-shadow: none;
 }
 
 .sidebar.open {
@@ -48,12 +48,12 @@ body.dark-mode .sidebar {
     box-shadow: 3px 0 10px rgba(0,0,0,0.2);
 }
 
-body.dark-mode .sidebar.open { /* Apply dark mode shadow when open */
+body.dark-mode .sidebar.open {
     box-shadow: 4px 0 15px rgba(0,0,0,0.4);
 }
 
 .sidebar-close {
-  font-size: 1.8em; /* Larger close icon */
+  font-size: 1.8em;
   text-align: right;
   cursor: pointer;
   margin-bottom: 20px;
@@ -67,7 +67,7 @@ body.dark-mode .sidebar-close {
 .sidebar h3 {
   margin-top: 0;
   text-align: center;
-  color: var(--accent-color-light); /* Accent color for sidebar heading */
+  color: var(--accent-color-light);
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border-color-light);
@@ -120,7 +120,7 @@ body.dark-mode .sidebar-divider {
     border-color: var(--border-color-dark);
 }
 
-/* Pozostałe style z main.css */
+
 .main-content-wrapper {
   display: flex;
   flex-direction: column;
@@ -131,9 +131,9 @@ body.dark-mode .sidebar-divider {
 .date-container {
   display: flex;
   flex-wrap: wrap;
-  align-items: center; /* Wyrównuje elementy w pionie */
-  gap: 15px; /* Odstępy między elementami */
-  justify-content: center; /* Wyśrodkowuje elementy poziomo */
+  align-items: center;
+  gap: 15px;
+  justify-content: center;
   padding: 20px;
 }
 
@@ -154,17 +154,17 @@ body.dark-mode .sidebar-divider {
 .league-title {
   font-size: 1.8em;
   font-weight: 700;
-  color: var(--accent-color-light); /* Accent color for titles */
+  color: var(--accent-color-light);
   margin-top: 0;
   margin-bottom: 25px;
   text-align: center;
   padding-bottom: 10px;
   border-bottom: 2px solid var(--border-color-light);
   transition: color 0.3s ease, border-color 0.3s ease;
-  display: flex; /* Make it a flex container to align flag and text */
-  align-items: center; /* Vertically align items */
-  justify-content: center; /* Center horizontally */
-  gap: 10px; /* Space between flag and text */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 body.dark-mode .league-title {
@@ -173,9 +173,9 @@ body.dark-mode .league-title {
 }
 
 .league-flag {
-    width: 30px; /* Adjust flag size as needed */
+    width: 30px;
     height: auto;
-    vertical-align: middle; /* Align with text baseline */
+    vertical-align: middle;
 }
 body.dark-mode .date-picker {
     border-color: var(--border-color-dark);
@@ -191,7 +191,7 @@ body.dark-mode .date-picker {
 }
 
 .league-section {
-    background-color: var(--card-bg-light); /* Use card background for league sections */
+    background-color: var(--card-bg-light);
     border-radius: 12px;
     padding: 25px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -205,18 +205,18 @@ body.dark-mode .league-section {
 
 .league-matches-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
 }
 
 
 .match-card {
-  background-color: var(--background-color-light); /* Lighter background for individual cards */
+  background-color: var(--background-color-light);
   color: var(--text-color-light);
   padding: 15px 20px;
   border-radius: 10px;
   display: flex;
-  flex-direction: column; /* Stack elements vertically */
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -225,7 +225,7 @@ body.dark-mode .league-section {
 }
 
 body.dark-mode .match-card {
-    background-color: #4a6572; /* Darker background for individual cards */
+    background-color: #4a6572;
     color: var(--text-color-dark);
     box-shadow: 0 3px 10px rgba(0,0,0,0.3);
 }
@@ -284,14 +284,14 @@ body.dark-mode .match-info {
 }
 
 .status-finished {
-    background-color: var(--secondary-button-bg-light); /* Gray for finished */
+    background-color: var(--secondary-button-bg-light);
 }
 body.dark-mode .status-finished {
     background-color: var(--secondary-button-bg-dark);
 }
 
 .status-upcoming {
-    background-color: var(--primary-button-bg-light); /* Blue for upcoming */
+    background-color: var(--primary-button-bg-light);
 }
 body.dark-mode .status-upcoming {
     background-color: var(--primary-button-bg-dark);
@@ -303,20 +303,13 @@ body.dark-mode .status-upcoming {
   vertical-align: middle;
 }
 
-/* Usunięto sekcję .filter-sort-controls, ponieważ kontener ten został usunięty z HTML */
-/* Stąd nie ma już potrzeby definiować jej stylów */
-
-/* Dostosowanie stylów dla elementów select i label w date-container */
 .date-container label {
-    /* Utrzymujemy istniejące style dla etykiet */
     font-size: 1.1em;
     font-weight: 600;
-    /* Dodajmy trochę przestrzeni, aby tekst nie przylegał do inputów/selectów */
     margin-right: 5px;
-    margin-left: 10px; /* Dla lepszego odstępu od poprzedniego elementu */
+    margin-left: 10px;
 }
 
-/* Pierwsza etykieta (Wybierz datę) nie potrzebuje margin-left */
 .date-container label:first-of-type {
     margin-left: 0;
 }
