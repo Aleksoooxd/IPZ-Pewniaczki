@@ -1,10 +1,18 @@
+import json
+import os
 import urllib
 
 class Config:
-    SERVER = 'ipz-pewniaczki2.database.windows.net'
-    DATABASE = 'ipz-pewniaczki1'
-    USERNAME = 'admin_'
-    PASSWORD = 'IPZ_pewniaczki'
+    SECRETS_FILE = os.path.join(os.path.dirname(__file__), 'secrets.json')
+    try:
+        with open(SECRETS_FILE, 'r') as f:
+            secrets = json.load(f)
+    except FileNotFoundError:
+        print(f"Error: {SECRETS_FILE} not found. Please create it with your database credentials.")
+    SERVER = secrets.get('SERVER', 'default_server')
+    DATABASE = secrets.get('DATABASE', 'default_database')
+    USERNAME = secrets.get('USERNAME', 'default_username')
+    PASSWORD = secrets.get('PASSWORD', 'default_password')
 
     ENCRYPT = 'yes'
     TRUST_SERVER_CERTIFICATE = 'no'
