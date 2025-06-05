@@ -9,8 +9,11 @@ from .db import db, FootballMatch, Team, League, FutureMatch, TeamValue, Predict
 main = Blueprint('main', __name__)
 
 
-@main.route('/')
+@main.route('/', methods=['GET', 'POST'])
 def home():
+    if request.method == 'POST':
+
+        pass
     return render_template('index.html')
 
 
