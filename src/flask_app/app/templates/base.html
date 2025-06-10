@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="{{ g.lang }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{% block title %}Pewniaczki{% endblock %}</title>
+  <title>{% block title %}{{ _('Pewniaczki') }}{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   {% block extra_css %}{% endblock %}
@@ -25,12 +25,51 @@
   <header>
     <a href="{{ url_for('main.mainpage') }}" class="logo">
       <img src="/static/pewniaczkilogo.png" alt="Logo" />
-      <p>Predykcje wyników meczów piłkarskich</p>
+      <p>{{ _('Predykcje wyników meczów piłkarskich') }}</p>
     </a>
-    <button id="theme-toggle" class="theme-toggle">
-      <span class="icon light-icon">☀️</span>
-      <span class="icon dark-icon">🌙</span>
-    </button>
+    <div class="header-right-actions">
+        <div class="language-dropdown"> {# Nowy kontener dla dropdown #}
+            {% set current_endpoint = request.endpoint %}
+            {% set current_args = request.view_args.copy() %}
+
+            {# Zaktualizowana lista wszystkich języków #}
+            {% set all_langs = ['en', 'de', 'es', 'pt', 'cs', 'da', 'pl', 'ja', 'sv', 'it', 'tr', 'hr','he'] %}
+            {% set current_lang_code = g.lang %}
+            {% set current_lang_name = lang_code_to_display_name(current_lang_code) %}
+
+            <details>
+                <summary>
+                    <img src="{{ url_for('static', filename='flags/') }}{{ current_lang_code }}.png"
+                         alt="{{ _(current_lang_name) }}"
+                         title="{{ _('Zmień język') }}"
+                         class="lang-flag current-flag">
+                    <span class="lang-text">{{ _(current_lang_name) }}</span>
+                </summary>
+                <ul class="dropdown-menu">
+                    {% for lang_code in all_langs %}
+                        {% if lang_code != current_lang_code %} {# Nie pokazujemy aktualnie wybranego języka w liście #}
+                            {% set lang_name = lang_code_to_display_name(lang_code) %}
+                            {% set current_args_for_lang = current_args.copy() %}
+                            {% do current_args_for_lang.update({'lang': lang_code}) %}
+                            <li>
+                                <a href="{{ url_for(current_endpoint, **current_args_for_lang) }}">
+                                    <img src="{{ url_for('static', filename='flags/') }}{{ lang_code }}.png"
+                                         alt="{{ _(lang_name) }}"
+                                         title="{{ _(lang_name) }}"
+                                         class="lang-flag">
+                                    <span class="lang-text">{{ _(lang_name) }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </details>
+        </div>
+        <button id="theme-toggle" class="theme-toggle">
+          <span class="icon light-icon">☀️</span>
+          <span class="icon dark-icon">🌙</span>
+        </button>
+    </div>
   </header>
 
   <main class="container">
@@ -38,7 +77,7 @@
   </main>
 
   <footer>
-    &copy; 2025 Pewniaczki ⚽ Wszystkie prawa zastrzeżone.
+    &copy; 2025 Pewniaczki ⚽ {{ _('Wszystkie prawa zastrzeżone.') }}
   </footer>
 
   {# Scroll to top button #}
@@ -49,21 +88,17 @@
 
   <script src="{{ url_for('static', filename='js/theme-toggle.js') }}"></script>
   <script>
-
     const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-
 
     window.onscroll = function() {
       if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
         scrollToTopBtn.style.display = "block";
       } else {
-        scrollToTopBtn.style.display = "none";
+        scrollToTo0Btn.style.display = "none";
       }
     };
 
-
     scrollToTopBtn.addEventListener("click", function() {
-
       window.scrollTo({
         top: 0,
         behavior: 'smooth'

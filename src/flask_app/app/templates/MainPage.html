@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Pewniaczki - Mecze{% endblock %}
+{% block title %}{{ _('Pewniaczki - Mecze') }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
@@ -8,42 +8,42 @@
 {% endblock %}
 
 {% block content %}
-<div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; Wybierz Ligę</div>
+<div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; {{ _('Wybierz Ligę') }}</div>
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
-  <h3>Ligi</h3>
+  <h3>{{ _('Ligi') }}</h3>
   <ul class="sidebar-links">
-    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">Premier League</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}">Bundesliga</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}">Eredivisie</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">Ethniki Katigoria</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='FutbolLig1') }}">Futbol Lig 1</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='JupiterLeague') }}">Jupiler League</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}">La Liga</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}">Ligue 1</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}">Liga I</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">Scottish Premiership</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}">Serie A</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">{% if _('Premier League') %}{{ _('Premier League') }}{% else %}Premier League{% endif %}</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}">{% if _('Bundesliga') %}{{ _('Bundesliga') }}{% else %}Bundesliga{% endif %}</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}">{% if _('Eredivisie') %}{{ _('Eredivisie') }}{% else %}Eredivisie{% endif %}</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">{% if _('Ethniki Katigoria') %}{{ _('Ethniki Katigoria') }}{% else %}Ethniki Katigoria{% endif %}</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='FutbolLig1') }}">{% if _('Futbol Lig 1') %}{{ _('Futbol Lig 1') }}{% else %}Futbol Lig 1{% endif %}</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='JupiterLeague') }}">{% if _('Jupiler League') %}{{ _('Jupiler League') }}{% else %}Jupiler League{% endif %}</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}">{% if _('La Liga') %}{{ _('La Liga') }}{% else %}La Liga{% endif %}</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}">{% if _('Ligue 1') %}{{ _('Ligue 1') }}{% else %}Ligue 1{% endif %}</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}">{% if _('Liga I') %}{{ _('Liga I') }}{% else %}Liga I{% endif %}</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">{% if _('Scottish Premiership') %}{{ _('Scottish Premiership') }}{% else %}Scottish Premiership{% endif %}</a></li>
+    <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}">{% if _('Serie A') %}{{ _('Serie A') }}{% else %}Serie A{% endif %}</a></li>
     <li class="sidebar-divider"></li>
-    <li><a href="{{ url_for('main.mainpage') }}">🏠 Strona Główna</a></li>
+    <li><a href="{{ url_for('main.mainpage') }}">🏠 {{ _('Strona Główna') }}</a></li>
   </ul>
 </div>
 
 <div class="main-content-wrapper">
     <div class="date-container card">
-      <label for="date-picker">Wybierz datę:</label>
+      <label for="date-picker">{{ _('Wybierz datę:') }}</label>
       <input type="date" id="date-picker" class="date-picker">
-      <button class="button primary" onclick="redirectToMatches()">Pokaż mecze</button>
-      <label for="league-filter">Filtruj ligę:</label>
+      <button class="button primary" onclick="redirectToMatches()">{{ _('Pokaż mecze') }}</button>
+      <label for="league-filter">{{ _('Filtruj ligę:') }}</label>
       <select id="league-filter" class="date-picker" onchange="fetchMatches()">
-        <option value="">Wszystkie ligi</option>
+        <option value="">{{ _('Wszystkie ligi') }}</option>
         </select>
 
-      <label for="sort-order">Sortuj według:</label>
+      <label for="sort-order">{{ _('Sortuj według:') }}</label>
       <select id="sort-order" class="date-picker" onchange="fetchMatches()">
-        <option value="league-asc">Ligi (A-Z)</option>
-        <option value="time-asc">Godziny (rosnąco)</option>
+        <option value="league-asc">{{ _('Ligi (A-Z)') }}</option>
+        <option value="time-asc">{{ _('Godziny (rosnąco)') }}</option>
         </select>
     </div>
 
@@ -60,17 +60,17 @@
   }
 
   const leagueDisplayNames = {
-    "premier league": "Premier League",
-    "bundesliga": "Bundesliga",
-    "eredivisie": "Eredivisie",
-    "ethniki katigoria": "Ethniki Katigoria",
-    "futbol ligi 1": "Süper Lig",
-    "jupiler league": "Pro League",
-    "la liga": "La Liga",
-    "ligue 1": "Ligue 1",
-    "liga i": "Liga Portugal",
-    "spremier league": "Scottish Premiership",
-    "serie a": "Serie A"
+    "premier league": "{{ _('Premier League') }}",
+    "bundesliga": "{{ _('Bundesliga') }}",
+    "eredivisie": "{{ _('Eredivisie') }}",
+    "ethniki katigoria": "{{ _('Ethniki Katigoria') }}",
+    "futbol ligi 1": "{{ _('Futbol Lig 1') }}",
+    "jupiler league": "{{ _('Jupiler League') }}",
+    "la liga": "{{ _('La Liga') }}",
+    "ligue 1": "{{ _('Ligue 1') }}",
+    "liga i": "{{ _('Liga I') }}",
+    "spremier league": "{{ _('Scottish Premiership') }}",
+    "serie a": "{{ _('Serie A') }}"
   };
 
   const leagueFlagMap = {
@@ -91,10 +91,9 @@
   function redirectToMatches() {
     const selectedDate = document.getElementById('date-picker').value;
     if (selectedDate) {
-
       window.location.href = `/main?date=${selectedDate}`;
     } else {
-      alert('Proszę wybrać datę przed kliknięciem "Pokaż mecze".');
+      alert({{ _('Proszę wybrać datę przed kliknięciem "Pokaż mecze".')|tojson }});
     }
   }
 
@@ -108,7 +107,7 @@
     matchesContainer.innerHTML = '';
 
     if (!selectedDate) {
-      matchesContainer.innerHTML = '<p class="info-message">Proszę wybrać datę.</p>';
+      matchesContainer.innerHTML = `<p class="info-message">{{ _('Proszę wybrać datę.') }}</p>`;
       return;
     }
 
@@ -122,7 +121,7 @@
       }
 
       if (data.length === 0) {
-        matchesContainer.innerHTML = '<p class="info-message">Brak meczów dla wybranej daty.</p>';
+        matchesContainer.innerHTML = `<p class="info-message">{{ _('Brak meczów dla wybranej daty.') }}</p>`;
         return;
       }
 
@@ -179,7 +178,7 @@
         const flagFileName = leagueFlagMap[leagueCodeFromAPI];
         if (flagFileName) {
           const flagImg = document.createElement('img');
-          flagImg.src = `{{ url_for('static', filename='flags/') }}${flagFileName}`;
+          flagImg.src = `{{ url_for('static', filename='flags/') }}` + flagFileName;
           flagImg.alt = `${leagueDisplayNames[leagueCodeFromAPI] || leagueCodeFromAPI} Flag`;
           flagImg.classList.add('league-flag');
           leagueTitle.prepend(flagImg);
@@ -192,34 +191,35 @@
 
         matchesByLeague[leagueCodeFromAPI].forEach(match => {
           const matchCard = document.createElement('a');
+          // Corrected href construction
+          matchCard.href = "/match/" + match.match_type + "/" + match.match_id;
           matchCard.classList.add('match-card');
-          matchCard.href = `/match/${match.match_type}/${match.match_id}`;
-
           let statusText = '';
           let statusClass = '';
           if (match.home_goals !== null && match.away_goals !== null) {
-              statusText = `Wynik: ${match.home_goals} - ${match.away_goals}`;
+              statusText = "{{ _('Wynik:') }}" + " " + match.home_goals + " - " + match.away_goals;
               statusClass = 'status-finished';
           } else {
-              statusText = 'Nadchodzący mecz';
+              statusText = "{{ _('Nadchodzący mecz') }}";
               statusClass = 'status-upcoming';
           }
 
+          // Corrected innerHTML construction using concatenation
           matchCard.innerHTML = `
                 <div class="match-teams">
           <span class="team home-team">
-            <img src="/static/logos/${match.home_team_id}.png" alt="${match.home_team} logo" class="team-logo-inline">
-            ${match.home_team}
+            <img src="/static/logos/` + match.home_team_id + `.png" alt="` + match.home_team + ` logo" class="team-logo-inline">
+            ` + match.home_team + `
           </span>
-          <span class="vs-separator">vs</span>
+          <span class="vs-separator">{{ _('vs') }}</span>
           <span class="team away-team">
-            <img src="/static/logos/${match.away_team_id}.png" alt="${match.away_team} logo" class="team-logo-inline">
-            ${match.away_team}
+            <img src="/static/logos/` + match.away_team_id + `.png" alt="` + match.away_team + ` logo" class="team-logo-inline">
+            ` + match.away_team + `
           </span>
         </div>
         <div class="match-info">
-              <span class="match-league">${leagueDisplayNames[match.league] || match.league.toUpperCase()}</span>
-              <span class="match-status ${statusClass}">${statusText}</span>
+              <span class="match-league">` + (leagueDisplayNames[match.league] || match.league.toUpperCase()) + `</span>
+              <span class="match-status ` + statusClass + `">` + statusText + `</span>
             </div>
           `;
           leagueMatchesContainer.appendChild(matchCard);
@@ -229,7 +229,7 @@
       }
     } catch (err) {
       console.error("Błąd pobierania meczów:", err);
-      matchesContainer.innerHTML = '<p class="error-message">Wystąpił błąd przy ładowaniu meczów.</p>';
+      matchesContainer.innerHTML = `<p class="error-message">{{ _('Wystąpił błąd przy ładowaniu meczów.') }}</p>`;
     }
   }
 

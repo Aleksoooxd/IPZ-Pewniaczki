@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Test bazy danych{% endblock %}
+{% block title %}{{ _('Test bazy danych') }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/test_db.css') }}">
@@ -8,10 +8,10 @@
 
 {% block content %}
 <div class="test-db-container card">
-    <h1 class="page-title">Test połączenia z bazą danych</h1>
+    <h1 class="page-title">{{ _('Test połączenia z bazą danych') }}</h1>
     <div class="status-message {{ 'success' if '✅' in status else 'error' if '❌' in status else 'warning' }}">
         {{ status }}
     </div>
-    <a href="{{ url_for('main.home') }}" class="button secondary">← Wróć do strony głównej</a>
+    <a href="{{ url_for('main.home') }}" class="button secondary">← {{ _('Wróć do strony głównej') }}</a>
 </div>
 {% endblock %}

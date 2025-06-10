@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ team_name }} - Szczegóły Drużyny{% endblock %}
+{% block title %}{{ team_name }} - {{ _('Szczegóły Drużyny') }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/team.css') }}">
@@ -14,7 +14,7 @@
     {% endif %}
     {{ team_name }}
   </h2>
-  <p class="info-message">Szczegóły drużyny z ligi {{ league_name }} wkrótce...</p>
-  <a href="{{ url_for('main.league_view', league_code=league_code, season=season_name | replace(' ', '/')) }}" class="button secondary">← Powrót do ligi</a>
+  <p class="info-message">{{ _('Szczegóły drużyny z ligi') }} {{ league_name }} {{ _('wkrótce...') }}</p>
+  <a href="{{ url_for('main.league_view', league_code=league_code, season=season_name | replace(' ', '/')) }}" class="button secondary">← {{ _('Powrót do ligi') }}</a>
 </div>
 {% endblock %}

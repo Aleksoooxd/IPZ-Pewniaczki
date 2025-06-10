@@ -349,3 +349,150 @@ body.dark-mode .scroll-to-top-btn {
 body.dark-mode .scroll-to-top-btn:hover {
     background-color: var(--primary-button-hover-dark);
 }
+
+header {
+    /* ... (existing styles) ... */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-right-actions { /* New style */
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Adjust as needed */
+}
+
+.language-selector { /* New style */
+    display: flex;
+    gap: 8px; /* Spacing between flags */
+    margin-right: 15px; /* Space between flags and theme toggle */
+}
+
+.lang-flag { /* New style */
+    width: 28px; /* Adjust flag size */
+    height: auto;
+    border-radius: 3px; /* Slightly rounded corners for flags */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lang-flag:hover { /* New style */
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.header-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Adjust as needed */
+}
+
+/* Nowe style dla rozwijanej listy języków */
+.language-dropdown {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.language-dropdown details {
+    cursor: pointer;
+    position: relative;
+}
+
+.language-dropdown summary {
+    list-style: none; /* Ukrywa domyślny znacznik */
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: var(--card-bg-light);
+    color: var(--text-color-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+body.dark-mode .language-dropdown summary {
+    background-color: var(--card-bg-dark);
+    color: var(--text-color-dark);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.language-dropdown summary:hover {
+    background-color: rgba(var(--primary-button-bg-light), 0.1);
+}
+
+body.dark-mode .language-dropdown summary:hover {
+    background-color: rgba(var(--primary-button-bg-dark), 0.1);
+}
+
+.language-dropdown summary::-webkit-details-marker {
+    display: none; /* Ukrywa marker w Chrome/Safari */
+}
+
+.language-dropdown summary .lang-flag {
+    width: 24px; /* Rozmiar flagi w summary */
+    height: auto;
+    border-radius: 3px;
+}
+
+.language-dropdown summary .lang-text {
+    font-weight: 500;
+}
+
+.language-dropdown .dropdown-menu {
+    position: absolute;
+    top: 100%; /* Poniżej summary */
+    right: 0; /* Wyrównaj do prawej */
+    min-width: 150px;
+    background-color: var(--card-bg-light);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    list-style: none;
+    padding: 10px 0;
+    margin-top: 5px;
+    z-index: 1000; /* Upewnij się, że jest na wierzchu */
+    border: 1px solid var(--border-color-light);
+}
+
+body.dark-mode .language-dropdown .dropdown-menu {
+    background-color: var(--card-bg-dark);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    border: 1px solid var(--border-color-dark);
+}
+
+.language-dropdown .dropdown-menu li {
+    padding: 0;
+    margin: 0;
+}
+
+.language-dropdown .dropdown-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 15px;
+    text-decoration: none;
+    color: var(--text-color-light);
+    transition: background-color 0.2s ease;
+}
+
+body.dark-mode .language-dropdown .dropdown-menu li a {
+    color: var(--text-color-dark);
+}
+
+.language-dropdown .dropdown-menu li a:hover {
+    background-color: rgba(var(--primary-button-bg-light), 0.1);
+    color: var(--primary-button-bg-light)wq
+}
+
+body.dark-mode .language-dropdown .dropdown-menu li a:hover {
+    background-color: rgba(var(--primary-button-bg-dark), 0.1);
+    color: var(--primary-button-bg-dark);
+}
+
+.language-dropdown .dropdown-menu li .lang-flag {
+    width: 20px;
+    height: auto;
+    border-radius: 2px;
+}

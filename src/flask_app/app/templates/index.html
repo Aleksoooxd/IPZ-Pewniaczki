@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Pewniaczki - Strona w budowie{% endblock %}
+{% block title %}{{ _('Pewniaczki - Strona w budowie') }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
@@ -9,8 +9,8 @@
 {% block content %}
 <div class="wrapper">
   <img src="/static/pewniaczkilogo.png" alt="Logo" />
-  <p class="tagline">Predykcje wyników meczów piłkarskich</p>
-  <h2 class="status-heading">⚽ Projekt w budowie ⚽</h2>
-  <p class="status-message"><strong>Już wkrótce znajdziesz tu typy, analizy i wyniki meczów!</strong></p>
+  <p class="tagline">{{ _('Predykcje wyników meczów piłkarskich') }}</p>
+  <h2 class="status-heading">⚽ {{ _('Projekt w budowie') }} ⚽</h2>
+  <p class="status-message"><strong>{{ _('Już wkrótce znajdziesz tu typy, analizy i wyniki meczów!') }}</strong></p>
 </div>
 {% endblock %}
