@@ -41,7 +41,35 @@
     &copy; 2025 Pewniaczki ⚽ Wszystkie prawa zastrzeżone.
   </footer>
 
+  {# Scroll to top button #}
+  <button id="scrollToTopBtn" class="scroll-to-top-btn">
+    ⬆
+    <span>TOP</span>
+  </button>
+
   <script src="{{ url_for('static', filename='js/theme-toggle.js') }}"></script>
+  <script>
+
+    const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+
+    window.onscroll = function() {
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        scrollToTopBtn.style.display = "block";
+      } else {
+        scrollToTopBtn.style.display = "none";
+      }
+    };
+
+
+    scrollToTopBtn.addEventListener("click", function() {
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  </script>
   {% block extra_script %}{% endblock %}
 </body>
 </html>

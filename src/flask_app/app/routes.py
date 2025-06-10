@@ -1,10 +1,10 @@
 # src/flask_app/app/routes.py
 import datetime
-from sqlalchemy import or_, desc
+from sqlalchemy import or_, desc, and_ # Added and_ for combined filtering
 from sqlalchemy.orm import aliased
 from flask import Blueprint, render_template, request, abort, jsonify, redirect, url_for
 from .db import db, FootballMatch, Team, League, FutureMatch, TeamValue, Predicted, MatchStats, MatchForm, TeamElo, \
-    TeamLeague, Season,PredictedFuture
+    TeamLeague, Season, PredictedFuture
 
 main = Blueprint('main', __name__)
 
@@ -403,19 +403,25 @@ def team_view(league_code, team_name, season_name):
                            league_name=display_league_name, season_name=season_name)
 
 
-def calculate_standings_for_league_and_season(league_id, season_id=None):
+def calculate_standings_for_league_and_season(league_id, season_id=None, matchday_filter=None): # Added matchday_filter
     standings = {}
 
-    if season_id:
-        matches_query = db.session.query(FootballMatch) \
-            .filter(FootballMatch.league_id == league_id, FootballMatch.season_id == season_id) \
-            .order_by(FootballMatch.date, FootballMatch.home_matchday)
-    else:
-        matches_query = db.session.query(FootballMatch) \
-            .filter(FootballMatch.league_id == league_id) \
-            .order_by(FootballMatch.date, FootballMatch.home_matchday)
+    matches_query = db.session.query(FootballMatch) \
+        .filter(FootballMatch.league_id == league_id)
 
-    matches = matches_query.all()
+    if season_id:
+        matches_query = matches_query.filter(FootballMatch.season_id == season_id)
+
+    # Apply matchday filter if provided
+    if matchday_filter is not None:
+        matches_query = matches_query.filter(
+            or_(
+                FootballMatch.home_matchday <= matchday_filter,
+                FootballMatch.away_matchday <= matchday_filter
+            )
+        )
+
+    matches = matches_query.order_by(FootballMatch.date, FootballMatch.home_matchday).all() # Ordered by date and matchday
 
     for match in matches:
         home_team_id = match.home_team_id
@@ -484,24 +490,41 @@ def league_view(league_code):
     available_seasons = [s[0] for s in all_seasons_db]
 
     selected_season_name = request.args.get('season')
+    selected_matchday = request.args.get('matchday', type=int) # New: Get matchday from request
 
     teams_query = db.session.query(Team).join(TeamLeague) \
         .filter(TeamLeague.league_id == league.league_id)
 
     current_season_standings = []
     standings_season_display_name = "Wybierz sezon"
+    available_matchdays = [] # New: To store available matchdays
 
     if selected_season_name and selected_season_name != "all_seasons":
         season_obj = Season.query.filter_by(name=selected_season_name).first()
         if season_obj:
             teams_query = teams_query.filter(TeamLeague.season_id == season_obj.season_id)
-            current_season_standings = calculate_standings_for_league_and_season(league.league_id, season_obj.season_id)
+
+            # Get max matchday for the selected season
+            max_matchday_result = db.session.query(
+                db.func.max(FootballMatch.home_matchday)
+            ).filter(
+                FootballMatch.league_id == league.league_id,
+                FootballMatch.season_id == season_obj.season_id
+            ).scalar()
+
+            if max_matchday_result:
+                available_matchdays = list(range(1, max_matchday_result + 1))
+
+            current_season_standings = calculate_standings_for_league_and_season(
+                league.league_id, season_obj.season_id, selected_matchday # Pass selected_matchday
+            )
             standings_season_display_name = selected_season_name
         else:
             print(f"Warning: Requested season '{selected_season_name}' not found for team filtering.")
             selected_season_name = "all_seasons"
     else:
         selected_season_name = "all_seasons"
+        # For "Wszech Czasów", we might not need a matchday filter or calculate it differently
         current_season_standings = calculate_standings_for_league_and_season(league.league_id)
         standings_season_display_name = "Wszech Czasów"
 
@@ -515,7 +538,9 @@ def league_view(league_code):
         available_seasons=available_seasons,
         selected_season=selected_season_name,
         standings=current_season_standings,
-        standings_season_display_name=standings_season_display_name
+        standings_season_display_name=standings_season_display_name,
+        available_matchdays=available_matchdays,  # New: Pass available matchdays
+        selected_matchday=selected_matchday # New: Pass selected_matchday
     )
 
 

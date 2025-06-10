@@ -65,6 +65,17 @@
     {% if standings %}
     <div class="standings-table card">
         <h3>Tabela Ligowa (Sezon: {{ standings_season_display_name }})</h3>
+        {% if available_matchdays %}
+        <div class="matchday-filter-container">
+            <label for="matchday-select">Po kolejce:</label>
+            <select id="matchday-select" onchange="changeMatchday()">
+                <option value="">Aktualna kolejka</option> {# Option to show current standings #}
+                {% for md in available_matchdays %}
+                    <option value="{{ md }}" {% if selected_matchday == md %}selected{% endif %}>{{ md }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
         <table>
             <thead>
                 <tr>
@@ -143,6 +154,19 @@
       const selectedSeason = seasonSelect.value;
       const currentUrl = new URL(window.location.href);
       currentUrl.searchParams.set('season', selectedSeason);
+      currentUrl.searchParams.delete('matchday'); // Reset matchday when season changes
+      window.location.href = currentUrl.toString();
+  }
+
+  function changeMatchday() {
+      const matchdaySelect = document.getElementById('matchday-select');
+      const selectedMatchday = matchdaySelect.value;
+      const currentUrl = new URL(window.location.href);
+      if (selectedMatchday) {
+          currentUrl.searchParams.set('matchday', selectedMatchday);
+      } else {
+          currentUrl.searchParams.delete('matchday');
+      }
       window.location.href = currentUrl.toString();
   }
 </script>
