@@ -1,4 +1,3 @@
-# src/flask_app/app/routes.py
 import datetime
 from sqlalchemy import or_, desc, and_ # Added and_ for combined filtering
 from sqlalchemy.orm import aliased
@@ -524,9 +523,8 @@ def league_view(league_code):
             selected_season_name = "all_seasons"
     else:
         selected_season_name = "all_seasons"
-        # For "Wszech Czasów", we might not need a matchday filter or calculate it differently
         current_season_standings = calculate_standings_for_league_and_season(league.league_id)
-        standings_season_display_name = "Wszech Czasów"
+        standings_season_display_name = f"2004-{datetime.datetime.now().year % 100}"
 
     teams = teams_query.distinct().order_by(Team.name).all()
 
