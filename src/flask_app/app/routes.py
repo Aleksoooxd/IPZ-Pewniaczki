@@ -1,5 +1,7 @@
 import datetime
-from sqlalchemy import or_, desc, and_ # Added and_ for combined filtering
+import json
+
+from sqlalchemy import or_, desc, and_, func
 from sqlalchemy.orm import aliased
 from flask import Blueprint, render_template, request, abort, jsonify, redirect, url_for
 from .db import db, FootballMatch, Team, League, FutureMatch, TeamValue, Predicted, MatchStats, MatchForm, TeamElo, \
@@ -387,19 +389,95 @@ def match_detail(match_type, match_id):
 
 @main.route('/league/<league_code>/team/<team_name>/<string:season_name>')
 def team_view(league_code, team_name, season_name):
-    team = db.session.query(Team).filter_by(name=team_name).first()
-    team_id = team.team_id if team else None
+    team = db.session.query(Team).filter_by(name=team_name).first_or_404()
+    team_id = team.team_id
 
-    display_league_name = LEAGUE_URL_MAP.get(league_code)
-    if display_league_name:
-        display_league_name = display_league_name.replace("premier league", "Premier League").replace("spremier league",
-                                                                                                      "Scottish Premiership").title()
-    else:
-        display_league_name = league_code.replace("premierleague", "Premier League").replace("scotishpremierleague",
-                                                                                             "Scottish Premiership").title()
+    db_league_code = LEAGUE_URL_MAP.get(league_code)
+    display_league_name = (db_league_code or league_code).replace("premier league", "Premier League").replace(
+        "spremier league", "Scottish Premiership").title()
 
-    return render_template('team.html', league_code=league_code, team_name=team_name, team_id=team_id,
-                           league_name=display_league_name, season_name=season_name)
+    if "all" in season_name.lower():
+        elo_history_query = db.session.query(TeamElo.last_updated, TeamElo.rating).filter_by(team_id=team_id).order_by(
+            TeamElo.last_updated).all()
+        elo_history = [{'date': d.strftime('%Y-%m-%d'), 'rating': r} for d, r in elo_history_query]
+
+        value_history_query = db.session.query(Season.name, TeamValue.value).join(TeamValue).filter(
+            TeamValue.team_id == team_id).order_by(Season.name).all()
+        value_history = [{'season': s, 'value': v} for s, v in value_history_query]
+
+        position_history = []
+        league = db.session.query(League).filter_by(code=db_league_code).first()
+        if league:
+            team_seasons = db.session.query(Season).join(TeamLeague).filter(
+                TeamLeague.team_id == team_id,
+                TeamLeague.league_id == league.league_id
+            ).order_by(Season.name).all()
+
+            for season in team_seasons:
+                last_match = db.session.query(FootballMatch).filter(
+                    FootballMatch.league_id == league.league_id,
+                    FootballMatch.season_id == season.season_id,
+                    or_(FootballMatch.home_team_id == team_id, FootballMatch.away_team_id == team_id)
+                ).order_by(FootballMatch.date.desc(), FootballMatch.match_id.desc()).first()
+
+                if last_match:
+                    team_side = 'home' if last_match.home_team_id == team_id else 'away'
+                    final_form = db.session.query(MatchForm).filter(
+                        MatchForm.match_id == last_match.match_id,
+                        MatchForm.team_side == team_side
+                    ).first()
+                    if final_form and final_form.team_placement:
+                        position_history.append({'season': season.name, 'position': final_form.team_placement})
+
+        # --- NOWA LOGIKA: Uzupełnianie brakujących sezonów ---
+        if position_history:
+            position_dict = {item['season']: item['position'] for item in position_history}
+            all_seasons_list = [s.name for s in db.session.query(Season).order_by(Season.name).all()]
+
+            try:
+                start_season = position_history[0]['season']
+                end_season = position_history[-1]['season']
+                start_index = all_seasons_list.index(start_season)
+                end_index = all_seasons_list.index(end_season)
+
+                full_season_range = all_seasons_list[start_index:end_index + 1]
+
+                final_position_data = []
+                for season_name_iter in full_season_range:
+                    position = position_dict.get(season_name_iter,
+                                                 None)  # Użyj None (w JSON: null) dla brakujących danych
+                    final_position_data.append({'season': season_name_iter, 'position': position})
+
+                position_history = final_position_data
+            except (ValueError, IndexError):
+                # W razie problemu z odnalezieniem sezonu, użyj oryginalnych, nieprzetworzonych danych
+                pass
+        # --- KONIEC NOWEJ LOGIKI ---
+
+        return render_template('team.html',
+                               league_code=league_code,
+                               team_name=team_name,
+                               team_id=team_id,
+                               league_name=display_league_name,
+                               season_name=season_name,
+                               elo_history=json.dumps(elo_history),
+                               value_history=json.dumps(value_history),
+                               position_history=json.dumps(position_history))
+
+    return render_template('team.html',
+                           league_code=league_code,
+                           team_name=team_name,
+                           team_id=team_id,
+                           league_name=display_league_name,
+                           season_name=season_name)
+
+    # Logika dla widoku pojedynczego sezonu pozostaje bez zmian
+    return render_template('team.html',
+                           league_code=league_code,
+                           team_name=team_name,
+                           team_id=team_id,
+                           league_name=display_league_name,
+                           season_name=season_name)
 
 
 def calculate_standings_for_league_and_season(league_id, season_id=None, matchday_filter=None): # Added matchday_filter

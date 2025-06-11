@@ -1,5 +1,6 @@
+
 .team-detail-container {
-    max-width: 600px;
+    max-width: 1600px;
     margin: 40px auto;
     padding: 30px;
     text-align: center;
@@ -25,4 +26,40 @@
     width: 80px;
     height: auto;
     vertical-align: middle;
+}
+
+.charts-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-top: 30px;
+    width: 100%;
+}
+
+@media (min-width: 1200px) {
+    .charts-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.chart-card {
+    background-color: var(--background-color-light);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.05);
+}
+
+body.dark-mode .chart-card {
+    background-color: var(--card-bg-dark);
+}
+
+.chart-card h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--accent-color-light);
+}
+
+body.dark-mode .chart-card h3 {
+    color: var(--accent-color-dark);
 }

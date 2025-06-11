@@ -14,7 +14,126 @@
     {% endif %}
     {{ team_name }}
   </h2>
-  <p class="info-message">{{ _('Szczegóły drużyny z ligi') }} {{ league_name }} {{ _('wkrótce...') }}</p>
-  <a href="{{ url_for('main.league_view', league_code=league_code, season=season_name | replace(' ', '/')) }}" class="button secondary">← {{ _('Powrót do ligi') }}</a>
+
+  {% if 'all' in season_name|lower %}
+    <div class="charts-container">
+        <div class="chart-card">
+            <h3>ELO Rating History</h3>
+            <canvas id="eloChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>Market Value History (€M)</h3>
+            <canvas id="valueChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>League Position History</h3>
+            <canvas id="positionChart"></canvas>
+        </div>
+    </div>
+  {% else %}
+    <p class="info-message">{{ _('Szczegóły drużyny z ligi') }} {{ league_name }} {{ _('wkrótce...') }}</p>
+  {% endif %}
+
+  <a href="{{ url_for('main.league_view', league_code=league_code, season=season_name) }}" class="button secondary">← {{ _('Powrót do ligi') }}</a>
 </div>
+{% endblock %}
+
+{% block extra_script %}
+{% if 'all' in season_name|lower and elo_history and value_history and position_history %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const eloData = JSON.parse('{{ elo_history|safe }}');
+    const valueData = JSON.parse('{{ value_history|safe }}');
+    const positionData = JSON.parse('{{ position_history|safe }}');
+
+    if (eloData.length > 0) {
+        const eloCtx = document.getElementById('eloChart').getContext('2d');
+        new Chart(eloCtx, {
+            type: 'line',
+            data: {
+                labels: eloData.map(d => d.date),
+                datasets: [{
+                    label: 'ELO Rating',
+                    data: eloData.map(d => d.rating),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                plugins: {
+                    zoom: {
+                        pan: { enabled: true, mode: 'y'},
+                        zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' }
+                    }
+                }
+            }
+        });
+    }
+
+    if (valueData.length > 0) {
+        const valueCtx = document.getElementById('valueChart').getContext('2d');
+        new Chart(valueCtx, {
+            type: 'line',
+            data: {
+                labels: valueData.map(d => d.season),
+                datasets: [{
+                    label: 'Market Value (M €)',
+                    data: valueData.map(d => d.value),
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                plugins: {
+                    zoom: {
+                        pan: { enabled: true, mode: 'y'},
+                        zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' }
+                    }
+                }
+            }
+        });
+    }
+
+    if (positionData.length > 0) {
+        const positionCtx = document.getElementById('positionChart').getContext('2d');
+        new Chart(positionCtx, {
+            type: 'line',
+            data: {
+                labels: positionData.map(d => d.season),
+                datasets: [{
+                    label: 'Final League Position',
+                    data: positionData.map(d => d.position),
+                    spanGaps: true, // NOWA OPCJA: Łączy punkty ponad brakującymi danymi
+                    fill: true,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        reverse: true,
+                        beginAtZero: false,
+                        ticks: {
+                           stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    zoom: {
+                        pan: { enabled: true, mode: 'y'},
+                        zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endif %}
 {% endblock %}
