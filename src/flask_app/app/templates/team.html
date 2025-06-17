@@ -52,11 +52,7 @@
                     <td>{{ summary_stats_all_seasons.avg_position|round(2) if summary_stats_all_seasons.avg_position else _('Brak danych') }}</td>
                 </tr>
                 <tr>
-                    <td>{{ _('Średnia wartość rynkowa') }}</td>
-                    <td>{{ summary_stats_all_seasons.avg_market_value|round(2) if summary_stats_all_seasons.avg_market_value else _('Brak danych') }} M €</td>
-                </tr>
-                <tr>
-                    <td>{{ _('Średnia ilość punktów na mecz') }}</td>
+                    <td>{{ _('Średnia punktów na mecz') }}</td>
                     <td>{{ summary_stats_all_seasons.avg_points_per_match|round(2) if summary_stats_all_seasons.avg_points_per_match else _('Brak danych') }}</td>
                 </tr>
             </tbody>

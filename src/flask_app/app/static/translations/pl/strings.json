@@ -120,7 +120,6 @@
   "Aktualne ELO": "Aktualne ELO",
   "Aktualna wartość rynkowa": "Aktualna wartość rynkowa",
   "Średnia pozycja w lidze": "Średnia pozycja w lidze",
-  "Średnia ilość punktów na mecz": "Średnia ilość punktów na mecz",
   "Pozycja w lidze" : "Pozycja w lidze",
   "ELO": "ELO",
   "Punkty" : "Punkty",
@@ -129,7 +128,7 @@
   "Gole stracone":  "Gole stracone",
   "Zwycięstwa": "Zwycięstwa",
   "Remisy": "Remisy",
-  "Porażki" : "Porażki",
   "Kolejka" : "Kolejka",
+  "Porażki" : "Porażki",
   "Liczba" : "Liczba"
 }
