@@ -17,15 +17,15 @@ def calculate_elo_change(home_elo, away_elo, result, goal_diff=None):
 
     adjusted_home_elo = home_elo + HOME_ADVANTAGE
 
-    exp_home = 1.0 / (1.0 + 10.0 ** ((away_elo - adjusted_home_elo) / 400.0))
+    exp_home = round((1.0 / (1.0 + 10.0 ** ((away_elo - adjusted_home_elo) / 400.0))),4)
     exp_away = 1.0 - exp_home
 
     if goal_diff is not None and result != 'D':
         margin_factor = min(1.75, 1 + 0.75 * (goal_diff - 1) / 3.0)
         K *= margin_factor
 
-    home_change = K * (home_score - exp_home)
-    away_change = K * (away_score - exp_away)
+    home_change = round((K * (home_score - exp_home)),2)
+    away_change = round((K * (away_score - exp_away)),2)
 
     return home_change, away_change
 
