@@ -63,3 +63,59 @@ body.dark-mode .chart-card {
 body.dark-mode .chart-card h3 {
     color: var(--accent-color-dark);
 }
+
+.single-season-grid {
+    display: grid;
+    gap: 30px;
+    margin-top: 30px;
+    width: 100%;
+}
+@media (min-width: 1100px) {
+    .single-season-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (max-width: 1099px) and (min-width: 768px) {
+    .single-season-grid {
+         grid-template-columns: repeat(2, 1fr);
+    }
+}
+ @media (max-width: 767px) {
+    .single-season-grid {
+         grid-template-columns: 1fr;
+    }
+}
+.stats-table-container {
+    grid-column: 1 / -1;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+.stats-table {
+    width: 100%;
+    max-width: 800px;
+    border-collapse: collapse;
+}
+.stats-table th, .stats-table td {
+    border: 1px solid var(--border-color-light);
+    padding: 12px 15px;
+    text-align: left;
+}
+body.dark-mode .stats-table th, body.dark-mode .stats-table td {
+    border-color: var(--border-color-dark);
+}
+.stats-table th {
+    background-color: var(--header-bg-light);
+    font-weight: 600;
+}
+body.dark-mode .stats-table th {
+    background-color: var(--header-bg-dark);
+}
+.rank {
+    font-weight: 600;
+    color: var(--accent-color-light);
+    margin-left: 8px;
+}
+body.dark-mode .rank {
+    color: var(--accent-color-dark);
+}

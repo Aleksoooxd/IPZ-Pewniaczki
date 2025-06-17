@@ -95,8 +95,8 @@ class FootballMatch(db.Model):
     away_elo_change = Column(Float, nullable=True)
     fthg = Column(Integer)
     ftag = Column(Integer)
-    home_value_id = Column(Integer, ForeignKey('team_value.value_id'))  # Updated ForeignKey
-    away_value_id = Column(Integer, ForeignKey('team_value.value_id'))  # Updated ForeignKey
+    home_value_id = Column(Integer, ForeignKey('team_value.value_id'))
+    away_value_id = Column(Integer, ForeignKey('team_value.value_id'))
     is_surprise = Column(Boolean)
     is_suprise_h = Column(Boolean)
     is_suprise_d = Column(Boolean)
@@ -107,8 +107,8 @@ class FootballMatch(db.Model):
     season = relationship("Season", back_populates="matches")
     home_team = relationship("Team", foreign_keys=[home_team_id], back_populates="home_matches")
     away_team = relationship("Team", foreign_keys=[away_team_id], back_populates="away_matches")
-    home_value_ref = relationship("TeamValue", foreign_keys=[home_value_id])  # New relationship
-    away_value_ref = relationship("TeamValue", foreign_keys=[away_value_id])  # New relationship
+    home_value_ref = relationship("TeamValue", foreign_keys=[home_value_id])
+    away_value_ref = relationship("TeamValue", foreign_keys=[away_value_id])
     match_stats = relationship("MatchStats", back_populates="match")
     form_data = relationship("MatchForm", back_populates="match")
     predictions = relationship("Predicted", back_populates="match")
@@ -120,7 +120,7 @@ class FutureMatch(db.Model):
     season_id = Column(Integer, ForeignKey('season.season_id'))
     home_matchday = Column(Integer)
     date = Column(Date)
-    time = Column(String(5))  # Time stored in HH:MM format
+    time = Column(String(5))
     home_team_id = Column(Integer, ForeignKey('team.team_id'))
     away_team_id = Column(Integer, ForeignKey('team.team_id'))
 

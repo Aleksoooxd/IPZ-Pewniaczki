@@ -11,11 +11,7 @@ from flask_app.app.db import (
 
 
 def create_full_dataframe_for_xgboost():
-    """
-    Creates a comprehensive DataFrame from FootballMatch and FutureMatch tables,
-    including team values, ELO ratings, form, and H2H statistics.
-    This function will serve as the unified data preparation for both training and prediction.
-    """
+
     with app.app_context():
         engine = db.engine
 

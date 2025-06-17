@@ -342,8 +342,8 @@ body.dark-mode .scroll-to-top-btn {
 }
 
 .scroll-to-top-btn:hover {
-    background-color: var(--primary-button-hover-light); /* Darker background on hover */
-    transform: translateY(-2px); /* Slightly lift the button on hover */
+    background-color: var(--primary-button-hover-light);
+    transform: translateY(-2px);
 }
 
 body.dark-mode .scroll-to-top-btn:hover {
@@ -351,33 +351,32 @@ body.dark-mode .scroll-to-top-btn:hover {
 }
 
 header {
-    /* ... (existing styles) ... */
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.header-right-actions { /* New style */
+.header-right-actions {
     display: flex;
     align-items: center;
-    gap: 15px; /* Adjust as needed */
+    gap: 15px;
 }
 
-.language-selector { /* New style */
+.language-selector {
     display: flex;
-    gap: 8px; /* Spacing between flags */
-    margin-right: 15px; /* Space between flags and theme toggle */
+    gap: 8px;
+    margin-right: 15px;
 }
 
-.lang-flag { /* New style */
-    width: 28px; /* Adjust flag size */
+.lang-flag {
+    width: 28px;
     height: auto;
-    border-radius: 3px; /* Slightly rounded corners for flags */
+    border-radius: 3px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.lang-flag:hover { /* New style */
+.lang-flag:hover {
     transform: scale(1.1);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
@@ -385,10 +384,9 @@ header {
 .header-right-actions {
     display: flex;
     align-items: center;
-    gap: 15px; /* Adjust as needed */
+    gap: 15px;
 }
 
-/* Nowe style dla rozwijanej listy języków */
 .language-dropdown {
     position: relative;
     display: inline-block;
@@ -401,7 +399,7 @@ header {
 }
 
 .language-dropdown summary {
-    list-style: none; /* Ukrywa domyślny znacznik */
+    list-style: none;
     padding: 8px 12px;
     border-radius: 8px;
     background-color: var(--card-bg-light);
@@ -428,11 +426,11 @@ body.dark-mode .language-dropdown summary:hover {
 }
 
 .language-dropdown summary::-webkit-details-marker {
-    display: none; /* Ukrywa marker w Chrome/Safari */
+    display: none;
 }
 
 .language-dropdown summary .lang-flag {
-    width: 24px; /* Rozmiar flagi w summary */
+    width: 24px;
     height: auto;
     border-radius: 3px;
 }
@@ -443,8 +441,8 @@ body.dark-mode .language-dropdown summary:hover {
 
 .language-dropdown .dropdown-menu {
     position: absolute;
-    top: 100%; /* Poniżej summary */
-    right: 0; /* Wyrównaj do prawej */
+    top: 100%;
+    right: 0;
     min-width: 150px;
     background-color: var(--card-bg-light);
     border-radius: 8px;
@@ -452,7 +450,7 @@ body.dark-mode .language-dropdown summary:hover {
     list-style: none;
     padding: 10px 0;
     margin-top: 5px;
-    z-index: 1000; /* Upewnij się, że jest na wierzchu */
+    z-index: 1000;
     border: 1px solid var(--border-color-light);
 }
 

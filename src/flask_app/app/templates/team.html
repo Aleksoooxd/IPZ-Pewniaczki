@@ -13,28 +13,93 @@
     <img src="{{ url_for('static', filename='logos/' ~ team_id ~ '.png') }}" alt="{{ team_name }} logo" class="team-logo-large">
     {% endif %}
     {{ team_name }}
+    <small>({{ display_season_name }})</small>
   </h2>
 
   {% if 'all' in season_name|lower %}
     <div class="charts-container">
         <div class="chart-card">
-            <h3>ELO Rating History</h3>
+            <h3>{{ _('Historia rankingu ELO') }}</h3>
             <canvas id="eloChart"></canvas>
         </div>
         <div class="chart-card">
-            <h3>Market Value History (€M)</h3>
+            <h3>{{ _('Historia wartości rynkowej (€M)') }}</h3>
             <canvas id="valueChart"></canvas>
         </div>
         <div class="chart-card">
-            <h3>League Position History</h3>
+            <h3>{{ _('Historia pozycji w lidze') }}</h3>
             <canvas id="positionChart"></canvas>
         </div>
     </div>
   {% else %}
-    <p class="info-message">{{ _('Szczegóły drużyny z ligi') }} {{ league_name }} {{ _('wkrótce...') }}</p>
+    <div class="single-season-grid">
+        <div class="chart-card">
+            <h3>{{ _('ELO w trakcie sezonu') }}</h3>
+            <canvas id="seasonEloChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>{{ _('Punkty w trakcie sezonu') }}</h3>
+            <canvas id="seasonPointsChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>{{ _('Pozycja w lidze') }}</h3>
+            <canvas id="seasonPositionChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>{{ _('Gole strzelone (kumulacyjnie)') }}</h3>
+            <canvas id="seasonGoalsForChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>{{ _('Gole stracone (kumulacyjnie)') }}</h3>
+            <canvas id="seasonGoalsConcededChart"></canvas>
+        </div>
+    </div>
+
+    <div class="stats-table-container">
+         <table class="stats-table">
+            <thead>
+                <tr>
+                    <th colspan="2">{{ _('Podsumowanie sezonu') }} {{ display_season_name }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ _('Średnia bramek strzelonych na mecz') }}</td>
+                    <td>
+                        {{ summary_stats.avg_goals_for }}
+                        {% if summary_stats.avg_goals_for_rank %}
+                            <span class="rank">({{ summary_stats.avg_goals_for_rank }}.)</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{ _('Średnia bramek straconych na mecz') }}</td>
+                    <td>
+                        {{ summary_stats.avg_goals_conceded }}
+                        {% if summary_stats.avg_goals_conceded_rank %}
+                            <span class="rank">({{ summary_stats.avg_goals_conceded_rank }}.)</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{ _('Wartość rynkowa w sezonie') }}</td>
+                    <td>
+                        {{ summary_stats.market_value if summary_stats.market_value is not none else 'Brak danych' }} M €
+                        {% if summary_stats.market_value_rank %}
+                            <span class="rank">({{ summary_stats.market_value_rank }}.)</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{ _('Aktualna / Końcowa pozycja w lidze') }}</td>
+                    <td>{{ summary_stats.final_position if summary_stats.final_position is not none else 'Brak danych' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
   {% endif %}
 
-  <a href="{{ url_for('main.league_view', league_code=league_code, season=season_name) }}" class="button secondary">← {{ _('Powrót do ligi') }}</a>
+  <a href="{{ url_for('main.league_view', league_code=league_code, season=season_name.replace(' ', '/')) }}" class="button secondary">← {{ _('Powrót do ligi') }}</a>
 </div>
 {% endblock %}
 
@@ -51,88 +116,61 @@ document.addEventListener('DOMContentLoaded', function () {
         new Chart(eloCtx, {
             type: 'line',
             data: {
-                labels: eloData.map(d => d.date),
+                labels: eloData.map(d => d.label),
                 datasets: [{
-                    label: 'ELO Rating',
-                    data: eloData.map(d => d.rating),
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    fill: true,
-                    tension: 0.1
+                    label: 'ELO Rating', data: eloData.map(d => d.rating),
+                    borderColor: 'rgba(75, 192, 192, 1)', backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true, tension: 0.1, pointRadius: 1, borderWidth: 1.5
                 }]
             },
             options: {
-                plugins: {
-                    zoom: {
-                        pan: { enabled: true, mode: 'y'},
-                        zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' }
-                    }
-                }
+                scales: { x: { ticks: { autoSkip: true, maxTicksLimit: 20 } } },
+                plugins: { zoom: { pan: { enabled: true, mode: 'x'}, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
             }
         });
     }
-
     if (valueData.length > 0) {
         const valueCtx = document.getElementById('valueChart').getContext('2d');
-        new Chart(valueCtx, {
+        new Chart(valueCtx, {type: 'line', data: { labels: valueData.map(d => d.season), datasets: [{ label: 'Market Value (M €)', data: valueData.map(d => d.value), borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.2)', fill: true, tension: 0.1 }]}});
+    }
+    if (positionData.length > 0) {
+        const positionCtx = document.getElementById('positionChart').getContext('2d');
+        new Chart(positionCtx, {type: 'line', data: { labels: positionData.map(d => d.season), datasets: [{ label: 'Final League Position', data: positionData.map(d => d.position), spanGaps: true, fill: true, borderColor: 'rgba(54, 162, 235, 1)', backgroundColor: 'rgba(54, 162, 235, 0.2)', tension: 0.1 }]}, options: { scales: { y: { reverse: true, beginAtZero: false, ticks: { stepSize: 1 }}}}});
+    }
+});
+</script>
+{% elif 'all' not in season_name|lower and summary_stats %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const chartData = {
+        elo: JSON.parse('{{ elo_data|safe }}'),
+        points: JSON.parse('{{ points_data|safe }}'),
+        goalsFor: JSON.parse('{{ goals_for_data|safe }}'),
+        goalsConceded: JSON.parse('{{ goals_conceded_data|safe }}'),
+        position: JSON.parse('{{ position_data|safe }}')
+    };
+
+    function createChart(canvasId, label, data, color, yAxisOptions = {}) {
+        if (!data || data.length === 0) return;
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        new Chart(ctx, {
             type: 'line',
             data: {
-                labels: valueData.map(d => d.season),
-                datasets: [{
-                    label: 'Market Value (M €)',
-                    data: valueData.map(d => d.value),
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    fill: true,
-                    tension: 0.1
-                }]
+                labels: data.map(d => d.matchday),
+                datasets: [{ label: label, data: data.map(d => d.value), borderColor: color, backgroundColor: color.replace('1)', '0.2)'), fill: true, tension: 0.1 }]
             },
             options: {
-                plugins: {
-                    zoom: {
-                        pan: { enabled: true, mode: 'y'},
-                        zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' }
-                    }
-                }
+                scales: { x: { title: { display: true, text: 'Kolejka' } }, y: yAxisOptions },
+                plugins: { zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
             }
         });
     }
 
-    if (positionData.length > 0) {
-        const positionCtx = document.getElementById('positionChart').getContext('2d');
-        new Chart(positionCtx, {
-            type: 'line',
-            data: {
-                labels: positionData.map(d => d.season),
-                datasets: [{
-                    label: 'Final League Position',
-                    data: positionData.map(d => d.position),
-                    spanGaps: true, // NOWA OPCJA: Łączy punkty ponad brakującymi danymi
-                    fill: true,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        reverse: true,
-                        beginAtZero: false,
-                        ticks: {
-                           stepSize: 1
-                        }
-                    }
-                },
-                plugins: {
-                    zoom: {
-                        pan: { enabled: true, mode: 'y'},
-                        zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' }
-                    }
-                }
-            }
-        });
-    }
+    createChart('seasonEloChart', 'ELO', chartData.elo, 'rgba(75, 192, 192, 1)');
+    createChart('seasonPointsChart', 'Punkty', chartData.points, 'rgba(54, 162, 235, 1)');
+    createChart('seasonGoalsForChart', 'Gole Strzelone', chartData.goalsFor, 'rgba(46, 204, 113, 1)');
+    createChart('seasonGoalsConcededChart', 'Gole Stracone', chartData.goalsConceded, 'rgba(231, 76, 60, 1)');
+    createChart('seasonPositionChart', 'Pozycja w lidze', chartData.position, 'rgba(255, 159, 64, 1)', { reverse: true, beginAtZero: false, ticks: { stepSize: 1, precision: 0 } });
 });
 </script>
 {% endif %}

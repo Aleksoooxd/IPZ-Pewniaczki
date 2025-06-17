@@ -411,7 +411,7 @@ def scrape_fixtures():
                 all_fixtures.append({
                             "league": league_name.lower(),
                             "season": get_current_season(),
-                            "matchday": matchday,
+                            "home_matchday": matchday,
                             "date": last_date,
                             "time": last_time,
                             "home_team": home_team,
@@ -452,7 +452,7 @@ def scrape_fixtures():
                     league_id=league.league_id,
                     date=fixture['date'],
                     time=fixture['time'],
-                    matchday=fixture['matchday']
+                    home_matchday=fixture['home_matchday']
                 )
                 db.session.add(futurematch)
                 db.session.flush()

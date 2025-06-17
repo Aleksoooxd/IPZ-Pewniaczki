@@ -169,131 +169,105 @@ def get_season(date):
 
 
 def create_placement_columns(dataframe):
+    cols_to_init = [
+        'HomeTeamPlacement', 'AwayTeamPlacement', 'HomeForm3', 'HomeForm5',
+        'HomeFormSeason', 'AwayForm3', 'AwayForm5', 'AwayFormSeason',
+        'HomeGoals3', 'HomeGoals5', 'HomeGoalsSeason', 'AwayGoals3',
+        'AwayGoals5', 'AwayGoalsSeason', 'HTLSP', 'ATLSP'
+    ]
+    for col in cols_to_init:
+        dataframe[col] = 0
+
+
     dataframe['FTHG'] = pd.to_numeric(dataframe['FTHG'], errors='coerce')
     dataframe['FTAG'] = pd.to_numeric(dataframe['FTAG'], errors='coerce')
-    dataframe['HomeMatchday'] = pd.to_numeric(dataframe['HomeMatchday'], errors='coerce')
-    dataframe['HomeTeamPlacement'] = None
-    dataframe['AwayTeamPlacement'] = None
-    dataframe['HomeForm3'] = 0
-    dataframe['HomeForm5'] = 0
-    dataframe['HomeFormSeason'] = 0
-    dataframe['AwayForm3'] = 0
-    dataframe['AwayForm5'] = 0
-    dataframe['AwayFormSeason'] = 0
-    dataframe['HomeGoals3'] = 0
-    dataframe['HomeGoals5'] = 0
-    dataframe['HomeGoalsSeason'] = 0
-    dataframe['AwayGoals3'] = 0
-    dataframe['AwayGoals5'] = 0
-    dataframe['AwayGoalsSeason'] = 0
-    dataframe['HTLSP'] = None
-    dataframe['ATLSP'] = None
 
-    def calculate_season_placements(season_df):
+
+    previous_season_final_placements = {}
+
+
+    for season, season_df_orig in dataframe.groupby('Season'):
+
+
+        season_df = season_df_orig.sort_values(by=['Date', 'HomeMatchday']).copy()
+
+
         standings = {}
-        placements = []
-        form_data = {}
-        goals_data = {}
-
-        for matchday in sorted(season_df['HomeMatchday'].unique()):
-            matchday_df = season_df[season_df['HomeMatchday'] == matchday]
-
-            for _, row in matchday_df.iterrows():
-                home_team = row['HomeTeam']
-                away_team = row['AwayTeam']
-                ftr = row['FTR']
-                fthg = row['FTHG']
-                ftag = row['FTAG']
-
-                if home_team not in standings:
-                    standings[home_team] = {'points': 0, 'goal_diff': 0, 'goals_scored': 0}
-                    form_data[home_team] = []
-                    goals_data[home_team] = []
-                if away_team not in standings:
-                    standings[away_team] = {'points': 0, 'goal_diff': 0, 'goals_scored': 0}
-                    form_data[away_team] = []
-                    goals_data[away_team] = []
-
-                if ftr == 'H':
-                    standings[home_team]['points'] += 3
-                    form_data[home_team].append(3)
-                    form_data[away_team].append(0)
-                elif ftr == 'A':
-                    standings[away_team]['points'] += 3
-                    form_data[home_team].append(0)
-                    form_data[away_team].append(3)
-                elif ftr == 'D':
-                    standings[home_team]['points'] += 1
-                    standings[away_team]['points'] += 1
-                    form_data[home_team].append(1)
-                    form_data[away_team].append(1)
-
-                standings[home_team]['goal_diff'] += fthg - ftag
-                standings[home_team]['goals_scored'] += fthg
-                standings[away_team]['goal_diff'] += ftag - fthg
-                standings[away_team]['goals_scored'] += ftag
-
-                goals_data[home_team].append(fthg)
-                goals_data[away_team].append(ftag)
-
-            sorted_standings = sorted(standings.items(), key=lambda x: (
-                -x[1]['points'], -x[1]['goal_diff'], -x[1]['goals_scored'], x[0]))
-            placement_map = {team[0]: idx + 1 for idx, team in enumerate(sorted_standings)}
-
-            for _, row in matchday_df.iterrows():
-                placements.append((placement_map[row['HomeTeam']], placement_map[row['AwayTeam']]))
-
-        return placements, form_data, goals_data, placement_map
-
-    previous_season_placements = {}
-
-    for season in sorted(dataframe['Season'].unique()):
-        season_mask = dataframe['Season'] == season
-        season_df = dataframe[season_mask].sort_values(by=['HomeMatchday', 'Date'])
-
-        season_placements, form_data, goals_data, final_placements = calculate_season_placements(season_df)
-
-        home_placements, away_placements = zip(*season_placements)
-        dataframe.loc[season_mask, 'HomeTeamPlacement'] = home_placements
-        dataframe.loc[season_mask, 'AwayTeamPlacement'] = away_placements
+        team_history = {}
 
         for index, row in season_df.iterrows():
             home_team = row['HomeTeam']
             away_team = row['AwayTeam']
-            matchday = row['HomeMatchday']
 
-            home_form3 = sum(form_data[home_team][max(0, matchday - 3):matchday])
-            home_form5 = sum(form_data[home_team][max(0, matchday - 5):matchday])
-            home_form_season = sum(form_data[home_team][:matchday])
 
-            away_form3 = sum(form_data[away_team][max(0, matchday - 3):matchday])
-            away_form5 = sum(form_data[away_team][max(0, matchday - 5):matchday])
-            away_form_season = sum(form_data[away_team][:matchday])
+            for team in [home_team, away_team]:
+                if team not in standings:
+                    standings[team] = {'points': 0, 'goal_diff': 0, 'goals_scored': 0, 'goals_against': 0}
+                if team not in team_history:
+                    team_history[team] = {'results_pts': [], 'goals_for': []}
 
-            home_goals3 = sum(goals_data[home_team][max(0, matchday - 3):matchday])
-            home_goals5 = sum(goals_data[home_team][max(0, matchday - 5):matchday])
-            home_goals_season = sum(goals_data[home_team][:matchday])
+            sorted_teams = sorted(standings.keys(),
+                                  key=lambda t: (
+                                  -standings[t]['points'], -standings[t]['goal_diff'], -standings[t]['goals_scored'],
+                                  t))
+            placement_map = {team: i + 1 for i, team in enumerate(sorted_teams)}
 
-            away_goals3 = sum(goals_data[away_team][max(0, matchday - 3):matchday])
-            away_goals5 = sum(goals_data[away_team][max(0, matchday - 5):matchday])
-            away_goals_season = sum(goals_data[away_team][:matchday])
+            dataframe.loc[index, 'HomeTeamPlacement'] = placement_map.get(home_team, len(standings) + 1)
+            dataframe.loc[index, 'AwayTeamPlacement'] = placement_map.get(away_team, len(standings) + 1)
 
-            dataframe.at[index, 'HomeForm3'] = home_form3
-            dataframe.at[index, 'HomeForm5'] = home_form5
-            dataframe.at[index, 'HomeFormSeason'] = home_form_season
-            dataframe.at[index, 'AwayForm3'] = away_form3
-            dataframe.at[index, 'AwayForm5'] = away_form5
-            dataframe.at[index, 'AwayFormSeason'] = away_form_season
-            dataframe.at[index, 'HomeGoals3'] = home_goals3
-            dataframe.at[index, 'HomeGoals5'] = home_goals5
-            dataframe.at[index, 'HomeGoalsSeason'] = home_goals_season
-            dataframe.at[index, 'AwayGoals3'] = away_goals3
-            dataframe.at[index, 'AwayGoals5'] = away_goals5
-            dataframe.at[index, 'AwayGoalsSeason'] = away_goals_season
-            dataframe.at[index, 'HTLSP'] = previous_season_placements.get(home_team, 0)
-            dataframe.at[index, 'ATLSP'] = previous_season_placements.get(away_team, 0)
+            home_hist = team_history[home_team]
+            away_hist = team_history[away_team]
+            dataframe.loc[index, 'HomeForm3'] = sum(home_hist['results_pts'][-3:])
+            dataframe.loc[index, 'HomeForm5'] = sum(home_hist['results_pts'][-5:])
+            dataframe.loc[index, 'HomeFormSeason'] = sum(home_hist['results_pts'])
+            dataframe.loc[index, 'HomeGoals3'] = sum(home_hist['goals_for'][-3:])
+            dataframe.loc[index, 'HomeGoals5'] = sum(home_hist['goals_for'][-5:])
+            dataframe.loc[index, 'HomeGoalsSeason'] = sum(home_hist['goals_for'])
 
-        previous_season_placements = final_placements
+            dataframe.loc[index, 'AwayForm3'] = sum(away_hist['results_pts'][-3:])
+            dataframe.loc[index, 'AwayForm5'] = sum(away_hist['results_pts'][-5:])
+            dataframe.loc[index, 'AwayFormSeason'] = sum(away_hist['results_pts'])
+            dataframe.loc[index, 'AwayGoals3'] = sum(away_hist['goals_for'][-3:])
+            dataframe.loc[index, 'AwayGoals5'] = sum(away_hist['goals_for'][-5:])
+            dataframe.loc[index, 'AwayGoalsSeason'] = sum(away_hist['goals_for'])
+
+            dataframe.loc[index, 'HTLSP'] = previous_season_final_placements.get(home_team, 0)
+            dataframe.loc[index, 'ATLSP'] = previous_season_final_placements.get(away_team, 0)
+
+
+            fthg, ftag = row['FTHG'], row['FTAG']
+
+            standings[home_team]['goals_scored'] += fthg
+            standings[home_team]['goals_against'] += ftag
+            standings[home_team]['goal_diff'] = standings[home_team]['goals_scored'] - standings[home_team][
+                'goals_against']
+
+            standings[away_team]['goals_scored'] += ftag
+            standings[away_team]['goals_against'] += fthg
+            standings[away_team]['goal_diff'] = standings[away_team]['goals_scored'] - standings[away_team][
+                'goals_against']
+
+            home_points, away_points = 0, 0
+            if row['FTR'] == 'H':
+                home_points = 3
+            elif row['FTR'] == 'A':
+                away_points = 3
+            elif row['FTR'] == 'D':
+                home_points, away_points = 1, 1
+
+            standings[home_team]['points'] += home_points
+            standings[away_team]['points'] += away_points
+
+            team_history[home_team]['results_pts'].append(home_points)
+            team_history[home_team]['goals_for'].append(fthg)
+            team_history[away_team]['results_pts'].append(away_points)
+            team_history[away_team]['goals_for'].append(ftag)
+
+        final_sorted_teams = sorted(standings.keys(),
+                                    key=lambda t: (
+                                    -standings[t]['points'], -standings[t]['goal_diff'], -standings[t]['goals_scored'],
+                                    t))
+        previous_season_final_placements = {team: i + 1 for i, team in enumerate(final_sorted_teams)}
 
     return dataframe
 

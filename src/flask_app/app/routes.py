@@ -1,12 +1,11 @@
 import datetime
 import json
 
-from sqlalchemy import or_, desc, and_, func
+from sqlalchemy import or_, desc, and_, func, case
 from sqlalchemy.orm import aliased
 from flask import Blueprint, render_template, request, abort, jsonify, redirect, url_for
 from .db import db, FootballMatch, Team, League, FutureMatch, TeamValue, Predicted, MatchStats, MatchForm, TeamElo, \
     TeamLeague, Season, PredictedFuture
-
 main = Blueprint('main', __name__)
 
 
@@ -397,9 +396,21 @@ def team_view(league_code, team_name, season_name):
         "spremier league", "Scottish Premiership").title()
 
     if "all" in season_name.lower():
-        elo_history_query = db.session.query(TeamElo.last_updated, TeamElo.rating).filter_by(team_id=team_id).order_by(
-            TeamElo.last_updated).all()
-        elo_history = [{'date': d.strftime('%Y-%m-%d'), 'rating': r} for d, r in elo_history_query]
+
+        display_season_name = f"2004-{get_current_season_name()[-2:]}"
+
+        team_matchday = case((FootballMatch.home_team_id == team_id, FootballMatch.home_matchday),
+                             else_=FootballMatch.away_matchday)
+        team_elo = case((FootballMatch.home_team_id == team_id, FootballMatch.home_elo), else_=FootballMatch.away_elo)
+        matches_for_elo = db.session.query(
+            Season.name.label('season_name'),
+            team_matchday.label('matchday'),
+            team_elo.label('elo')
+        ).join(Season, FootballMatch.season_id == Season.season_id).filter(
+            or_(FootballMatch.home_team_id == team_id, FootballMatch.away_team_id == team_id),
+            FootballMatch.home_elo.isnot(None)
+        ).order_by(Season.name, team_matchday).all()
+        elo_history = [{'label': f"{m.season_name} K{m.matchday}", 'rating': m.elo} for m in matches_for_elo]
 
         value_history_query = db.session.query(Season.name, TeamValue.value).join(TeamValue).filter(
             TeamValue.team_id == team_id).order_by(Season.name).all()
@@ -412,75 +423,119 @@ def team_view(league_code, team_name, season_name):
                 TeamLeague.team_id == team_id,
                 TeamLeague.league_id == league.league_id
             ).order_by(Season.name).all()
-
             for season in team_seasons:
                 last_match = db.session.query(FootballMatch).filter(
                     FootballMatch.league_id == league.league_id,
                     FootballMatch.season_id == season.season_id,
                     or_(FootballMatch.home_team_id == team_id, FootballMatch.away_team_id == team_id)
                 ).order_by(FootballMatch.date.desc(), FootballMatch.match_id.desc()).first()
-
                 if last_match:
                     team_side = 'home' if last_match.home_team_id == team_id else 'away'
-                    final_form = db.session.query(MatchForm).filter(
-                        MatchForm.match_id == last_match.match_id,
-                        MatchForm.team_side == team_side
-                    ).first()
+                    final_form = db.session.query(MatchForm).filter_by(match_id=last_match.match_id,
+                                                                       team_side=team_side).first()
                     if final_form and final_form.team_placement:
                         position_history.append({'season': season.name, 'position': final_form.team_placement})
 
-        # --- NOWA LOGIKA: Uzupełnianie brakujących sezonów ---
-        if position_history:
-            position_dict = {item['season']: item['position'] for item in position_history}
-            all_seasons_list = [s.name for s in db.session.query(Season).order_by(Season.name).all()]
-
-            try:
-                start_season = position_history[0]['season']
-                end_season = position_history[-1]['season']
-                start_index = all_seasons_list.index(start_season)
-                end_index = all_seasons_list.index(end_season)
-
-                full_season_range = all_seasons_list[start_index:end_index + 1]
-
-                final_position_data = []
-                for season_name_iter in full_season_range:
-                    position = position_dict.get(season_name_iter,
-                                                 None)  # Użyj None (w JSON: null) dla brakujących danych
-                    final_position_data.append({'season': season_name_iter, 'position': position})
-
-                position_history = final_position_data
-            except (ValueError, IndexError):
-                # W razie problemu z odnalezieniem sezonu, użyj oryginalnych, nieprzetworzonych danych
-                pass
-        # --- KONIEC NOWEJ LOGIKI ---
-
         return render_template('team.html',
-                               league_code=league_code,
-                               team_name=team_name,
-                               team_id=team_id,
-                               league_name=display_league_name,
-                               season_name=season_name,
+                               league_code=league_code, team_name=team_name, team_id=team_id,
+                               league_name=display_league_name, season_name=season_name,
+                               display_season_name=display_season_name,
                                elo_history=json.dumps(elo_history),
                                value_history=json.dumps(value_history),
                                position_history=json.dumps(position_history))
+    else:
+        display_season_name = season_name.replace(' ', '/')
+        season_obj = db.session.query(Season).filter(Season.name == season_name.replace(' ', '/')).first_or_404()
+        league_obj = db.session.query(League).filter_by(code=db_league_code).first_or_404()
 
-    return render_template('team.html',
-                           league_code=league_code,
-                           team_name=team_name,
-                           team_id=team_id,
-                           league_name=display_league_name,
-                           season_name=season_name)
+        teams_in_season = db.session.query(Team).join(TeamLeague).filter(
+            TeamLeague.league_id == league_obj.league_id,
+            TeamLeague.season_id == season_obj.season_id
+        ).all()
+        league_wide_stats = []
+        for t in teams_in_season:
+            team_matches = db.session.query(FootballMatch).filter(
+                FootballMatch.season_id == season_obj.season_id,
+                FootballMatch.league_id == league_obj.league_id,
+                or_(FootballMatch.home_team_id == t.team_id, FootballMatch.away_team_id == t.team_id)
+            ).all()
+            if not team_matches: continue
+            s_gf = sum(m.fthg if m.home_team_id == t.team_id else m.ftag for m in team_matches if m.fthg is not None)
+            s_ga = sum(m.ftag if m.home_team_id == t.team_id else m.fthg for m in team_matches if m.ftag is not None)
+            s_val_obj = db.session.query(TeamValue).filter_by(team_id=t.team_id, season_id=season_obj.season_id).first()
+            league_wide_stats.append({
+                'team_id': t.team_id,
+                'avg_goals_for': (s_gf / len(team_matches)) if team_matches else 0,
+                'avg_goals_conceded': (s_ga / len(team_matches)) if team_matches else 0,
+                'market_value': s_val_obj.value if s_val_obj else 0
+            })
 
-    # Logika dla widoku pojedynczego sezonu pozostaje bez zmian
-    return render_template('team.html',
-                           league_code=league_code,
-                           team_name=team_name,
-                           team_id=team_id,
-                           league_name=display_league_name,
-                           season_name=season_name)
+        def get_rank(stats, key, t_id, reverse=False):
+            stats.sort(key=lambda x: x[key], reverse=reverse)
+            return next((i + 1 for i, item in enumerate(stats) if item['team_id'] == t_id), None)
+
+        avg_gf_rank = get_rank(list(league_wide_stats), 'avg_goals_for', team_id, reverse=True)
+        avg_ga_rank = get_rank(list(league_wide_stats), 'avg_goals_conceded', team_id)
+        mv_rank = get_rank(list(league_wide_stats), 'market_value', team_id, reverse=True)
+
+        matches = db.session.query(FootballMatch).filter(
+            FootballMatch.season_id == season_obj.season_id,
+            FootballMatch.league_id == league_obj.league_id,
+            or_(FootballMatch.home_team_id == team_id, FootballMatch.away_team_id == team_id)
+        ).order_by(FootballMatch.date).all()
+
+        elo_data, points_data, gf_data, ga_data, pos_data = [], [], [], [], []
+        cum_pts, cum_gf, cum_ga = 0, 0, 0
+
+        for match in matches:
+            side = 'home' if match.home_team_id == team_id else 'away'
+            matchday = match.home_matchday if side == 'home' else match.away_matchday
+
+            if side == 'home':
+                elo, pts_gain = match.home_elo, (3 if match.result == 'H' else 1 if match.result == 'D' else 0)
+                cum_gf += match.fthg or 0;
+                cum_ga += match.ftag or 0
+            else:
+                elo, pts_gain = match.away_elo, (3 if match.result == 'A' else 1 if match.result == 'D' else 0)
+                cum_gf += match.ftag or 0;
+                cum_ga += match.fthg or 0
+            cum_pts += pts_gain
+
+            elo_data.append({'matchday': matchday, 'value': elo})
+            points_data.append({'matchday': matchday, 'value': cum_pts})
+            gf_data.append({'matchday': matchday, 'value': cum_gf})
+            ga_data.append({'matchday': matchday, 'value': cum_ga})
+
+            form_entry = db.session.query(MatchForm).filter_by(match_id=match.match_id, team_side=side).first()
+            if form_entry: pos_data.append({'matchday': matchday, 'value': form_entry.team_placement})
+
+        for data_list in [elo_data, points_data, gf_data, ga_data, pos_data]:
+            data_list.sort(key=lambda x: x['matchday'])
+
+        summary_stats = {
+            'avg_goals_for': round(next(s['avg_goals_for'] for s in league_wide_stats if s['team_id'] == team_id), 2),
+            'avg_goals_conceded': round(
+                next(s['avg_goals_conceded'] for s in league_wide_stats if s['team_id'] == team_id), 2),
+            'market_value': next((s['market_value'] for s in league_wide_stats if s['team_id'] == team_id), None),
+            'final_position': pos_data[-1]['value'] if pos_data else None,
+            'avg_goals_for_rank': avg_gf_rank,
+            'avg_goals_conceded_rank': avg_ga_rank,
+            'market_value_rank': mv_rank
+        }
+
+        return render_template('team.html',
+                               league_code=league_code, team_name=team_name, team_id=team_id,
+                               league_name=display_league_name, season_name=season_name,
+                               display_season_name=display_season_name,
+                               elo_data=json.dumps(elo_data),
+                               points_data=json.dumps(points_data),
+                               goals_for_data=json.dumps(gf_data),
+                               goals_conceded_data=json.dumps(ga_data),
+                               position_data=json.dumps(pos_data),
+                               summary_stats=summary_stats)
 
 
-def calculate_standings_for_league_and_season(league_id, season_id=None, matchday_filter=None): # Added matchday_filter
+def calculate_standings_for_league_and_season(league_id, season_id=None, matchday_filter=None):
     standings = {}
 
     matches_query = db.session.query(FootballMatch) \
@@ -489,7 +544,6 @@ def calculate_standings_for_league_and_season(league_id, season_id=None, matchda
     if season_id:
         matches_query = matches_query.filter(FootballMatch.season_id == season_id)
 
-    # Apply matchday filter if provided
     if matchday_filter is not None:
         matches_query = matches_query.filter(
             or_(
@@ -498,7 +552,7 @@ def calculate_standings_for_league_and_season(league_id, season_id=None, matchda
             )
         )
 
-    matches = matches_query.order_by(FootballMatch.date, FootballMatch.home_matchday).all() # Ordered by date and matchday
+    matches = matches_query.order_by(FootballMatch.date, FootballMatch.home_matchday).all()
 
     for match in matches:
         home_team_id = match.home_team_id
@@ -567,21 +621,20 @@ def league_view(league_code):
     available_seasons = [s[0] for s in all_seasons_db]
 
     selected_season_name = request.args.get('season')
-    selected_matchday = request.args.get('matchday', type=int) # New: Get matchday from request
+    selected_matchday = request.args.get('matchday', type=int)
 
     teams_query = db.session.query(Team).join(TeamLeague) \
         .filter(TeamLeague.league_id == league.league_id)
 
     current_season_standings = []
     standings_season_display_name = "Wybierz sezon"
-    available_matchdays = [] # New: To store available matchdays
+    available_matchdays = []
 
     if selected_season_name and selected_season_name != "all_seasons":
         season_obj = Season.query.filter_by(name=selected_season_name).first()
         if season_obj:
             teams_query = teams_query.filter(TeamLeague.season_id == season_obj.season_id)
 
-            # Get max matchday for the selected season
             max_matchday_result = db.session.query(
                 db.func.max(FootballMatch.home_matchday)
             ).filter(
@@ -593,7 +646,7 @@ def league_view(league_code):
                 available_matchdays = list(range(1, max_matchday_result + 1))
 
             current_season_standings = calculate_standings_for_league_and_season(
-                league.league_id, season_obj.season_id, selected_matchday # Pass selected_matchday
+                league.league_id, season_obj.season_id, selected_matchday
             )
             standings_season_display_name = selected_season_name
         else:
@@ -615,8 +668,8 @@ def league_view(league_code):
         selected_season=selected_season_name,
         standings=current_season_standings,
         standings_season_display_name=standings_season_display_name,
-        available_matchdays=available_matchdays,  # New: Pass available matchdays
-        selected_matchday=selected_matchday # New: Pass selected_matchday
+        available_matchdays=available_matchdays,
+        selected_matchday=selected_matchday
     )
 
 

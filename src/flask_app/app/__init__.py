@@ -1,4 +1,4 @@
-# src/flask_app/app/__init__.py
+
 import os
 import json
 from flask import Flask, request, session, g, current_app
@@ -10,7 +10,6 @@ from .routes import main
 translations = {}
 
 def load_translations(app_instance):
-    """Loads translation strings from JSON files."""
     for lang_code in app_instance.config['LANGUAGES']:
         try:
             filepath = os.path.join(app_instance.root_path, 'static', 'translations', lang_code, 'strings.json')
@@ -75,6 +74,6 @@ def create_app():
     def inject_translation():
         return dict(_=get_text, lang_code_to_display_name=lang_code_to_display_name)
 
-    app.register_blueprint(main) #
+    app.register_blueprint(main)
 
     return app

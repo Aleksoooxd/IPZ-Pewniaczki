@@ -15,11 +15,6 @@ from flask_app.app.db import (
 )
 
 def create_match_dataframe_sql():
-    """
-    Efficiently creates a DataFrame of football matches, stats, values, and form by
-    using SQLAlchemy Core for correct column names and pd.read_sql_query.
-    Now includes ELO ratings and changes.
-    """
     with app.app_context():
         engine = db.engine
 

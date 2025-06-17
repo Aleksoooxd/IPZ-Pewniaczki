@@ -4,15 +4,12 @@ import os
 import time
 from duckduckgo_search import DDGS
 
-# Ścieżka zapisu
 base_dir = os.path.dirname(os.path.abspath(__file__))
 save_dir = os.path.join(base_dir, "flask_app", "app", "static", "logos")
 os.makedirs(save_dir, exist_ok=True)
 
-# Wczytaj CSV — zakładam, że nie ma nagłówka
 df = pd.read_csv("teams_from_pewniaczki.csv", sep=";", header=None, names=["team_id", "name"])
 
-# Użycie DDGS
 with DDGS(timeout=30) as ddgs:
     for _, row in df.iterrows():
         team_name = row["name"]
@@ -27,10 +24,10 @@ with DDGS(timeout=30) as ddgs:
                 safesearch="moderate",
                 max_results=5,
                 size="Large",
-                type_image="transparent"  # << kluczowe!
+                type_image="transparent"
             )
 
-            result = results[0] if results else None  # ← TO NAPRAWIA BŁĄD
+            result = results[0] if results else None
 
             if result:
                 image_url = result["image"]
