@@ -101,5 +101,17 @@
   "Croatian": "Kroatisch",
   "Hebrew": "Hebräisch",
   "Liga": "Liga",
-  "Wybierz sezon:": "Saison auswählen:"
+  "Wybierz sezon:": "Saison auswählen:",
+  "Średnia bramek strzelonych na mecz": "Durchschnittliche Tore pro Spiel",
+  "Średnia bramek straconych na mecz": "Durchschnittliche Gegentore pro Spiel",
+  "Wartość rynkowa w sezonie": "Marktwert in der Saison",
+  "Aktualna / Końcowa pozycja w lidze": "Aktuelle / Endplatzierung in der Liga",
+  "Historia rankingu ELO": "ELO-Ranking-Historie",
+  "Historia wartości rynkowej (€M)": "Marktwert-Historie (€M)",
+  "Historia pozycji w lidze": "Liga-Positions-Historie",
+  "ELO w trakcie sezonu": "ELO während der Saison",
+  "Punkty w trakcie sezonu": "Punkte während der Saison",
+  "Gole strzelone (kumulacyjnie)": "Erzielte Tore (kumulativ)",
+  "Gole stracone (kumulacyjnie)": "Kassierte Tore (kumulativ)",
+  "Podsumowanie sezonu": "Saisonübersicht"
 }

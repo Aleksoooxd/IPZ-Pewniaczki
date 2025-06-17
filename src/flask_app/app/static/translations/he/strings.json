@@ -33,7 +33,7 @@
   "Brak meczów dla wybranej daty.": "אין משחקים לתאריך הנבחר.",
   "Pewniaczki - Strona w budowie": "פווצ'ניאצ'קי - אתר בבנייה",
   "Projekt w budowie": "פרויקט בבנייה",
-  "Już wkrótce znajdziesz tu typy, analizy i wyniki meczów!": "בקרוב תמצאו כאן טיפים, ניתוחים ותוצאות משחקים!",
+  "Już wkrótce znajdziesz tu typy, analizות ותוצאות משחקים!": "בקרוב תמצאו כאן טיפים, ניתוחים ותוצאות משחקים!",
   "Test bazy danych": "בדיקת בסיס נתונים",
   "Test połączenia z bazą danych": "בדיקת חיבור לבסיס נתונים",
   "Wróć do strony głównej": "חזור לדף הבית",
@@ -101,5 +101,17 @@
   "Croatian": "קרואטית",
   "Hebrew": "עברית",
   "Liga": "ליגה",
-  "Wybierz sezon:": "בחר עונה:"
+  "Wybierz sezon:": "בחר עונה:",
+  "Średnia bramek strzelonych na mecz": "ממוצע שערים שהובקעו למשחק",
+  "Średnia bramek straconych na mecz": "ממוצע שערים שספגו למשחק",
+  "Wartość rynkowa w sezonie": "שווי שוק בעונה",
+  "Aktualna / Końcowa pozycja w lidze": "מיקום נוכחי / סופי בליגה",
+  "Historia rankingu ELO": "היסטוריית דירוג ELO",
+  "Historia wartości rynkowej (€M)": "היסטוריית שווי שוק (€M)",
+  "Historia pozycji w lidze": "היסטוריית מיקום בליגה",
+  "ELO w trakcie sezonu": "ELO במהלך העונה",
+  "Punkty w trakcie sezonu": "נקודות במהלך העונה",
+  "Gole strzelone (kumulacyjnie)": "שערים שהובקעו (מצטבר)",
+  "Gole stracone (kumulacyjnie)": "שערים שספגו (מצטבר)",
+  "Podsumowanie sezonu": "סיכום עונה"
 }

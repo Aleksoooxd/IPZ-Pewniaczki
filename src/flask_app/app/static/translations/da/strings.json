@@ -101,5 +101,17 @@
   "Croatian": "Kroatisk",
   "Hebrew": "Hebraisk",
   "Liga": "Liga",
-  "Wybierz sezon:": "Vælg sæson:"
+  "Wybierz sezon:": "Vælg sæson:",
+  "Średnia bramek strzelonych na mecz": "Gennemsnitlige mål scoret pr. kamp",
+  "Średnia bramek straconych na mecz": "Gennemsnitlige mål indkasseret pr. kamp",
+  "Wartość rynkowa w sezonie": "Markedsværdi i sæsonen",
+  "Aktualna / Końcowa pozycja w lidze": "Nuværende / endelig ligaplacering",
+  "Historia rankingu ELO": "ELO-rating historik",
+  "Historia wartości rynkowej (€M)": "Markedsværdi historik (€M)",
+  "Historia pozycji w lidze": "Placeringshistorik i ligaen",
+  "ELO w trakcie sezonu": "ELO i løbet af sæsonen",
+  "Punkty w trakcie sezonu": "Point i løbet af sæsonen",
+  "Gole strzelone (kumulacyjnie)": "Mål scoret (akkumuleret)",
+  "Gole stracone (kumulacyjnie)": "Mål indkasseret (akkumuleret)",
+  "Podsumowanie sezonu": "Sæsonoversigt"
 }

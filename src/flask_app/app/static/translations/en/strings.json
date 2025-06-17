@@ -99,5 +99,17 @@
   "Croatian": "Croatian",
   "Hebrew": "Hebrew",
   "Liga": "League",
-  "Wybierz sezon:": "Select season:"
+  "Wybierz sezon:": "Select season:",
+  "Średnia bramek strzelonych na mecz": "Average goals scored per match",
+  "Średnia bramek straconych na mecz": "Average goals conceded per match",
+  "Wartość rynkowa w sezonie": "Market value in season",
+  "Aktualna / Końcowa pozycja w lidze": "Current / Final league position",
+  "Historia rankingu ELO": "ELO Ranking History",
+  "Historia wartości rynkowej (€M)": "Market Value History (€M)",
+  "Historia pozycji w lidze": "League Position History",
+  "ELO w trakcie sezonu": "ELO during season",
+  "Punkty w trakcie sezonu": "Points during season",
+  "Gole strzelone (kumulacyjnie)": "Goals scored (cumulative)",
+  "Gole stracone (kumulacyjnie)": "Goals conceded (cumulative)",
+  "Podsumowanie sezonu": "Season summary"
 }

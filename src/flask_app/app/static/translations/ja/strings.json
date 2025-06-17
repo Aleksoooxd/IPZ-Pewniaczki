@@ -101,5 +101,17 @@
   "Croatian": "クロアチア語",
   "Hebrew": "ヘブライ語",
   "Liga": "リーグ",
-  "Wybierz sezon:": "シーズンを選択:"
+  "Wybierz sezon:": "シーズンを選択:",
+  "Średnia bramek strzelonych na mecz": "1試合あたりの平均得点",
+  "Średnia bramek straconych na mecz": "1試合あたりの平均失点",
+  "Wartość rynkowa w sezonie": "シーズン中の市場価値",
+  "Aktualna / Końcowa pozycja w lidze": "現在のリーグ順位 / 最終リーグ順位",
+  "Historia rankingu ELO": "ELOランキング履歴",
+  "Historia wartości rynkowej (€M)": "市場価値履歴（€M）",
+  "Historia pozycji w lidze": "リーグ順位履歴",
+  "ELO w trakcie sezonu": "シーズン中のELO",
+  "Punkty w trakcie sezonu": "シーズン中のポイント",
+  "Gole strzelone (kumulacyjnie)": "得点 (累計)",
+  "Gole stracone (kumulacyjnie)": "失点 (累計)",
+  "Podsumowanie sezonu": "シーズン概要"
 }

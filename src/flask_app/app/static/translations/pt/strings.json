@@ -70,7 +70,7 @@
   "Szczegóły drużyny z ligi": "Detalhes da equipe da liga",
   "wkrótce...": "em breve...",
   "Powrót do ligi": "Voltar para a liga",
-  "Drużyny em liga": "Equipes na liga",
+  "Drużyny w lidze": "Equipes na liga",
   "Brak drużyn para esta liga na temporada selecionada.": "Não há equipes para esta liga na temporada selecionada.",
   "Tabela Ligowa": "Tabela da Liga",
   "Sezon:": "Temporada:",
@@ -100,5 +100,17 @@
   "Croatian": "Croata",
   "Hebrew": "Hebraico",
   "Liga": "Liga",
-  "Wybierz sezon:": "Selecionar temporada:"
+  "Wybierz sezon:": "Selecionar temporada:",
+  "Średnia bramek strzelonych na mecz": "Média de gols marcados por jogo",
+  "Średnia bramek straconych na mecz": "Média de gols sofridos por jogo",
+  "Wartość rynkowa w sezonie": "Valor de mercado na temporada",
+  "Aktualna / Końcowa pozycja w lidze": "Posição atual / final na liga",
+  "Historia rankingu ELO": "Histórico de ranking ELO",
+  "Historia wartości rynkowej (€M)": "Histórico de valor de mercado (€M)",
+  "Historia pozycji w lidze": "Histórico de posição na liga",
+  "ELO w trakcie sezonu": "ELO durante a temporada",
+  "Punkty w trakcie sezonu": "Pontos durante a temporada",
+  "Gole strzelone (kumulacyjnie)": "Gols marcados (cumulativo)",
+  "Gole stracone (kumulacyjnie)": "Gols sofridos (cumulativo)",
+  "Podsumowanie sezonu": "Resumo da temporada"
 }
