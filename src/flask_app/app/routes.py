@@ -1,3 +1,4 @@
+
 import datetime
 import json
 
@@ -50,7 +51,7 @@ def get_matches():
     try:
         match_date = datetime.datetime.strptime(date_param, "%Y-%m-%d").date()
     except ValueError:
-        return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
+        return jsonify({"error": "Invalid date format. UseYYYY-MM-DD."}), 400
 
     HomeTeam = aliased(Team)
     AwayTeam = aliased(Team)
@@ -511,6 +512,34 @@ def team_view(league_code, team_name, season_name):
 
         for data_list in [elo_data, points_data, gf_data, ga_data, pos_data]:
             data_list.sort(key=lambda x: x['matchday'])
+        w_d_l_data = []
+        cum_wins, cum_draws, cum_losses = 0, 0, 0
+        for match in matches:
+            side = 'home' if match.home_team_id == team_id else 'away'
+            matchday = match.home_matchday if side == 'home' else match.away_matchday
+
+            if match.result:
+                if side == 'home':
+                    if match.result == 'H':
+                        cum_wins += 1
+                    elif match.result == 'D':
+                        cum_draws += 1
+                    else:
+                        cum_losses += 1
+                else: # away team
+                    if match.result == 'A':
+                        cum_wins += 1
+                    elif match.result == 'D':
+                        cum_draws += 1
+                    else:
+                        cum_losses += 1
+            w_d_l_data.append({'matchday': matchday, 'wins': cum_wins, 'draws': cum_draws, 'losses': cum_losses})
+
+        w_d_l_data.sort(key=lambda x: x['matchday'])
+
+        # Oblicz średnią punktów na mecz
+        total_matches_played = len(matches)
+        avg_points_per_match = round(cum_pts / total_matches_played, 2) if total_matches_played > 0 else 0
 
         summary_stats = {
             'avg_goals_for': round(next(s['avg_goals_for'] for s in league_wide_stats if s['team_id'] == team_id), 2),
@@ -520,7 +549,8 @@ def team_view(league_code, team_name, season_name):
             'final_position': pos_data[-1]['value'] if pos_data else None,
             'avg_goals_for_rank': avg_gf_rank,
             'avg_goals_conceded_rank': avg_ga_rank,
-            'market_value_rank': mv_rank
+            'market_value_rank': mv_rank,
+            'avg_points_per_match': avg_points_per_match # Dodano średnią punktów
         }
 
         return render_template('team.html',
@@ -532,6 +562,7 @@ def team_view(league_code, team_name, season_name):
                                goals_for_data=json.dumps(gf_data),
                                goals_conceded_data=json.dumps(ga_data),
                                position_data=json.dumps(pos_data),
+                               w_d_l_data=json.dumps(w_d_l_data),
                                summary_stats=summary_stats)
 
 
@@ -544,7 +575,7 @@ def calculate_standings_for_league_and_season(league_id, season_id=None, matchda
     if season_id:
         matches_query = matches_query.filter(FootballMatch.season_id == season_id)
 
-    if matchday_filter is not None:
+    if matchday_filter:
         matches_query = matches_query.filter(
             or_(
                 FootballMatch.home_matchday <= matchday_filter,
