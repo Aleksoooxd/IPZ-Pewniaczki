@@ -31,7 +31,7 @@
   "Brak meczów dla wybranej daty.": "No matches for the selected date.",
   "Pewniaczki - Strona w budowie": "Pewniaczki - Page under construction",
   "Projekt w budowie": "Project under construction",
-  "Już wkrótce znajdziesz tu typy, analizy i wyniki meczów!": "Soon you'll find tips, analyses, and match results here!",
+  "Już wkrótce znajdziesz tu typy, analizy and match results here!": "Soon you'll find tips, analyses, and match results here!",
   "Test bazy danych": "Database test",
   "Test połączenia z bazą danych": "Database connection test",
   "Wróć do strony głównej": "Back to homepage",
@@ -70,12 +70,12 @@
   "wkrótce...": "soon...",
   "Powrót do ligi": "Back to league",
   "Drużyny w lidze": "Teams in league",
-  "Brak drużyn dla tej ligi w wybranym sezonie.": "No teams for this league in the selected season.",
+  "Brak drużyn for this league in the selected season.": "No teams for this league in the selected season.",
   "Tabela Ligowa": "League Table",
   "Sezon:": "Season:",
   "Wszystkie sezony": "All Seasons",
-  "Wybierz konkretny sezon, aby wyświetlić tabelę ligową.": "Select a specific season to display the league table.",
-  "Brak danych tabeli dla sezonu:": "No table data for season:",
+  "Wybierz konkretny sezon, aby display the league table.": "Select a specific season to display the league table.",
+  "Brak data table for season:": "No table data for season:",
   "M": "M",
   "Z": "W",
   "R": "D",
@@ -111,5 +111,7 @@
   "Punkty w trakcie sezonu": "Points during season",
   "Gole strzelone (kumulacyjnie)": "Goals scored (cumulative)",
   "Gole stracone (kumulacyjnie)": "Goals conceded (cumulative)",
-  "Podsumowanie sezonu": "Season summary"
+  "Podsumowanie sezonu": "Season summary",
+  "Wyniki meczów (kumulatywnie)": "Cumulative match results",
+  "Średnia punktów na mecz": "Average points per match"
 }

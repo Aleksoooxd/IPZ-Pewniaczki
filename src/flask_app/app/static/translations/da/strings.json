@@ -113,5 +113,7 @@
   "Punkty w trakcie sezonu": "Point i løbet af sæsonen",
   "Gole strzelone (kumulacyjnie)": "Mål scoret (akkumuleret)",
   "Gole stracone (kumulacyjnie)": "Mål indkasseret (akkumuleret)",
-  "Podsumowanie sezonu": "Sæsonoversigt"
+  "Podsumowanie sezonu": "Sæsonoversigt",
+  "Wyniki meczów (kumulatywnie)": "Akkumulerede kampresultater",
+  "Średnia punktów na mecz": "Gennemsnitlige point pr. kamp"
 }

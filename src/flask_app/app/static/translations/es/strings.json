@@ -33,7 +33,7 @@
   "Brak meczów dla wybranej daty.": "No hay partidos para la fecha seleccionada.",
   "Pewniaczki - Strona w budowie": "Pewniaczki - Página en construcción",
   "Projekt w budowie": "Proyecto en construcción",
-  "Już wkrótce znajdziesz tu typy, analizy i wyniki meczów!": "¡Pronto encontrarás aquí consejos, análisis y resultados de partidos!",
+  "Już wkrótce znajdziesz tu typy, analizy y resultados de partidos!": "¡Pronto encontrarás aquí consejos, análisis y resultados de partidos!",
   "Test bazy danych": "Prueba de base de datos",
   "Test połączenia z bazą danych": "Prueba de conexión a la base de datos",
   "Wróć do strony głównej": "Volver a la página principal",
@@ -72,12 +72,12 @@
   "wkrótce...": "pronto...",
   "Powrót do ligi": "Volver a la liga",
   "Drużyny w lidze": "Equipos en la liga",
-  "Brak drużyn dla tej ligi w wybranym sezonie.": "No hay equipos para esta liga en la temporada seleccionada.",
+  "Brak drużyn para esta liga en la temporada seleccionada.": "No hay equipos para esta liga en la temporada seleccionada.",
   "Tabela Ligowa": "Tabla de la liga",
   "Sezon:": "Temporada:",
   "Wszystkie sezony": "Todas las temporadas",
-  "Wybierz konkretny sezon, aby wyświetlić tabelę ligową.": "Seleccione una temporada específica para mostrar la tabla de la liga.",
-  "Brak danych tabeli dla sezonu:": "No hay datos de tabla para la temporada:",
+  "Wybierz konkretny sezon, aby display the tabla de la liga.": "Seleccione una temporada específica para mostrar la tabla de la liga.",
+  "Brak data tabla para la temporada:": "No hay datos de tabla para la temporada:",
   "M": "P",
   "Z": "G",
   "R": "E",
@@ -113,5 +113,7 @@
   "Punkty w trakcie sezonu": "Puntos durante la temporada",
   "Gole strzelone (kumulacyjnie)": "Goles marcados (acumulativo)",
   "Gole stracone (kumulacyjnie)": "Goles recibidos (acumulativo)",
-  "Podsumowanie sezonu": "Resumen de la temporada"
+  "Podsumowanie sezonu": "Resumen de la temporada",
+  "Wyniki meczów (kumulatywnie)": "Resultados acumulados de partidos",
+  "Średnia punktów na mecz": "Promedio de puntos por partido"
 }

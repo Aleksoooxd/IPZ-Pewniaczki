@@ -33,7 +33,7 @@
   "Brak meczów dla wybranej daty.": "Keine Spiele für das ausgewählte Datum.",
   "Pewniaczki - Strona w budowie": "Pewniaczki - Seite im Aufbau",
   "Projekt w budowie": "Projekt im Aufbau",
-  "Już wkrótce znajdziesz tu typy, analizy i wyniki meczów!": "Bald finden Sie hier Tipps, Analysen und Spielergebnisse!",
+  "Już wkrótce znajdziesz tu typy, analizy und Spielergebnisse!": "Bald finden Sie hier Tipps, Analysen und Spielergebnisse!",
   "Test bazy danych": "Datenbanktest",
   "Test połączenia z bazą danych": "Datenbankverbindungstest",
   "Wróć do strony głównej": "Zurück zur Startseite",
@@ -72,12 +72,12 @@
   "wkrótce...": "bald...",
   "Powrót do ligi": "Zurück zur Liga",
   "Drużyny w lidze": "Teams in der Liga",
-  "Brak drużyn dla tej ligi w wybranym sezonie.": "Keine Teams für diese Liga in der ausgewählten Saison.",
+  "Brak drużyn für diese Liga in der ausgewählten Saison.": "Keine Teams für diese Liga in der ausgewählten Saison.",
   "Tabela Ligowa": "Ligatabelle",
   "Sezon:": "Saison:",
   "Wszystkie sezony": "Alle Saisons",
-  "Wybierz konkretny sezon, aby wyświetlić tabelę ligową.": "Wählen Sie eine bestimmte Saison aus, um die Ligatabelle anzuzeigen.",
-  "Brak danych tabeli dla sezonu:": "Keine Tabellendaten für die Saison:",
+  "Wybierz konkretny sezon, aby die Ligatabelle anzuzeigen.": "Wählen Sie eine bestimmte Saison aus, um die Ligatabelle anzuzeigen.",
+  "Brak Daten Tabelle für Saison:": "Keine Tabellendaten für die Saison:",
   "M": "Sp",
   "Z": "S",
   "R": "U",
@@ -113,5 +113,7 @@
   "Punkty w trakcie sezonu": "Punkte während der Saison",
   "Gole strzelone (kumulacyjnie)": "Erzielte Tore (kumulativ)",
   "Gole stracone (kumulacyjnie)": "Kassierte Tore (kumulativ)",
-  "Podsumowanie sezonu": "Saisonübersicht"
+  "Podsumowanie sezonu": "Saisonübersicht",
+  "Wyniki meczów (kumulatywnie)": "Kumulative Spielergebnisse",
+  "Średnia punktów na mecz": "Durchschnittliche Punkte pro Spiel"
 }
