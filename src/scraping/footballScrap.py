@@ -11,8 +11,8 @@ from fuzzywuzzy import process
 from sqlalchemy import select
 from unidecode import unidecode
 from flask_app.app.db import db, app, FootballMatch, MatchStats, MatchForm, Team, League, Season, TeamValue, FutureMatch
-from src.helpfunctions import hhi_index,shannon_index, coefficient_of_variation, gini_index, calculate_consensus
-from src.transfermarktScrap import get_all_teams_from_db
+from src.calculations.helpfunctions import hhi_index,shannon_index, coefficient_of_variation, gini_index, calculate_consensus
+from src.scraping.transfermarktScrap import get_all_teams_from_db
 
 pd.set_option('future.no_silent_downcasting', True)
 headers = {

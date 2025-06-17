@@ -436,7 +436,6 @@ def team_view(league_code, team_name, season_name):
                     if final_form and final_form.team_placement:
                         position_history.append({'season': season.name, 'position': final_form.team_placement})
 
-        # Calculate summary stats for all seasons
         current_elo_obj = db.session.query(TeamElo).filter(TeamElo.team_id == team_id).order_by(
             TeamElo.last_updated.desc()).first()
         current_elo = current_elo_obj.rating if current_elo_obj else None
@@ -573,7 +572,7 @@ def team_view(league_code, team_name, season_name):
                         cum_draws += 1
                     else:
                         cum_losses += 1
-                else: # away team
+                else:
                     if match.result == 'A':
                         cum_wins += 1
                     elif match.result == 'D':
@@ -584,7 +583,6 @@ def team_view(league_code, team_name, season_name):
 
         w_d_l_data.sort(key=lambda x: x['matchday'])
 
-        # Oblicz średnią punktów na mecz
         total_matches_played = len(matches)
         avg_points_per_match = round(cum_pts / total_matches_played, 2) if total_matches_played > 0 else 0
 
@@ -597,7 +595,7 @@ def team_view(league_code, team_name, season_name):
             'avg_goals_for_rank': avg_gf_rank,
             'avg_goals_conceded_rank': avg_ga_rank,
             'market_value_rank': mv_rank,
-            'avg_points_per_match': avg_points_per_match # Dodano średnią punktów
+            'avg_points_per_match': avg_points_per_match
         }
 
         return render_template('team.html',
