@@ -23,17 +23,12 @@ def load_translations(app_instance):
             translations[lang_code] = {}
 
 def get_text(text_key):
-    """
-    Retrieves the translation for a given text key based on the current locale.
-    Falls back to Polish if translation not found or locale not set.
-    """
     current_lang = session.get('lang', request.accept_languages.best_match(current_app.config['LANGUAGES']))
     if not current_lang or current_lang not in current_app.config['LANGUAGES']:
         current_lang = 'pl'
     return translations.get(current_lang, {}).get(text_key, translations.get('pl', {}).get(text_key, text_key))
 
 def lang_code_to_display_name(lang_code):
-    """Maps language codes to their full names for display."""
     name_map = {
         'en': 'English',
         'de': 'German',

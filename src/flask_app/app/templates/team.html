@@ -31,12 +31,39 @@
             <canvas id="positionChart"></canvas>
         </div>
     </div>
+    <div class="stats-table-container">
+        <table class="stats-table">
+            <thead>
+                <tr>
+                    <th colspan="2">{{ _('Podsumowanie - wszystkie sezony') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ _('Aktualne ELO') }}</td>
+                    <td>{{ summary_stats_all_seasons.current_elo|round(0) if summary_stats_all_seasons.current_elo else _('Brak danych') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ _('Aktualna wartość rynkowa') }}</td>
+                    <td>{{ summary_stats_all_seasons.current_market_value if summary_stats_all_seasons.current_market_value else _('Brak danych') }} M €</td>
+                </tr>
+                <tr>
+                    <td>{{ _('Średnia pozycja w lidze') }}</td>
+                    <td>{{ summary_stats_all_seasons.avg_position|round(2) if summary_stats_all_seasons.avg_position else _('Brak danych') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ _('Średnia wartość rynkowa') }}</td>
+                    <td>{{ summary_stats_all_seasons.avg_market_value|round(2) if summary_stats_all_seasons.avg_market_value else _('Brak danych') }} M €</td>
+                </tr>
+                <tr>
+                    <td>{{ _('Średnia ilość punktów na mecz') }}</td>
+                    <td>{{ summary_stats_all_seasons.avg_points_per_match|round(2) if summary_stats_all_seasons.avg_points_per_match else _('Brak danych') }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
   {% else %}
     <div class="single-season-grid">
-        <div class="chart-card">
-            <h3>{{ _('Wyniki meczów (kumulatywnie)') }}</h3>
-            <canvas id="w_d_lChart"></canvas>
-        </div>
         <div class="chart-card">
             <h3>{{ _('ELO w trakcie sezonu') }}</h3>
             <canvas id="seasonEloChart"></canvas>
@@ -56,6 +83,10 @@
         <div class="chart-card">
             <h3>{{ _('Gole stracone (kumulacyjnie)') }}</h3>
             <canvas id="seasonGoalsConcededChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>{{ _('Wyniki meczów (kumulatywnie)') }}</h3>
+            <canvas id="w_d_lChart"></canvas>
         </div>
     </div>
 
@@ -114,7 +145,7 @@
 {% endblock %}
 
 {% block extra_script %}
-{% if 'all' in season_name|lower and elo_history and value_history and position_history %}
+{% if 'all' in season_name|lower and summary_stats_all_seasons %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const eloData = JSON.parse('{{ elo_history|safe }}');
@@ -128,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 labels: eloData.map(d => d.label),
                 datasets: [{
-                    label: 'ELO Rating', data: eloData.map(d => d.rating),
+                    label: '{{ _("ELO") }}', data: eloData.map(d => d.rating),
                     borderColor: 'rgba(75, 192, 192, 1)', backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     fill: true, tension: 0.1, pointRadius: 1, borderWidth: 1.5
                 }]
@@ -141,11 +172,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if (valueData.length > 0) {
         const valueCtx = document.getElementById('valueChart').getContext('2d');
-        new Chart(valueCtx, {type: 'line', data: { labels: valueData.map(d => d.season), datasets: [{ label: 'Market Value (M €)', data: valueData.map(d => d.value), borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.2)', fill: true, tension: 0.1 }]}});
+        new Chart(valueCtx, {type: 'line', data: { labels: valueData.map(d => d.season), datasets: [{ label: '{{ _("Wartość Rynkowa") }} (€M)', data: valueData.map(d => d.value), borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.2)', fill: true, tension: 0.1 }]}});
     }
     if (positionData.length > 0) {
         const positionCtx = document.getElementById('positionChart').getContext('2d');
-        new Chart(positionCtx, {type: 'line', data: { labels: positionData.map(d => d.season), datasets: [{ label: 'Final League Position', data: positionData.map(d => d.position), spanGaps: true, fill: true, borderColor: 'rgba(54, 162, 235, 1)', backgroundColor: 'rgba(54, 162, 235, 0.2)', tension: 0.1 }]}, options: { scales: { y: { reverse: true, beginAtZero: false, ticks: { stepSize: 1 }}}}});
+        new Chart(positionCtx, {type: 'line', data: { labels: positionData.map(d => d.season), datasets: [{ label: '{{ _("Pozycja w lidze") }}', data: positionData.map(d => d.position), spanGaps: true, fill: true, borderColor: 'rgba(54, 162, 235, 1)', backgroundColor: 'rgba(54, 162, 235, 0.2)', tension: 0.1 }]}, options: { scales: { y: { reverse: true, beginAtZero: false, ticks: { stepSize: 1 }}}}});
     }
 });
 </script>
@@ -171,17 +202,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 datasets: [{ label: label, data: data.map(d => d.value), borderColor: color, backgroundColor: color.replace('1)', '0.2)'), fill: true, tension: 0.1 }]
             },
             options: {
-                scales: { x: { title: { display: true, text: 'Kolejka' } }, y: yAxisOptions },
+                scales: { x: { title: { display: true, text: '{{ _("Kolejka") }}' } }, y: yAxisOptions },
                 plugins: { zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
             }
         });
     }
 
-    createChart('seasonEloChart', 'ELO', chartData.elo, 'rgba(75, 192, 192, 1)');
-    createChart('seasonPointsChart', 'Punkty', chartData.points, 'rgba(54, 162, 235, 1)');
-    createChart('seasonGoalsForChart', 'Gole Strzelone', chartData.goalsFor, 'rgba(46, 204, 113, 1)');
-    createChart('seasonGoalsConcededChart', 'Gole Stracone', chartData.goalsConceded, 'rgba(231, 76, 60, 1)');
-    createChart('seasonPositionChart', 'Pozycja w lidze', chartData.position, 'rgba(255, 159, 64, 1)', { reverse: true, beginAtZero: false, ticks: { stepSize: 1, precision: 0 } });
+    createChart('seasonEloChart', '{{ _("ELO") }}', chartData.elo, 'rgba(75, 192, 192, 1)');
+    createChart('seasonPointsChart', '{{ _("Punkty") }}', chartData.points, 'rgba(54, 162, 235, 1)');
+    createChart('seasonGoalsForChart', '{{ _("Gole strzelone") }}', chartData.goalsFor, 'rgba(46, 204, 113, 1)');
+    createChart('seasonGoalsConcededChart', '{{ _("Gole stracone") }}', chartData.goalsConceded, 'rgba(231, 76, 60, 1)');
+    createChart('seasonPositionChart', '{{ _("Pozycja w lidze") }}', chartData.position, 'rgba(255, 159, 64, 1)', { reverse: true, beginAtZero: false, ticks: { stepSize: 1, precision: 0 } });
 
 
     if (chartData.w_d_l && chartData.w_d_l.length > 0) {
@@ -192,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 labels: chartData.w_d_l.map(d => d.matchday),
                 datasets: [
                     {
-                        label: 'Zwycięstwa',
+                        label: '{{ _("Zwycięstwa") }}',
                         data: chartData.w_d_l.map(d => d.wins),
                         borderColor: 'rgba(40, 167, 69, 1)', // Green
                         backgroundColor: 'rgba(40, 167, 69, 0.2)',
@@ -200,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         tension: 0.1
                     },
                     {
-                        label: 'Remisy',
+                        label: '{{ _("Remisy") }}',
                         data: chartData.w_d_l.map(d => d.draws),
                         borderColor: 'rgba(255, 206, 86, 1)', // Yellow
                         backgroundColor: 'rgba(255, 206, 86, 0.2)',
@@ -208,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         tension: 0.1
                     },
                     {
-                        label: 'Porażki',
+                        label: '{{ _("Porażki") }}',
                         data: chartData.w_d_l.map(d => d.losses),
                         borderColor: 'rgba(220, 53, 69, 1)', // Red
                         backgroundColor: 'rgba(220, 53, 69, 0.2)',
@@ -222,13 +253,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     x: {
                         title: {
                             display: true,
-                            text: 'Kolejka'
+                            text: '{{ _("Kolejka") }}'
                         }
                     },
                     y: {
                         title: {
                             display: true,
-                            text: 'Liczba'
+                            text: '{{ _("Liczba") }}'
                         },
                         beginAtZero: true
                     }

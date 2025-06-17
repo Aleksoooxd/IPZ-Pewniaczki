@@ -1,4 +1,3 @@
-
 import datetime
 import json
 
@@ -437,13 +436,61 @@ def team_view(league_code, team_name, season_name):
                     if final_form and final_form.team_placement:
                         position_history.append({'season': season.name, 'position': final_form.team_placement})
 
+        # Calculate summary stats for all seasons
+        current_elo_obj = db.session.query(TeamElo).filter(TeamElo.team_id == team_id).order_by(
+            TeamElo.last_updated.desc()).first()
+        current_elo = current_elo_obj.rating if current_elo_obj else None
+
+        current_season_name_str = get_current_season_name()
+        current_season = db.session.query(Season).filter(Season.name == current_season_name_str).first()
+        if current_season:
+            current_value_obj = db.session.query(TeamValue).filter(TeamValue.team_id == team_id,
+                                                                    TeamValue.season_id == current_season.season_id).first()
+            current_market_value = current_value_obj.value if current_value_obj else None
+        else:
+            current_market_value = None
+
+        all_matches = db.session.query(FootballMatch).filter(
+            or_(FootballMatch.home_team_id == team_id, FootballMatch.away_team_id == team_id)).all()
+        total_points = 0
+        total_matches = len(all_matches)
+        if total_matches > 0:
+            for match in all_matches:
+                if match.result:
+                    if match.home_team_id == team_id:
+                        if match.result == 'H':
+                            total_points += 3
+                        elif match.result == 'D':
+                            total_points += 1
+                    else:
+                        if match.result == 'A':
+                            total_points += 3
+                        elif match.result == 'D':
+                            total_points += 1
+            avg_points = total_points / total_matches
+        else:
+            avg_points = 0
+
+        if position_history:
+            avg_position = sum(p['position'] for p in position_history) / len(position_history)
+        else:
+            avg_position = None
+
+        summary_stats_all_seasons = {
+            'avg_points_per_match': avg_points,
+            'avg_position': avg_position,
+            'current_market_value': current_market_value,
+            'current_elo': current_elo
+        }
+
         return render_template('team.html',
                                league_code=league_code, team_name=team_name, team_id=team_id,
                                league_name=display_league_name, season_name=season_name,
                                display_season_name=display_season_name,
                                elo_history=json.dumps(elo_history),
                                value_history=json.dumps(value_history),
-                               position_history=json.dumps(position_history))
+                               position_history=json.dumps(position_history),
+                               summary_stats_all_seasons=summary_stats_all_seasons)
     else:
         display_season_name = season_name.replace(' ', '/')
         season_obj = db.session.query(Season).filter(Season.name == season_name.replace(' ', '/')).first_or_404()
