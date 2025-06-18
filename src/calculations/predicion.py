@@ -304,7 +304,7 @@ def predict_future_matches_nn(model, scaler, features_list, result_map):
         return pd.DataFrame(predictions_to_save)
 
 
-def main():
+def predict():
     df = create_match_dataframe_sql()
     df = drop_non_predictive_columns(df)
 
@@ -346,4 +346,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    predict()
