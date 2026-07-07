@@ -51,11 +51,6 @@
       </div>
 
       <div class="stat-section">
-        <h3>{{ _('Wartość Rynkowa') }}</h3>
-        <p class="stat-value">{% if home_value %}{{ home_value }} M €{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-      <div class="stat-section">
         <h3>{{ _('Średnie Kursy Bukmacherów (Zwycięstwo)') }}</h3>
         <p class="stat-value">{% if home_stats %}{{ home_stats.mean | round(2) }}{% else %}{{ _('Brak danych') }}{% endif %}</p>
       </div>
@@ -197,11 +192,6 @@
         <h3>{{ _('Gole') }}</h3>
         <p class="stat-description">{{ _('W ostatnich 5 meczach / Sezon:') }}</p>
         <p class="stat-value">{% if away_form %}{{ away_form.goals_last_5|round(0) }} / {{ away_form.goals_season|round(0) }}{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-      <div class="stat-section">
-        <h3>{{ _('Wartość Rynkowa') }}</h3>
-        <p class="stat-value">{% if away_value %}{{ away_value }} M €{% else %}{{ _('Brak danych') }}{% endif %}</p>
       </div>
 
       <div class="stat-section">

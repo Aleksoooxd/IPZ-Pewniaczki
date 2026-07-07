@@ -35,7 +35,6 @@ IPZ-Pewniaczki is an academic project focused on developing a system for predict
 The project scrapes data from the following sources:
 
 * **Football-Data.co.uk**: Provides historical match data, including results and a wide range of bookmaker odds.
-* **Transfermarkt.com**: Used for scraping team market values and future match fixtures.
 * **TheSportsDB.com**: Used for fetching team logos (though a custom scraper `test_logoScraper.py` using `duckduckgo_search` is also present, suggesting an alternative approach for logo retrieval).
 * **SofaScore.com**: Explored for match links, lineups, and statistics, though its primary integration for core data scraping might be limited or in development.
 
@@ -43,7 +42,7 @@ The project scrapes data from the following sources:
 
 * **Backend**: Python 3.9
 * **Web Framework**: Flask
-* **Database**: Microsoft SQL Server (via `pyodbc`)
+* **Database**: Local SQLite database (via SQLAlchemy)
 * **ORM**: SQLAlchemy
 * **Data Manipulation**: Pandas, NumPy
 * **Web Scraping**: BeautifulSoup4, Requests, httpx, fuzzywuzzy, chardet, unidecode

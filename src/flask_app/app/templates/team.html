@@ -10,7 +10,7 @@
 <div class="team-detail-container card">
   <h2 class="page-title">
     {% if team_id %}
-    <img src="{{ url_for('static', filename='logos/' ~ team_id ~ '.png') }}" alt="{{ team_name }} logo" class="team-logo-large">
+        <img src="{{ url_for('static', filename='logos/128x128/' ~ team_name.replace(' ', '-').lower() ~ '.png') }}" alt="{{ team_name }} logo" class="team-logo-large">
     {% endif %}
     {{ team_name }}
     <small>({{ display_season_name }})</small>
@@ -21,10 +21,6 @@
         <div class="chart-card">
             <h3>{{ _('Historia rankingu ELO') }}</h3>
             <canvas id="eloChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>{{ _('Historia wartości rynkowej (€M)') }}</h3>
-            <canvas id="valueChart"></canvas>
         </div>
         <div class="chart-card">
             <h3>{{ _('Historia pozycji w lidze') }}</h3>
@@ -42,10 +38,6 @@
                 <tr>
                     <td>{{ _('Aktualne ELO') }}</td>
                     <td>{{ summary_stats_all_seasons.current_elo|round(0) if summary_stats_all_seasons.current_elo else _('Brak danych') }}</td>
-                </tr>
-                <tr>
-                    <td>{{ _('Aktualna wartość rynkowa') }}</td>
-                    <td>{{ summary_stats_all_seasons.current_market_value if summary_stats_all_seasons.current_market_value else _('Brak danych') }} M €</td>
                 </tr>
                 <tr>
                     <td>{{ _('Średnia pozycja w lidze') }}</td>
@@ -113,15 +105,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>{{ _('Wartość rynkowa w sezonie') }}</td>
-                    <td>
-                        {{ summary_stats.market_value if summary_stats.market_value is not none else 'Brak danych' }} M €
-                        {% if summary_stats.market_value_rank %}
-                            <span class="rank">({{ summary_stats.market_value_rank }}.)</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
                     <td>{{ _('Aktualna / Końcowa pozycja w lidze') }}</td>
                     <td>{{ summary_stats.final_position if summary_stats.final_position is not none else 'Brak danych' }}</td>
                 </tr>
@@ -145,7 +128,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const eloData = JSON.parse('{{ elo_history|safe }}');
-    const valueData = JSON.parse('{{ value_history|safe }}');
     const positionData = JSON.parse('{{ position_history|safe }}');
 
     if (eloData.length > 0) {
@@ -165,10 +147,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 plugins: { zoom: { pan: { enabled: true, mode: 'x'}, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
             }
         });
-    }
-    if (valueData.length > 0) {
-        const valueCtx = document.getElementById('valueChart').getContext('2d');
-        new Chart(valueCtx, {type: 'line', data: { labels: valueData.map(d => d.season), datasets: [{ label: '{{ _("Wartość Rynkowa") }} (€M)', data: valueData.map(d => d.value), borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.2)', fill: true, tension: 0.1 }]}});
     }
     if (positionData.length > 0) {
         const positionCtx = document.getElementById('positionChart').getContext('2d');

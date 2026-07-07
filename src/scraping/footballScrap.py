@@ -1,18 +1,21 @@
-import copy
 import numpy as np
 import chardet
 import requests
 import io
+import os
+import shutil
 from bs4 import BeautifulSoup
 import datetime
+import traceback
 from concurrent.futures import ThreadPoolExecutor
+import random
 import pandas as pd
-from fuzzywuzzy import process
+from PIL import Image
+import time as time_module
 from sqlalchemy import select
 from unidecode import unidecode
-from flask_app.app.db import db, app, FootballMatch, MatchStats, MatchForm, Team, League, Season, TeamValue, FutureMatch
+from src.flask_app.app.db import db, app, FootballMatch, MatchStats, MatchForm, Team, League, Season, TeamLeague, FutureMatch
 from src.calculations.helpfunctions import hhi_index,shannon_index, coefficient_of_variation, gini_index, calculate_consensus
-from src.scraping.transfermarktScrap import get_all_teams_from_db
 
 pd.set_option('future.no_silent_downcasting', True)
 headers = {
@@ -348,21 +351,10 @@ def calculate_is_suprise(df):
     df['isSuprise'] = df['isSuprise_H'] + df['isSuprise_D'] + df['isSuprise_A']
     df = df.drop(columns=['Avg_H', 'Avg_D', 'Avg_A'])
     return df
-def get_team_value_id(session, team_id, season_id):
-    team_values = session.execute(
-        select(TeamValue)
-        .where(TeamValue.team_id == team_id, TeamValue.season_id == season_id)
-        .with_for_update()
-    ).scalars().all()
-
-    if not team_values:
-        return None
-    return team_values[0]
 def get_league_id(session, league_name):
     league = db.session.execute(
         select(League)
         .where(League.code == league_name)
-        .with_for_update()
     ).scalar_one_or_none()
     if not league:
         return None
@@ -371,7 +363,6 @@ def get_team_id(session, team_name):
     team = db.session.execute(
         select(Team)
         .where(Team.name == team_name)
-        .with_for_update()
     ).scalar_one_or_none()
     if not team:
         return None
@@ -380,7 +371,6 @@ def get_season_id(session, season_name):
     season = db.session.execute(
         select(Season)
         .where(Season.name == season_name)
-        .with_for_update()
     ).scalar_one_or_none()
     if not season:
         return None
@@ -459,113 +449,134 @@ def get_data_from_top_11(correct, countryInfo, seasonCode):
             df = df.sort_values(by='Date')
 
             with app.app_context():
-                league = get_league_id(db.session, get_league(df))
-                season = get_season_id(db.session, get_seasons(df))
+                league = get_or_create_league(db.session, get_league(df))
+                season = get_or_create_season(db.session, get_seasons(df))
+                db.session.commit()
 
+                inserted = 0
+                updated = 0
+                errors = 0
                 for _, row in df.iterrows():
-                    if league is None or season is None:
-                        print(f"Missing league {get_league(df)} or season {get_seasons(df)}")
-                        continue
-                    home_team = get_team_id(db.session, row['HomeTeam'])
-                    away_team = get_team_id(db.session, row['AwayTeam'])
-                    if home_team is None or away_team is None:
-                        print(f"Skipping match {row['HomeTeam']} vs {row['AwayTeam']} - missing team names")
-                        continue
-                    homet_value_id = get_team_value_id(db.session, home_team.team_id, season.season_id)
-                    awayt_value_id = get_team_value_id(db.session, away_team.team_id, season.season_id)
-                    if homet_value_id is None or awayt_value_id is None:
-                        print(f"Skipping match {row['HomeTeam']} vs {row['AwayTeam']} - missing team values")
-                        continue
-                    match = db.session.execute(
-                        select(FootballMatch)
-                        .where(FootballMatch.home_team_id == home_team.team_id,FootballMatch.away_team_id == away_team.team_id, FootballMatch.date==row['Date'])
-                        .with_for_update()
-                    ).scalar_one_or_none()
-                    if not match:
-                        match = FootballMatch(
-                            home_team_id=home_team.team_id,
-                            home_value_id = homet_value_id.value_id,
-                            away_value_id = awayt_value_id.value_id,
-                            away_team_id=away_team.team_id,
-                            season_id=season.season_id,
-                            league_id=league.league_id,
-                            date=row['Date'],
-                            result=row['FTR'],
-                            home_matchday=row['HomeMatchday'],
-                            away_matchday=row['AwayMatchday'],
-                            fthg=row['FTHG'],
-                            ftag=row['FTAG'],
-                            is_surprise=row['isSuprise'],
-                            is_suprise_h=row['isSuprise_H'],
-                            is_suprise_d=row['isSuprise_D'],
-                            is_suprise_a=row['isSuprise_A'],
-                            consensus=row['Consensus'],
-
-                            home_elo=None,
-                            away_elo=None,
-                            home_elo_change=None,
-                            away_elo_change=None
-                        )
-                        db.session.add(match)
-                        db.session.flush()
-                        check_and_remove_future_match(db.session, home_team.team_id, away_team.team_id, row['Date'])
-                    else:
-                        print(f'Skipping match data for {row["HomeTeam"]} vs {row["AwayTeam"]}, already exists')
-                        continue
-
-                    for suffix in ['H', 'D', 'A']:
-                        side = 'home' if suffix == 'H' else ('draw' if suffix == 'D' else 'away')
-                        stats_data = {
-                            'mean': row.get(f'{suffix}_Mean'),
-                            'std': row.get(f'{suffix}_Std'),
-                            'shannon': row.get(f'{suffix}_Shannon'),
-                            'cv': row.get(f'{suffix}_CV'),
-                            'gini': row.get(f'{suffix}_Gini'),
-                            'hhi': row.get(f'{suffix}_HHI')
-                        }
-                        stats_data = {k: float(v) for k, v in stats_data.items() if v is not None and pd.notna(v)}
-                        if stats_data:
-                            MatchStats.create_or_update_stats(
-                                session=db.session,
-                                match_id=match.match_id,
-                                side=side,
-                                stats_data=stats_data
-                            )
-                    for side in ['home', 'away']:
-                        prefix = side.capitalize()
-                        match_form = db.session.execute(
-                            select(MatchForm)
-                            .where(MatchForm.match_id == match.match_id, MatchForm.team_side == side)
-                            .with_for_update()
+                    try:
+                        home_team = get_or_create_team(db.session, row['HomeTeam'])
+                        away_team = get_or_create_team(db.session, row['AwayTeam'])
+                        get_or_create_team_league(db.session, home_team.team_id, league.league_id, season.season_id)
+                        get_or_create_team_league(db.session, away_team.team_id, league.league_id, season.season_id)
+                        match = db.session.execute(
+                            select(FootballMatch)
+                            .where(FootballMatch.home_team_id == home_team.team_id,FootballMatch.away_team_id == away_team.team_id, FootballMatch.date==row['Date'])
                         ).scalar_one_or_none()
+                        is_new = match is None
+                        if is_new:
+                            match = FootballMatch(
+                                home_team_id=home_team.team_id,
+                                away_team_id=away_team.team_id,
+                                season_id=season.season_id,
+                                league_id=league.league_id,
+                                date=row['Date'],
+                                result=row['FTR'],
+                                home_matchday=row['HomeMatchday'],
+                                away_matchday=row['AwayMatchday'],
+                                fthg=row['FTHG'],
+                                ftag=row['FTAG'],
+                                is_surprise=row['isSuprise'],
+                                is_suprise_h=row['isSuprise_H'],
+                                is_suprise_d=row['isSuprise_D'],
+                                is_suprise_a=row['isSuprise_A'],
+                                consensus=row['Consensus'],
 
-                        if not match_form:
-                            match_form = MatchForm(
-                                match_id=match.match_id,
-                                team_side=side,
-                                form_last_3=row[f'{prefix}Form3'],
-                                form_last_5=row[f'{prefix}Form5'],
-                                form_season=row[f'{prefix}FormSeason'],
-                                goals_last_3=row[f'{prefix}Goals3'],
-                                goals_last_5=row[f'{prefix}Goals5'],
-                                goals_season=row[f'{prefix}GoalsSeason'],
-                                team_placement=row[f'{prefix}TeamPlacement'],
-                                h2h_matches=None,
-                                h2h_wins=None,
-                                h2h_draws=None,
-                                h2h_losses=None,
-                                h2h_goals_for=None,
-                                h2h_goals_against=None,
-                                h2h_last_5_points=None
+                                home_elo=None,
+                                away_elo=None,
+                                home_elo_change=None,
+                                away_elo_change=None
                             )
-                            db.session.add(match_form)
+                            db.session.add(match)
                             db.session.flush()
-                    db.session.commit()
-                    print(f'Inserted match data for {row["HomeTeam"]} vs {row["AwayTeam"]}')
-            print(f"Data successfully inserted into the database for {countryInfo[1]} {seasonCode}")
+                            check_and_remove_future_match(db.session, home_team.team_id, away_team.team_id, row['Date'])
+                        else:
+                            match.season_id = season.season_id
+                            match.league_id = league.league_id
+                            match.result = row['FTR']
+                            match.home_matchday = row['HomeMatchday']
+                            match.away_matchday = row['AwayMatchday']
+                            match.fthg = row['FTHG']
+                            match.ftag = row['FTAG']
+                            match.is_surprise = row['isSuprise']
+                            match.is_suprise_h = row['isSuprise_H']
+                            match.is_suprise_d = row['isSuprise_D']
+                            match.is_suprise_a = row['isSuprise_A']
+                            match.consensus = row['Consensus']
+                            db.session.flush()
+
+                        for suffix in ['H', 'D', 'A']:
+                            side = 'home' if suffix == 'H' else ('draw' if suffix == 'D' else 'away')
+                            stats_data = {
+                                'mean': row.get(f'{suffix}_Mean'),
+                                'std': row.get(f'{suffix}_Std'),
+                                'shannon': row.get(f'{suffix}_Shannon'),
+                                'cv': row.get(f'{suffix}_CV'),
+                                'gini': row.get(f'{suffix}_Gini'),
+                                'hhi': row.get(f'{suffix}_HHI')
+                            }
+                            stats_data = {k: float(v) for k, v in stats_data.items() if v is not None and pd.notna(v)}
+                            if stats_data:
+                                MatchStats.create_or_update_stats(
+                                    session=db.session,
+                                    match_id=match.match_id,
+                                    side=side,
+                                    stats_data=stats_data
+                                )
+                        for side in ['home', 'away']:
+                            prefix = side.capitalize()
+                            match_form = db.session.execute(
+                                select(MatchForm)
+                                .where(MatchForm.match_id == match.match_id, MatchForm.team_side == side)
+                            ).scalar_one_or_none()
+
+                            if not match_form:
+                                match_form = MatchForm(
+                                    match_id=match.match_id,
+                                    team_side=side,
+                                    form_last_3=row[f'{prefix}Form3'],
+                                    form_last_5=row[f'{prefix}Form5'],
+                                    form_season=row[f'{prefix}FormSeason'],
+                                    goals_last_3=row[f'{prefix}Goals3'],
+                                    goals_last_5=row[f'{prefix}Goals5'],
+                                    goals_season=row[f'{prefix}GoalsSeason'],
+                                    team_placement=row[f'{prefix}TeamPlacement'],
+                                    h2h_matches=None,
+                                    h2h_wins=None,
+                                    h2h_draws=None,
+                                    h2h_losses=None,
+                                    h2h_goals_for=None,
+                                    h2h_goals_against=None,
+                                    h2h_last_5_points=None
+                                )
+                                db.session.add(match_form)
+                                db.session.flush()
+                            else:
+                                match_form.form_last_3 = row[f'{prefix}Form3']
+                                match_form.form_last_5 = row[f'{prefix}Form5']
+                                match_form.form_season = row[f'{prefix}FormSeason']
+                                match_form.goals_last_3 = row[f'{prefix}Goals3']
+                                match_form.goals_last_5 = row[f'{prefix}Goals5']
+                                match_form.goals_season = row[f'{prefix}GoalsSeason']
+                                match_form.team_placement = row[f'{prefix}TeamPlacement']
+                        db.session.commit()
+                        if is_new:
+                            inserted += 1
+                        else:
+                            updated += 1
+                    except Exception as e:
+                        db.session.rollback()
+                        errors += 1
+                        print(f'Error inserting match {row.get("HomeTeam", "?")} vs {row.get("AwayTeam", "?")}: {e}')
+                        traceback.print_exc()
+                print(f"Data for {countryInfo[1]} {seasonCode}: inserted={inserted}, updated={updated}, errors={errors}")
 
         except Exception as e:
-            print(f"Error processing file: {e}")
+            print(f"Error processing file {countryInfo[1]} {seasonCode}: {e}")
+            traceback.print_exc()
 
 def detect_encoding(byte_content):
     result = chardet.detect(byte_content)
@@ -577,13 +588,11 @@ def check_and_remove_future_match(session, home_team_id, away_team_id, match_dat
         .where(FutureMatch.home_team_id == home_team_id,
                FutureMatch.away_team_id == away_team_id,
                FutureMatch.date == match_date)
-        .with_for_update()
     ).scalar_one_or_none()
 
     if future_match:
         print(f"Match found in FutureMatch table. Removing it as it's now a past match.")
         session.delete(future_match)
-        session.commit()
         return True
 
     return False
@@ -595,13 +604,9 @@ def correct_date_format(val):
 
 
 def scrape_top_11(correct):
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        futures = []
-        for country, countryValues in countries.items():
-            for season, seasonCode in seasons.items():
-                futures.append(executor.submit(get_data_from_top_11, correct, countryValues, seasonCode))
-        for future in futures:
-            future.result()
+    for country, countryValues in countries.items():
+        for season, seasonCode in seasons.items():
+            get_data_from_top_11(correct, countryValues, seasonCode)
 def get_seasons(df):
     seasons = df['Season'].unique()
     if len(seasons) == 1:
@@ -640,47 +645,63 @@ def get_league(df):
         return league
 
 
+def get_or_create_team(session, team_name):
+    team = session.execute(
+        select(Team)
+        .where(Team.name == team_name)
+    ).scalar_one_or_none()
+    if team is None:
+        team = Team(name=team_name)
+        session.add(team)
+        session.flush()
+    return team
+
+
+def get_or_create_league(session, league_name):
+    league = session.execute(
+        select(League)
+        .where(League.code == league_name)
+    ).scalar_one_or_none()
+    if league is None:
+        league = League(code=league_name)
+        session.add(league)
+        session.flush()
+    return league
+
+
+def get_or_create_season(session, season_name):
+    season = session.execute(
+        select(Season)
+        .where(Season.name == season_name)
+    ).scalar_one_or_none()
+    if season is None:
+        season = Season(name=season_name)
+        session.add(season)
+        session.flush()
+    return season
+
+
+def get_or_create_team_league(session, team_id, league_id, season_id):
+    team_league = session.execute(
+        select(TeamLeague)
+        .where(
+            TeamLeague.team_id == team_id,
+            TeamLeague.league_id == league_id,
+            TeamLeague.season_id == season_id,
+        )
+    ).scalar_one_or_none()
+    if team_league is None:
+        team_league = TeamLeague(team_id=team_id, league_id=league_id, season_id=season_id)
+        session.add(team_league)
+        session.flush()
+    return team_league
+
+
 def create_team_name_mapping():
-    list_2 = sorted(list(get_all_teams_from_db()))
-    list_1 = sorted(list(scrape_team_names_only()))
-    temp_list_1 = copy.deepcopy(list_1)
-    temp_list_2 = copy.deepcopy(list_2)
-    THRESHOLD = 95
-    correct = {}
-    while temp_list_1 and temp_list_2:
-        mapping = {}
-        for club in temp_list_1:
-            match, score = process.extractOne(club, temp_list_2)
-            if score >= THRESHOLD:
-                mapping[club] = match
-            else:
-                mapping[club] = None
-        matched = {k: v for k, v in mapping.items() if v is not None}
-        unmatched = {k: v for k, v in mapping.items() if v is None}
-        correct.update(matched)
-        for key, value in matched.items():
-            if key in temp_list_1:
-                temp_list_1.remove(key)
-            if value in temp_list_2:
-                temp_list_2.remove(value)
-        if unmatched:
-            THRESHOLD -= 1
-            if THRESHOLD < 0:
-                break
-        else:
-            break
-    print(f"\nTotal teams in football-data: {len(list_1)}")
-    print(f"Total teams in database: {len(list_2)}")
-    print(f"Initial matches found: {len(correct)}")
-    print(f"Remaining unmapped in football-data: {len(temp_list_1)}")
-    print(f"Remaining unmapped in database: {len(temp_list_2)}")
-    print(f"Remaining unmapped in database: {temp_list_2}")
-    print(f'Mapped teams: {correct}')
-    return correct
+    return {}
 
 def correct_scrape_top_11():
-    correct = create_team_name_mapping()
-    scrape_top_11(correct)
+    scrape_top_11({})
 
 
 if __name__ == "__main__":

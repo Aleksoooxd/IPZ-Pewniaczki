@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 import sqlalchemy
-from flask import Flask
+from flask import Flask, has_app_context
 from flask_sqlalchemy import SQLAlchemy
 
 from src.flask_app.app import Config
@@ -14,6 +14,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app, session_options={'autoflush': False})
 
 from sqlalchemy import create_engine, Column, Integer, String, Date, Float, Boolean, ForeignKey, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
@@ -27,7 +28,49 @@ class Team(db.Model):
     team_leagues = relationship("TeamLeague", back_populates="team")
     home_matches = relationship("FootballMatch", foreign_keys="[FootballMatch.home_team_id]",back_populates="home_team")
     away_matches = relationship("FootballMatch", foreign_keys="[FootballMatch.away_team_id]",back_populates="away_team")
-    team_values = relationship("TeamValue", back_populates="team")
+
+
+def rename_team(old_name, new_name):
+    """Rename a team in the database using exact name matching.
+
+    Returns True when the rename was applied, False when the source team
+    was not found, the target name already exists, or the input is invalid.
+    """
+    if not isinstance(old_name, str) or not isinstance(new_name, str):
+        return False
+
+    if not old_name.strip() or not new_name.strip():
+        return False
+
+    if old_name == new_name:
+        return True
+
+    def _rename():
+        team = db.session.execute(
+            select(Team).where(Team.name == old_name)
+        ).scalar_one_or_none()
+        if team is None:
+            return False
+
+        existing_team = db.session.execute(
+            select(Team).where(Team.name == new_name)
+        ).scalar_one_or_none()
+        if existing_team is not None and existing_team.team_id != team.team_id:
+            return False
+
+        team.name = new_name
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return False
+        return True
+
+    if has_app_context():
+        return _rename()
+
+    with app.app_context():
+        return _rename()
 
 
 class League(db.Model):
@@ -49,7 +92,6 @@ class Season(db.Model):
 
     team_leagues = relationship("TeamLeague", back_populates="season")
     matches = relationship("FootballMatch", back_populates="season")
-    team_values = relationship("TeamValue", back_populates="season")
     future_match = relationship("FutureMatch", back_populates="season")
 
 class TeamLeague(db.Model):
@@ -63,18 +105,6 @@ class TeamLeague(db.Model):
     team = relationship("Team", back_populates="team_leagues")
     league = relationship("League", back_populates="team_leagues")
     season = relationship("Season", back_populates="team_leagues")
-
-
-class TeamValue(db.Model):
-    __tablename__ = 'team_value'
-
-    value_id = Column(Integer, primary_key=True)
-    team_id = Column(Integer, ForeignKey('team.team_id'))
-    season_id = Column(Integer, ForeignKey('season.season_id'))
-    value = Column(Float)
-
-    team = relationship("Team", back_populates="team_values")
-    season = relationship("Season", back_populates="team_values")
 
 
 class FootballMatch(db.Model):
@@ -95,8 +125,6 @@ class FootballMatch(db.Model):
     away_elo_change = Column(Float, nullable=True)
     fthg = Column(Integer)
     ftag = Column(Integer)
-    home_value_id = Column(Integer, ForeignKey('team_value.value_id'))
-    away_value_id = Column(Integer, ForeignKey('team_value.value_id'))
     is_surprise = Column(Boolean)
     is_suprise_h = Column(Boolean)
     is_suprise_d = Column(Boolean)
@@ -107,28 +135,9 @@ class FootballMatch(db.Model):
     season = relationship("Season", back_populates="matches")
     home_team = relationship("Team", foreign_keys=[home_team_id], back_populates="home_matches")
     away_team = relationship("Team", foreign_keys=[away_team_id], back_populates="away_matches")
-    home_value_ref = relationship("TeamValue", foreign_keys=[home_value_id])
-    away_value_ref = relationship("TeamValue", foreign_keys=[away_value_id])
     match_stats = relationship("MatchStats", back_populates="match")
     form_data = relationship("MatchForm", back_populates="match")
     predictions = relationship("Predicted", back_populates="match")
-
-class FutureMatch(db.Model):
-    __tablename__ = 'future_match'
-    match_id = Column(Integer, primary_key=True)
-    league_id = Column(Integer, ForeignKey('league.league_id'))
-    season_id = Column(Integer, ForeignKey('season.season_id'))
-    home_matchday = Column(Integer)
-    date = Column(Date)
-    time = Column(String(5))
-    home_team_id = Column(Integer, ForeignKey('team.team_id'))
-    away_team_id = Column(Integer, ForeignKey('team.team_id'))
-
-    league = relationship("League", back_populates="future_match")
-    season = relationship("Season", back_populates="future_match")
-    home_team = relationship("Team", foreign_keys=[home_team_id])
-    away_team = relationship("Team", foreign_keys=[away_team_id])
-    future_predictions = relationship("PredictedFuture", back_populates="future_match")
 
 class MatchStats(db.Model):
     __tablename__ = 'match_stats'
@@ -156,6 +165,7 @@ class MatchStats(db.Model):
         if not stats:
             stats = cls(match_id=match_id, team_side=side)
             session.add(stats)
+
         stats.mean = stats_data.get('mean')
         stats.std = stats_data.get('std')
         stats.shannon = stats_data.get('shannon')
@@ -165,6 +175,23 @@ class MatchStats(db.Model):
 
         session.flush()
         return stats
+
+class FutureMatch(db.Model):
+    __tablename__ = 'future_match'
+    match_id = Column(Integer, primary_key=True)
+    league_id = Column(Integer, ForeignKey('league.league_id'))
+    season_id = Column(Integer, ForeignKey('season.season_id'))
+    home_matchday = Column(Integer)
+    date = Column(Date)
+    time = Column(String(5))
+    home_team_id = Column(Integer, ForeignKey('team.team_id'))
+    away_team_id = Column(Integer, ForeignKey('team.team_id'))
+
+    league = relationship("League", back_populates="future_match")
+    season = relationship("Season", back_populates="future_match")
+    home_team = relationship("Team", foreign_keys=[home_team_id])
+    away_team = relationship("Team", foreign_keys=[away_team_id])
+    future_predictions = relationship("PredictedFuture", back_populates="future_match")
 
 class MatchForm(db.Model):
     __tablename__ = 'match_form'
@@ -216,6 +243,10 @@ class PredictedFuture(db.Model):
     confidence = Column(Float)
 
     future_match = relationship("FutureMatch", back_populates="future_predictions")
+
+
+with app.app_context():
+    db.create_all()
 
 if __name__ == "__main__":
     with app.app_context():

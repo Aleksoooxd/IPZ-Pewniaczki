@@ -53,7 +53,7 @@
         {% for team in teams %}
           <li>
       <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name, season_name=selected_season | replace('/', ' ')) }}">
-        <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.name }} logo" class="team-logo-inline">
+         <img src="{{ url_for('static', filename='logos/64x64/' ~ team.name.replace(' ', '-').lower() ~ '.png') }}" alt="{{ team.team_name }} logo" class="team-logo-inline">
         {{ team.name }}
       </a>
     </li>
@@ -98,7 +98,7 @@
                     <td class="team-name-cell">
 
                       {% if team.team_id %}
-                        <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.team_name }} logo" class="team-logo-inline">
+                        <img src="{{ url_for('static', filename='logos/64x64/' ~ team.team_name.replace(' ', '-').lower() ~ '.png') }}" alt="{{ team.team_name }} logo" class="team-logo-inline">
                       {% endif %}
                       {{ team.team_name }}
                     </td>

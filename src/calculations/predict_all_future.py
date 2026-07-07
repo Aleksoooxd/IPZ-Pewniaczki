@@ -4,9 +4,9 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sqlalchemy import select, and_, or_, desc
 from sqlalchemy.orm import aliased
-from flask_app.app.db import db, app, MatchStats
-from flask_app.app.db import (
-    FootballMatch, FutureMatch, TeamValue, MatchForm, TeamElo, League, Season, Team, PredictedFuture
+from src.flask_app.app.db import db, app, MatchStats
+from src.flask_app.app.db import (
+    FootballMatch, FutureMatch, MatchForm, TeamElo, League, Season, Team, PredictedFuture
 )
 
 
@@ -17,8 +17,6 @@ def create_full_dataframe_for_xgboost():
 
         HomeTeam = aliased(Team)
         AwayTeam = aliased(Team)
-        HomeValue = aliased(TeamValue)
-        AwayValue = aliased(TeamValue)
 
         form_cols = [
             'form_last_3', 'form_last_5', 'form_season', 'goals_last_3', 'goals_last_5',
@@ -41,8 +39,6 @@ def create_full_dataframe_for_xgboost():
                 FootballMatch.home_elo,
                 FootballMatch.away_elo,
                 (FootballMatch.home_elo - FootballMatch.away_elo).label('elo_difference'),
-                HomeValue.value.label('home_value'),
-                AwayValue.value.label('away_value'),
                 FootballMatch.consensus,
                 FootballMatch.is_surprise,
                 FootballMatch.fthg,
@@ -52,8 +48,6 @@ def create_full_dataframe_for_xgboost():
             .outerjoin(Season, FootballMatch.season)
             .outerjoin(HomeTeam, FootballMatch.home_team)
             .outerjoin(AwayTeam, FootballMatch.away_team)
-            .outerjoin(HomeValue, FootballMatch.home_value_ref)
-            .outerjoin(AwayValue, FootballMatch.away_value_ref)
         )
         df_football = pd.read_sql_query(stmt_football_match, engine)
         df_football['is_future_match'] = False
@@ -72,8 +66,6 @@ def create_full_dataframe_for_xgboost():
                 db.null().label('home_elo'),
                 db.null().label('away_elo'),
                 db.null().label('elo_difference'),
-                db.null().label('home_value'),
-                db.null().label('away_value'),
                 db.null().label('consensus'),
                 db.null().label('is_surprise'),
                 db.null().label('fthg'),
@@ -88,18 +80,6 @@ def create_full_dataframe_for_xgboost():
         df_future['is_future_match'] = True
 
         df_full = pd.concat([df_football, df_future], ignore_index=True)
-
-        latest_team_values = db.session.execute(
-            select(TeamValue.team_id, TeamValue.value)
-            .order_by(TeamValue.season_id.desc())
-        ).fetchall()
-        latest_team_values_df = pd.DataFrame(latest_team_values, columns=['team_id', 'value']).drop_duplicates(
-            subset=['team_id'], keep='first')
-
-        df_full.loc[df_full['home_value'].isnull(), 'home_value'] = df_full.loc[
-            df_full['home_value'].isnull(), 'home_team_id'].map(latest_team_values_df.set_index('team_id')['value'])
-        df_full.loc[df_full['away_value'].isnull(), 'away_value'] = df_full.loc[
-            df_full['away_value'].isnull(), 'away_team_id'].map(latest_team_values_df.set_index('team_id')['value'])
 
         latest_elos = db.session.execute(
             select(TeamElo.team_id, TeamElo.rating)
@@ -274,7 +254,6 @@ def load_training_data():
     df_model['target'] = df_model['result'].map(result_map)
 
     features_list = [
-        'home_value', 'away_value',
         'home_elo', 'away_elo', 'elo_difference',
         'home_win_probability', 'draw_probability', 'away_win_probability',
         'home_form_last_3', 'away_form_last_3',

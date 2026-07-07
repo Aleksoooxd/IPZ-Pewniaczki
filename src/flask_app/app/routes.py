@@ -4,7 +4,7 @@ import json
 from sqlalchemy import or_, desc, and_, func, case
 from sqlalchemy.orm import aliased
 from flask import Blueprint, render_template, request, abort, jsonify, redirect, url_for
-from .db import db, FootballMatch, Team, League, FutureMatch, TeamValue, Predicted, MatchStats, MatchForm, TeamElo, \
+from .db import db, FootballMatch, Team, League, FutureMatch, Predicted, MatchStats, MatchForm, TeamElo, \
     TeamLeague, Season, PredictedFuture
 main = Blueprint('main', __name__)
 
@@ -175,8 +175,6 @@ def match_detail(match_type, match_id):
     away_form = None
     home_stats = None
     away_stats = None
-    home_value = None
-    away_value = None
     home_elo = None
     away_elo = None
     predictions = []
@@ -195,12 +193,6 @@ def match_detail(match_type, match_id):
         away_elo_obj = TeamElo.query.filter_by(team_id=away_team_id).order_by(desc(TeamElo.last_updated)).first()
         home_elo = home_elo_obj.rating if home_elo_obj else None
         away_elo = away_elo_obj.rating if away_elo_obj else None
-
-        if season_id:
-            home_value_obj = TeamValue.query.filter_by(team_id=home_team_id, season_id=season_id).first()
-            away_value_obj = TeamValue.query.filter_by(team_id=away_team_id, season_id=season_id).first()
-            home_value = home_value_obj.value if home_value_obj else None
-            away_value = away_value_obj.value if away_value_obj else None
 
         predictions = PredictedFuture.query.filter_by(match_id=match_id).all()
 
@@ -331,9 +323,6 @@ def match_detail(match_type, match_id):
         home_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='home').first()
         away_stats = MatchStats.query.filter_by(match_id=match.match_id, team_side='away').first()
 
-        home_value = match.home_value_ref.value if match.home_value_ref else None
-        away_value = match.away_value_ref.value if match.away_value_ref else None
-
         predictions = match.predictions
 
         home_h2h_data = home_form if home_form and home_form.h2h_matches else None
@@ -375,8 +364,6 @@ def match_detail(match_type, match_id):
                            away_form=away_form,
                            home_stats=home_stats,
                            away_stats=away_stats,
-                           home_value=home_value,
-                           away_value=away_value,
                            home_elo=home_elo,
                            away_elo=away_elo,
                            predictions=predictions,
@@ -412,10 +399,6 @@ def team_view(league_code, team_name, season_name):
         ).order_by(Season.name, team_matchday).all()
         elo_history = [{'label': f"{m.season_name} K{m.matchday}", 'rating': m.elo} for m in matches_for_elo]
 
-        value_history_query = db.session.query(Season.name, TeamValue.value).join(TeamValue).filter(
-            TeamValue.team_id == team_id).order_by(Season.name).all()
-        value_history = [{'season': s, 'value': v} for s, v in value_history_query]
-
         position_history = []
         league = db.session.query(League).filter_by(code=db_league_code).first()
         if league:
@@ -439,15 +422,6 @@ def team_view(league_code, team_name, season_name):
         current_elo_obj = db.session.query(TeamElo).filter(TeamElo.team_id == team_id).order_by(
             TeamElo.last_updated.desc()).first()
         current_elo = current_elo_obj.rating if current_elo_obj else None
-
-        current_season_name_str = get_current_season_name()
-        current_season = db.session.query(Season).filter(Season.name == current_season_name_str).first()
-        if current_season:
-            current_value_obj = db.session.query(TeamValue).filter(TeamValue.team_id == team_id,
-                                                                    TeamValue.season_id == current_season.season_id).first()
-            current_market_value = current_value_obj.value if current_value_obj else None
-        else:
-            current_market_value = None
 
         all_matches = db.session.query(FootballMatch).filter(
             or_(FootballMatch.home_team_id == team_id, FootballMatch.away_team_id == team_id)).all()
@@ -478,7 +452,6 @@ def team_view(league_code, team_name, season_name):
         summary_stats_all_seasons = {
             'avg_points_per_match': avg_points,
             'avg_position': avg_position,
-            'current_market_value': current_market_value,
             'current_elo': current_elo
         }
 
@@ -487,7 +460,6 @@ def team_view(league_code, team_name, season_name):
                                league_name=display_league_name, season_name=season_name,
                                display_season_name=display_season_name,
                                elo_history=json.dumps(elo_history),
-                               value_history=json.dumps(value_history),
                                position_history=json.dumps(position_history),
                                summary_stats_all_seasons=summary_stats_all_seasons)
     else:
@@ -509,12 +481,10 @@ def team_view(league_code, team_name, season_name):
             if not team_matches: continue
             s_gf = sum(m.fthg if m.home_team_id == t.team_id else m.ftag for m in team_matches if m.fthg is not None)
             s_ga = sum(m.ftag if m.home_team_id == t.team_id else m.fthg for m in team_matches if m.ftag is not None)
-            s_val_obj = db.session.query(TeamValue).filter_by(team_id=t.team_id, season_id=season_obj.season_id).first()
             league_wide_stats.append({
                 'team_id': t.team_id,
                 'avg_goals_for': (s_gf / len(team_matches)) if team_matches else 0,
                 'avg_goals_conceded': (s_ga / len(team_matches)) if team_matches else 0,
-                'market_value': s_val_obj.value if s_val_obj else 0
             })
 
         def get_rank(stats, key, t_id, reverse=False):
@@ -523,7 +493,6 @@ def team_view(league_code, team_name, season_name):
 
         avg_gf_rank = get_rank(list(league_wide_stats), 'avg_goals_for', team_id, reverse=True)
         avg_ga_rank = get_rank(list(league_wide_stats), 'avg_goals_conceded', team_id)
-        mv_rank = get_rank(list(league_wide_stats), 'market_value', team_id, reverse=True)
 
         matches = db.session.query(FootballMatch).filter(
             FootballMatch.season_id == season_obj.season_id,
@@ -590,11 +559,9 @@ def team_view(league_code, team_name, season_name):
             'avg_goals_for': round(next(s['avg_goals_for'] for s in league_wide_stats if s['team_id'] == team_id), 2),
             'avg_goals_conceded': round(
                 next(s['avg_goals_conceded'] for s in league_wide_stats if s['team_id'] == team_id), 2),
-            'market_value': next((s['market_value'] for s in league_wide_stats if s['team_id'] == team_id), None),
             'final_position': pos_data[-1]['value'] if pos_data else None,
             'avg_goals_for_rank': avg_gf_rank,
             'avg_goals_conceded_rank': avg_ga_rank,
-            'market_value_rank': mv_rank,
             'avg_points_per_match': avg_points_per_match
         }
 

@@ -9,9 +9,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm
 
-from flask_app.app.db import db, app, MatchStats, League, Season, Team
-from flask_app.app.db import (
-    FootballMatch, TeamValue, MatchForm, Predicted
+from src.flask_app.app.db import db, app, MatchStats, League, Season, Team
+from src.flask_app.app.db import (
+    FootballMatch, MatchForm, Predicted
 )
 
 def create_match_dataframe_sql():
@@ -21,8 +21,6 @@ def create_match_dataframe_sql():
 
         HomeTeam = aliased(Team)
         AwayTeam = aliased(Team)
-        HomeValue = aliased(TeamValue)
-        AwayValue = aliased(TeamValue)
 
         stmt_main = (
             select(
@@ -35,8 +33,6 @@ def create_match_dataframe_sql():
                 Season.name.label('season'),
                 HomeTeam.name.label('home_team'),
                 AwayTeam.name.label('away_team'),
-                HomeValue.value.label('home_value'),
-                AwayValue.value.label('away_value'),
                 FootballMatch.home_matchday,
                 FootballMatch.away_matchday,
                 FootballMatch.is_surprise,
@@ -54,8 +50,6 @@ def create_match_dataframe_sql():
             .outerjoin(Season, FootballMatch.season)
             .outerjoin(HomeTeam, FootballMatch.home_team)
             .outerjoin(AwayTeam, FootballMatch.away_team)
-            .outerjoin(HomeValue, FootballMatch.home_value_ref)
-            .outerjoin(AwayValue, FootballMatch.away_value_ref)
         )
         df_main = pd.read_sql_query(stmt_main, engine)
 
@@ -309,7 +303,7 @@ def predict():
     df = drop_non_predictive_columns(df)
 
     features_list = [
-        'home_value', 'away_value', 'home_form_season', 'away_form_season',
+        'home_form_season', 'away_form_season',
         'home_elo', 'away_elo', 'elo_difference',
         'home_win_probability', 'draw_probability', 'away_win_probability',
         'home_form_last_3', 'away_form_last_3',

@@ -1,7 +1,7 @@
 import datetime
 import copy
 from sqlalchemy import select
-from flask_app.app.db import db, app, Team, FootballMatch, TeamElo, MatchForm
+from src.flask_app.app.db import db, app, Team, FootballMatch, TeamElo, MatchForm
 
 
 def calculate_elo_change(home_elo, away_elo, result, goal_diff=None):
