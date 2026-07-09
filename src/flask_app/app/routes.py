@@ -149,6 +149,15 @@ def get_current_season_name():
     return season
 
 
+def get_team_current_elo(team_id, season_id=None):
+    """Return the latest ELO rating for a team or None if not available."""
+    query = db.session.query(TeamElo).filter(TeamElo.team_id == team_id)
+    if season_id is not None:
+        query = query.filter(TeamElo.season_id == season_id)
+    elo_obj = query.order_by(desc(TeamElo.last_updated)).first()
+    return int(elo_obj.rating) if elo_obj else None
+
+
 @main.route('/match/<string:match_type>/<int:match_id>')
 def match_detail(match_type, match_id):
     from datetime import date
@@ -648,6 +657,13 @@ def calculate_standings_for_league_and_season(league_id, season_id=None, matchda
                               key=lambda x: (-x['points'], -x['goal_diff'], -x['goals_for'], x['team_name']))
     for i, team_data in enumerate(sorted_standings):
         team_data['position'] = i + 1
+
+    # Attach latest ELO rating for each team (used in templates)
+    for team_data in sorted_standings:
+        try:
+            team_data['elo_rating'] = get_team_current_elo(team_data.get('team_id'), season_id=season_id)
+        except Exception:
+            team_data['elo_rating'] = None
 
     return sorted_standings
 

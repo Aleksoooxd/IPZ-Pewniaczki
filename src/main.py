@@ -5,17 +5,17 @@ def main():
     while True:
         print("1. Scrape ALL")
         print("2. Scrape top 11 leagues")
-        print("4. Calculate ELO for all matches and predict")
-        print("5. Generate ALL")
+        print("3. Calculate ELO for all matches and predict")
+        print("4. Generate ALL")
         choice = input("Enter your choice: ")
         if choice == '1':
             correct_scrape_top_11()
         elif choice == '2':
             correct_scrape_top_11()
-        elif choice == '4':
+        elif choice == '3':
             process_all_matches_for_elo()
             predict()
-        elif choice == '5':
+        elif choice == '4':
             correct_scrape_top_11()
             process_all_matches_for_elo()
             predict()

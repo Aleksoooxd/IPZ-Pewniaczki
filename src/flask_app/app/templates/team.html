@@ -1,3 +1,4 @@
+<!-- REDESIGNED: team.html -->
 {% extends "base.html" %}
 
 {% block title %}{{ team_name }} - {{ _('Szczegóły Drużyny') }}{% endblock %}
@@ -7,119 +8,97 @@
 {% endblock %}
 
 {% block content %}
-<div class="team-detail-container card">
-  <h2 class="page-title">
+<div class="team-detail-container">
+
+  <!-- WATERMARK BG LOGO -->
+  <div class="team-watermark">
+    <img src="{{ url_for('static', filename='logos/512x512/' ~ team_name.lower().replace(' ', '-') ~ '.png') }}"
+         alt="" aria-hidden="true">
+  </div>
+
+  <!-- HERO -->
+  <div class="team-hero card">
     {% if team_id %}
-        <img src="{{ url_for('static', filename='logos/128x128/' ~ team_name.replace(' ', '-').lower() ~ '.png') }}" alt="{{ team_name }} logo" class="team-logo-large">
+      <img src="{{ url_for('static', filename='logos/256x256/' ~ team_name.lower().replace(' ', '-') ~ '.png') }}"
+           alt="{{ team_name }}" class="team-hero-logo">
     {% endif %}
-    {{ team_name }}
-    <small>({{ display_season_name }})</small>
-  </h2>
+    <div class="team-hero-info">
+      <h1 class="team-hero-name">{{ team_name }}</h1>
+      <span class="team-season-badge">{{ display_season_name }}</span>
+    </div>
+  </div>
 
   {% if 'all' in season_name|lower %}
-    <div class="charts-container">
-        <div class="chart-card">
-            <h3>{{ _('Historia rankingu ELO') }}</h3>
-            <canvas id="eloChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>{{ _('Historia pozycji w lidze') }}</h3>
-            <canvas id="positionChart"></canvas>
-        </div>
-    </div>
-    <div class="stats-table-container">
-        <table class="stats-table">
-            <thead>
-                <tr>
-                    <th colspan="2">{{ _('Podsumowanie - wszystkie sezony') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ _('Aktualne ELO') }}</td>
-                    <td>{{ summary_stats_all_seasons.current_elo|round(0) if summary_stats_all_seasons.current_elo else _('Brak danych') }}</td>
-                </tr>
-                <tr>
-                    <td>{{ _('Średnia pozycja w lidze') }}</td>
-                    <td>{{ summary_stats_all_seasons.avg_position|round(2) if summary_stats_all_seasons.avg_position else _('Brak danych') }}</td>
-                </tr>
-                <tr>
-                    <td>{{ _('Średnia punktów na mecz') }}</td>
-                    <td>{{ summary_stats_all_seasons.avg_points_per_match|round(2) if summary_stats_all_seasons.avg_points_per_match else _('Brak danych') }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-  {% else %}
-    <div class="single-season-grid">
-        <div class="chart-card">
-            <h3>{{ _('ELO w trakcie sezonu') }}</h3>
-            <canvas id="seasonEloChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>{{ _('Punkty w trakcie sezonu') }}</h3>
-            <canvas id="seasonPointsChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>{{ _('Pozycja w lidze') }}</h3>
-            <canvas id="seasonPositionChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>{{ _('Gole strzelone (kumulacyjnie)') }}</h3>
-            <canvas id="seasonGoalsForChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>{{ _('Gole stracone (kumulacyjnie)') }}</h3>
-            <canvas id="seasonGoalsConcededChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>{{ _('Wyniki meczów (kumulatywnie)') }}</h3>
-            <canvas id="w_d_lChart"></canvas>
-        </div>
+
+    <!-- ALL SEASONS: wykresy bez wartości rynkowej -->
+    <div class="charts-grid">
+      <div class="chart-card card">
+        <h3>{{ _('Historia rankingu ELO') }}</h3>
+        <canvas id="eloChart"></canvas>
+      </div>
+      <div class="chart-card card">
+        <h3>{{ _('Historia pozycji w lidze') }}</h3>
+        <canvas id="positionChart"></canvas>
+      </div>
     </div>
 
-    <div class="stats-table-container">
-         <table class="stats-table">
-            <thead>
-                <tr>
-                    <th colspan="2">{{ _('Podsumowanie sezonu') }} {{ display_season_name }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ _('Średnia bramek strzelonych na mecz') }}</td>
-                    <td>
-                        {{ summary_stats.avg_goals_for }}
-                        {% if summary_stats.avg_goals_for_rank %}
-                            <span class="rank">({{ summary_stats.avg_goals_for_rank }}.)</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>{{ _('Średnia bramek straconych na mecz') }}</td>
-                    <td>
-                        {{ summary_stats.avg_goals_conceded }}
-                        {% if summary_stats.avg_goals_conceded_rank %}
-                            <span class="rank">({{ summary_stats.avg_goals_conceded_rank }}.)</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>{{ _('Aktualna / Końcowa pozycja w lidze') }}</td>
-                    <td>{{ summary_stats.final_position if summary_stats.final_position is not none else 'Brak danych' }}</td>
-                </tr>
-                 <tr>
-                    <td>{{ _('Średnia punktów na mecz') }}</td>
-                    <td>
-                        {{ summary_stats.avg_points_per_match }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="stats-summary card">
+      <h3>{{ _('Podsumowanie - wszystkie sezony') }}</h3>
+      <div class="stats-grid-4">
+        <div class="stat-tile">
+          <span class="stat-tile-val">{{ summary_stats_all_seasons.current_elo|round(0) if summary_stats_all_seasons.current_elo else '—' }}</span>
+          <span class="stat-tile-label">{{ _('Aktualne ELO') }}</span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-tile-val">{{ summary_stats_all_seasons.avg_position|round(2) if summary_stats_all_seasons.avg_position else '—' }}</span>
+          <span class="stat-tile-label">{{ _('Śr. pozycja') }}</span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-tile-val">{{ summary_stats_all_seasons.avg_points_per_match|round(2) if summary_stats_all_seasons.avg_points_per_match else '—' }}</span>
+          <span class="stat-tile-label">{{ _('Śr. pkt/mecz') }}</span>
+        </div>
+      </div>
     </div>
+
+  {% else %}
+
+    <!-- SINGLE SEASON -->
+    <div class="charts-grid">
+      <div class="chart-card card"><h3>{{ _('ELO w trakcie sezonu') }}</h3><canvas id="seasonEloChart"></canvas></div>
+      <div class="chart-card card"><h3>{{ _('Punkty w trakcie sezonu') }}</h3><canvas id="seasonPointsChart"></canvas></div>
+      <div class="chart-card card"><h3>{{ _('Pozycja w lidze') }}</h3><canvas id="seasonPositionChart"></canvas></div>
+      <div class="chart-card card"><h3>{{ _('Gole strzelone (kumulacyjnie)') }}</h3><canvas id="seasonGoalsForChart"></canvas></div>
+      <div class="chart-card card"><h3>{{ _('Gole stracone (kumulacyjnie)') }}</h3><canvas id="seasonGoalsConcededChart"></canvas></div>
+      <div class="chart-card card"><h3>{{ _('Wyniki meczów (kumulatywnie)') }}</h3><canvas id="w_d_lChart"></canvas></div>
+    </div>
+
+    <div class="stats-summary card">
+      <h3>{{ _('Podsumowanie sezonu') }} {{ display_season_name }}</h3>
+      <div class="stats-grid-4">
+        <div class="stat-tile">
+          <span class="stat-tile-val">{{ summary_stats.avg_goals_for }}</span>
+          <span class="stat-tile-label">{{ _('Śr. gole strzelone') }}{% if summary_stats.avg_goals_for_rank %} <span class="rank">({{ summary_stats.avg_goals_for_rank }}.)</span>{% endif %}</span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-tile-val">{{ summary_stats.avg_goals_conceded }}</span>
+          <span class="stat-tile-label">{{ _('Śr. gole stracone') }}{% if summary_stats.avg_goals_conceded_rank %} <span class="rank">({{ summary_stats.avg_goals_conceded_rank }}.)</span>{% endif %}</span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-tile-val">{{ summary_stats.final_position if summary_stats.final_position is not none else '—' }}</span>
+          <span class="stat-tile-label">{{ _('Pozycja końcowa') }}</span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-tile-val">{{ summary_stats.avg_points_per_match }}</span>
+          <span class="stat-tile-label">{{ _('Śr. pkt/mecz') }}</span>
+        </div>
+      </div>
+    </div>
+
   {% endif %}
 
-  <a href="{{ url_for('main.league_view', league_code=league_code, season=season_name.replace(' ', '/')) }}" class="button secondary">← {{ _('Powrót do ligi') }}</a>
+  <a href="{{ url_for('main.league_view', league_code=league_code, season=season_name.replace(' ', '/')) }}"
+     class="button secondary">← {{ _('Powrót do ligi') }}</a>
+
 </div>
 {% endblock %}
 
@@ -127,67 +106,97 @@
 {% if 'all' in season_name|lower and summary_stats_all_seasons %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const eloData = JSON.parse('{{ elo_history|safe }}');
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const gridColor   = isDark ? '#1e2e1e' : '#e0e0e0';
+    const tickColor   = isDark ? '#9e9e9e' : '#555555';
+
+    const eloData      = JSON.parse('{{ elo_history|safe }}');
     const positionData = JSON.parse('{{ position_history|safe }}');
 
+    const baseScales = {
+        x: { ticks: { autoSkip: true, maxTicksLimit: 20, color: tickColor }, grid: { color: gridColor } },
+        y: { ticks: { color: tickColor }, grid: { color: gridColor } }
+    };
+
     if (eloData.length > 0) {
-        const eloCtx = document.getElementById('eloChart').getContext('2d');
-        new Chart(eloCtx, {
+        new Chart(document.getElementById('eloChart').getContext('2d'), {
             type: 'line',
             data: {
                 labels: eloData.map(d => d.label),
-                datasets: [{
-                    label: '{{ _("ELO") }}', data: eloData.map(d => d.rating),
-                    borderColor: 'rgba(75, 192, 192, 1)', backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    fill: true, tension: 0.1, pointRadius: 1, borderWidth: 1.5
-                }]
+                datasets: [{ label: '{{ _("ELO") }}', data: eloData.map(d => d.rating),
+                    borderColor: '#00e676', backgroundColor: 'rgba(0,230,118,0.1)',
+                    fill: true, tension: 0.1, pointRadius: 1, borderWidth: 2 }]
             },
             options: {
-                scales: { x: { ticks: { autoSkip: true, maxTicksLimit: 20 } } },
-                plugins: { zoom: { pan: { enabled: true, mode: 'x'}, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
+                scales: baseScales,
+                plugins: { zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
             }
         });
     }
+
     if (positionData.length > 0) {
-        const positionCtx = document.getElementById('positionChart').getContext('2d');
-        new Chart(positionCtx, {type: 'line', data: { labels: positionData.map(d => d.season), datasets: [{ label: '{{ _("Pozycja w lidze") }}', data: positionData.map(d => d.position), spanGaps: true, fill: true, borderColor: 'rgba(54, 162, 235, 1)', backgroundColor: 'rgba(54, 162, 235, 0.2)', tension: 0.1 }]}, options: { scales: { y: { reverse: true, beginAtZero: false, ticks: { stepSize: 1 }}}}});
+        new Chart(document.getElementById('positionChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: positionData.map(d => d.season),
+                datasets: [{ label: '{{ _("Pozycja w lidze") }}', data: positionData.map(d => d.position),
+                    spanGaps: true, fill: true,
+                    borderColor: '#ffc400', backgroundColor: 'rgba(255,196,0,0.1)', tension: 0.1 }]
+            },
+            options: {
+                scales: {
+                    x: baseScales.x,
+                    y: { reverse: true, beginAtZero: false, ticks: { stepSize: 1, color: tickColor }, grid: { color: gridColor } }
+                }
+            }
+        });
     }
 });
 </script>
+
 {% elif 'all' not in season_name|lower and summary_stats %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const isDark    = document.documentElement.getAttribute('data-theme') !== 'light';
+    const gridColor = isDark ? '#1e2e1e' : '#e0e0e0';
+    const tickColor = isDark ? '#9e9e9e' : '#555555';
+
     const chartData = {
-        elo: JSON.parse('{{ elo_data|safe }}'),
-        points: JSON.parse('{{ points_data|safe }}'),
-        goalsFor: JSON.parse('{{ goals_for_data|safe }}'),
+        elo:           JSON.parse('{{ elo_data|safe }}'),
+        points:        JSON.parse('{{ points_data|safe }}'),
+        goalsFor:      JSON.parse('{{ goals_for_data|safe }}'),
         goalsConceded: JSON.parse('{{ goals_conceded_data|safe }}'),
-        position: JSON.parse('{{ position_data|safe }}'),
-        w_d_l: JSON.parse('{{ w_d_l_data|safe }}')
+        position:      JSON.parse('{{ position_data|safe }}'),
+        w_d_l:         JSON.parse('{{ w_d_l_data|safe }}')
     };
 
-    function createChart(canvasId, label, data, color, yAxisOptions = {}) {
+    function createChart(canvasId, label, data, color, yExtra = {}) {
         if (!data || data.length === 0) return;
         const ctx = document.getElementById(canvasId).getContext('2d');
         new Chart(ctx, {
             type: 'line',
             data: {
                 labels: data.map(d => d.matchday),
-                datasets: [{ label: label, data: data.map(d => d.value), borderColor: color, backgroundColor: color.replace('1)', '0.2)'), fill: true, tension: 0.1 }]
+                datasets: [{ label, data: data.map(d => d.value),
+                    borderColor: color, backgroundColor: color.replace('1)', '0.15)'),
+                    fill: true, tension: 0.1 }]
             },
             options: {
-                scales: { x: { title: { display: true, text: '{{ _("Kolejka") }}' } }, y: yAxisOptions },
+                scales: {
+                    x: { title: { display: true, text: '{{ _("Kolejka") }}', color: tickColor }, ticks: { color: tickColor }, grid: { color: gridColor } },
+                    y: { ticks: { color: tickColor }, grid: { color: gridColor }, ...yExtra }
+                },
                 plugins: { zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
             }
         });
     }
 
-    createChart('seasonEloChart', '{{ _("ELO") }}', chartData.elo, 'rgba(75, 192, 192, 1)');
-    createChart('seasonPointsChart', '{{ _("Punkty") }}', chartData.points, 'rgba(54, 162, 235, 1)');
-    createChart('seasonGoalsForChart', '{{ _("Gole strzelone") }}', chartData.goalsFor, 'rgba(46, 204, 113, 1)');
-    createChart('seasonGoalsConcededChart', '{{ _("Gole stracone") }}', chartData.goalsConceded, 'rgba(231, 76, 60, 1)');
-    createChart('seasonPositionChart', '{{ _("Pozycja w lidze") }}', chartData.position, 'rgba(255, 159, 64, 1)', { reverse: true, beginAtZero: false, ticks: { stepSize: 1, precision: 0 } });
-
+    createChart('seasonEloChart',           '{{ _("ELO") }}',             chartData.elo,           'rgba(0, 230, 118, 1)');
+    createChart('seasonPointsChart',        '{{ _("Punkty") }}',          chartData.points,        'rgba(54, 162, 235, 1)');
+    createChart('seasonGoalsForChart',      '{{ _("Gole strzelone") }}',   chartData.goalsFor,      'rgba(0, 230, 118, 1)');
+    createChart('seasonGoalsConcededChart', '{{ _("Gole stracone") }}',    chartData.goalsConceded, 'rgba(255, 23, 68, 1)');
+    createChart('seasonPositionChart',      '{{ _("Pozycja w lidze") }}',  chartData.position,      'rgba(255, 196, 0, 1)',
+        { reverse: true, beginAtZero: false, ticks: { stepSize: 1, precision: 0, color: tickColor } });
 
     if (chartData.w_d_l && chartData.w_d_l.length > 0) {
         const wdlCtx = document.getElementById('w_d_lChart').getContext('2d');
@@ -196,65 +205,17 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 labels: chartData.w_d_l.map(d => d.matchday),
                 datasets: [
-                    {
-                        label: '{{ _("Zwycięstwa") }}',
-                        data: chartData.w_d_l.map(d => d.wins),
-                        borderColor: 'rgba(40, 167, 69, 1)', // Green
-                        backgroundColor: 'rgba(40, 167, 69, 0.2)',
-                        fill: false,
-                        tension: 0.1
-                    },
-                    {
-                        label: '{{ _("Remisy") }}',
-                        data: chartData.w_d_l.map(d => d.draws),
-                        borderColor: 'rgba(255, 206, 86, 1)', // Yellow
-                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                        fill: false,
-                        tension: 0.1
-                    },
-                    {
-                        label: '{{ _("Porażki") }}',
-                        data: chartData.w_d_l.map(d => d.losses),
-                        borderColor: 'rgba(220, 53, 69, 1)', // Red
-                        backgroundColor: 'rgba(220, 53, 69, 0.2)',
-                        fill: false,
-                        tension: 0.1
-                    }
+                    { label: '{{ _("Zwycięstwa") }}', data: chartData.w_d_l.map(d => d.wins),   borderColor: 'rgba(0,230,118,1)',  backgroundColor: 'rgba(0,230,118,0.1)',  fill: false, tension: 0.1 },
+                    { label: '{{ _("Remisy") }}',      data: chartData.w_d_l.map(d => d.draws),  borderColor: 'rgba(255,214,0,1)',  backgroundColor: 'rgba(255,214,0,0.1)',  fill: false, tension: 0.1 },
+                    { label: '{{ _("Porażki") }}',     data: chartData.w_d_l.map(d => d.losses), borderColor: 'rgba(255,23,68,1)',  backgroundColor: 'rgba(255,23,68,0.1)',  fill: false, tension: 0.1 }
                 ]
             },
             options: {
                 scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: '{{ _("Kolejka") }}'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: '{{ _("Liczba") }}'
-                        },
-                        beginAtZero: true
-                    }
+                    x: { title: { display: true, text: '{{ _("Kolejka") }}', color: tickColor }, ticks: { color: tickColor }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: '{{ _("Liczba") }}',   color: tickColor }, beginAtZero: true, ticks: { color: tickColor }, grid: { color: gridColor } }
                 },
-                plugins: {
-                    zoom: {
-                        pan: {
-                            enabled: true,
-                            mode: 'x'
-                        },
-                        zoom: {
-                            wheel: {
-                                enabled: true
-                            },
-                            pinch: {
-                                enabled: true
-                            },
-                            mode: 'x'
-                        }
-                    }
-                }
+                plugins: { zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
             }
         });
     }

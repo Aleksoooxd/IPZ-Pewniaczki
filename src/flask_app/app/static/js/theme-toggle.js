@@ -1,38 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
-    const body = document.body;
+    const html = document.documentElement;
 
-    const currentTheme = localStorage.getItem('theme') || 'dark';
-    if (currentTheme === 'dark') {
-        body.classList.add('dark-mode');
+    // Default: dark. Light mode = data-theme="light" on <html>
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+        html.setAttribute('data-theme', 'light');
     } else {
-        body.classList.remove('dark-mode');
+        html.removeAttribute('data-theme');
     }
 
-    body.classList.add('theme-loaded');
-
-    updateThemeToggleIcon();
+    document.body.classList.add('theme-loaded');
+    updateIcon();
 
     themeToggle.addEventListener('click', () => {
-        body.classList.toggle('dark-mode');
-        let theme = 'light';
-        if (body.classList.contains('dark-mode')) {
-            theme = 'dark';
+        const isLight = html.getAttribute('data-theme') === 'light';
+        if (isLight) {
+            html.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            html.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
         }
-        localStorage.setItem('theme', theme);
-        updateThemeToggleIcon();
+        updateIcon();
     });
 
-    function updateThemeToggleIcon() {
+    function updateIcon() {
+        const isLight = html.getAttribute('data-theme') === 'light';
         const lightIcon = themeToggle.querySelector('.light-icon');
-        const darkIcon = themeToggle.querySelector('.dark-icon');
-
-        if (body.classList.contains('dark-mode')) {
-            lightIcon.style.display = 'none';
-            darkIcon.style.display = 'inline-block';
-        } else {
-            lightIcon.style.display = 'inline-block';
-            darkIcon.style.display = 'none';
-        }
+        const darkIcon  = themeToggle.querySelector('.dark-icon');
+        if (lightIcon) lightIcon.style.display = isLight ? 'none' : 'inline-block';
+        if (darkIcon)  darkIcon.style.display  = isLight ? 'inline-block' : 'none';
     }
 });

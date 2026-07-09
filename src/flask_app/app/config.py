@@ -21,4 +21,4 @@ class Config:
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{LOCAL_DATABASE_FILE.replace(os.sep, '/')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    LANGUAGES = ['en', 'de', 'es', 'pt', 'cs', 'da', 'pl', 'ja', 'sv', 'it', 'tr', 'hr','he']
+    LANGUAGES = ['en']

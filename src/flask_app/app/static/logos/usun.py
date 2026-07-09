@@ -5,7 +5,7 @@ import argparse
 FRAGMENT = ".football-logos.cc"
 
 
-def clean_filenames(folder: str, dry_run: bool = False) -> None:
+def clean_filenames(folder: str, dry_run: bool = False, non_collection: bool = False) -> None:
     if not os.path.isdir(folder):
         print(f"Blad: '{folder}' nie jest istniejacym folderem.")
         sys.exit(1)
@@ -17,7 +17,7 @@ def clean_filenames(folder: str, dry_run: bool = False) -> None:
         if not os.path.isfile(pelna_sciezka):
             continue
         
-        if FRAGMENT in nazwa and not args.non_collection:
+        if FRAGMENT in nazwa and not non_collection:
             nowa_nazwa = nazwa.replace(FRAGMENT, "").strip()
             # usuniecie ewentualnych podwojnych podkreslen/myslnikow/spacji
             # powstalych po wycieciu fragmentu
@@ -43,7 +43,7 @@ def clean_filenames(folder: str, dry_run: bool = False) -> None:
                 print(f"Zmieniono: {nazwa}  ->  {nowa_nazwa}")
 
             zmienione += 1
-        if args.non_collection:
+        if non_collection:
             try:
                 nazwa_split = nazwa.split("_")
                 nowa_nazwa = nazwa_split[1] + ".png"
@@ -73,11 +73,12 @@ def clean_filenames(folder: str, dry_run: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Usuwa 'football-logos.cc' z nazw plikow w folderze.")
-    parser.add_argument("folder", help="Sciezka do folderu z plikami")
-    parser.add_argument("--non-collection", action="store_true", help="Wypadek usuwania w przypadku osobnych logotypow (bez kolekcji). Wtedy usuwany jest fragment przed pierwszym podkresleniem.")
-    parser.add_argument("--dry-run", action="store_true", help="Tylko wyswietl zmiany bez ich wykonywania")
-    
-    args = parser.parse_args()
-
-    clean_filenames(args.folder, dry_run=args.dry_run)
+    # parser = argparse.ArgumentParser(description="Usuwa 'football-logos.cc' z nazw plikow w folderze.")
+    # parser.add_argument("folder", help="Sciezka do folderu z plikami")
+    # parser.add_argument("--non-collection", action="store_true", help="Wypadek usuwania w przypadku osobnych logotypow (bez kolekcji). Wtedy usuwany jest fragment przed pierwszym podkresleniem.")
+    # parser.add_argument("--dry-run", action="store_true", help="Tylko wyswietl zmiany bez ich wykonywania")
+    #
+    # args = parser.parse_args()
+    folders = ["64x64", "128x128", "256x256", "512x512"]
+    for folder in folders:
+        clean_filenames(folder, dry_run=False, non_collection=True)

@@ -88,11 +88,13 @@ def process_all_matches_for_elo():
 
             team_elo_to_add.append(TeamElo(
                 team_id=home_team_id,
+                season_id=match.season_id,
                 rating=teams_elo[home_team_id],
                 last_updated=match.date
             ))
             team_elo_to_add.append(TeamElo(
                 team_id=away_team_id,
+                season_id=match.season_id,
                 rating=teams_elo[away_team_id],
                 last_updated=match.date
             ))

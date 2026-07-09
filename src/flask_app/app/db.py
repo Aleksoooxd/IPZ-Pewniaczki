@@ -230,10 +230,12 @@ class TeamElo(db.Model):
 
     elo_id = Column(Integer, primary_key=True)
     team_id = Column(Integer, ForeignKey('team.team_id'), nullable=False)
+    season_id = Column(Integer, ForeignKey('season.season_id'), nullable=False)
     rating = Column(Float, nullable=False, default=1500.0)
     last_updated = Column(Date, nullable=False)
 
     team = relationship("Team", backref=backref("elo_ratings", order_by=last_updated))
+    season = relationship("Season", backref=backref("elo_ratings", order_by=last_updated))
 class PredictedFuture(db.Model):
     __tablename__ = 'predicted_future'
 
@@ -244,12 +246,8 @@ class PredictedFuture(db.Model):
 
     future_match = relationship("FutureMatch", back_populates="future_predictions")
 
-
-with app.app_context():
-    db.create_all()
-
 if __name__ == "__main__":
     with app.app_context():
-        #db.drop_all()
+        db.drop_all()
         db.create_all()
     app.run(debug=True)

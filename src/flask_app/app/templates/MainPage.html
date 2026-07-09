@@ -4,89 +4,72 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}"> {# Keep for sidebar styles #}
 {% endblock %}
 
 {% block content %}
 <div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; {{ _('Wybierz Ligę') }}</div>
 
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
-  <h3>{{ _('Ligi') }}</h3>
-  <ul class="sidebar-links">
-    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">{% if _('Premier League') %}{{ _('Premier League') }}{% else %}Premier League{% endif %}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}">{% if _('Bundesliga') %}{{ _('Bundesliga') }}{% else %}Bundesliga{% endif %}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}">{% if _('Eredivisie') %}{{ _('Eredivisie') }}{% else %}Eredivisie{% endif %}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">{% if _('Ethniki Katigoria') %}{{ _('Ethniki Katigoria') }}{% else %}Ethniki Katigoria{% endif %}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='FutbolLig1') }}">{% if _('Futbol Lig 1') %}{{ _('Futbol Lig 1') }}{% else %}Futbol Lig 1{% endif %}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='JupiterLeague') }}">{% if _('Jupiler League') %}{{ _('Jupiler League') }}{% else %}Jupiler League{% endif %}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}">{% if _('La Liga') %}{{ _('La Liga') }}{% else %}La Liga{% endif %}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}">{% if _('Ligue 1') %}{{ _('Ligue 1') }}{% else %}Ligue 1{% endif %}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}">{% if _('Liga I') %}{{ _('Liga I') }}{% else %}Liga I{% endif %}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">{% if _('Scottish Premiership') %}{{ _('Scottish Premiership') }}{% else %}Scottish Premiership{% endif %}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}">{% if _('Serie A') %}{{ _('Serie A') }}{% else %}Serie A{% endif %}</a></li>
-    <li class="sidebar-divider"></li>
-    <li><a href="{{ url_for('main.mainpage') }}">🏠 {{ _('Strona Główna') }}</a></li>
-  </ul>
-</div>
-
 <div class="main-content-wrapper">
-    <div class="date-container card">
-      <label for="date-picker">{{ _('Wybierz datę:') }}</label>
-      <input type="date" id="date-picker" class="date-picker">
-      <button class="button primary" onclick="redirectToMatches()">{{ _('Pokaż mecze') }}</button>
-      <label for="league-filter">{{ _('Filtruj ligę:') }}</label>
-      <select id="league-filter" class="date-picker" onchange="fetchMatches()">
-        <option value="">{{ _('Wszystkie ligi') }}</option>
-        </select>
-
-      <label for="sort-order">{{ _('Sortuj według:') }}</label>
-      <select id="sort-order" class="date-picker" onchange="fetchMatches()">
-        <option value="league-asc">{{ _('Ligi (A-Z)') }}</option>
-        <option value="time-asc">{{ _('Godziny (rosnąco)') }}</option>
-        </select>
-    </div>
-
-    <div class="matches" id="matches-container">
+  <div class="date-container card">
+    <div class="date-controls">
+      <div class="control-group">
+        <label for="date-picker">{{ _('Wybierz datę:') }}</label>
+        <input type="date" id="date-picker" class="date-picker">
+        <button class="button primary" onclick="redirectToMatches()">{{ _('Pokaż mecze') }}</button>
       </div>
+      <div class="control-group">
+        <label for="league-filter">{{ _('Filtruj ligę:') }}</label>
+        <select id="league-filter" class="date-picker" onchange="fetchMatches()">
+          <option value="">{{ _('Wszystkie ligi') }}</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="sort-order">{{ _('Sortuj według:') }}</label>
+        <select id="sort-order" class="date-picker" onchange="fetchMatches()">
+          <option value="league-asc">{{ _('Ligi (A-Z)') }}</option>
+          <option value="time-asc">{{ _('Godziny (rosnąco)') }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="matches" id="matches-container"></div>
 </div>
 {% endblock %}
 
 {% block extra_script %}
 <script>
-  function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    sidebar.classList.toggle("open");
-  }
-
   const leagueDisplayNames = {
-    "premier league": "{{ _('Premier League') }}",
-    "bundesliga": "{{ _('Bundesliga') }}",
-    "eredivisie": "{{ _('Eredivisie') }}",
+    "premier league":    "{{ _('Premier League') }}",
+    "bundesliga":        "{{ _('Bundesliga') }}",
+    "eredivisie":        "{{ _('Eredivisie') }}",
     "ethniki katigoria": "{{ _('Ethniki Katigoria') }}",
-    "futbol ligi 1": "{{ _('Futbol Lig 1') }}",
-    "jupiler league": "{{ _('Jupiler League') }}",
-    "la liga": "{{ _('La Liga') }}",
-    "ligue 1": "{{ _('Ligue 1') }}",
-    "liga i": "{{ _('Liga I') }}",
-    "spremier league": "{{ _('Scottish Premiership') }}",
-    "serie a": "{{ _('Serie A') }}"
+    "futbol ligi 1":     "{{ _('Futbol Lig 1') }}",
+    "jupiler league":    "{{ _('Jupiler League') }}",
+    "la liga":           "{{ _('La Liga') }}",
+    "ligue 1":           "{{ _('Ligue 1') }}",
+    "liga i":            "{{ _('Liga I') }}",
+    "spremier league":   "{{ _('Scottish Premiership') }}",
+    "serie a":           "{{ _('Serie A') }}"
   };
 
   const leagueFlagMap = {
-    "premier league": "premier-league.png",
-    "bundesliga": "bundesliga.png",
-    "eredivisie": "eredivisie.png",
-    "ethniki katigoria": "ethniki-katigoria.png",
-    "futbol ligi 1": "futbol-ligi-1.png",
-    "jupiler league": "jupiler-league.png",
-    "la liga": "la-liga.png",
-    "ligue 1": "ligue-1.png",
-    "liga i": "liga-i.png",
-    "spremier league": "scottish-premiership.png",
-    "serie a": "serie-a.png"
+    "premier league":    "premier-league-small.png",
+    "bundesliga":        "bundesliga-small.png",
+    "eredivisie":        "eredivisie-small.png",
+    "ethniki katigoria": "ethniki-katigoria-small.png",
+    "futbol ligi 1":     "futbol-ligi-1-small.png",
+    "jupiler league":    "jupiler-league-small.png",
+    "la liga":           "la-liga-small.png",
+    "ligue 1":           "ligue-1-small.png",
+    "liga i":            "liga-i-small.png",
+    "spremier league":   "scottish-premiership-small.png",
+    "serie a":           "serie-a-small.png"
   };
 
+  function slugify(name) {
+    return name.toLowerCase().replace(/_/g, "-").replace(/ /g, "-");
+  }
 
   function redirectToMatches() {
     const selectedDate = document.getElementById('date-picker').value;
@@ -97,7 +80,6 @@
     }
   }
 
-
   async function fetchMatches() {
     const selectedDate = document.getElementById('date-picker').value;
     const matchesContainer = document.getElementById('matches-container');
@@ -105,7 +87,6 @@
     const sortOrder = document.getElementById('sort-order');
 
     matchesContainer.innerHTML = '';
-
     if (!selectedDate) {
       matchesContainer.innerHTML = `<p class="info-message">{{ _('Proszę wybrać datę.') }}</p>`;
       return;
@@ -115,16 +96,8 @@
       const response = await fetch(`/api/matches?date=${selectedDate}`);
       const data = await response.json();
 
-      if (data.error) {
-        matchesContainer.innerHTML = `<p class="error-message">${data.error}</p>`;
-        return;
-      }
-
-      if (data.length === 0) {
-        matchesContainer.innerHTML = `<p class="info-message">{{ _('Brak meczów dla wybranej daty.') }}</p>`;
-        return;
-      }
-
+      if (data.error) { matchesContainer.innerHTML = `<p class="error-message">${data.error}</p>`; return; }
+      if (data.length === 0) { matchesContainer.innerHTML = `<p class="info-message">{{ _('Brak meczów dla wybranej daty.') }}</p>`; return; }
 
       if (leagueFilter.options.length <= 1) {
         const uniqueLeagues = new Set();
@@ -137,33 +110,20 @@
         });
       }
 
-
       let filteredMatches = data;
       const selectedLeagueCode = leagueFilter.value;
-      if (selectedLeagueCode) {
-        filteredMatches = data.filter(match => match.league === selectedLeagueCode);
-      }
+      if (selectedLeagueCode) filteredMatches = data.filter(match => match.league === selectedLeagueCode);
 
       const selectedSortOrder = sortOrder.value;
       if (selectedSortOrder === 'league-asc') {
-        filteredMatches.sort((a, b) => {
-          const leagueA = leagueDisplayNames[a.league] || a.league.toUpperCase();
-          const leagueB = leagueDisplayNames[b.league] || b.league.toUpperCase();
-          return leagueA.localeCompare(leagueB);
-        });
+        filteredMatches.sort((a, b) => (leagueDisplayNames[a.league] || a.league).localeCompare(leagueDisplayNames[b.league] || b.league));
       } else if (selectedSortOrder === 'time-asc') {
-
-        filteredMatches.sort((a, b) => {
-            const timeA = a.time || '00:00';
-            const timeB = b.time || '00:00';
-            return timeA.localeCompare(timeB);
-        });
+        filteredMatches.sort((a, b) => (a.time || '00:00').localeCompare(b.time || '00:00'));
       }
+
       const matchesByLeague = {};
       filteredMatches.forEach(match => {
-        if (!matchesByLeague[match.league]) {
-          matchesByLeague[match.league] = [];
-        }
+        if (!matchesByLeague[match.league]) matchesByLeague[match.league] = [];
         matchesByLeague[match.league].push(match);
       });
 
@@ -179,7 +139,7 @@
         if (flagFileName) {
           const flagImg = document.createElement('img');
           flagImg.src = `{{ url_for('static', filename='flags/') }}` + flagFileName;
-          flagImg.alt = `${leagueDisplayNames[leagueCodeFromAPI] || leagueCodeFromAPI} Flag`;
+          flagImg.alt = leagueDisplayNames[leagueCodeFromAPI] || leagueCodeFromAPI;
           flagImg.classList.add('league-flag');
           leagueTitle.prepend(flagImg);
         }
@@ -191,39 +151,36 @@
 
         matchesByLeague[leagueCodeFromAPI].forEach(match => {
           const matchCard = document.createElement('a');
-          // Corrected href construction
           matchCard.href = "/match/" + match.match_type + "/" + match.match_id;
           matchCard.classList.add('match-card');
-          let statusText = '';
-          let statusClass = '';
-          if (match.home_goals !== null && match.away_goals !== null) {
-              statusText = "{{ _('Wynik:') }}" + " " + match.home_goals + " - " + match.away_goals;
-              statusClass = 'status-finished';
-          } else {
-              statusText = "{{ _('Nadchodzący mecz') }}";
-              statusClass = 'status-upcoming';
-          }
 
-          // Corrected innerHTML construction using concatenation
+          const isFinished = match.home_goals !== null && match.away_goals !== null;
+          const scoreDisplay = isFinished ? match.home_goals + ' - ' + match.away_goals : (match.time || '--:--');
+          const statusClass = isFinished ? 'status-finished' : 'status-upcoming';
+          const statusText  = isFinished ? "{{ _('Zakończony') }}" : "{{ _('Nadchodzący') }}";
+
+          const homeSlug = slugify(match.home_team);
+          const awaySlug = slugify(match.away_team);
+
           matchCard.innerHTML = `
-                <div class="match-teams">
-          <span class="team home-team">
-            <img src="/static/logos/` + match.home_team_id + `.png" alt="` + match.home_team + ` logo" class="team-logo-inline">
-            ` + match.home_team + `
-          </span>
-          <span class="vs-separator">{{ _('vs') }}</span>
-          <span class="team away-team">
-            <img src="/static/logos/` + match.away_team_id + `.png" alt="` + match.away_team + ` logo" class="team-logo-inline">
-            ` + match.away_team + `
-          </span>
-        </div>
-        <div class="match-info">
-              <span class="match-league">` + (leagueDisplayNames[match.league] || match.league.toUpperCase()) + `</span>
-              <span class="match-status ` + statusClass + `">` + statusText + `</span>
+            <div class="mc-bg mc-bg-home" style="--logo: url('/static/logos/256x256/${homeSlug}.png')"></div>
+            <div class="mc-bg mc-bg-away" style="--logo: url('/static/logos/256x256/${awaySlug}.png')"></div>
+            <div class="mc-content">
+              <div class="mc-team mc-home">
+                <span class="mc-name">${match.home_team}</span>
+              </div>
+              <div class="mc-center">
+                <span class="mc-score">${scoreDisplay}</span>
+                <span class="mc-status ${statusClass}">${statusText}</span>
+              </div>
+              <div class="mc-team mc-away">
+                <span class="mc-name">${match.away_team}</span>
+              </div>
             </div>
           `;
           leagueMatchesContainer.appendChild(matchCard);
         });
+
         leagueSection.appendChild(leagueMatchesContainer);
         matchesContainer.appendChild(leagueSection);
       }
@@ -236,18 +193,9 @@
   window.onload = function () {
     const urlParams = new URLSearchParams(window.location.search);
     const dateParam = urlParams.get('date');
-
     const datePicker = document.getElementById('date-picker');
-    if (dateParam) {
-      datePicker.value = dateParam;
-    } else {
-      const today = new Date().toISOString().split('T')[0];
-      datePicker.value = today;
-    }
-
-    if (dateParam) {
-      fetchMatches();
-    }
+    datePicker.value = dateParam || new Date().toISOString().split('T')[0];
+    if (dateParam) fetchMatches();
   };
 </script>
 {% endblock %}

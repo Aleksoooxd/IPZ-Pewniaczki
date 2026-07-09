@@ -1,16 +1,24 @@
+<!-- REDESIGNED: index.html -->
 {% extends "base.html" %}
 
-{% block title %}{{ _('Pewniaczki - Strona w budowie') }}{% endblock %}
+{% block title %}{{ _('Pewniaczki - Predykcje') }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="wrapper">
-  <img src="/static/pewniaczkilogo.png" alt="Logo" />
-  <p class="tagline">{{ _('Predykcje wyników meczów piłkarskich') }}</p>
-  <h2 class="status-heading">⚽ {{ _('Projekt w budowie') }} ⚽</h2>
-  <p class="status-message"><strong>{{ _('Już wkrótce znajdziesz tu typy, analizy i wyniki meczów!') }}</strong></p>
-</div>
+<section class="hero">
+  <div class="pitch-texture"></div>
+  <div class="hero-content">
+    <div class="hero-badge">FOOTBALL PREDICTION ENGINE</div>
+    <h1 class="hero-title">PEWNIACZKI</h1>
+    <p class="hero-sub">{{ _('Predykcje wyników meczów piłkarskich oparte na ML') }}</p>
+    <a href="{{ url_for('main.mainpage') }}" class="button primary hero-cta">
+      ▶ {{ _('Sprawdź dzisiejsze mecze') }}
+    </a>
+  </div>
+</section>
 {% endblock %}
+
+{% block body_class %}index-page{% endblock %}

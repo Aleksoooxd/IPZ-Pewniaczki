@@ -16,7 +16,7 @@ from sqlalchemy import select
 from unidecode import unidecode
 from src.flask_app.app.db import db, app, FootballMatch, MatchStats, MatchForm, Team, League, Season, TeamLeague, FutureMatch
 from src.calculations.helpfunctions import hhi_index,shannon_index, coefficient_of_variation, gini_index, calculate_consensus
-
+from src.scraping.rename_team import rename
 pd.set_option('future.no_silent_downcasting', True)
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
@@ -78,7 +78,15 @@ football_mapping = {
         "Sparta": "Sparta Rotterdam",
         "OFI": "OFI Crete",
         "Roda JC": "Roda",
-        "CF Belenenses": "Belenses"
+        "CF Belenenses": "Belenses",
+        "Estrela": "Est Amadora",
+        "Germinal": "Beerschot VA",
+        "Waasland-Beveren": "Beveren",
+        "FC Brussels": "RWD Molenbeek",
+        "Mouscron-Peruwelz": "Mouscron",
+        "Louvieroise": "RAAL La Louviere",
+        "Oftasspor": "Hacettepespor"
+
 }
 
 def extract_team_names(csv_content):
@@ -702,6 +710,7 @@ def create_team_name_mapping():
 
 def correct_scrape_top_11():
     scrape_top_11({})
+    rename()
 
 
 if __name__ == "__main__":
