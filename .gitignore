@@ -18,7 +18,8 @@ venv/
 .idea/**/shelf
 # AWS User-specific
 .idea/**/aws.xml
-
+src/flask_app/app/translations/*/LC_MESSAGES/messages.mo
+src/flask_app/app/translations/messages.pot
 # Generated files
 .idea/**/contentModel.xml
 

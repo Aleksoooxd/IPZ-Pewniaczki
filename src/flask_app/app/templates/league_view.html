@@ -88,7 +88,7 @@
                     {% if pos <= 4 %}zone-champions{% endif %}
                     {% if pos > total_teams - 3 %}zone-relegation{% endif %}
                     team-row-link"
-                    onclick="window.location.href='{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.team_name, season_name=selected_season | replace('/', ' ')) }}'"
+                    onclick="window.location.href='{{ url_for('teams.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.team_name, season_name=selected_season | replace('/', ' ')) }}'"
                     style="cursor: pointer;"
                   >
                     <td class="pos-cell">{{ pos }}</td>
@@ -130,58 +130,11 @@
 
 {% block extra_script %}
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const currentLeagueCode = "{{ league.code | lower }}";
-    document.querySelectorAll('.sidebar-links a').forEach(link => {
-      if (link.dataset.leagueCode === currentLeagueCode) link.classList.add('active-league');
-    });
-  });
-  function exportStandingsCSV() {
-    const table = document.querySelector('.standings-table table');
-    if (!table) return;
-
-    const rows = table.querySelectorAll('tr');
-    const csvLines = [];
-
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('th, td');
-        const line = Array.from(cells).map(cell => {
-            // Pomiń img, weź tylko tekst
-            return '"' + cell.innerText.trim().replace(/"/g, '""') + '"';
-        });
-        csvLines.push(line.join(','));
-    });
-
-    const csv = csvLines.join('\n');
-    const league = "{{ league.code | title }}";
-    const season = "{{ standings_season_display_name }}";
-    const filename = `Pewniaczki_tabela_${league}_${season}.csv`.replace(/\s+/g, '_').replace(/\//g, '-');
-
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-  function changeSeason() {
-    const seasonSelect = document.getElementById('season-select');
-    const currentUrl = new URL(window.location.href);
-    currentUrl.searchParams.set('season', seasonSelect.value);
-    currentUrl.searchParams.delete('matchday');
-    window.location.href = currentUrl.toString();
-  }
-
-  function changeMatchday() {
-    const matchdaySelect = document.getElementById('matchday-select');
-    const currentUrl = new URL(window.location.href);
-    if (matchdaySelect.value) {
-      currentUrl.searchParams.set('matchday', matchdaySelect.value);
-    } else {
-      currentUrl.searchParams.delete('matchday');
-    }
-    window.location.href = currentUrl.toString();
-  }
+  window.LEAGUE_CONFIG = {
+    leagueCode: "{{ league.code | lower }}",
+    leagueName: "{{ league.code | title }}",
+    season:     "{{ standings_season_display_name }}"
+  };
 </script>
+<script src="{{ url_for('static', filename='js/league_view.js') }}"></script>
 {% endblock %}

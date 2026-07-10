@@ -16,7 +16,11 @@
   <!-- HERO CARD -->
   <div class="match-hero card">
     <div class="match-hero-team home">
-      <span class="hero-team-name">{{ match.home_team.name }}</span>
+      <a href="{{ url_for('teams.team_view',
+      league_code=match.league.code | replace(' ', '') | title ,
+      season_name=match.season.name | string | replace('/', ' '),
+      team_name=match.home_team.name) }}"
+      class="hero-team-name hero-team-link">{{ match.home_team.name }}</a>
       {% if home_form and home_form.team_placement %}
         <span class="team-placement">{{ home_form.team_placement }}. {{ _('miejsce') }}</span>
       {% endif %}
@@ -38,7 +42,11 @@
     </div>
 
     <div class="match-hero-team away">
-      <span class="hero-team-name">{{ match.away_team.name }}</span>
+      <a href="{{ url_for('teams.team_view',
+      league_code=match.league.code | replace(' ', '') | title ,
+      season_name=match.season.name | string | replace('/', ' '),
+      team_name=match.away_team.name) }}"
+      class="hero-team-name hero-team-link">{{ match.away_team.name }}</a>
       {% if away_form and away_form.team_placement %}
         <span class="team-placement">{{ away_form.team_placement }}. {{ _('miejsce') }}</span>
       {% endif %}
@@ -168,7 +176,7 @@
                 {% else %}{% set current_team_result_class = 'outcome-loss' %}{% set current_team_outcome_text = 'L' %}{% endif %}
               {% endif %}
             {% endif %}
-            <a href="{{ url_for('main.match_detail', match_type='past', match_id=m.match_id) }}" class="past-match-card">
+            <a href="{{ url_for('matches.match_detail', match_type='past', match_id=m.match_id) }}" class="past-match-card">
               <div class="past-match-teams">
                 <span>{{ home_name }}</span>
                 <span class="vs-sep">vs</span>
@@ -206,7 +214,7 @@
                 {% else %}{% set current_team_result_class = 'outcome-loss' %}{% set current_team_outcome_text = 'L' %}{% endif %}
               {% endif %}
             {% endif %}
-            <a href="{{ url_for('main.match_detail', match_type='past', match_id=m.match_id) }}" class="past-match-card">
+            <a href="{{ url_for('matches.match_detail', match_type='past', match_id=m.match_id) }}" class="past-match-card">
               <div class="past-match-teams">
                 <span>{{ home_name }}</span><span class="vs-sep">vs</span><span>{{ away_name }}</span>
               </div>

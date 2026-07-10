@@ -39,163 +39,40 @@
 
 {% block extra_script %}
 <script>
-  const leagueDisplayNames = {
-    "premier league":    "{{ _('Premier League') }}",
-    "bundesliga":        "{{ _('Bundesliga') }}",
-    "eredivisie":        "{{ _('Eredivisie') }}",
-    "ethniki katigoria": "{{ _('Ethniki Katigoria') }}",
-    "futbol ligi 1":     "{{ _('Futbol Lig 1') }}",
-    "jupiler league":    "{{ _('Jupiler League') }}",
-    "la liga":           "{{ _('La Liga') }}",
-    "ligue 1":           "{{ _('Ligue 1') }}",
-    "liga i":            "{{ _('Liga I') }}",
-    "spremier league":   "{{ _('Scottish Premiership') }}",
-    "serie a":           "{{ _('Serie A') }}"
-  };
-
-  const leagueFlagMap = {
-    "premier league":    "premier-league-small.png",
-    "bundesliga":        "bundesliga-small.png",
-    "eredivisie":        "eredivisie-small.png",
-    "ethniki katigoria": "ethniki-katigoria-small.png",
-    "futbol ligi 1":     "futbol-ligi-1-small.png",
-    "jupiler league":    "jupiler-league-small.png",
-    "la liga":           "la-liga-small.png",
-    "ligue 1":           "ligue-1-small.png",
-    "liga i":            "liga-i-small.png",
-    "spremier league":   "scottish-premiership-small.png",
-    "serie a":           "serie-a-small.png"
-  };
-
-  function slugify(name) {
-    return name.toLowerCase().replace(/_/g, "-").replace(/ /g, "-");
-  }
-
-  function redirectToMatches() {
-    const selectedDate = document.getElementById('date-picker').value;
-    if (selectedDate) {
-      window.location.href = `/main?date=${selectedDate}`;
-    } else {
-      alert({{ _('Proszę wybrać datę przed kliknięciem "Pokaż mecze".')|tojson }});
-    }
-  }
-
-  async function fetchMatches() {
-    const selectedDate = document.getElementById('date-picker').value;
-    const matchesContainer = document.getElementById('matches-container');
-    const leagueFilter = document.getElementById('league-filter');
-    const sortOrder = document.getElementById('sort-order');
-
-    matchesContainer.innerHTML = '';
-    if (!selectedDate) {
-      matchesContainer.innerHTML = `<p class="info-message">{{ _('Proszę wybrać datę.') }}</p>`;
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/matches?date=${selectedDate}`);
-      const data = await response.json();
-
-      if (data.error) { matchesContainer.innerHTML = `<p class="error-message">${data.error}</p>`; return; }
-      if (data.length === 0) { matchesContainer.innerHTML = `<p class="info-message">{{ _('Brak meczów dla wybranej daty.') }}</p>`; return; }
-
-      if (leagueFilter.options.length <= 1) {
-        const uniqueLeagues = new Set();
-        data.forEach(match => uniqueLeagues.add(match.league));
-        uniqueLeagues.forEach(leagueCode => {
-          const option = document.createElement('option');
-          option.value = leagueCode;
-          option.textContent = leagueDisplayNames[leagueCode] || leagueCode.toUpperCase();
-          leagueFilter.appendChild(option);
-        });
-      }
-
-      let filteredMatches = data;
-      const selectedLeagueCode = leagueFilter.value;
-      if (selectedLeagueCode) filteredMatches = data.filter(match => match.league === selectedLeagueCode);
-
-      const selectedSortOrder = sortOrder.value;
-      if (selectedSortOrder === 'league-asc') {
-        filteredMatches.sort((a, b) => (leagueDisplayNames[a.league] || a.league).localeCompare(leagueDisplayNames[b.league] || b.league));
-      } else if (selectedSortOrder === 'time-asc') {
-        filteredMatches.sort((a, b) => (a.time || '00:00').localeCompare(b.time || '00:00'));
-      }
-
-      const matchesByLeague = {};
-      filteredMatches.forEach(match => {
-        if (!matchesByLeague[match.league]) matchesByLeague[match.league] = [];
-        matchesByLeague[match.league].push(match);
-      });
-
-      for (const leagueCodeFromAPI in matchesByLeague) {
-        const leagueSection = document.createElement('div');
-        leagueSection.classList.add('league-section');
-
-        const leagueTitle = document.createElement('h2');
-        leagueTitle.classList.add('league-title');
-        leagueTitle.textContent = leagueDisplayNames[leagueCodeFromAPI] || leagueCodeFromAPI.toUpperCase();
-
-        const flagFileName = leagueFlagMap[leagueCodeFromAPI];
-        if (flagFileName) {
-          const flagImg = document.createElement('img');
-          flagImg.src = `{{ url_for('static', filename='flags/') }}` + flagFileName;
-          flagImg.alt = leagueDisplayNames[leagueCodeFromAPI] || leagueCodeFromAPI;
-          flagImg.classList.add('league-flag');
-          leagueTitle.prepend(flagImg);
-        }
-
-        leagueSection.appendChild(leagueTitle);
-
-        const leagueMatchesContainer = document.createElement('div');
-        leagueMatchesContainer.classList.add('league-matches-grid');
-
-        matchesByLeague[leagueCodeFromAPI].forEach(match => {
-          const matchCard = document.createElement('a');
-          matchCard.href = "/match/" + match.match_type + "/" + match.match_id;
-          matchCard.classList.add('match-card');
-
-          const isFinished = match.home_goals !== null && match.away_goals !== null;
-          const scoreDisplay = isFinished ? match.home_goals + ' - ' + match.away_goals : (match.time || '--:--');
-          const statusClass = isFinished ? 'status-finished' : 'status-upcoming';
-          const statusText  = isFinished ? "{{ _('Zakończony') }}" : "{{ _('Nadchodzący') }}";
-
-          const homeSlug = slugify(match.home_team);
-          const awaySlug = slugify(match.away_team);
-
-          matchCard.innerHTML = `
-            <div class="mc-bg mc-bg-home" style="--logo: url('/static/logos/256x256/${homeSlug}.png')"></div>
-            <div class="mc-bg mc-bg-away" style="--logo: url('/static/logos/256x256/${awaySlug}.png')"></div>
-            <div class="mc-content">
-              <div class="mc-team mc-home">
-                <span class="mc-name">${match.home_team}</span>
-              </div>
-              <div class="mc-center">
-                <span class="mc-score">${scoreDisplay}</span>
-                <span class="mc-status ${statusClass}">${statusText}</span>
-              </div>
-              <div class="mc-team mc-away">
-                <span class="mc-name">${match.away_team}</span>
-              </div>
-            </div>
-          `;
-          leagueMatchesContainer.appendChild(matchCard);
-        });
-
-        leagueSection.appendChild(leagueMatchesContainer);
-        matchesContainer.appendChild(leagueSection);
-      }
-    } catch (err) {
-      console.error("Błąd pobierania meczów:", err);
-      matchesContainer.innerHTML = `<p class="error-message">{{ _('Wystąpił błąd przy ładowaniu meczów.') }}</p>`;
-    }
-  }
-
-  window.onload = function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const dateParam = urlParams.get('date');
-    const datePicker = document.getElementById('date-picker');
-    datePicker.value = dateParam || new Date().toISOString().split('T')[0];
-    if (dateParam) fetchMatches();
+  window.MAINPAGE_CONFIG = {
+    leagueDisplayNames: {
+      "premier league":    "{{ _('Premier League') }}",
+      "bundesliga":        "{{ _('Bundesliga') }}",
+      "eredivisie":        "{{ _('Eredivisie') }}",
+      "ethniki katigoria": "{{ _('Ethniki Katigoria') }}",
+      "futbol ligi 1":     "{{ _('Futbol Lig 1') }}",
+      "jupiler league":    "{{ _('Jupiler League') }}",
+      "la liga":           "{{ _('La Liga') }}",
+      "ligue 1":           "{{ _('Ligue 1') }}",
+      "liga i":            "{{ _('Liga I') }}",
+      "spremier league":   "{{ _('Scottish Premiership') }}",
+      "serie a":           "{{ _('Serie A') }}"
+    },
+    leagueFlagMap: {
+      "premier league":    "premier-league-small.png",
+      "bundesliga":        "bundesliga-small.png",
+      "eredivisie":        "eredivisie-small.png",
+      "ethniki katigoria": "ethniki-katigoria-small.png",
+      "futbol ligi 1":     "futbol-ligi-1-small.png",
+      "jupiler league":    "jupiler-league-small.png",
+      "la liga":           "la-liga-small.png",
+      "ligue 1":           "ligue-1-small.png",
+      "liga i":            "liga-i-small.png",
+      "spremier league":   "scottish-premiership-small.png",
+      "serie a":           "serie-a-small.png"
+    },
+    flagsBaseUrl: "{{ url_for('static', filename='flags/') }}",
+    msgPickDate:  {{ _('Proszę wybrać datę przed kliknięciem "Pokaż mecze".')|tojson }},
+    msgNoMatches: "{{ _('Brak meczów dla wybranej daty.') }}",
+    msgError:     "{{ _('Wystąpił błąd przy ładowaniu meczów.') }}",
+    msgFinished:  "{{ _('Zakończony') }}",
+    msgUpcoming:  "{{ _('Nadchodzący') }}"
   };
 </script>
+<script src="{{ url_for('static', filename='js/mainpage.js') }}"></script>
 {% endblock %}

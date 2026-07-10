@@ -18,17 +18,17 @@
     <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
     <h3>{{ _('Ligi') }}</h3>
     <ul class="sidebar-links">
-      <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}">{{ _('Premier League') }}</a></li>
-      <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}">{{ _('La Liga') }}</a></li>
-      <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}">{{ _('Bundesliga') }}</a></li>
-      <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}">{{ _('Serie A') }}</a></li>
-      <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}">{{ _('Ligue 1') }}</a></li>
-      <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}">{{ _('Liga I') }}</a></li>
-      <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}">{{ _('Eredivisie') }}</a></li>
-      <li><a href="{{ url_for('main.league_view', league_code='FutbolLig1') }}">{{ _('Futbol Lig 1') }}</a></li>
-      <li><a href="{{ url_for('main.league_view', league_code='JupiterLeague') }}">{{ _('Jupiler League') }}</a></li>
-      <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}">{{ _('Scottish Premiership') }}</a></li>
-      <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}">{{ _('Ethniki Katigoria') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='Premierleague') }}">{{ _('Premier League') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='LaLiga') }}">{{ _('La Liga') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='Bundesliga') }}">{{ _('Bundesliga') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='SerieA') }}">{{ _('Serie A') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='Ligue1') }}">{{ _('Ligue 1') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='LigaI') }}">{{ _('Liga I') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='Eredivisie') }}">{{ _('Eredivisie') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='FutbolLig1') }}">{{ _('Futbol Lig 1') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='JupiterLeague') }}">{{ _('Jupiler League') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='ScotishPremierLeague') }}">{{ _('Scottish Premiership') }}</a></li>
+      <li><a href="{{ url_for('leagues.league_view', league_code='EthnikiKatigoria') }}">{{ _('Ethniki Katigoria') }}</a></li>
 
     </ul>
   </div>
@@ -40,7 +40,7 @@
 
     <nav class="nav-links">
       <a href="{{ url_for('main.mainpage') }}" class="nav-link">⚽ {{ _('Mecze') }}</a>
-      <a href="{{ url_for('main.league_view', league_code='Premierleague') }}" class="nav-link">🏆 {{ _('Ligi') }}</a>
+      <a href="{{ url_for('leagues.league_view', league_code='Premierleague') }}" class="nav-link">🏆 {{ _('Ligi') }}</a>
       <a href="{{ url_for('main.home') }}" class="nav-link">🤓👆 {{ _('Info') }}</a>
     </nav>
 
@@ -57,8 +57,8 @@
         <details>
           <summary>
             <img src="{{ url_for('static', filename='flags/') }}{{ current_lang_code }}.png"
-                 alt="{{ _(current_lang_name) }}"
-                 title="{{ _('Zmień język') }}"
+                 alt="{{ current_lang_name }}"
+                 title="{{ lang_name }}"
                  class="lang-flag current-flag">
           </summary>
           <ul class="dropdown-menu">
@@ -71,7 +71,7 @@
                   <a href="{{ url_for(current_endpoint, **current_args_for_lang) }}">
                     <img src="{{ url_for('static', filename='flags/') }}{{ lang_code }}.png"
                          alt="{{ _(lang_name) }}" title="{{ _(lang_name) }}" class="lang-flag">
-                    <span class="lang-text">{{ _(lang_name) }}</span>
+                    <span class="lang-text">{{ lang_name }}</span>
                   </a>
                 </li>
               {% endif %}
@@ -96,22 +96,9 @@
 
   <button id="scrollToTopBtn" class="scroll-to-top-btn">⬆<span>TOP</span></button>
 
-  <script src="{{ url_for('static', filename='js/theme-toggle.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/base.js') }}"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
-  <script>
-      function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('open');
-      document.body.classList.toggle('sidebar-open');
-    }
-    const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-    window.onscroll = function() {
-      scrollToTopBtn.style.display = (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) ? "flex" : "none";
-    };
-    scrollToTopBtn.addEventListener("click", function() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  </script>
   {% block extra_script %}{% endblock %}
 </body>
 </html>

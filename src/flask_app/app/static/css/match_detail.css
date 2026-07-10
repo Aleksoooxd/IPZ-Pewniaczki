@@ -28,10 +28,20 @@
   object-fit: contain;
 }
 
+.hero-team-link {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.hero-team-link:hover {
+  opacity: 0.75;
+}
+
 .hero-team-name {
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 800;
-  font-size: 22px;
+  font-size: 36px;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: center;

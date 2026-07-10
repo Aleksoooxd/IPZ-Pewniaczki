@@ -1,3 +1,23 @@
+// Sidebar toggle
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.body.classList.toggle('sidebar-open');
+}
+
+// Scroll to top button
+const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+window.onscroll = function() {
+  scrollToTopBtn.style.display =
+    (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20)
+      ? "flex" : "none";
+};
+
+scrollToTopBtn.addEventListener("click", function() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
     const html = document.documentElement;

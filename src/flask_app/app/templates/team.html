@@ -1,4 +1,3 @@
-<!-- REDESIGNED: team.html -->
 {% extends "base.html" %}
 
 {% block title %}{{ team_name }} - {{ _('Szczegóły Drużyny') }}{% endblock %}
@@ -96,130 +95,36 @@
 
   {% endif %}
 
-  <a href="{{ url_for('main.league_view', league_code=league_code, season=season_name.replace(' ', '/')) }}"
+  <a href="{{ url_for('leagues.league_view', league_code=league_code, season=season_name.replace(' ', '/')) }}"
      class="button secondary">← {{ _('Powrót do ligi') }}</a>
 
 </div>
 {% endblock %}
 
 {% block extra_script %}
-{% if 'all' in season_name|lower and summary_stats_all_seasons %}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-    const gridColor   = isDark ? '#1e2e1e' : '#e0e0e0';
-    const tickColor   = isDark ? '#9e9e9e' : '#555555';
-
-    const eloData      = JSON.parse('{{ elo_history|safe }}');
-    const positionData = JSON.parse('{{ position_history|safe }}');
-
-    const baseScales = {
-        x: { ticks: { autoSkip: true, maxTicksLimit: 20, color: tickColor }, grid: { color: gridColor } },
-        y: { ticks: { color: tickColor }, grid: { color: gridColor } }
-    };
-
-    if (eloData.length > 0) {
-        new Chart(document.getElementById('eloChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: eloData.map(d => d.label),
-                datasets: [{ label: '{{ _("ELO") }}', data: eloData.map(d => d.rating),
-                    borderColor: '#00e676', backgroundColor: 'rgba(0,230,118,0.1)',
-                    fill: true, tension: 0.1, pointRadius: 1, borderWidth: 2 }]
-            },
-            options: {
-                scales: baseScales,
-                plugins: { zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
-            }
-        });
-    }
-
-    if (positionData.length > 0) {
-        new Chart(document.getElementById('positionChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: positionData.map(d => d.season),
-                datasets: [{ label: '{{ _("Pozycja w lidze") }}', data: positionData.map(d => d.position),
-                    spanGaps: true, fill: true,
-                    borderColor: '#ffc400', backgroundColor: 'rgba(255,196,0,0.1)', tension: 0.1 }]
-            },
-            options: {
-                scales: {
-                    x: baseScales.x,
-                    y: { reverse: true, beginAtZero: false, ticks: { stepSize: 1, color: tickColor }, grid: { color: gridColor } }
-                }
-            }
-        });
-    }
-});
+  window.TEAM_CONFIG = {
+    eloData:      {{ elo_history | default('[]') | safe }},
+    positionData: {{ position_history | default('[]') | safe }},
+    chartData: {
+      elo:           {{ elo_data | default('[]') | safe }},
+      points:        {{ points_data | default('[]') | safe }},
+      goalsFor:      {{ goals_for_data | default('[]') | safe }},
+      goalsConceded: {{ goals_conceded_data | default('[]') | safe }},
+      position:      {{ position_data | default('[]') | safe }},
+      w_d_l:         {{ w_d_l_data | default('[]') | safe }}
+    },
+    labelElo:           "{{ _('ELO') }}",
+    labelPosition:      "{{ _('Pozycja w lidze') }}",
+    labelPoints:        "{{ _('Punkty') }}",
+    labelGoalsFor:      "{{ _('Gole strzelone') }}",
+    labelGoalsConceded: "{{ _('Gole stracone') }}",
+    labelMatchday:      "{{ _('Kolejka') }}",
+    labelCount:         "{{ _('Liczba') }}",
+    labelWins:          "{{ _('Zwycięstwa') }}",
+    labelDraws:         "{{ _('Remisy') }}",
+    labelLosses:        "{{ _('Porażki') }}"
+  };
 </script>
-
-{% elif 'all' not in season_name|lower and summary_stats %}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const isDark    = document.documentElement.getAttribute('data-theme') !== 'light';
-    const gridColor = isDark ? '#1e2e1e' : '#e0e0e0';
-    const tickColor = isDark ? '#9e9e9e' : '#555555';
-
-    const chartData = {
-        elo:           JSON.parse('{{ elo_data|safe }}'),
-        points:        JSON.parse('{{ points_data|safe }}'),
-        goalsFor:      JSON.parse('{{ goals_for_data|safe }}'),
-        goalsConceded: JSON.parse('{{ goals_conceded_data|safe }}'),
-        position:      JSON.parse('{{ position_data|safe }}'),
-        w_d_l:         JSON.parse('{{ w_d_l_data|safe }}')
-    };
-
-    function createChart(canvasId, label, data, color, yExtra = {}) {
-        if (!data || data.length === 0) return;
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: data.map(d => d.matchday),
-                datasets: [{ label, data: data.map(d => d.value),
-                    borderColor: color, backgroundColor: color.replace('1)', '0.15)'),
-                    fill: true, tension: 0.1 }]
-            },
-            options: {
-                scales: {
-                    x: { title: { display: true, text: '{{ _("Kolejka") }}', color: tickColor }, ticks: { color: tickColor }, grid: { color: gridColor } },
-                    y: { ticks: { color: tickColor }, grid: { color: gridColor }, ...yExtra }
-                },
-                plugins: { zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
-            }
-        });
-    }
-
-    createChart('seasonEloChart',           '{{ _("ELO") }}',             chartData.elo,           'rgba(0, 230, 118, 1)');
-    createChart('seasonPointsChart',        '{{ _("Punkty") }}',          chartData.points,        'rgba(54, 162, 235, 1)');
-    createChart('seasonGoalsForChart',      '{{ _("Gole strzelone") }}',   chartData.goalsFor,      'rgba(0, 230, 118, 1)');
-    createChart('seasonGoalsConcededChart', '{{ _("Gole stracone") }}',    chartData.goalsConceded, 'rgba(255, 23, 68, 1)');
-    createChart('seasonPositionChart',      '{{ _("Pozycja w lidze") }}',  chartData.position,      'rgba(255, 196, 0, 1)',
-        { reverse: true, beginAtZero: false, ticks: { stepSize: 1, precision: 0, color: tickColor } });
-
-    if (chartData.w_d_l && chartData.w_d_l.length > 0) {
-        const wdlCtx = document.getElementById('w_d_lChart').getContext('2d');
-        new Chart(wdlCtx, {
-            type: 'line',
-            data: {
-                labels: chartData.w_d_l.map(d => d.matchday),
-                datasets: [
-                    { label: '{{ _("Zwycięstwa") }}', data: chartData.w_d_l.map(d => d.wins),   borderColor: 'rgba(0,230,118,1)',  backgroundColor: 'rgba(0,230,118,0.1)',  fill: false, tension: 0.1 },
-                    { label: '{{ _("Remisy") }}',      data: chartData.w_d_l.map(d => d.draws),  borderColor: 'rgba(255,214,0,1)',  backgroundColor: 'rgba(255,214,0,0.1)',  fill: false, tension: 0.1 },
-                    { label: '{{ _("Porażki") }}',     data: chartData.w_d_l.map(d => d.losses), borderColor: 'rgba(255,23,68,1)',  backgroundColor: 'rgba(255,23,68,0.1)',  fill: false, tension: 0.1 }
-                ]
-            },
-            options: {
-                scales: {
-                    x: { title: { display: true, text: '{{ _("Kolejka") }}', color: tickColor }, ticks: { color: tickColor }, grid: { color: gridColor } },
-                    y: { title: { display: true, text: '{{ _("Liczba") }}',   color: tickColor }, beginAtZero: true, ticks: { color: tickColor }, grid: { color: gridColor } }
-                },
-                plugins: { zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } } }
-            }
-        });
-    }
-});
-</script>
-{% endif %}
+<script src="{{ url_for('static', filename='js/team.js') }}"></script>
 {% endblock %}
