@@ -97,8 +97,8 @@ async function fetchMatches() {
         const awaySlug = slugify(match.away_team);
 
         matchCard.innerHTML = `
-          <div class="mc-bg mc-bg-home" style="--logo: url('/static/logos/128x128/${homeSlug}.png')"></div>
-          <div class="mc-bg mc-bg-away" style="--logo: url('/static/logos/128x128/${awaySlug}.png')"></div>
+          <div class="mc-bg mc-bg-home" style="--logo: url('../img/logos/128x128/${homeSlug}.png')"></div>
+          <div class="mc-bg mc-bg-away" style="--logo: url('../img/logos/128x128/${awaySlug}.png')"></div>
           <div class="mc-content">
             <div class="mc-team mc-home"><span class="mc-name">${match.home_team}</span></div>
             <div class="mc-center">

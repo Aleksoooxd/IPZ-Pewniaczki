@@ -45,13 +45,25 @@ def calculate_standings(league_id, season_id=None, matchday_filter=None):
             FootballMatch.away_matchday <= matchday_filter,
         ))
 
-    for m in q.order_by(FootballMatch.date, FootballMatch.home_matchday).all():
-        for tid in (m.home_team_id, m.away_team_id):
-            if tid not in standings:
-                name = db.session.get(Team, tid).name
-                standings[tid] = dict(points=0, played=0, wins=0, draws=0, losses=0,
-                                      goals_for=0, goals_against=0, goal_diff=0,
-                                      team_name=name, team_id=tid)
+    matches = q.order_by(FootballMatch.date, FootballMatch.home_matchday).all()
+
+    team_ids = {m.home_team_id for m in matches} | {m.away_team_id for m in matches}
+    teams_map = {t.team_id: t.name for t in db.session.query(Team).filter(Team.team_id.in_(team_ids)).all()}
+
+    elo_map = {}
+    if team_ids:
+        elo_q = db.session.query(TeamElo).filter(TeamElo.team_id.in_(team_ids))
+        if season_id:
+            elo_q = elo_q.filter(TeamElo.season_id == season_id)
+        for elo in elo_q.order_by(TeamElo.last_updated.desc()).all():
+            elo_map.setdefault(elo.team_id, int(elo.rating))
+
+    for tid in team_ids:
+        standings[tid] = dict(points=0, played=0, wins=0, draws=0, losses=0,
+                               goals_for=0, goals_against=0, goal_diff=0,
+                               team_name=teams_map.get(tid, "?"), team_id=tid)
+
+    for m in matches:
         h, a = standings[m.home_team_id], standings[m.away_team_id]
         h["played"] += 1; a["played"] += 1
         hg, ag = m.fthg or 0, m.ftag or 0
@@ -67,13 +79,10 @@ def calculate_standings(league_id, season_id=None, matchday_filter=None):
             a["points"] += 3; a["wins"] += 1; h["losses"] += 1
 
     sorted_s = sorted(standings.values(),
-                      key=lambda x: (-x["points"], -x["goal_diff"], -x["goals_for"], x["team_name"]))
+                       key=lambda x: (-x["points"], -x["goal_diff"], -x["goals_for"], x["team_name"]))
     for i, td in enumerate(sorted_s):
         td["position"] = i + 1
-        try:
-            td["elo_rating"] = _get_team_current_elo(td["team_id"], season_id=season_id)
-        except Exception:
-            td["elo_rating"] = None
+        td["elo_rating"] = elo_map.get(td["team_id"])
     return sorted_s
 
 

@@ -34,14 +34,14 @@
   </div>
   <header class="navbar">
     <a href="/" class="logo">
-      <img src="/static/pewniaczkilogo.png" alt="Logo" class="logo-img"/>
+      <img src="{{ url_for('static', filename='img/pewniaczkilogo.png') }}" alt="Logo" class="logo-img"/>
       <span class="logo-text">PEWNIACZKI</span>
     </a>
 
     <nav class="nav-links">
       <a href="{{ url_for('main.mainpage') }}" class="nav-link">⚽ {{ _('Mecze') }}</a>
       <a href="{{ url_for('leagues.league_view', league_code='Premierleague') }}" class="nav-link">🏆 {{ _('Ligi') }}</a>
-      <a href="{{ url_for('main.home') }}" class="nav-link">🤓👆 {{ _('Info') }}</a>
+      <a href="{{ url_for('stats.system_stats') }}" class="nav-link">🤓👆 {{ _('Info') }}</a>
     </nav>
 
     <div class="header-right-actions">
@@ -56,7 +56,7 @@
         {% set current_lang_name = lang_code_to_display_name(current_lang_code) %}
         <details>
           <summary>
-            <img src="{{ url_for('static', filename='flags/') }}{{ current_lang_code }}.png"
+            <img src="{{ url_for('static', filename='img/flags/') }}{{ current_lang_code }}.png"
                  alt="{{ current_lang_name }}"
                  title="{{ lang_name }}"
                  class="lang-flag current-flag">
@@ -69,7 +69,7 @@
                 {% do current_args_for_lang.update({'lang': lang_code}) %}
                 <li>
                   <a href="{{ url_for(current_endpoint, **current_args_for_lang) }}">
-                    <img src="{{ url_for('static', filename='flags/') }}{{ lang_code }}.png"
+                    <img src="{{ url_for('static', filename='img/flags/') }}{{ lang_code }}.png"
                          alt="{{ _(lang_name) }}" title="{{ _(lang_name) }}" class="lang-flag">
                     <span class="lang-text">{{ lang_name }}</span>
                   </a>

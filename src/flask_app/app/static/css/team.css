@@ -44,7 +44,93 @@
   letter-spacing: 1px;
   width: fit-content;
 }
+.trophy-strip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
 
+.trophy-icon-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+}
+
+.trophy-icon-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    transition: transform var(--transition);
+}
+
+.trophy-icon-wrap:hover .trophy-icon-img {
+    transform: scale(1.15);
+}
+
+.trophy-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    min-width: 140px;
+    padding: 8px 12px;
+    background: var(--surface-alt);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--transition), transform var(--transition);
+    z-index: 20;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.trophy-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--accent);
+}
+
+.trophy-tooltip strong {
+    color: var(--gold);
+    font-family: 'Barlow Condensed', sans-serif;
+}
+
+.trophy-icon-wrap:hover .trophy-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 640px) {
+    .trophy-strip {
+        justify-content: center;
+    }
+
+    .trophy-tooltip {
+        white-space: normal;
+        max-width: 200px;
+    }
+}
 /* ── CHARTS GRID ──────────────────────────────────────────── */
 .charts-grid {
   display: grid;

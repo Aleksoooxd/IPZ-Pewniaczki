@@ -11,14 +11,14 @@
 
   <!-- WATERMARK BG LOGO -->
   <div class="team-watermark">
-    <img src="{{ url_for('static', filename='logos/512x512/' ~ team_name.lower().replace(' ', '-') ~ '.png') }}"
+    <img src="{{ url_for('static', filename='img/logos/512x512/' ~ team_name.lower().replace(' ', '-') ~ '.png') }}"
          alt="" aria-hidden="true">
   </div>
 
   <!-- HERO -->
   <div class="team-hero card">
     {% if team_id %}
-      <img src="{{ url_for('static', filename='logos/256x256/' ~ team_name.lower().replace(' ', '-') ~ '.png') }}"
+      <img src="{{ url_for('static', filename='img/logos/256x256/' ~ team_name.lower().replace(' ', '-') ~ '.png') }}"
            alt="{{ team_name }}" class="team-hero-logo">
     {% endif %}
     <div class="team-hero-info">
@@ -26,6 +26,24 @@
       <span class="team-season-badge">{{ display_season_name }}</span>
     </div>
   </div>
+
+  {% if trophies %}
+  <div class="trophy-strip">
+    {% for trophy in trophies %}
+      <a class="trophy-icon-wrap"
+         href="{{ url_for('leagues.league_view', league_code=trophy.league_url_code, season=trophy.season_name) }}">
+        <img src="{{ url_for('static', filename='img/trophies/' ~ trophy.league_code.lower().replace(' ', '-') ~ '.png') }}"
+             alt="{{ trophy.league_name }}"
+             class="trophy-icon-img"
+             onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/trophies/default.png') }}';">
+        <span class="trophy-tooltip">
+          <strong>{{ trophy.league_name }}</strong>
+          <br>{{ _('Mistrz sezonu') }} {{ trophy.season_name }}
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
 
   {% if 'all' in season_name|lower %}
 

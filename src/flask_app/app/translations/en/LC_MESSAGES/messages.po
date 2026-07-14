@@ -1,0 +1,526 @@
+# English translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-07-10 23:14+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: templates/MainPage.html:3
+msgid "Pewniaczki - Mecze"
+msgstr "Pewniaczki - Matches"
+
+#: templates/MainPage.html:10 templates/league_view.html:11
+msgid "Wybierz Ligę"
+msgstr "Select League"
+
+#: templates/MainPage.html:16
+msgid "Wybierz datę:"
+msgstr "Select date:"
+
+#: templates/MainPage.html:18
+msgid "Pokaż mecze"
+msgstr "Show matches"
+
+#: templates/MainPage.html:21
+msgid "Filtruj ligę:"
+msgstr "Filter league:"
+
+#: templates/MainPage.html:23
+msgid "Wszystkie ligi"
+msgstr "All leagues"
+
+#: templates/MainPage.html:27
+msgid "Sortuj według:"
+msgstr "Sort by:"
+
+#: templates/MainPage.html:29
+msgid "Ligi (A-Z)"
+msgstr "Leagues (A-Z)"
+
+#: templates/MainPage.html:30
+msgid "Godziny (rosnąco)"
+msgstr "Time (ascending)"
+
+#: templates/MainPage.html:44 templates/base.html:21
+#: templates/league_view.html:4 templates/league_view.html:40
+#: templates/match_detail.html:145
+msgid "Premier League"
+msgstr "Premier League"
+
+#: templates/MainPage.html:45 templates/base.html:23
+msgid "Bundesliga"
+msgstr "Bundesliga"
+
+#: templates/MainPage.html:46 templates/base.html:27
+msgid "Eredivisie"
+msgstr "Eredivisie"
+
+#: templates/MainPage.html:47 templates/base.html:31
+msgid "Ethniki Katigoria"
+msgstr "Ethniki Katigoria"
+
+#: templates/MainPage.html:48 templates/base.html:28
+msgid "Futbol Lig 1"
+msgstr "Futbol Lig 1"
+
+#: templates/MainPage.html:49 templates/base.html:29
+msgid "Jupiler League"
+msgstr "Jupiler League"
+
+#: templates/MainPage.html:50 templates/base.html:22
+msgid "La Liga"
+msgstr "La Liga"
+
+#: templates/MainPage.html:51 templates/base.html:25
+msgid "Ligue 1"
+msgstr "Ligue 1"
+
+#: templates/MainPage.html:52 templates/base.html:26
+msgid "Liga I"
+msgstr "Liga I"
+
+#: templates/MainPage.html:53 templates/base.html:30
+#: templates/league_view.html:4 templates/league_view.html:41
+#: templates/match_detail.html:145
+msgid "Scottish Premiership"
+msgstr "Scottish Premiership"
+
+#: templates/MainPage.html:54 templates/base.html:24
+msgid "Serie A"
+msgstr "Serie A"
+
+#: templates/MainPage.html:70
+msgid "Proszę wybrać datę przed kliknięciem \"Pokaż mecze\"."
+msgstr "Please select a date before clicking \"Show matches\"."
+
+#: templates/MainPage.html:71
+msgid "Brak meczów dla wybranej daty."
+msgstr "No matches for the selected date."
+
+#: templates/MainPage.html:72
+msgid "Wystąpił błąd przy ładowaniu meczów."
+msgstr "An error occurred while loading matches."
+
+#: templates/MainPage.html:73 templates/match_detail.html:32
+#: templates/system_stats.html:87 templates/system_stats.html:166
+msgid "Zakończony"
+msgstr "Finished"
+
+#: templates/MainPage.html:74
+msgid "Nadchodzący"
+msgstr "Upcoming"
+
+#: templates/base.html:7
+msgid "Pewniaczki"
+msgstr "Pewniaczki"
+
+#: templates/base.html:19 templates/base.html:43 templates/system_stats.html:44
+msgid "Ligi"
+msgstr "Leagues"
+
+#: templates/base.html:42 templates/match_detail.html:118
+msgid "Mecze"
+msgstr "Matches"
+
+#: templates/base.html:44
+msgid "Info"
+msgstr "Info"
+
+#: templates/base.html:94
+msgid "Wszystkie prawa zastrzeżone."
+msgstr "All rights reserved."
+
+#: templates/index.html:4
+msgid "Pewniaczki - Predykcje"
+msgstr "Pewniaczki - Predictions"
+
+#: templates/index.html:16
+msgid "Predykcje wyników meczów piłkarskich oparte na ML"
+msgstr "ML-based football match result predictions"
+
+#: templates/index.html:18
+msgid "Sprawdź dzisiejsze mecze"
+msgstr "Check today's matches"
+
+#: templates/league_view.html:4 templates/match_detail.html:144
+msgid "Liga"
+msgstr "League"
+
+#: templates/league_view.html:46 templates/league_view.html:61
+msgid "Sezon:"
+msgstr "Season:"
+
+#: templates/league_view.html:48
+msgid "Wszystkie sezony"
+msgstr "All seasons"
+
+#: templates/league_view.html:61
+msgid "Tabela Ligowa"
+msgstr "League Table"
+
+#: templates/league_view.html:71
+msgid "Drużyna"
+msgstr "Team"
+
+#: templates/league_view.html:72
+msgid "M"
+msgstr "P"
+
+#: templates/league_view.html:73
+msgid "Z"
+msgstr "W"
+
+#: templates/league_view.html:74
+msgid "R"
+msgstr "D"
+
+#: templates/league_view.html:75
+msgid "P"
+msgstr "L"
+
+#: templates/league_view.html:76
+msgid "GZ"
+msgstr "GF"
+
+#: templates/league_view.html:77
+msgid "GS"
+msgstr "GA"
+
+#: templates/league_view.html:79 templates/system_stats.html:66
+#: templates/team.html:117
+msgid "ELO"
+msgstr "ELO"
+
+#: templates/league_view.html:80
+msgid "Pkt"
+msgstr "Pts"
+
+#: templates/league_view.html:116
+msgid "Europejskie Puchary"
+msgstr "European Cups"
+
+#: templates/league_view.html:117
+msgid "Strefa spadkowa"
+msgstr "Relegation zone"
+
+#: templates/league_view.html:121
+msgid "Brak danych tabeli dla sezonu:"
+msgstr "No table data for season:"
+
+#: templates/league_view.html:123
+msgid "Wybierz konkretny sezon, aby wyświetlić tabelę ligową."
+msgstr "Select a specific season to display the league table."
+
+#: templates/match_detail.html:4
+msgid "vs"
+msgstr "vs"
+
+#: templates/match_detail.html:25 templates/match_detail.html:51
+msgid "miejsce"
+msgstr "place"
+
+#: templates/match_detail.html:36
+msgid "Nadchodzący mecz"
+msgstr "Upcoming match"
+
+#: templates/match_detail.html:40
+msgid "Kolejka:"
+msgstr "Matchday:"
+
+#: templates/match_detail.html:61
+msgid "Predykcja"
+msgstr "Prediction"
+
+#: templates/match_detail.html:63
+msgid "Pewność:"
+msgstr "Confidence:"
+
+#: templates/match_detail.html:74 templates/match_detail.html:95
+msgid "Statystyki"
+msgstr "Statistics"
+
+#: templates/match_detail.html:77 templates/match_detail.html:81
+#: templates/match_detail.html:85 templates/match_detail.html:89
+#: templates/match_detail.html:98 templates/match_detail.html:102
+#: templates/match_detail.html:106 templates/match_detail.html:110
+#: templates/match_detail.html:152
+msgid "Brak danych"
+msgstr "No data"
+
+#: templates/match_detail.html:80 templates/match_detail.html:101
+msgid "Forma"
+msgstr "Form"
+
+#: templates/match_detail.html:80 templates/match_detail.html:84
+#: templates/match_detail.html:101 templates/match_detail.html:105
+#: templates/system_stats.html:116 templates/system_stats.html:141
+msgid "Sezon"
+msgstr "Season"
+
+#: templates/match_detail.html:84 templates/match_detail.html:105
+msgid "Gole"
+msgstr "Goals"
+
+#: templates/match_detail.html:88 templates/match_detail.html:109
+msgid "Śr. kurs (bukmacher)"
+msgstr "Avg. odds (bookmaker)"
+
+#: templates/match_detail.html:116
+msgid "Bezpośrednie Mecze (Bilans Gospodarza)"
+msgstr "Head-to-Head Matches (Home Team Record)"
+
+#: templates/match_detail.html:128
+msgid "Gole (H:A)"
+msgstr "Goals (H:A)"
+
+#: templates/match_detail.html:132
+msgid "Brak danych H2H"
+msgstr "No H2H data"
+
+#: templates/match_detail.html:138
+msgid "Informacje o meczu"
+msgstr "Match information"
+
+#: templates/match_detail.html:140
+msgid "Status"
+msgstr "Status"
+
+#: templates/match_detail.html:148
+msgid "Niespodzianka"
+msgstr "Upset"
+
+#: templates/match_detail.html:151
+msgid "Tak"
+msgstr "Yes"
+
+#: templates/match_detail.html:151
+msgid "Nie"
+msgstr "No"
+
+#: templates/match_detail.html:162 templates/match_detail.html:200
+msgid "Ostatnie 3 Mecze"
+msgstr "Last 3 Matches"
+
+#: templates/match_detail.html:195 templates/match_detail.html:231
+msgid "Brak danych o ostatnich meczach."
+msgstr "No data on recent matches."
+
+#: templates/match_detail.html:238
+msgid "Wróć do listy meczów"
+msgstr "Back to match list"
+
+#: templates/system_stats.html:3 templates/system_stats.html:13
+msgid "Statystyki systemu"
+msgstr "System statistics"
+
+#: templates/system_stats.html:12
+msgid "Panel analityczny"
+msgstr "Analytics panel"
+
+#: templates/system_stats.html:15
+msgid ""
+"Podsumowanie danych, rekordów ELO, największych zaskoczeń i czasu "
+"przetwarzania."
+msgstr "Summary of data, ELO records, biggest upsets, and processing time."
+
+#: templates/system_stats.html:21
+msgid "Ostatnia aktualizacja"
+msgstr "Last update"
+
+#: templates/system_stats.html:29
+msgid "Brak statystyk"
+msgstr "No statistics"
+
+#: templates/system_stats.html:30
+msgid "Tabela system_stats jest pusta. Uruchom scraping i zapis statystyk."
+msgstr "The system_stats table is empty. Run scraping and save statistics."
+
+#: templates/system_stats.html:36
+msgid "Drużyny"
+msgstr "Teams"
+
+#: templates/system_stats.html:40
+msgid "Sezony"
+msgstr "Seasons"
+
+#: templates/system_stats.html:48
+msgid "Mecze historyczne"
+msgstr "Historical matches"
+
+#: templates/system_stats.html:52
+msgid "Przyszłe mecze"
+msgstr "Upcoming matches"
+
+#: templates/system_stats.html:59
+msgid "Czasy przetwarzania"
+msgstr "Processing times"
+
+#: templates/system_stats.html:62
+msgid "Scraping"
+msgstr "Scraping"
+
+#: templates/system_stats.html:70
+msgid "Predykcja ML"
+msgstr "ML prediction"
+
+#: templates/system_stats.html:77
+msgid "Największy upset modelu ML"
+msgstr "Biggest upset by the ML model"
+
+#: templates/system_stats.html:90
+msgid "pewność błędnej predykcji"
+msgstr "incorrect prediction conf"
+
+#: templates/system_stats.html:97
+msgid "Brak błędnych predykcji do analizy."
+msgstr "No incorrect predictions to analyze."
+
+#: templates/system_stats.html:102
+msgid "Najwyższe ELO"
+msgstr "Highest ELO"
+
+#: templates/system_stats.html:114
+msgid "Rekord sezonu"
+msgstr "Season record"
+
+#: templates/system_stats.html:117 templates/system_stats.html:142
+msgid "Rating ELO"
+msgstr "ELO rating"
+
+#: templates/system_stats.html:122 templates/system_stats.html:147
+msgid "Brak danych ELO."
+msgstr "No ELO data."
+
+#: templates/system_stats.html:127
+msgid "Najniższe ELO"
+msgstr "Lowest ELO"
+
+#: templates/system_stats.html:139
+msgid "Najtrudniejszy moment"
+msgstr "Toughest moment"
+
+#: templates/system_stats.html:152
+msgid "Mecz z największą liczbą goli"
+msgstr "Match with the most goals"
+
+#: templates/system_stats.html:172
+msgid "Brak danych meczowych."
+msgstr "No match data."
+
+#: templates/team.html:3
+msgid "Szczegóły Drużyny"
+msgstr "Team Details"
+
+#: templates/team.html:35
+msgid "Historia rankingu ELO"
+msgstr "ELO ranking history"
+
+#: templates/team.html:39
+msgid "Historia pozycji w lidze"
+msgstr "League position history"
+
+#: templates/team.html:45
+msgid "Podsumowanie - wszystkie sezony"
+msgstr "Summary - all seasons"
+
+#: templates/team.html:49
+msgid "Aktualne ELO"
+msgstr "Current ELO"
+
+#: templates/team.html:53
+msgid "Śr. pozycja"
+msgstr "Avg. position"
+
+#: templates/team.html:57 templates/team.html:91
+msgid "Śr. pkt/mecz"
+msgstr "Avg. pts/match"
+
+#: templates/team.html:66
+msgid "ELO w trakcie sezonu"
+msgstr "ELO during the season"
+
+#: templates/team.html:67
+msgid "Punkty w trakcie sezonu"
+msgstr "Points during the season"
+
+#: templates/team.html:68 templates/team.html:118
+msgid "Pozycja w lidze"
+msgstr "League position"
+
+#: templates/team.html:69
+msgid "Gole strzelone (kumulacyjnie)"
+msgstr "Goals scored (cumulative)"
+
+#: templates/team.html:70
+msgid "Gole stracone (kumulacyjnie)"
+msgstr "Goals conceded (cumulative)"
+
+#: templates/team.html:71
+msgid "Wyniki meczów (kumulatywnie)"
+msgstr "Match results (cumulative)"
+
+#: templates/team.html:75
+msgid "Podsumowanie sezonu"
+msgstr "Season summary"
+
+#: templates/team.html:79
+msgid "Śr. gole strzelone"
+msgstr "Avg. goals scored"
+
+#: templates/team.html:83
+msgid "Śr. gole stracone"
+msgstr "Avg. goals conceded"
+
+#: templates/team.html:87
+msgid "Pozycja końcowa"
+msgstr "Final position"
+
+#: templates/team.html:99
+msgid "Powrót do ligi"
+msgstr "Back to league"
+
+#: templates/team.html:119
+msgid "Punkty"
+msgstr "Points"
+
+#: templates/team.html:120
+msgid "Gole strzelone"
+msgstr "Goals scored"
+
+#: templates/team.html:121
+msgid "Gole stracone"
+msgstr "Goals conceded"
+
+#: templates/team.html:122
+msgid "Kolejka"
+msgstr "Matchday"
+
+#: templates/team.html:123
+msgid "Liczba"
+msgstr "Count"
+
+#: templates/team.html:124
+msgid "Zwycięstwa"
+msgstr "Wins"
+
+#: templates/team.html:125
+msgid "Remisy"
+msgstr "Draws"
+
+#: templates/team.html:126
+msgid "Porażki"
+msgstr "Losses"
+

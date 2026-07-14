@@ -3,8 +3,8 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 *.iml
 src/flask_app/app/secrets.json
-src/flask_app/app/static/flags
-src/flask_app/app/static/logos
+flask_app/app/static/img/flags
+flask_app/app/static/img/logos
 src/flask_app/app/local.db
 local.*
 src/__pycache__/
@@ -31,7 +31,9 @@ src/flask_app/app/translations/messages.pot
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
+/src/flask_app/app/static/img/**/**.png
+.env
+.**env
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries

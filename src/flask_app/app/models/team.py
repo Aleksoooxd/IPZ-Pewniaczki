@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, select
+from sqlalchemy import Column, Integer, String, ForeignKey, select, Boolean, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.exc import IntegrityError
 
@@ -45,6 +45,8 @@ class TeamLeague(db.Model):
     team_id        = Column(Integer, ForeignKey("team.team_id"))
     league_id      = Column(Integer, ForeignKey("league.league_id"))
     season_id      = Column(Integer, ForeignKey("season.season_id"))
+    is_champion    = Column(Boolean, default=False)
+    value = Column(Float, default=0)
 
     team   = relationship("Team",   back_populates="team_leagues")
     league = relationship("League", back_populates="team_leagues")

@@ -18,10 +18,8 @@ LEAGUE_NAMES = {
 }
 
 
-@main_bp.route("/", methods=["GET", "POST"])
+@main_bp.route("/")
 def home():
-    if request.method == "POST":
-        pass
     return render_template("index.html")
 
 

@@ -30,7 +30,7 @@
     {% set flag_file = league_flag_map.get(league.code | lower) %}
     {% if flag_file %}
       <img
-        src="{{ url_for('static', filename='flags/' ~ flag_file) }}"
+        src="{{ url_for('static', filename='img/flags/' ~ flag_file) }}"
         alt="{{ league.code }}"
         class="league-header-flag"
       >
@@ -94,7 +94,7 @@
                     <td class="pos-cell">{{ pos }}</td>
                     <td class="team-name-cell">
                       {% if team.team_id %}
-                        <img src="{{ url_for('static', filename='logos/64x64/' ~ team.team_name.lower().replace(' ', '-') ~ '.png') }}" alt="{{ team.team_name }}" class="team-logo-inline">
+                        <img src="{{ url_for('static', filename='img/logos/64x64/' ~ team.team_name.lower().replace(' ', '-') ~ '.png') }}" alt="{{ team.team_name }}" class="team-logo-inline">
                       {% endif %}
                       {{ team.team_name }}
                     </td>

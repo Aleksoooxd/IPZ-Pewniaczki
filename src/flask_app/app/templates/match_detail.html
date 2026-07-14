@@ -10,14 +10,14 @@
 {% block content %}
 <div class="match-detail-container">
   <div class="md-bg md-bg-home"
-       style="--logo: url('{{ url_for('static', filename='logos/512x512/' ~ match.home_team.name.lower().replace(' ', '-') ~ '.png') }}')"></div>
+       style="--logo: url('{{ url_for('static', filename='img/logos/512x512/' ~ match.home_team.name.lower().replace(' ', '-') ~ '.png') }}')"></div>
   <div class="md-bg md-bg-away"
-       style="--logo: url('{{ url_for('static', filename='logos/512x512/' ~ match.away_team.name.lower().replace(' ', '-') ~ '.png') }}')"></div>
+       style="--logo: url('{{ url_for('static', filename='img/logos/512x512/' ~ match.away_team.name.lower().replace(' ', '-') ~ '.png') }}')"></div>
   <!-- HERO CARD -->
   <div class="match-hero card">
     <div class="match-hero-team home">
       <a href="{{ url_for('teams.team_view',
-      league_code=match.league.code | replace(' ', '') | title ,
+      league_code=match.league.code | string | title | replace(' ', '')  ,
       season_name=match.season.name | string | replace('/', ' '),
       team_name=match.home_team.name) }}"
       class="hero-team-name hero-team-link">{{ match.home_team.name }}</a>
@@ -43,7 +43,7 @@
 
     <div class="match-hero-team away">
       <a href="{{ url_for('teams.team_view',
-      league_code=match.league.code | replace(' ', '') | title ,
+      league_code=match.league.code | string | title | replace(' ', '')  ,
       season_name=match.season.name | string | replace('/', ' '),
       team_name=match.away_team.name) }}"
       class="hero-team-name hero-team-link">{{ match.away_team.name }}</a>

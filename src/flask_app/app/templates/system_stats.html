@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Statystyki systemu') }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/system_stats.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="stats-page">
+    <div class="stats-hero">
+        <div>
+            <p class="stats-kicker">{{ _('Panel analityczny') }}</p>
+            <h1>{{ _('Statystyki systemu') }}</h1>
+            <p class="stats-subtitle">
+                {{ _('Podsumowanie danych, rekordów ELO, największych zaskoczeń i czasu przetwarzania.') }}
+            </p>
+        </div>
+
+        {% if stats %}
+        <div class="stats-badge">
+            <span>{{ _('Ostatnia aktualizacja') }}</span>
+            <strong>{{ stats.recorded_at.strftime('%Y-%m-%d %H:%M') if stats.recorded_at else '-' }}</strong>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if not stats %}
+    <div class="empty-state">
+        <h2>{{ _('Brak statystyk') }}</h2>
+        <p>{{ _('Tabela system_stats jest pusta. Uruchom scraping i zapis statystyk.') }}</p>
+    </div>
+    {% else %}
+
+    <section class="stats-grid">
+        <article class="stat-card accent-blue">
+            <span class="stat-label">{{ _('Drużyny') }}</span>
+            <strong class="stat-value">{{ stats.teams_count or 0 }}</strong>
+        </article>
+        <article class="stat-card accent-purple">
+            <span class="stat-label">{{ _('Sezony') }}</span>
+            <strong class="stat-value">{{ stats.seasons_count or 0 }}</strong>
+        </article>
+        <article class="stat-card accent-gold">
+            <span class="stat-label">{{ _('Ligi') }}</span>
+            <strong class="stat-value">{{ stats.leagues_count or 0 }}</strong>
+        </article>
+        <article class="stat-card accent-green">
+            <span class="stat-label">{{ _('Mecze historyczne') }}</span>
+            <strong class="stat-value">{{ stats.matches_count or 0 }}</strong>
+        </article>
+        <article class="stat-card accent-cyan">
+            <span class="stat-label">{{ _('Przyszłe mecze') }}</span>
+            <strong class="stat-value">{{ stats.future_matches_count or 0 }}</strong>
+        </article>
+    </section>
+
+    <section class="detail-grid">
+        <article class="panel">
+            <h2>{{ _('Czasy przetwarzania') }}</h2>
+            <div class="timing-list">
+                <div class="timing-row">
+                    <span>{{ _('Scraping') }}</span>
+                    <strong>{{ '%.2f s'|format(stats.scraping_time or 0) }}</strong>
+                </div>
+                <div class="timing-row">
+                    <span>{{ _('ELO') }}</span>
+                    <strong>{{ '%.2f s'|format(stats.elo_calc_time or 0) }}</strong>
+                </div>
+                <div class="timing-row">
+                    <span>{{ _('Predykcja ML') }}</span>
+                    <strong>{{ '%.2f s'|format(stats.prediction_time or 0) }}</strong>
+                </div>
+            </div>
+        </article>
+
+        <article class="panel">
+            <h2>{{ _('Największy upset modelu ML') }}</h2>
+            {% if biggest_upset_match %}
+                <a class="match-card"
+                   href="{{ url_for('matches.match_detail', match_type='past', match_id=biggest_upset_match.match_id) }}">
+                    <div class="mc-bg mc-bg-home" style="--logo: url('{{ url_for('static', filename='img/logos/128x128/' ~ biggest_upset_match.home_team.name.lower().replace(' ', '-') ~ '.png') }}')"></div>
+                    <div class="mc-bg mc-bg-away" style="--logo: url('{{ url_for('static', filename='img/logos/128x128/' ~ biggest_upset_match.away_team.name.lower().replace(' ', '-') ~ '.png') }}')"></div>
+                    <div class="mc-content">
+                        <div class="mc-team mc-home"><span class="mc-name">{{ biggest_upset_match.home_team.name }}</span></div>
+                        <div class="mc-center">
+                            <span class="mc-score">{{ biggest_upset_match.fthg }} - {{ biggest_upset_match.ftag }}</span>
+                            <span class="mc-status status-finished">{{ _('Zakończony') }}</span>
+                            <div class="upset-score">
+                                <span class="upset-confidence">{{ '%.1f%%'|format((stats.biggest_upset_confidence or 0) * 100) }}</span>
+                                <small>{{ _('pewność błędnej predykcji') }}</small>
+                            </div>
+                        </div>
+                        <div class="mc-team mc-away"><span class="mc-name">{{ biggest_upset_match.away_team.name }}</span></div>
+                    </div>
+                </a>
+            {% else %}
+                <p class="muted">{{ _('Brak błędnych predykcji do analizy.') }}</p>
+            {% endif %}
+        </article>
+
+        <article class="panel">
+            <h2>{{ _('Najwyższe ELO') }}</h2>
+            {% if highest_elo_row %}
+                {% set elo_row = highest_elo_row[0] %}
+                {% set team = highest_elo_row[1] %}
+                {% set season = highest_elo_row[2] %}
+                {% set team_slug = team.name.lower().replace(' ', '-') %}
+
+                <a class="elo-record-link {% if not highest_elo_link %}disabled{% endif %}"
+                   {% if highest_elo_link %}href="{{ url_for('teams.team_view', **highest_elo_link) }}"{% endif %}>
+                    <div class="record-card elo-record-card">
+                        <div class="erc-bg erc-bg-team" style="--logo: url('{{ url_for('static', filename='img/logos/256x256/' ~ team_slug ~ '.png') }}')"></div>
+                        <div class="record-main">
+                            <span class="record-type">{{ _('Rekord sezonu') }}</span>
+                            <strong class="record-title">{{ team.name }}</strong>
+                            <p>{{ _('Sezon') }}: {{ season.name }}</p>
+                            <p>{{ _('Rating ELO') }}: <span class="elo-pill">{{ '%.2f'|format(elo_row.rating) }}</span></p>
+                        </div>
+                    </div>
+                </a>
+            {% else %}
+                <p class="muted">{{ _('Brak danych ELO.') }}</p>
+            {% endif %}
+        </article>
+
+        <article class="panel">
+            <h2>{{ _('Najniższe ELO') }}</h2>
+            {% if lowest_elo_row %}
+                {% set elo_row = lowest_elo_row[0] %}
+                {% set team = lowest_elo_row[1] %}
+                {% set season = lowest_elo_row[2] %}
+                {% set team_slug = team.name.lower().replace(' ', '-') %}
+
+                <a class="elo-record-link {% if not lowest_elo_link %}disabled{% endif %}"
+                   {% if lowest_elo_link %}href="{{ url_for('teams.team_view', **lowest_elo_link) }}"{% endif %}>
+                    <div class="record-card elo-record-card">
+                        <div class="erc-bg erc-bg-team" style="--logo: url('{{ url_for('static', filename='img/logos/256x256/' ~ team_slug ~ '.png') }}')"></div>
+                        <div class="record-main">
+                            <span class="record-type">{{ _('Najtrudniejszy moment') }}</span>
+                            <strong class="record-title">{{ team.name }}</strong>
+                            <p>{{ _('Sezon') }}: {{ season.name }}</p>
+                            <p>{{ _('Rating ELO') }}: <span class="elo-pill danger">{{ '%.2f'|format(elo_row.rating) }}</span></p>
+                        </div>
+                    </div>
+                </a>
+            {% else %}
+                <p class="muted">{{ _('Brak danych ELO.') }}</p>
+            {% endif %}
+        </article>
+
+        <article class="panel panel-wide">
+    <h2>{{ _('Mecz z największą liczbą goli') }}</h2>
+    {% if highest_goal_match %}
+        {% set m = highest_goal_match %}
+        {% set home_slug = m.home_team.name.lower().replace(' ', '-') %}
+        {% set away_slug = m.away_team.name.lower().replace(' ', '-') %}
+
+        <a class="match-card"
+           href="{{ url_for('matches.match_detail', match_type='past', match_id=m.match_id) }}">
+            <div class="mc-bg mc-bg-home" style="--logo: url('{{ url_for('static', filename='img/logos/128x128/' ~ home_slug ~ '.png') }}')"></div>
+            <div class="mc-bg mc-bg-away" style="--logo: url('{{ url_for('static', filename='img/logos/128x128/' ~ away_slug ~ '.png') }}')"></div>
+            <div class="mc-content">
+                <div class="mc-team mc-home"><span class="mc-name">{{ m.home_team.name }}</span></div>
+                <div class="mc-center">
+                    <span class="mc-score">{{ m.fthg }} - {{ m.ftag }}</span>
+                    <span class="mc-status status-finished">{{ _('Zakończony') }}</span>
+                </div>
+                <div class="mc-team mc-away"><span class="mc-name">{{ m.away_team.name }}</span></div>
+            </div>
+        </a>
+    {% else %}
+        <p class="muted">{{ _('Brak danych meczowych.') }}</p>
+    {% endif %}
+</article>
+    </section>
+    {% endif %}
+</section>
+{% endblock %}

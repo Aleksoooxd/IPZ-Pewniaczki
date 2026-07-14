@@ -1,11 +1,9 @@
-import os
-import json
 import click
 from flask import Flask, request, session, g, current_app
 from flask.cli import with_appcontext
 from .config import Config
 from .db import db, babel
-from .routes import matches_bp, leagues_bp, teams_bp, api_bp, main_bp
+from .routes import matches_bp, leagues_bp, teams_bp, api_bp, main_bp, stats_bp
 
 
 def create_app():
@@ -35,7 +33,6 @@ def create_app():
             requested_lang = request.args['lang']
             if requested_lang in current_app.config['LANGUAGES']:
                 session['lang'] = requested_lang
-
         g.lang = session.get(
             'lang',
             request.accept_languages.best_match(current_app.config['LANGUAGES'])
@@ -57,6 +54,7 @@ def create_app():
     app.register_blueprint(leagues_bp)
     app.register_blueprint(teams_bp)
     app.register_blueprint(api_bp)
+    app.register_blueprint(stats_bp)
 
     @app.cli.command("db-create")
     @with_appcontext
@@ -92,5 +90,26 @@ def create_app():
                 click.echo(f"  • {t}  [{', '.join(cols)}]")
         else:
             click.echo("Baza jest pusta — brak tabel.")
+
+    @app.cli.command("run-elo")
+    @with_appcontext
+    def run_elo():
+        from src.calculations.elo_calculator import process_all_matches_for_elo
+        process_all_matches_for_elo(db.session)
+        click.echo("ELO obliczone.")
+
+    @app.cli.command("run-predict")
+    @with_appcontext
+    def run_predict():
+        from src.calculations.prediction import predict
+        predict(db.session, db.engine)
+        click.echo("Predykcje gotowe.")
+
+    @app.cli.command("run-predict-future")
+    @with_appcontext
+    def run_predict_future():
+        from src.calculations.predict_all_future import main as predict_future_main
+        predict_future_main(db.session, db.engine)
+        click.echo("Predykcje przyszłych meczów gotowe.")
 
     return app
