@@ -19,7 +19,15 @@
         {% if stats %}
         <div class="stats-badge">
             <span>{{ _('Ostatnia aktualizacja') }}</span>
-            <strong>{{ stats.recorded_at.strftime('%Y-%m-%d %H:%M') if stats.recorded_at else '-' }}</strong>
+            <strong>
+                {% if stats.recorded_at %}
+                    {{ stats.recorded_at.strftime('%Y-%m-%d %H:%M') }}
+                {% elif stats_live %}
+                    {{ _('na żywo') }}
+                {% else %}
+                    -
+                {% endif %}
+            </strong>
         </div>
         {% endif %}
     </div>
@@ -27,7 +35,7 @@
     {% if not stats %}
     <div class="empty-state">
         <h2>{{ _('Brak statystyk') }}</h2>
-        <p>{{ _('Tabela system_stats jest pusta. Uruchom scraping i zapis statystyk.') }}</p>
+        <p>{{ _('Brak danych w bazie. Wykonaj scraping, aby wypełnić statystyki.') }}</p>
     </div>
     {% else %}
 

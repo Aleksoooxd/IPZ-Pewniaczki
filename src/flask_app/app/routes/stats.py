@@ -5,6 +5,7 @@ from ..db import db
 from ..models import (
     SystemStats, TeamElo, FootballMatch, Team, Season, League, TeamLeague
 )
+from src.scraping.footballScrap import compute_stats_dict
 
 stats_bp = Blueprint("stats", __name__)
 
@@ -21,12 +22,21 @@ DB_CODE_TO_URL_CODE = {
     "ligue 1": "Ligue1",
     "liga i": "LigaI",
     "serie a": "SerieA",
-    "spremier league": "ScotishPremierLeague",
+    "spremier league": "ScottishPremierLeague",
 }
 
 
 def _find_league_for_team_season(team_id, season_id):
-    """Znajduje ligę, w której drużyna grała w danym sezonie."""
+    """Find the league a team played in during a given season.
+
+    Args:
+        team_id (int): ``Team.team_id`` to look up.
+        season_id (int): ``Season.season_id`` to look up.
+
+    Returns:
+        League or None: The :class:`League` the team belonged to in that
+        season, or ``None`` if no membership is found.
+    """
     team_league = db.session.execute(
         select(TeamLeague, League)
         .join(League, League.league_id == TeamLeague.league_id)
@@ -40,9 +50,19 @@ def _find_league_for_team_season(team_id, season_id):
 
 
 def _build_team_link(team, season):
-    """
-    Buduje dane potrzebne do url_for('teams.team_view', ...)
-    Zwraca dict albo None jeśli nie da się ustalić ligi.
+    """Build the URL parameters needed to link to a team's page.
+
+    Resolves the team's league for the given season, maps the league's DB code
+    to its URL code, and formats the season name (slashes -> spaces) so the
+    values can be passed to ``url_for('teams.team_view', ...)``.
+
+    Args:
+        team (Team): The team to build a link for.
+        season (Season): The season context for the link.
+
+    Returns:
+        dict or None: ``{'league_code', 'team_name', 'season_name'}`` suitable
+        for ``url_for``, or ``None`` when the league can't be resolved.
     """
     league = _find_league_for_team_season(team.team_id, season.season_id)
     if not league:
@@ -60,14 +80,32 @@ def _build_team_link(team, season):
 
 @stats_bp.route("/stats")
 def system_stats():
+    """Render the system-wide statistics dashboard.
+
+    Loads the most recent :class:`SystemStats` snapshot. If none exists (e.g.
+    right after a scrape), the stats are computed live from the current DB
+    state instead of showing an empty page. The highest/lowest ELO, highest-goal
+    match, and biggest-upset records are resolved into rows plus template links.
+
+    Args:
+        None
+
+    Returns:
+        flask.Response: The rendered ``system_stats.html`` template.
+    """
     latest_stats = db.session.execute(
         select(SystemStats)
         .order_by(SystemStats.recorded_at.desc())
         .limit(1)
     ).scalar_one_or_none()
 
+    # Po samym scrapingu (choice 1) lub bez pełnego przebiegu pipeline'u
+    # tabela system_stats może być pusta. Wtedy liczymy statystyki na żywo
+    # z bieżącego stanu bazy, zamiast pokazywać pusty ekran.
+    stats_live = False
     if latest_stats is None:
-        return render_template("system_stats.html", stats=None)
+        stats_live = True
+        latest_stats = SystemStats(**compute_stats_dict(db.session))
 
     highest_elo_link = None
     lowest_elo_link = None
@@ -113,6 +151,7 @@ def system_stats():
     return render_template(
         "system_stats.html",
         stats=latest_stats,
+        stats_live=stats_live,
         highest_elo_row=highest_elo_row,
         lowest_elo_row=lowest_elo_row,
         highest_elo_link=highest_elo_link,

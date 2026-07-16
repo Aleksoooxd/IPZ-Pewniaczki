@@ -5,6 +5,11 @@ from ..db import db
 
 
 class Predicted(db.Model):
+    """A prediction for an already-played match.
+
+    Stores the model's predicted outcome (``'H'``/``'D'``/``'A'``) and its
+    confidence for a :class:`FootballMatch`.
+    """
     __tablename__ = "predicted"
 
     prediction_id    = Column(Integer, primary_key=True)
@@ -16,6 +21,10 @@ class Predicted(db.Model):
 
 
 class PredictedFuture(db.Model):
+    """A prediction for a not-yet-played (:class:`FutureMatch`) match.
+
+    Stores the model's predicted outcome and confidence for an upcoming fixture.
+    """
     __tablename__ = "predicted_future"
 
     prediction_id    = Column(Integer, primary_key=True)

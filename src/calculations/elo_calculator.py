@@ -1,11 +1,30 @@
 import copy
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
-from src.flask_app.app.models import Team, FootballMatch, TeamElo, MatchForm
+from src.flask_app.app.models import Team, FootballMatch, TeamElo, MatchForm, SystemStats
 
 
 def calculate_elo_change(home_elo, away_elo, result, goal_diff=None):
+    """Compute the ELO rating change for the home and away teams after a match.
+
+    Uses the standard ELO expected-score formula with a fixed home advantage of
+    100 points. The K-factor (40) is scaled by the victory margin when the
+    result is not a draw, capped at 1.75.
+
+    Args:
+        home_elo (float): Pre-match ELO rating of the home team.
+        away_elo (float): Pre-match ELO rating of the away team.
+        result (str): Match outcome, one of 'H' (home win), 'D' (draw),
+            or 'A' (away win).
+        goal_diff (int, optional): Absolute goal difference of the match.
+            Used to apply the margin-of-victory scaling. Defaults to None,
+            in which case no scaling is applied.
+
+    Returns:
+        tuple[float, float]: A pair ``(home_change, away_change)`` of rounded
+        ELO deltas (2 decimal places) to apply to the home and away teams.
+    """
     K = 40
     HOME_ADVANTAGE = 100
 
@@ -32,9 +51,28 @@ def calculate_elo_change(home_elo, away_elo, result, goal_diff=None):
 
 
 def process_all_matches_for_elo(session: Session):
-    """
-    Przetwarza wszystkie mecze w celu obliczenia ELO i H2H.
-    Przyjmuje sesję SQLAlchemy z zewnątrz — nie zależy od Flask app context.
+    """Recompute ELO ratings, head-to-head form, and season-end ELO snapshots.
+
+    Iterates over all ``FootballMatch`` rows in date order, computing the ELO
+    change for each played match (via :func:`calculate_elo_change`) and writing
+    the resulting ``home_elo`` / ``away_elo`` / ``home_elo_change`` /
+    ``away_elo_change`` columns back to ``FootballMatch``. It also snapshots the
+    per-team head-to-head record (wins / draws / losses / goals / last-5 points)
+    into the corresponding ``MatchForm`` rows *before* each match is played.
+
+    The ``TeamElo`` table is collapsed to a single season-end snapshot per
+    ``(team_id, season_id)`` (the last rating seen for that team in that season),
+    replacing all prior rows. Finally, the ``SystemStats`` highest/lowest ELO
+    pointers are refreshed against the collapsed table.
+
+    Updates are flushed in batches of 1000 matches and committed at the end.
+
+    Args:
+        session (sqlalchemy.orm.Session): Active database session. The function
+            commits its own transactions; the caller does not need to.
+
+    Returns:
+        None:
     """
     print("Starting ELO and H2H calculation process...")
 
@@ -47,6 +85,10 @@ def process_all_matches_for_elo(session: Session):
 
     h2h_current_stats = {}
 
+    # Season-end ELO snapshot per (team_id, season_id): rating + last match date.
+    # Collapses the table from 2 rows/match to ~teams x seasons rows.
+    season_end_ratings = {}
+
     matches = session.execute(
         select(FootballMatch)
         .order_by(FootballMatch.date, FootballMatch.match_id)
@@ -54,7 +96,6 @@ def process_all_matches_for_elo(session: Session):
 
     print(f"Processing {len(matches)} matches for ELO and H2H calculation")
 
-    team_elo_to_add = []
     match_form_updates = []
     football_match_updates = []
 
@@ -80,18 +121,10 @@ def process_all_matches_for_elo(session: Session):
         teams_elo[home_team_id] += home_change
         teams_elo[away_team_id] += away_change
 
-        team_elo_to_add.append(TeamElo(
-            team_id=home_team_id,
-            season_id=match.season_id,
-            rating=teams_elo[home_team_id],
-            last_updated=match.date
-        ))
-        team_elo_to_add.append(TeamElo(
-            team_id=away_team_id,
-            season_id=match.season_id,
-            rating=teams_elo[away_team_id],
-            last_updated=match.date
-        ))
+        # Record season-end snapshot (matches are processed in date order, so the
+        # last write per (team, season) is that season's final rating).
+        season_end_ratings[(home_team_id, match.season_id)] = (teams_elo[home_team_id], match.date)
+        season_end_ratings[(away_team_id, match.season_id)] = (teams_elo[away_team_id], match.date)
 
         football_match_updates.append({
             'match_id': match.match_id,
@@ -181,9 +214,6 @@ def process_all_matches_for_elo(session: Session):
 
         if (i + 1) % 1000 == 0:
             print(f"Processed {i + 1}/{len(matches)} matches, performing batch update.")
-            if team_elo_to_add:
-                session.bulk_save_objects(team_elo_to_add)
-                team_elo_to_add = []
             if match_form_updates:
                 session.bulk_update_mappings(MatchForm, match_form_updates)
                 match_form_updates = []
@@ -193,11 +223,42 @@ def process_all_matches_for_elo(session: Session):
             session.commit()
 
     print("Finalizing batch updates...")
-    if team_elo_to_add:
-        session.bulk_save_objects(team_elo_to_add)
     if match_form_updates:
         session.bulk_update_mappings(MatchForm, match_form_updates)
     if football_match_updates:
         session.bulk_update_mappings(FootballMatch, football_match_updates)
+    session.commit()
+
+    # Collapse TeamElo to one season-end snapshot per (team, season). Recomputing
+    # from scratch, so replace all rows with the collapsed set.
+    print(f"Collapsing TeamElo to {len(season_end_ratings)} season-end snapshots...")
+    session.execute(text("DELETE FROM team_elo"))
+    session.commit()
+    session.bulk_save_objects([
+        TeamElo(
+            team_id=team_id,
+            season_id=season_id,
+            rating=rating,
+            last_updated=last_updated,
+        )
+        for (team_id, season_id), (rating, last_updated) in season_end_ratings.items()
+    ])
+    session.commit()
+
+    # Keep SystemStats highest/lowest ELO pointers valid after the collapse.
+    highest = session.execute(
+        select(TeamElo).order_by(TeamElo.rating.desc()).limit(1)
+    ).scalar_one_or_none()
+    lowest = session.execute(
+        select(TeamElo).order_by(TeamElo.rating.asc()).limit(1)
+    ).scalar_one_or_none()
+    latest_stats = session.execute(
+        select(SystemStats).order_by(SystemStats.recorded_at.desc())
+    ).scalars().first()
+    if latest_stats is None:
+        latest_stats = SystemStats()
+        session.add(latest_stats)
+    latest_stats.highest_elo_id = highest.elo_id if highest else None
+    latest_stats.lowest_elo_id = lowest.elo_id if lowest else None
     session.commit()
     print("ELO and H2H calculation complete")

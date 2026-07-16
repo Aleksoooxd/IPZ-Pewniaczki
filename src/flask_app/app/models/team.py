@@ -6,6 +6,11 @@ from ..db import db
 
 
 class Team(db.Model):
+    """A football club.
+
+    The canonical entity for a team; referenced by matches, league memberships
+    and ELO rows. Names are unique.
+    """
     __tablename__ = "team"
 
     team_id = Column(Integer, primary_key=True)
@@ -17,6 +22,11 @@ class Team(db.Model):
 
 
 class League(db.Model):
+    """A football league/competition (e.g. a national division).
+
+    Identified by a short ``code``. Groups teams via
+    :class:`TeamLeague` memberships and owns both played and future matches.
+    """
     __tablename__ = "league"
 
     league_id = Column(Integer, primary_key=True)
@@ -28,6 +38,10 @@ class League(db.Model):
 
 
 class Season(db.Model):
+    """A competition season (e.g. "2023/2024").
+
+    Identified by a short ``name``. Groups team memberships and matches.
+    """
     __tablename__ = "season"
 
     season_id = Column(Integer, primary_key=True)
@@ -39,6 +53,12 @@ class Season(db.Model):
 
 
 class TeamLeague(db.Model):
+    """A team's membership in a league for a given season.
+
+    The join entity linking :class:`Team`, :class:`League` and
+    :class:`Season`. Carries the team's end-of-season ``value`` (e.g. a
+    strength/rating for that season) and a ``is_champion`` flag.
+    """
     __tablename__ = "team_league"
 
     team_league_id = Column(Integer, primary_key=True)
@@ -54,6 +74,22 @@ class TeamLeague(db.Model):
 
 
 def rename_team(old_name: str, new_name: str) -> bool:
+    """Rename a team, guarding against invalid input and name collisions.
+
+    Validates that both names are non-empty strings, finds the team with
+    ``old_name``, and rejects the rename if ``new_name`` already belongs to a
+    different team. On success the name is committed; on an integrity violation
+    (e.g. a duplicate) the change is rolled back.
+
+    Args:
+        old_name (str): Current name of the team to rename.
+        new_name (str): Desired new name.
+
+    Returns:
+        bool: True if the rename succeeded (or the names were already equal),
+        False if the input was invalid, the team was not found, a name clash
+        occurred, or the commit raised an integrity error.
+    """
     if not isinstance(old_name, str) or not isinstance(new_name, str):
         return False
     if not old_name.strip() or not new_name.strip():

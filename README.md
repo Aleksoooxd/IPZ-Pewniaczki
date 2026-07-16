@@ -129,4 +129,62 @@ cd IPZ-Pewniaczki
 pip install -r requirements.txt
 ```
 
+## Running
+
+All commands below are run from the **repository root** so the `src` package is
+importable. There is a single canonical launcher — `wsgi.py` — which routes
+everything through the `create_app` factory in `src/flask_app/app/__init__.py`.
+
+### Web app (development)
+
+```bash
+flask --app wsgi run          # reloader + debugger, reads .flaskenv (port 7777)
+# or, equivalently:
+python wsgi.py
+```
+
+### Data pipeline (scraping / ELO / predictions)
+
+```bash
+python -m src.main            # interactive menu; also works as `python src/main.py`
+```
+
+### Tests
+
+Unit tests live in `tests/` (pytest). They are pure-math where possible
+(`calculate_elo_change`, `calculate_consensus`, the dispersion indices) and use
+an isolated in-memory SQLite database for the DB-backed `calculate_standings`.
+
+```bash
+pip install -r requirements.txt   # pytest is included
+python -m pytest                  # from the repository root
+```
+
+### Deployment (production)
+
+`app.run()` in `wsgi.py` is the **development** server only — single-threaded
+and not hardened. Use a real WSGI server instead. The factory is thread-safe for
+multi-threaded servers (see `SQLALCHEMY_ENGINE_OPTIONS` in
+`src/flask_app/app/config.py`).
+
+**waitress** (recommended — pure Python, cross-platform, runs on Windows):
+
+```bash
+pip install waitress
+waitress-serve --call --listen=127.0.0.1:7777 wsgi:create_app
+```
+
+**gunicorn** (Linux / POSIX only — not available on Windows):
+
+```bash
+pip install gunicorn
+gunicorn "wsgi:create_app" --bind 0.0.0.0:7777 --workers 2 --threads 4
+```
+
+> **SQLite + workers caveat:** SQLite supports multiple reader/writer
+> *threads* but not multiple writer *processes*. With gunicorn use a single
+> worker (`--workers 1`) or switch `SQLALCHEMY_DATABASE_URI` to a server-grade
+> database (e.g. PostgreSQL) for multi-process deployments. waitress is
+> single-process/multi-threaded, so it works with the default SQLite setup.
+
 

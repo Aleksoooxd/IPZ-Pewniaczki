@@ -1,3 +1,5 @@
+"""Team routes: per-team season and all-seasons statistics views."""
+
 import datetime
 import json
 
@@ -20,7 +22,7 @@ LEAGUE_URL_MAP = {
     "Ligue1": "ligue 1",
     "LigaI": "liga i",
     "SerieA": "serie a",
-    "ScotishPremierLeague": "spremier league",
+    "ScottishPremierLeague": "spremier league",
 }
 
 DB_CODE_TO_URL_CODE = {v: k for k, v in LEAGUE_URL_MAP.items()}
@@ -41,6 +43,17 @@ DB_CODE_TO_DISPLAY = {
 
 
 def _current_season_name():
+    """Return the current football season label (e.g. ``"2024/25"``).
+
+    Seasons are assumed to turn over after July: before August the season is
+    ``(year-1)/year``, from August onward it is ``year/(year+1)``.
+
+    Args:
+        None
+
+    Returns:
+        str: Season name in ``YYYY/YY`` format.
+    """
     now = datetime.datetime.now()
     y = now.year
     if now.month < 8:
@@ -49,6 +62,17 @@ def _current_season_name():
 
 
 def _get_team_current_elo(team_id, season_id=None):
+    """Return a team's most recent ELO rating.
+
+    Args:
+        team_id (int): ``Team.team_id`` to look up.
+        season_id (int, optional): When given, restrict to that season's
+            ``TeamElo`` rows. Defaults to None (most recent across seasons).
+
+    Returns:
+        int or None: The latest ``rating`` (cast to int), or ``None`` if no
+        ELO snapshot exists.
+    """
     q = db.session.query(TeamElo).filter(TeamElo.team_id == team_id)
     if season_id:
         q = q.filter(TeamElo.season_id == season_id)
@@ -57,6 +81,18 @@ def _get_team_current_elo(team_id, season_id=None):
 
 
 def _get_team_trophies(team_id):
+    """Return a team's championship (1st-place) history.
+
+    Queries :class:`TeamLeague` rows flagged ``is_champion`` for the team and,
+    for each, builds the league/season labels used for display and linking.
+
+    Args:
+        team_id (int): ``Team.team_id`` to fetch trophies for.
+
+    Returns:
+        list[dict]: One entry per title with ``league_name``, ``league_code``,
+        ``league_url_code``, ``season_name`` and ``season_url``.
+    """
     rows = db.session.query(TeamLeague, League, Season).join(
         League, League.league_id == TeamLeague.league_id
     ).join(
@@ -80,6 +116,22 @@ def _get_team_trophies(team_id):
 
 @teams_bp.route("/league/<league_code>/team/<team_name>/<season_name>")
 def team_view(league_code, team_name, season_name):
+    """Render a team's statistics page for one season or all seasons.
+
+    Resolves the team (404 if unknown), derives the display league name, and
+    fetches the team's trophies. A ``season_name`` containing "all" dispatches
+    to :func:`_team_all_seasons`; otherwise to :func:`_team_single_season`.
+
+    Args:
+        league_code (str): URL segment identifying the league.
+        team_name (str): ``Team.name`` to display.
+        season_name (str): Season label, or a name containing "all" for the
+            aggregated all-seasons view.
+
+    Returns:
+        flask.Response: The rendered ``team.html`` (via a helper), or a 404
+        abort for an unknown team.
+    """
     team = db.session.query(Team).filter_by(name=team_name).first_or_404()
     team_id = team.team_id
 
@@ -97,9 +149,29 @@ def team_view(league_code, team_name, season_name):
 # ── helpers ──────────────────────────────────────────────────────────
 
 def _team_all_seasons(league_code, team_name, team_id, db_code, display_league, season_name, trophies):
+    """Build the all-seasons team view data and render ``team.html``.
+
+    Computes the ELO history (per season/matchday), the team's final league
+    position per season (from a simulated table via
+    :func:`_compute_position_snapshots`), total points / average points per match
+    / average position across all seasons, and the current ELO. Renders the
+    template.
+
+    Args:
+        league_code (str): URL league segment.
+        team_name (str): ``Team.name``.
+        team_id (int): ``Team.team_id``.
+        db_code (str or None): DB league code (from the URL map) or None.
+        display_league (str): Human-readable league name for display.
+        season_name (str): The requested season label (contains "all").
+        trophies (list[dict]): Pre-fetched championship history.
+
+    Returns:
+        flask.Response: The rendered ``team.html``.
+    """
     display_season = f"2004-{_current_season_name()[-2:]}"
 
-    team_matchday = case((FootballMatch.home_team_id == team_id, FootballMatch.home_matchday), else_=FootballMatch.away_matchday)
+    team_matchday = FootballMatch.round
     team_elo_col = case((FootballMatch.home_team_id == team_id, FootballMatch.home_elo), else_=FootballMatch.away_elo)
 
     elo_rows = db.session.query(
@@ -171,6 +243,25 @@ def _team_all_seasons(league_code, team_name, team_id, db_code, display_league, 
 
 
 def _team_single_season(league_code, team_name, team_id, db_code, display_league, season_name, trophies):
+    """Build a single-season team view and render ``team.html``.
+
+    Loads the season/league, computes per-team goal averages across the league,
+    simulates the league table to get position snapshots, and accumulates the
+    team's ELO / cumulative points / cumulative goals / position / win-draw-loss
+    curves match by match. Renders the template.
+
+    Args:
+        league_code (str): URL league segment.
+        team_name (str): ``Team.name``.
+        team_id (int): ``Team.team_id``.
+        db_code (str or None): DB league code.
+        display_league (str): Human-readable league name.
+        season_name (str): Season label (spaces denote the ``/`` in ``YYYY/YY``).
+        trophies (list[dict]): Pre-fetched championship history.
+
+    Returns:
+        flask.Response: The rendered ``team.html``.
+    """
     display_season = season_name.replace(" ", "/")
     season_obj = db.session.query(Season).filter(Season.name == season_name.replace(" ", "/")).first_or_404()
     league_obj = db.session.query(League).filter_by(code=db_code).first_or_404()
@@ -202,6 +293,16 @@ def _team_single_season(league_code, team_name, team_id, db_code, display_league
     ]
 
     def rank(key, tid, rev=False):
+        """Return the 1-based rank of a team by a league-wide stat.
+
+        Args:
+            key (str): Stat key in ``lw_stats`` to rank by.
+            tid (int): ``Team.team_id`` to locate in the ranking.
+            rev (bool, optional): Rank descending when True. Defaults to False.
+
+        Returns:
+            int or None: 1-based rank, or ``None`` if the team isn't present.
+        """
         s = sorted(lw_stats, key=lambda x: x[key], reverse=rev)
         return next((i + 1 for i, it in enumerate(s) if it["team_id"] == tid), None)
 
@@ -218,7 +319,7 @@ def _team_single_season(league_code, team_name, team_id, db_code, display_league
 
     for m in matches:
         side = "home" if m.home_team_id == team_id else "away"
-        md = m.home_matchday if side == "home" else m.away_matchday
+        md = m.round
 
         if side == "home":
             elo = m.home_elo
@@ -249,7 +350,7 @@ def _team_single_season(league_code, team_name, team_id, db_code, display_league
     w_d_l = []
     for m in matches:
         side = "home" if m.home_team_id == team_id else "away"
-        md = m.home_matchday if side == "home" else m.away_matchday
+        md = m.round
         if m.result:
             if (side == "home" and m.result == "H") or (side == "away" and m.result == "A"):
                 cum_w += 1
@@ -282,6 +383,19 @@ def _team_single_season(league_code, team_name, team_id, db_code, display_league
         summary_stats=summary, trophies=trophies,
     )
 def _compute_position_snapshots(matches):
+    """Simulate a league table after each match to snapshot team positions.
+
+    Replays the matches in date order, accumulating points and goal difference
+    per team, and after each match ranks all teams (by points, then GD, then
+    goals-for) to record every team's 1-based position keyed by ``match_id``.
+
+    Args:
+        matches (list[FootballMatch]): Matches of one league/season, in any
+            order (they are sorted internally by date then id).
+
+    Returns:
+        dict: Mapping ``match_id -> {team_id: position}`` for every match.
+    """
     sorted_matches = sorted(matches, key=lambda m: (m.date, m.match_id))
     standings = {}
     snapshots = {}

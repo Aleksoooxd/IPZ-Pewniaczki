@@ -5,6 +5,12 @@ from ..db import db
 
 
 class SystemStats(db.Model):
+    """Snapshot of system-wide counters and record pointers.
+
+    Captures pipeline run-times (scraping/ELO/prediction), entity counts
+    (teams/seasons/leagues/matches/future matches), and foreign-key pointers to
+    notable records (highest/lowest ELO, highest-goal match, biggest upset).
+    """
     __tablename__ = "system_stats"
 
     stat_id = Column(Integer, primary_key=True)

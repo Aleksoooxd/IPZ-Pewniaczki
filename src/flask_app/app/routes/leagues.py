@@ -1,6 +1,7 @@
+"""League routes: league overview with season/matchday standings."""
+
 import datetime
 
-from sqlalchemy import or_
 from flask import Blueprint, render_template, request, abort
 
 from ..db import db
@@ -19,13 +20,24 @@ LEAGUE_URL_MAP = {
     "Ligue1":               "ligue 1",
     "LigaI":                "liga i",
     "SerieA":               "serie a",
-    "ScotishPremierLeague": "spremier league",
+    "ScottishPremierLeague": "spremier league",
 }
 
 LEAGUE_NAME_TO_URL = {v: k for k, v in LEAGUE_URL_MAP.items()}
 
 
 def _get_team_current_elo(team_id, season_id=None):
+    """Return a team's most recent ELO rating.
+
+    Args:
+        team_id (int): ``Team.team_id`` to look up.
+        season_id (int, optional): When given, restrict to that season's
+            ``TeamElo`` rows. Defaults to None (most recent across seasons).
+
+    Returns:
+        int or None: The latest ``rating`` (cast to int), or ``None`` if no
+        ELO snapshot exists.
+    """
     from sqlalchemy import desc
     q = db.session.query(TeamElo).filter(TeamElo.team_id == team_id)
     if season_id:
@@ -35,17 +47,33 @@ def _get_team_current_elo(team_id, season_id=None):
 
 
 def calculate_standings(league_id, season_id=None, matchday_filter=None):
+    """Compute league standings from played matches.
+
+    Aggregates points, played, wins/draws/losses and goals for every team in
+    the league (optionally scoped to a season and/or up to a given round), then
+    sorts by points, goal difference, goals-for and name, assigning positions
+    and attaching the latest ELO rating per team.
+
+    Args:
+        league_id (int): ``League.league_id`` to compute standings for.
+        season_id (int, optional): Restrict to a single season. Defaults to None
+            (all seasons).
+        matchday_filter (int, optional): Only count matches with
+            ``round <= matchday_filter``. Defaults to None (all rounds).
+
+    Returns:
+        list[dict]: Standings rows, each with ``position``, ``team_name``,
+        ``team_id``, ``points``, ``played``, ``wins``, ``draws``, ``losses``,
+        ``goals_for``, ``goals_against``, ``goal_diff`` and ``elo_rating``.
+    """
     standings = {}
     q = db.session.query(FootballMatch).filter(FootballMatch.league_id == league_id)
     if season_id:
         q = q.filter(FootballMatch.season_id == season_id)
     if matchday_filter:
-        q = q.filter(or_(
-            FootballMatch.home_matchday <= matchday_filter,
-            FootballMatch.away_matchday <= matchday_filter,
-        ))
+        q = q.filter(FootballMatch.round <= matchday_filter)
 
-    matches = q.order_by(FootballMatch.date, FootballMatch.home_matchday).all()
+    matches = q.order_by(FootballMatch.date, FootballMatch.round).all()
 
     team_ids = {m.home_team_id for m in matches} | {m.away_team_id for m in matches}
     teams_map = {t.team_id: t.name for t in db.session.query(Team).filter(Team.team_id.in_(team_ids)).all()}
@@ -88,6 +116,19 @@ def calculate_standings(league_id, season_id=None, matchday_filter=None):
 
 @leagues_bp.route("/league/<league_code>")
 def league_view(league_code):
+    """Render a league's season selector, teams and standings.
+
+    Maps the URL league code to its DB code, resolves the league, lists its
+    available seasons, and (when a season/matchday is selected) computes the
+    standings via :func:`calculate_standings`. Renders ``league_view.html``.
+
+    Args:
+        league_code (str): URL segment identifying the league (e.g. ``"LaLiga"``).
+
+    Returns:
+        flask.Response: The rendered ``league_view.html``, or a 404 abort for
+        an unknown league code.
+    """
     db_code = LEAGUE_URL_MAP.get(league_code)
     if not db_code:
         abort(404, description=f"Nieznana liga: {league_code}")
@@ -107,7 +148,7 @@ def league_view(league_code):
         season_obj = Season.query.filter_by(name=selected_season_name).first()
         if season_obj:
             teams_query = teams_query.filter(TeamLeague.season_id == season_obj.season_id)
-            max_md = db.session.query(db.func.max(FootballMatch.home_matchday)).filter(
+            max_md = db.session.query(db.func.max(FootballMatch.round)).filter(
                 FootballMatch.league_id == league.league_id,
                 FootballMatch.season_id == season_obj.season_id,
             ).scalar()

@@ -37,7 +37,7 @@
       {% endif %}
       <div class="match-meta-info">
         <span>{{ match.date.strftime('%d-%m-%Y') }}</span>
-        <span>{{ _('Kolejka:') }} {{ match.home_matchday if match.home_matchday is not none else match.matchday }}</span>
+        <span>{{ _('Kolejka:') }} {{ match.round if match.round is not none else match.home_matchday }}</span>
       </div>
     </div>
 

@@ -1,3 +1,5 @@
+"""Match routes: the detailed single-match view."""
+
 from sqlalchemy import or_, desc
 from sqlalchemy.orm import aliased
 from flask import Blueprint, render_template, abort
@@ -10,6 +12,22 @@ matches_bp = Blueprint("matches", __name__)
 
 @matches_bp.route("/match/<string:match_type>/<int:match_id>")
 def match_detail(match_type, match_id):
+    """Render the detailed view for a single past or future match.
+
+    Looks up the match by id (``FootballMatch`` for ``past``, ``FutureMatch``
+    for ``future``), determines its status (finished / upcoming / live), and
+    gathers the surrounding data: ELO ratings, form, stats, model predictions,
+    head-to-head summary, and each team's last 3 matches. For future matches
+    these are recomputed live from past results.
+
+    Args:
+        match_type (str): ``"past"`` or ``"future"``.
+        match_id (int): ``match_id`` of the match to display.
+
+    Returns:
+        flask.Response: The rendered ``match_detail.html``, or a 404 abort for
+        an unknown ``match_type`` or a missing match.
+    """
     from datetime import date
 
     if match_type == "past":
@@ -77,29 +95,45 @@ def match_detail(match_type, match_id):
         ).order_by(desc(FootballMatch.date)).all()
 
         n = len(past_h2h)
-        hw = dr = aw = hgf = hga = h5pts = 0
+        hw = dr = aw = hgf = hga = 0
+        home_last5_pts = []  # home points per H2H match, most recent first
+        away_last5_pts = []  # away points per H2H match, most recent first
         for m in past_h2h:
             is_home = m.home_team_id == home_team_id
             res = m.result
             if is_home:
-                if res == "H":   hw += 1; h5pts += 3
-                elif res == "D": dr += 1; h5pts += 1
-                else:            aw += 1
+                if res == "H":   hw += 1; home_last5_pts.append(3); away_last5_pts.append(0)
+                elif res == "D": dr += 1; home_last5_pts.append(1); away_last5_pts.append(1)
+                else:            aw += 1; home_last5_pts.append(0); away_last5_pts.append(3)
                 hgf += m.fthg or 0; hga += m.ftag or 0
             else:
-                if res == "A":   hw += 1; h5pts += 3
-                elif res == "D": dr += 1; h5pts += 1
-                else:            aw += 1
+                if res == "A":   hw += 1; home_last5_pts.append(3); away_last5_pts.append(0)
+                elif res == "D": dr += 1; home_last5_pts.append(1); away_last5_pts.append(1)
+                else:            aw += 1; home_last5_pts.append(0); away_last5_pts.append(3)
                 hgf += m.ftag or 0; hga += m.fthg or 0
+
+        # h2h_last_5_points = points from the last 5 H2H encounters (most recent),
+        # matching the semantics stored by elo_calculator — not all-time points.
+        home_h5pts = sum(home_last5_pts[:5])
+        away_h5pts = sum(away_last5_pts[:5])
 
         home_h2h_data = dict(h2h_matches=n, h2h_wins=hw, h2h_draws=dr,
                              h2h_losses=n-hw-dr, h2h_goals_for=hgf,
-                             h2h_goals_against=hga, h2h_last_5_points=h5pts)
+                             h2h_goals_against=hga, h2h_last_5_points=home_h5pts)
         away_h2h_data = dict(h2h_matches=n, h2h_wins=aw, h2h_draws=dr,
                              h2h_losses=hw, h2h_goals_for=hga,
-                             h2h_goals_against=hgf, h2h_last_5_points=h5pts)
+                             h2h_goals_against=hgf, h2h_last_5_points=away_h5pts)
 
         def last_3(team_id):
+            """Return a team's last 3 played matches before this fixture.
+
+            Args:
+                team_id (int): ``Team.team_id`` to fetch history for.
+
+            Returns:
+                list: Up to 3 ``(FootballMatch, home_team_name,
+                away_team_name)`` rows, most-recent first.
+            """
             return db.session.query(
                 FootballMatch,
                 HomeTeamAlias.name.label("home_team_name"),
@@ -129,6 +163,15 @@ def match_detail(match_type, match_id):
         away_h2h_data = away_form if away_form and away_form.h2h_matches else None
 
         def last_3(team_id):
+            """Return a team's last 3 played matches before this fixture.
+
+            Args:
+                team_id (int): ``Team.team_id`` to fetch history for.
+
+            Returns:
+                list: Up to 3 ``(FootballMatch, home_team_name,
+                away_team_name)`` rows, most-recent first.
+            """
             return db.session.query(
                 FootballMatch,
                 HomeTeamAlias.name.label("home_team_name"),

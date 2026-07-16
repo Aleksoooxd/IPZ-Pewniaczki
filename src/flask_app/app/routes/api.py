@@ -11,6 +11,20 @@ api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 @api_bp.route("/matches")
 def get_matches():
+    """Return all past and future matches on a given date as JSON.
+
+    Requires a ``?date=YYYY-MM-DD`` query parameter. Past matches include
+    their final scores; future matches report ``home_goals``/``away_goals``
+    as ``null``. Both sets are unioned into a single list, each entry tagged
+    with ``match_type`` of ``"past"`` or ``"future"``.
+
+    Args:
+        None (reads the ``date`` request query parameter)
+
+    Returns:
+        flask.Response: A JSON list of match dicts, or a 400 error object
+        when the date parameter is missing or malformed.
+    """
     date_param = request.args.get("date")
     if not date_param:
         return jsonify({"error": "Missing 'date' parameter"}), 400
@@ -24,6 +38,21 @@ def get_matches():
     AwayTeam = aliased(Team)
 
     def _base(model, is_future):
+        """Build a base match query for one match model.
+
+        Projects the match id/date, both team names and ids (via aliased
+        ``Team`` joins), the league code, and the home/away goals. For future
+        matches the goal columns are emitted as ``NULL`` literals.
+
+        Args:
+            model: The match ORM model (``FootballMatch`` or ``FutureMatch``).
+            is_future (bool): True when ``model`` is the future model, in which
+                case goals are rendered as ``NULL``.
+
+        Returns:
+            sqlalchemy.orm.Query: A partially-built query filtered to
+            ``model.date == match_date``, ready to be union-ed / executed.
+        """
         home_goals = db.literal(None) if is_future else model.fthg
         away_goals = db.literal(None) if is_future else model.ftag
         return db.session.query(
