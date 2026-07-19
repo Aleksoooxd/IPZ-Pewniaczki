@@ -1,58 +1,135 @@
+/* REDESIGNED: index.css */
 
-html, body {
-    height: 100%;
-    overflow: hidden;
+.hero {
+  position: relative;
+  min-height: calc(100vh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background: var(--bg);
+  margin: -24px -16px;
+  padding: 40px 16px;
 }
 
+.pitch-texture {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 48px,
+      rgba(0, 230, 118, 0.025) 48px,
+      rgba(0, 230, 118, 0.025) 96px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 80px,
+      rgba(0, 230, 118, 0.015) 80px,
+      rgba(0, 230, 118, 0.015) 81px
+    );
+  pointer-events: none;
+}
 
-.wrapper {
-  height: 80vh;
-  width: 100%;
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,230,118,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  text-align: center;
-  padding: 20px;
-  box-sizing: border-box;
+  gap: 20px;
 }
 
-.wrapper img {
-  width: 180px;
-  margin-bottom: 25px;
-  filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+.hero-badge {
+  display: inline-block;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 5px 16px;
+  border-radius: 20px;
 }
 
-.tagline {
-    font-size: 1.4em;
-    font-weight: 400;
-    margin-bottom: 30px;
-    color: var(--text-color-light);
+.hero-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: clamp(64px, 14vw, 120px);
+  letter-spacing: 6px;
+  line-height: 1;
+  color: var(--text);
+  text-transform: uppercase;
 }
 
-body.dark-mode .tagline {
-    color: var(--text-color-dark);
+.hero-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  max-width: 480px;
 }
 
-.status-heading {
-  font-size: 2.8em;
-  margin: 30px 0 15px;
-  color: var(--accent-color-light);
-  letter-spacing: 1px;
+.hero-cta {
+  font-size: 16px;
+  padding: 14px 36px;
+  margin-top: 8px;
 }
 
-body.dark-mode .status-heading {
-    color: var(--accent-color-dark);
+/* Warm "kickoff" accent for the landing's primary action — a second,
+   football-earned hue that breaks the all-green default without competing
+   with the green identity used everywhere else. */
+.button.primary.hero-cta {
+  background: var(--kickoff);
+  color: #0a120a;
 }
 
-.status-message {
-  font-size: 1.2em;
-  font-weight: 300;
-  color: var(--text-color-light);
-  max-width: 600px;
-  line-height: 1.6;
+.button.primary.hero-cta:hover {
+  box-shadow: 0 0 22px rgba(255, 145, 0, 0.55);
+  color: #0a120a;
 }
 
-body.dark-mode .status-message {
-    color: var(--text-color-dark);
+/* Blokada scrolla na stronie głównej */
+body.index-page {
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body.index-page .container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+body.index-page .hero {
+  flex: 1;
+  min-height: 0;        /* pozwala heroowi się skurczyć */
+  margin: 0;
+}
+
+body.index-page .site-footer {
+  flex-shrink: 0;       /* footer nigdy się nie kurczy */
+}
+
+/* Ukrycie przycisku scroll-to-top na stronie głównej */
+body.index-page .scroll-to-top-btn {
+  display: none !important;
 }

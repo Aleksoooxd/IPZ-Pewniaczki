@@ -1,486 +1,165 @@
+/* REDESIGNED: league.css */
 
-.sidebar-links a.active-league {
-    background-color: var(--primary-button-bg-light);
-    color: white;
-    font-weight: 700;
-    pointer-events: none;
-    background-size: 25px auto;
-    background-position: 95% center;
-    background-repeat: no-repeat;
-    padding-right: 40px;
+.league-page { display: flex; flex-direction: column; gap: 16px; }
+
+.league-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 20px 24px;
+}
+.league-header-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-body.dark-mode .sidebar-links a.active-league {
-    background-color: var(--primary-button-bg-dark);
+.league-header-title .page-title {
+  display: inline;        /* ← kluczowa zmiana */
+  margin: 0;
+  line-height: 1;
 }
 
-
-
-.sidebar-links a[data-league-code="premier league"].active-league {
-    background-image: url('../flags/premier-league.png');
+.league-header-flag {
+  width: 100px;
+  object-fit: contain;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
-.sidebar-links a[data-league-code="la liga"].active-league {
-    background-image: url('../flags/la-liga.png');
+.page-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: clamp(24px, 4vw, 40px);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text);
 }
 
-.sidebar-links a[data-league-code="bundesliga"].active-league {
-    background-image: url('../flags/bundesliga.png');
+.season-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.sidebar-links a[data-league-code="serie a"].active-league {
-    background-image: url('../flags/serie-a.png');
-}
-
-.sidebar-links a[data-league-code="ligue 1"].active-league {
-    background-image: url('../flags/ligue-1.png');
-}
-
-.sidebar-links a[data-league-code="spremier league"].active-league {
-    background-image: url('../flags/scottish-premiership.png');
-}
-
-.sidebar-links a[data-league-code="eredivisie"].active-league {
-    background-image: url('../flags/eredivisie.png');
-}
-
-.sidebar-links a[data-league-code="jupiler league"].active-league {
-    background-image: url('../flags/jupiler-league.png');
-}
-
-.sidebar-links a[data-league-code="liga i"].active-league {
-    background-image: url('../flags/liga-i.png');
-}
-
-.sidebar-links a[data-league-code="futbol ligi 1"].active-league {
-    background-image: url('../flags/futbol-ligi-1.png');
-}
-
-.sidebar-links a[data-league-code="ethniki katigoria"].active-league {
-    background-image: url('../flags/ethniki-katigoria.png');
+.league-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 
 
-.league-content-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    width: 100%;
+/* ── STANDINGS ROW INTERACTION ────────────────────────────── */
+
+.team-row-link:hover td {
+  background: rgba(0, 230, 118, 0.07);
+  color: var(--accent);
 }
 
-.team-list {
+.team-row-link:hover .points-cell {
+  color: var(--accent);
+}
+
+/* ── STANDINGS TABLE ──────────────────────────────────────── */
+.standings-area { display: flex; flex-direction: column; gap: 16px; }
+
+.standings-table { padding: 0; overflow: hidden; }
+
+.standings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.standings-header h3 { margin: 0; color: var(--text); font-size: 16px; }
+
+.table-wrap { overflow-x: auto; }
+
+.league-table {
   width: 100%;
-  max-width: 500px;
-  padding: 30px;
-  box-sizing: border-box;
+  border-collapse: collapse;
+  font-size: 14px;
 }
 
-.team-list h3 {
-  margin-top: 0;
+.league-table thead tr {
+  background: var(--surface-alt);
+  border-bottom: 2px solid var(--accent);
+}
+
+.league-table thead th {
+  padding: 10px 12px;
   text-align: center;
-  font-size: 1.6em;
-  color: var(--accent-color-light);
-  margin-bottom: 25px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--border-color-light);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
-body.dark-mode .team-list h3 {
-    color: var(--accent-color-dark);
-    border-color: var(--border-color-dark);
+.league-table thead th:nth-child(2) { text-align: left; padding-left: 12px; }
+
+.league-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
 }
 
-.team-links {
-    list-style: none;
-    padding: 0;
-    max-height: 600px;
-    overflow-y: auto;
-    border: 1px solid var(--border-color-light);
-    border-radius: 8px;
-    padding: 10px;
-}
+.league-table tbody tr:nth-child(odd)  { background: var(--surface); }
+.league-table tbody tr:nth-child(even) { background: var(--surface-alt); }
+.league-table tbody tr:hover           { background: rgba(0,230,118,0.06); }
 
-body.dark-mode .team-links {
-    border-color: var(--border-color-dark);
-}
-
-.team-links li {
-    margin: 0;
-}
-
-.team-links a {
-    display: block;
-    padding: 12px 15px;
-    color: var(--text-color-light);
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    border-bottom: 1px solid var(--border-color-light);
-}
-
-body.dark-mode .team-links a {
-    color: var(--text-color-dark);
-    border-color: var(--border-color-dark);
-}
-
-.team-links li:last-child a {
-    border-bottom: none;
-}
-
-.team-links a:hover {
-    background-color: rgba(var(--accent-color-light), 0.08);
-    color: var(--accent-color-light);
-}
-
-body.dark-mode .team-links a:hover {
-    background-color: rgba(var(--accent-color-dark), 0.08);
-    color: var(--accent-color-dark);
-}
-
-
-.team-links::-webkit-scrollbar {
-  width: 8px;
-}
-
-.team-links::-webkit-scrollbar-track {
-  background: var(--background-color-light);
-  border-radius: 10px;
-}
-
-body.dark-mode .team-links::-webkit-scrollbar-track {
-  background: var(--background-color-dark);
-}
-
-
-.team-links::-webkit-scrollbar-thumb {
-  background: var(--secondary-button-bg-light);
-  border-radius: 10px;
-}
-
-body.dark-mode .team-links::-webkit-scrollbar-thumb {
-  background: var(--secondary-button-bg-dark);
-}
-
-.team-links::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-button-hover-light);
-}
-body.dark-mode .team-links::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-button-hover-dark);
-}
-
-
-.team-details {
-    display: none;
-}
-
-
-@media (max-width: 768px) {
-  .team-list {
-    padding: 15px;
-  }
-}
-
-.team-logo-inline {
-  height: 18px;
-  margin-right: 8px;
-  vertical-align: middle;
-}
-
-
-.top-section-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-    justify-content: center;
-    margin-bottom: 30px;
-    margin-top: 30px;
-}
-
-.season-filter-container{
-    flex: 1;
-    min-width: 280px;
-    max-width: 325px;
-    padding: 15px 25px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.league-title-container {
-    flex: 1;
-    min-width: 280px;
-    padding: 15px 25px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.season-filter-container label {
-    margin-right: 10px;
-    font-size: 1.1em;
-    font-weight: 600;
-    color: var(--text-color-light);
-}
-
-body.dark-mode .season-filter-container label {
-    color: var(--text-color-dark);
-}
-
-.season-filter-container select {
-    padding: 8px 12px;
-    border: 1px solid var(--border-color-light);
-    border-radius: 8px;
-    font-size: 1em;
-    background-color: var(--background-color-light);
-    color: var(--text-color-light);
-    cursor: pointer;
-    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-}
-
-body.dark-mode .season-filter-container select {
-    border-color: var(--border-color-dark);
-    background-color: var(--background-color-dark);
-    color: var(--text-color-dark);
-}
-
-.season-filter-container select:focus {
-    outline: none;
-    border-color: var(--primary-button-bg-light);
-    box-shadow: 0 0 0 3px rgba(var(--primary-button-bg-light), 0.2);
-}
-
-body.dark-mode .season-filter-container select:focus {
-    border-color: var(--primary-button-bg-dark);
-    box-shadow: 0 0 0 3px rgba(var(--primary-button-bg-dark), 0.2);
-}
-
-.league-title-container .page-title {
-    margin: 0;
-    font-size: 2.2em;
-    font-weight: 700;
-    text-align: center;
-    color: var(--text-color-light);
-    padding-bottom: 0;
-    border-bottom: none;
-}
-
-body.dark-mode .league-title-container .page-title {
-    color: var(--text-color-dark);
-}
-
-
-.league-data-container {
-    display: flex;
-    gap: 40px;
-    width: 100%;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.league-data-container .team-list {
-    flex: 1;
-    min-width: 300px;
-    max-width: 500px;
-}
-
-.standings-table {
-    flex: 2;
-    min-width: 450px;
-    max-width: 100%;
-    overflow-x: auto;
-}
-.standings-table::-webkit-scrollbar {
-  width: 8px;
-    height: 8px;
-}
-
-.standings-table::-webkit-scrollbar-track {
-  background: var(--background-color-light);
-  border-radius: 10px;
-}
-
-body.dark-mode .standings-table::-webkit-scrollbar-track {
-  background: var(--background-color-dark);
-}
-
-
-.standings-table::-webkit-scrollbar-thumb {
-  background: var(--secondary-button-bg-light);
-  border-radius: 10px;
-}
-
-body.dark-mode .standings-table::-webkit-scrollbar-thumb {
-  background: var(--secondary-button-bg-dark);
-}
-
-.standings-table::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-button-hover-light);
-}
-body.dark-mode .standings-table::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-button-hover-dark);
-}
-.standings-table h3 {
-  margin-top: 0;
+.league-table tbody td {
+  padding: 10px 12px;
   text-align: center;
-  font-size: 1.6em;
-  color: var(--accent-color-light);
-  margin-bottom: 25px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--border-color-light);
+  color: var(--text);
+  white-space: nowrap;
 }
 
-body.dark-mode .standings-table h3 {
-    color: var(--accent-color-dark);
-    border-color: var(--border-color-dark);
+.team-name-cell {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  text-align: left !important;
+  min-width: 160px;
+  font-weight: 500;
 }
 
-.standings-table table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
+.pos-cell {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-muted);
+  width: 36px;
 }
 
-.standings-table th,
-.standings-table td {
-    border: 1px solid var(--border-color-light);
-    padding: 10px 8px;
-    text-align: center;
-    font-size: 0.9em;
-    white-space: nowrap;
+.points-cell {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--text);
 }
 
-body.dark-mode .standings-table th,
-body.dark-mode .standings-table td {
-    border-color: var(--border-color-dark);
+/* ── ZONE COLORS ──────────────────────────────────────────── */
+.zone-champions { border-left: 3px solid var(--gold) !important; }
+.zone-relegation { border-left: 3px solid var(--danger) !important; }
+
+/* ── LEGEND ───────────────────────────────────────────────── */
+.table-legend {
+  display: flex;
+  gap: 20px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
 }
 
-.standings-table th {
-    background-color: var(--header-bg-light);
-    color: var(--text-color-light);
-    font-weight: 600;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-body.dark-mode .standings-table th {
-    background-color: var(--header-bg-dark);
-    color: var(--text-color-dark);
-}
-
-
-.standings-table tbody tr:nth-child(odd) {
-    background-color: var(--background-color-light);
-}
-
-body.dark-mode .standings-table tbody tr:nth-child(odd) {
-    background-color: var(--card-bg-dark);
-}
-
-.standings-table tbody tr:nth-child(even) {
-    background-color: var(--card-bg-light);
-}
-
-body.dark-mode .standings-table tbody tr:nth-child(even) {
-    background-color: var(--background-color-dark);
-}
-
-.standings-table tbody tr:hover {
-    background-color: rgba(var(--accent-color-light), 0.05);
-}
-
-body.dark-mode .standings-table tbody tr:hover {
-    background-color: rgba(var(--accent-color-dark), 0.05);
-}
-
-.standings-table td:first-child,
-.standings-table th:first-child {
-    border-left: none;
-}
-.standings-table td:last-child,
-.standings-table th:last-child {
-    border-right: none;
-}
-
-
-.standings-table td.team-name-cell {
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-
-@media (max-width: 992px) {
-    .league-data-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    .league-data-container .team-list,
-    .standings-table {
-        width: 100%;
-        max-width: 600px;
-    }
-}
-
-@media (max-width: 768px) {
-    .top-section-wrapper {
-        flex-direction: column;
-        gap: 20px;
-    }
-    .season-filter-container,
-    .league-title-container {
-        width: 100%;
-        max-width: 400px;
-    }
-}
-
-.matchday-filter-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    gap: 10px;
-}
-
-.matchday-filter-container label {
-    font-size: 1.1em;
-    font-weight: 600;
-    color: var(--text-color-light);
-}
-
-body.dark-mode .matchday-filter-container label {
-    color: var(--text-color-dark);
-}
-
-.matchday-filter-container select {
-    padding: 8px 12px;
-    border: 1px solid var(--border-color-light);
-    border-radius: 8px;
-    font-size: 1em;
-    background-color: var(--background-color-light);
-    color: var(--text-color-light);
-    cursor: pointer;
-    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-}
-
-body.dark-mode .matchday-filter-container select {
-    border-color: var(--border-color-dark);
-    background-color: var(--background-color-dark);
-    color: var(--text-color-dark);
-}
-
-.matchday-filter-container select:focus {
-    outline: none;
-    border-color: var(--primary-button-bg-light);
-    box-shadow: 0 0 0 3px rgba(var(--primary-button-bg-light), 0.2);
-}
-
-body.dark-mode .matchday-filter-container select:focus {
-    border-color: var(--primary-button-bg-dark);
-    box-shadow: 0 0 0 3px rgba(var(--primary-button-bg-dark), 0.2);
-}
+.legend-item { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+.legend-item.champions { color: var(--gold); }
+.legend-item.relegation { color: var(--danger); }

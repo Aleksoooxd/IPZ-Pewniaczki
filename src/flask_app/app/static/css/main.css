@@ -1,315 +1,90 @@
+/* REDESIGNED: main.css — match-card styles live in base.css (shared) */
 
-.sidebar-toggle {
-  font-size: 1.1em;
-  padding: 10px 20px;
-  background-color: var(--card-bg-light);
-  color: var(--text-color-light);
-  cursor: pointer;
-  width: fit-content;
-  border-radius: 8px;
-  margin: 10px 0;
-  z-index: 1001;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-  position: sticky;
-  top: 15px;
-  left: 0;
-}
+.main-content-wrapper { display: flex; flex-direction: column; gap: 20px; }
 
-body.dark-mode .sidebar-toggle {
-    background-color: var(--card-bg-dark);
-    color: var(--text-color-dark);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-}
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -280px;
-  width: 280px;
-  height: 100%;
-  background-color: var(--card-bg-light);
-  color: var(--text-color-light);
-  padding: 25px;
-  box-shadow: none;
-  transition: left 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-  z-index: 2000;
-  overflow-y: auto;
-    box-sizing: border-box;
-}
-body.dark-mode .sidebar {
-    background-color: var(--card-bg-dark);
-    color: var(--text-color-dark);
-    box-shadow: none;
-}
-
-.sidebar.open {
-  left: 0;
-    box-shadow: 3px 0 10px rgba(0,0,0,0.2);
-}
-
-body.dark-mode .sidebar.open {
-    box-shadow: 4px 0 15px rgba(0,0,0,0.4);
-}
-
-.sidebar-close {
-  font-size: 1.8em;
-  text-align: right;
-  cursor: pointer;
-  margin-bottom: 20px;
-  color: var(--text-color-light);
-}
-
-body.dark-mode .sidebar-close {
-    color: var(--text-color-dark);
-}
-
-.sidebar h3 {
-  margin-top: 0;
-  text-align: center;
-  color: var(--accent-color-light);
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border-color-light);
-}
-
-body.dark-mode .sidebar h3 {
-    color: var(--accent-color-dark);
-    border-color: var(--border-color-dark);
-}
-
-.sidebar-links {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar-links li {
-  margin: 12px 0;
-}
-
-.sidebar-links a {
-  color: var(--text-color-light);
-  text-decoration: none;
-  font-weight: 500;
-  display: block;
-  padding: 8px 10px;
-  border-radius: 6px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-body.dark-mode .sidebar-links a {
-    color: var(--text-color-dark);
-}
-
-.sidebar-links a:hover {
-  background-color: rgba(var(--accent-color-light), 0.1);
-  color: var(--accent-color-light);
-}
-
-body.dark-mode .sidebar-links a:hover {
-    background-color: rgba(var(--accent-color-dark), 0.1);
-    color: var(--accent-color-dark);
-}
-
-.sidebar-divider {
-    border-top: 1px solid var(--border-color-light);
-    margin: 20px 0;
-}
-
-body.dark-mode .sidebar-divider {
-    border-color: var(--border-color-dark);
-}
-
-
-.main-content-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  width: 100%;
-}
-
-.date-container {
+/* ── DATE CONTROLS ────────────────────────────────────────── */
+.date-controls {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 15px;
-  justify-content: center;
-  padding: 20px;
+  gap: 16px;
+  align-items: flex-end;
 }
 
-.date-container label {
-    font-size: 1.1em;
-    font-weight: 600;
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.date-picker {
-    padding: 10px 15px;
-    border: 1px solid var(--border-color-light);
-    border-radius: 8px;
-    font-size: 1em;
-    color: var(--text-color-light);
-    background-color: var(--background-color-light);
-    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-}
-.league-title {
-  font-size: 1.8em;
+/* ── STYLED SELECTS (league filter + sort order) ──────────── */
+/* Match the rest of the site: kill the OS-native chevron/look and draw a
+   custom accent chevron over a surface-coloured control with the same radius,
+   border and focus treatment as the app's cards and inputs. */
+.date-controls select.date-picker {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: var(--surface);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%2300e676' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding: 8px 36px 8px 12px;
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
-  color: var(--accent-color-light);
-  margin-top: 0;
-  margin-bottom: 25px;
-  text-align: center;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--border-color-light);
-  transition: color 0.3s ease, border-color 0.3s ease;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text);
+  min-width: 200px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.date-controls select.date-picker:hover { border-color: var(--accent); }
+
+.date-controls select.date-picker:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.15);
+}
+
+/* The popup list: keep options readable and on-theme where the OS allows it. */
+.date-controls select.date-picker option {
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* ── LEAGUE SECTION ──────────────────────────────────────── */
+.league-section { margin-bottom: 32px; }
+
+.league-title {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-}
-
-body.dark-mode .league-title {
-    color: var(--accent-color-dark);
-    border-color: var(--border-color-dark);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text);
+  padding: 12px 0 8px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 12px;
 }
 
 .league-flag {
-    width: 30px;
-    height: auto;
-    vertical-align: middle;
-}
-body.dark-mode .date-picker {
-    border-color: var(--border-color-dark);
-    background-color: var(--background-color-dark);
-    color: var(--text-color-dark);
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 3px;
 }
 
-
-.matches {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.league-section {
-    background-color: var(--card-bg-light);
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-body.dark-mode .league-section {
-    background-color: var(--card-bg-dark);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-}
-
+/* ── MATCHES GRID ────────────────────────────────────────── */
 .league-matches-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-
-.match-card {
-  background-color: var(--background-color-light);
-  color: var(--text-color-light);
-  padding: 15px 20px;
-  border-radius: 10px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
-}
-
-body.dark-mode .match-card {
-    background-color: #4a6572;
-    color: var(--text-color-dark);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-}
-
-.match-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-}
-
-body.dark-mode .match-card:hover {
-    box-shadow: 0 8px 18px rgba(0,0,0,0.5);
-}
-
-.match-teams {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.2em;
-    font-weight: 700;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.match-teams .team {
-    flex-grow: 1;
-}
-
-.match-teams .vs-separator {
-    font-weight: 400;
-    color: #888;
-}
-
-.match-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 0.9em;
-    color: #666;
-}
-
-body.dark-mode .match-info {
-    color: #bbb;
-}
-
-.match-league {
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.match-status {
-    padding: 4px 8px;
-    border-radius: 5px;
-    font-size: 0.85em;
-    font-weight: 600;
-    color: white;
-}
-
-.status-finished {
-    background-color: var(--secondary-button-bg-light);
-}
-body.dark-mode .status-finished {
-    background-color: var(--secondary-button-bg-dark);
-}
-
-.status-upcoming {
-    background-color: var(--primary-button-bg-light);
-}
-body.dark-mode .status-upcoming {
-    background-color: var(--primary-button-bg-dark);
-}
-
-.team-logo-inline {
-  height: 30px;
-  margin-right: 3px;
-  vertical-align: middle;
-}
-
-.date-container label {
-    font-size: 1.1em;
-    font-weight: 600;
-    margin-right: 5px;
-    margin-left: 10px;
-}
-
-.date-container label:first-of-type {
-    margin-left: 0;
+  gap: 8px;
 }

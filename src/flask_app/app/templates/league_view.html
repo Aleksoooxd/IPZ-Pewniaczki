@@ -1,104 +1,83 @@
+<!-- REDESIGNED: league_view.html -->
 {% extends "base.html" %}
 
-{% block title %}{{ league.code | replace("premier league", _("Premier League")) | replace("spremier league", _("Scottish Premiership")) | title }} - {{ _('Liga') }}{% endblock %}
+{% block title %}{{ LEAGUE_DB_DISPLAY.get(league.code, league.code) }} - {{ _('Liga') }}{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}"> {# Dodajemy main.css dla spójnych styli sidebara #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; {{ _('Wybierz Ligę') }}</div>
+<div class="league-page">
+  {% set league_flag_map = LEAGUE_DB_FLAG_BIG %}
 
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
-  <h3>{{ _('Ligi') }}</h3>
-  <ul class="sidebar-links">
-    <li><a href="{{ url_for('main.league_view', league_code='Premierleague') }}" data-league-code="premier league">{{ _('Premier League') }}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Bundesliga') }}" data-league-code="bundesliga">{{ _('Bundesliga') }}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Eredivisie') }}" data-league-code="eredivisie">{{ _('Eredivisie') }}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='EthnikiKatigoria') }}" data-league-code="ethniki katigoria">{{ _('Ethniki Katigoria') }}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='FutbolLig1') }}" data-league-code="futbol ligi 1">{{ _('Futbol Lig 1') }}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='JupiterLeague') }}" data-league-code="jupiler league">{{ _('Jupiler League') }}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='LaLiga') }}" data-league-code="la liga">{{ _('La Liga') }}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='Ligue1') }}" data-league-code="ligue 1">{{ _('Ligue 1') }}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='LigaI') }}" data-league-code="liga i">{{ _('Liga I') }}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='ScotishPremierLeague') }}" data-league-code="spremier league">{{ _('Scottish Premiership') }}</a></li>
-    <li><a href="{{ url_for('main.league_view', league_code='SerieA') }}" data-league-code="serie a">{{ _('Serie A') }}</a></li>
-    <li class="sidebar-divider"></li>
-     <li><a href="{{ url_for('main.mainpage') }}">🏠 {{ _('Strona Główna') }}</a></li>
-  </ul>
+<div class="league-header card">
+  <div class="league-header-title">
+    {% set flag_file = league_flag_map.get(league.code | lower) %}
+    {% if flag_file %}
+      <img
+        src="{{ url_for('static', filename='img/flags/' ~ flag_file) }}"
+        alt="{{ league.code }}"
+        class="league-header-flag"
+      >
+    {% endif %}
+    <h1 class="page-title">
+      {{ LEAGUE_DB_DISPLAY.get(league.code, league.code) }}
+    </h1>
+  </div>
+  <div class="season-filter">
+    <label for="season-select">{{ _('Sezon:') }}</label>
+    <select id="season-select" onchange="changeSeason()">
+      <option value="all_seasons" {% if selected_season == 'all_seasons' %}selected{% endif %}>{{ _('Wszystkie sezony') }}</option>
+      {% for season_name in available_seasons %}
+        <option value="{{ season_name }}" {% if selected_season == season_name %}selected{% endif %}>{{ season_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 </div>
 
-<div class="top-section-wrapper">
-    <div class="season-filter-container card">
-        <label for="season-select">{{ _('Wybierz sezon:') }}</label>
-        <select id="season-select" onchange="changeSeason()">
-            <option value="all_seasons" {% if selected_season == 'all_seasons' %}selected{% endif %}>{{ _('Wszystkie sezony') }}</option>
-            {% for season_name in available_seasons %}
-                <option value="{{ season_name }}" {% if selected_season == season_name %}selected{% endif %}>{{ season_name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="league-title-container card">
-        <h2 class="page-title">{{ league.code | replace("premier league", _("Premier League")) | replace("spremier league", _("Scottish Premiership")) | title }}</h2>
-    </div>
-</div>
-
-<div class="league-content-wrapper">
-  <div class="league-data-container">
-    <div class="team-list card">
-      <h3>{{ _('Drużyny w lidze') }}</h3>
-      <ul class="team-links">
-        {% for team in teams %}
-          <li>
-      <a href="{{ url_for('main.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.name, season_name=selected_season | replace('/', ' ')) }}">
-        <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.name }} logo" class="team-logo-inline">
-        {{ team.name }}
-      </a>
-    </li>
-        {% else %}
-          <li>{{ _('Brak drużyn dla tej ligi w wybranym sezonie.') }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% if standings %}
-    <div class="standings-table card">
-        <h3>{{ _('Tabela Ligowa') }} ({{ _('Sezon:') }} {{ standings_season_display_name }})</h3>
-        {% if available_matchdays %}
-        <div class="matchday-filter-container">
-            <label for="matchday-select">{{ _('Po kolejce:') }}</label>
-            <select id="matchday-select" onchange="changeMatchday()">
-                <option value="">{{ _('Aktualna kolejka') }}</option>
-                {% for md in available_matchdays %}
-                    <option value="{{ md }}" {% if selected_matchday == md %}selected{% endif %}>{{ md }}</option>
-                {% endfor %}
-            </select>
+  <div class="league-body">
+    <div class="standings-area">
+      {% if standings %}
+        <div class="standings-table card">
+         <div class="standings-header">
+            <h3>{{ _('Tabela Ligowa') }} ({{ _('Sezon:') }} {{ standings_season_display_name }})</h3>
+            <button class="button secondary export-csv-btn" onclick="exportStandingsCSV()">
+                ⬇ CSV
+            </button>
         </div>
-        {% endif %}
-        <table>
-            <thead>
+          <div class="table-wrap">
+            <table class="league-table">
+              <thead>
                 <tr>
-                    <th>#</th>
-                    <th>{{ _('Drużyna') }}</th>
-                    <th>{{ _('M') }}</th>
-                    <th>{{ _('Z') }}</th>
-                    <th>{{ _('R') }}</th>
-                    <th>{{ _('P') }}</th>
-                    <th>{{ _('GZ') }}</th>
-                    <th>{{ _('GS') }}</th>
-                    <th>+/-</th>
-                    <th>{{ _('Pkt') }}</th>
+                  <th>#</th>
+                  <th>{{ _('Drużyna') }}</th>
+                  <th>{{ _('M') }}</th>
+                  <th>{{ _('Z') }}</th>
+                  <th>{{ _('R') }}</th>
+                  <th>{{ _('P') }}</th>
+                  <th>{{ _('GZ') }}</th>
+                  <th>{{ _('GS') }}</th>
+                  <th>+/-</th>
+                  <th>{{ _('ELO') }}</th>
+                  <th>{{ _('Pkt') }}</th>
                 </tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
                 {% for team in standings %}
-                <tr>
-                    <td>{{ team.position }}</td>
+                  {% set total_teams = standings | length %}
+                  {% set pos = team.position %}
+                  <tr class="
+                    {% if pos <= 4 %}zone-champions{% endif %}
+                    {% if pos > total_teams - 3 %}zone-relegation{% endif %}
+                    team-row-link"
+                    onclick="window.location.href='{{ url_for('teams.team_view', league_code=league_name_to_url[league.code.lower()], team_name=team.team_name, season_name=selected_season | replace('/', ' ')) }}'"
+                    style="cursor: pointer;"
+                  >
+                    <td class="pos-cell">{{ pos }}</td>
                     <td class="team-name-cell">
-
                       {% if team.team_id %}
-                        <img src="{{ url_for('static', filename='logos/' ~ team.team_id ~ '.png') }}" alt="{{ team.team_name }} logo" class="team-logo-inline">
+                        <img src="{{ url_for('static', filename='img/logos/64x64/' ~ team.team_name.lower().replace(' ', '-') ~ '.png') }}" alt="{{ team.team_name }}" class="team-logo-inline" onerror="this.onerror=null; this.style.display='none'">
                       {% endif %}
                       {{ team.team_name }}
                     </td>
@@ -109,23 +88,24 @@
                     <td>{{ team.goals_for }}</td>
                     <td>{{ team.goals_against }}</td>
                     <td>{{ team.goal_diff }}</td>
-                    <td>{{ team.points }}</td>
-                </tr>
+                    <td>{{ team.elo_rating }}</td>
+                    <td class="points-cell">{{ team.points }}</td>
+                  </tr>
                 {% endfor %}
-            </tbody>
-        </table>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-legend">
+            <span class="legend-item champions">■ {{ _('Europejskie Puchary') }}</span>
+            <span class="legend-item relegation">■ {{ _('Strefa spadkowa') }}</span>
+          </div>
+        </div>
+      {% elif selected_season != 'all_seasons' %}
+        <div class="card"><p class="info-message">{{ _('Brak danych tabeli dla sezonu:') }} {{ selected_season }}.</p></div>
+      {% else %}
+        <div class="card"><p class="info-message">{{ _('Wybierz konkretny sezon, aby wyświetlić tabelę ligową.') }}</p></div>
+      {% endif %}
     </div>
-    {% elif selected_season != 'all_seasons' %}
-    <div class="standings-table card">
-        <h3>{{ _('Tabela Ligowa') }}</h3>
-        <p class="info-message">{{ _('Brak danych tabeli dla sezonu:') }} {{ selected_season }}.</p>
-    </div>
-    {% else %}
-    <div class="standings-table card">
-        <h3>{{ _('Tabela Ligowa') }}</h3>
-        <p class="info-message">{{ _('Wybierz konkretny sezon, aby wyświetlić tabelę ligową.') }}</p>
-    </div>
-    {% endif %}
 
   </div>
 </div>
@@ -133,41 +113,11 @@
 
 {% block extra_script %}
 <script>
-  function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    sidebar.classList.toggle("open");
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const currentLeagueCode = "{{ league.code | lower }}";
-    const sidebarLinks = document.querySelectorAll('.sidebar-links a');
-
-    sidebarLinks.forEach(link => {
-      if (link.dataset.leagueCode === currentLeagueCode) {
-        link.classList.add('active-league');
-      }
-    });
-  });
-
-  function changeSeason() {
-      const seasonSelect = document.getElementById('season-select');
-      const selectedSeason = seasonSelect.value;
-      const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.set('season', selectedSeason);
-      currentUrl.searchParams.delete('matchday'); // Reset matchday when season changes
-      window.location.href = currentUrl.toString();
-  }
-
-  function changeMatchday() {
-      const matchdaySelect = document.getElementById('matchday-select');
-      const selectedMatchday = matchdaySelect.value;
-      const currentUrl = new URL(window.location.href);
-      if (selectedMatchday) {
-          currentUrl.searchParams.set('matchday', selectedMatchday);
-      } else {
-          currentUrl.searchParams.delete('matchday');
-      }
-      window.location.href = currentUrl.toString();
-  }
+  window.LEAGUE_CONFIG = {
+    leagueCode: "{{ league.code | lower }}",
+    leagueName: "{{ league.code | title }}",
+    season:     "{{ standings_season_display_name }}"
+  };
 </script>
+<script src="{{ url_for('static', filename='js/league_view.js') }}"></script>
 {% endblock %}

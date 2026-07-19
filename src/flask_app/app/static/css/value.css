@@ -1,0 +1,116 @@
+/* Value / EV calculator page styles */
+
+.value-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.value-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.value-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.value-table th,
+.value-table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+}
+
+.value-table thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted, #9aa4b2);
+  font-weight: 600;
+}
+
+.value-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.value-table tr.ev-pos {
+  background: rgba(46, 204, 113, 0.08);
+}
+
+.value-table tr.ev-pos:hover {
+  background: rgba(46, 204, 113, 0.14);
+}
+
+.vb-match a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.vb-match a:hover strong {
+  text-decoration: underline;
+}
+
+.vb-vs {
+  color: var(--muted, #9aa4b2);
+  font-size: 0.8rem;
+  margin: 0 0.15rem;
+}
+
+.vb-odds {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.vb-pick small {
+  color: var(--muted, #9aa4b2);
+  font-weight: 400;
+}
+
+.vb-edge {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.vb-win {
+  color: #2ecc71;
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
+
+.vb-loss {
+  color: #e74c3c;
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
+
+/* Probability bar (H / D / A stacked) */
+.prob-bars {
+  display: flex;
+  width: 160px;
+  height: 18px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.66rem;
+  line-height: 18px;
+  color: #0b0e14;
+  font-weight: 700;
+}
+
+.prob-bars .pb {
+  text-align: center;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.prob-bars .pb-h { background: #4f9dff; }
+.prob-bars .pb-d { background: #b9c2d0; color: #1a1f29; }
+.prob-bars .pb-a { background: #ff7a59; }
+
+.roi-summary {
+  margin-top: 0.5rem;
+}

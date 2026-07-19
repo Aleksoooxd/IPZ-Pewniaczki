@@ -1,275 +1,246 @@
+<!-- REDESIGNED: match_detail.html -->
 {% extends "base.html" %}
 
 {% block title %}{{ match.home_team.name }} {{ _('vs') }} {{ match.away_team.name }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/match_detail.css') }}">
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 {% endblock %}
 
 {% block content %}
 <div class="match-detail-container">
-  <h1 class="match-title">
-    <span class="team-name">{{ match.home_team.name }}</span>
-    <span class="score-separator">
-      {% if match.fthg is not none and match.ftag is not none %}
-        <span class="score">{{ match.fthg }} - {{ match.ftag }}</span>
-      {% else %}
-        <span class="score">{{ _('vs') }}</span>
+  <div class="md-bg md-bg-home"
+       style="--logo: url('{{ url_for('static', filename='img/logos/512x512/' ~ match.home_team.name.lower().replace(' ', '-') ~ '.png') }}')"></div>
+  <div class="md-bg md-bg-away"
+       style="--logo: url('{{ url_for('static', filename='img/logos/512x512/' ~ match.away_team.name.lower().replace(' ', '-') ~ '.png') }}')"></div>
+  <!-- HERO CARD -->
+  <div class="match-hero card">
+    <div class="match-hero-team home">
+      <a href="{{ url_for('teams.team_view',
+      league_code=league_url_code,
+      season_name=match.season.name | string | replace('/', ' '),
+      team_name=match.home_team.name) }}"
+      class="hero-team-name hero-team-link">{{ match.home_team.name }}</a>
+      {% if home_form and home_form.team_placement %}
+        <span class="team-placement">{{ home_form.team_placement }}. {{ _('miejsce') }}</span>
       {% endif %}
-    </span>
-    <span class="team-name">{{ match.away_team.name }}</span>
-  </h1>
-
-  <div class="match-grid">
-    <div class="team-column home-team-column card">
-      <h2 class="team-header">
-  <img src="{{ url_for('static', filename='logos/' ~ match.home_team.team_id ~ '.png') }}" alt="{{ match.home_team.name }} logo" class="team-logo">
-
-  {{ match.home_team.name }}
-        {% if home_form and home_form.team_placement %}
-          <span class="team-placement">({{ home_form.team_placement }}. {{ _('miejsce') }})</span>
-        {% endif %}
-      </h2>
-
-      <div class="stat-section">
-        <h3>Elo</h3>
-        <p class="stat-value">{% if home_elo %}{{ home_elo | round(0) }}{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-      <div class="stat-section">
-        <h3>{{ _('Forma') }}</h3>
-        <p class="stat-description">{{ _('Ostatnie 5 meczów / Sezon:') }}</p>
-        <p class="stat-value">{% if home_form %}{{ home_form.form_last_5 }} / {{ home_form.form_season }}{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-      <div class="stat-section">
-        <h3>{{ _('Gole') }}</h3>
-        <p class="stat-description">{{ _('W ostatnich 5 meczach / Sezon:') }}</p>
-        <p class="stat-value">{% if home_form %}{{ home_form.goals_last_5|round(0) }} / {{ home_form.goals_season|round(0) }}{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-      <div class="stat-section">
-        <h3>{{ _('Wartość Rynkowa') }}</h3>
-        <p class="stat-value">{% if home_value %}{{ home_value }} M €{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-      <div class="stat-section">
-        <h3>{{ _('Średnie Kursy Bukmacherów (Zwycięstwo)') }}</h3>
-        <p class="stat-value">{% if home_stats %}{{ home_stats.mean | round(2) }}{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-
-      <div class="stat-section last-matches-section">
-        <h3>{{ _('Ostatnie 3 Mecze') }}</h3>
-        {% if home_last_3_matches %}
-          <div class="last-matches-grid">
-            {% for m, home_name, away_name in home_last_3_matches %}
-
-                {% set current_team_result_class = '' %}
-                {% set current_team_outcome_text = '' %}
-
-                {% if m.result %}
-                    {% if m.home_team_id == match.home_team.team_id %}
-                        {% if m.result == 'H' %}
-                            {% set current_team_result_class = 'outcome-win' %}
-                            {% set current_team_outcome_text = 'W' %}
-                        {% elif m.result == 'D' %}
-                            {% set current_team_result_class = 'outcome-draw' %}
-                            {% set current_team_outcome_text = 'D' %}
-                        {% else %}
-                            {% set current_team_result_class = 'outcome-loss' %}
-                            {% set current_team_outcome_text = 'L' %}
-                        {% endif %}
-                    {% else %}
-                        {% if m.result == 'A' %}
-                            {% set current_team_result_class = 'outcome-win' %}
-                            {% set current_team_outcome_text = 'W' %}
-                        {% elif m.result == 'D' %}
-                            {% set current_team_result_class = 'outcome-draw' %}
-                            {% set current_team_outcome_text = 'D' %}
-                        {% else %}
-                            {% set current_team_result_class = 'outcome-loss' %}
-                            {% set current_team_outcome_text = 'L' %}
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-                <a href="{{ url_for('main.match_detail', match_type='past', match_id=m.match_id) }}" class="past-match-card">
-                    <div class="past-match-teams">
-                        <span class="team">{{ home_name }}</span>
-                        <span class="vs-separator">{{ _('vs') }}</span>
-                        <span class="team">{{ away_name }}</span>
-                    </div>
-                    <div class="past-match-info">
-                        <span class="past-match-score">
-                            {{ m.fthg }} - {{ m.ftag }}
-                        </span>
-                        {% if current_team_outcome_text %}
-                            <span class="past-match-result {{ current_team_result_class }}">
-                                {{ current_team_outcome_text }}
-                            </span>
-                        {% endif %}
-                    </div>
-                </a>
-            {% endfor %}
-          </div>
-        {% else %}
-          <p>{{ _('Brak danych o ostatnich meczach.') }}</p>
-        {% endif %}
-      </div>
-
     </div>
 
-    <div class="middle-column card">
-      <div class="info-section">
-        <h3>{{ _('Informacje o meczu') }}</h3>
-        <p><strong>{{ _('Status:') }}</strong> <span class="status-badge status-{{ status }}">{{ status | capitalize }}</span></p>
-        <p><strong>{{ _('Data meczu:') }}</strong> {{ match.date.strftime('%d-%m-%Y') }}</p>
-        {% if match.time %}<p><strong>{{ _('Godzina:') }}</strong> {{ match.time }}</p>{% endif %}
-        <p><strong>{{ _('Liga:') }}</strong> {{ match.league.code | replace("premier league", _("Premier League")) | replace("spremier league", _("Scottish Premiership")) | title }}</p>
-        <p><strong>{{ _('Kolejka:') }}</strong> {{ match.home_matchday if match.home_matchday is not none else match.matchday }}</p>
-        <p class="surprise-status">
-          <strong>{{ _('Niespodzianka:') }}</strong>
-          {% if match.is_surprise is not none %}
-            {% if match.is_surprise %}✅ {{ _('Tak') }}{% else %}❌ {{ _('Nie') }}{% endif %}
-          {% else %}
-            {{ _('Brak danych') }}
-          {% endif %}
-        </p>
-      </div>
-
-      <div class="h2h-section">
-        <h3>{{ _('Bezpośrednie Mecze (H2H)') }}</h3>
-        {% if home_h2h_data and home_h2h_data.h2h_matches is not none %}
-          <p><strong>{{ _('Mecze:') }}</strong> {{ home_h2h_data.h2h_matches }}</p>
-          <p><strong>{{ _('Wygrane H:') }}</strong> {{ home_h2h_data.h2h_wins }} | <strong>{{ _('Remisy:') }}</strong> {{ home_h2h_data.h2h_draws }} | <strong>{{ _('Wygrane A:') }}</strong> {{ home_h2h_data.h2h_losses }}</p>
-          <p><strong>{{ _('Gole (H:A):') }}</strong> {{ home_h2h_data.h2h_goals_for }} : {{ home_h2h_data.h2h_goals_against }}</p>
-        {% else %}
-          <p>{{ _('Brak danych H2H') }}</p>
-        {% endif %}
-      </div>
-
-      <div class="predictions-section">
-        <h3>{{ _('Predykcje') }}</h3>
-        <ul class="predictions-list">
-          {% for p in predictions %}
-            <li>
-              <span class="predicted-result result-{{ p.predicted_result | lower }}">
-                {{ p.predicted_result }}
-              </span>
-              <span class="confidence">({{ _('Pewność:') }} {{ p.confidence | round(2) }})</span>
-            </li>
-          {% else %}
-            <li>{{ _('Brak predykcji') }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-
-      <div class="back-link">
-        <a href="{{ url_for('main.mainpage', date=match.date.strftime('%Y-%m-%d')) }}" class="button secondary">← {{ _('Wróć do listy meczów') }}</a>
+    <div class="match-hero-score">
+      {% if match.fthg is not none and match.ftag is not none %}
+        <span class="score-value">{{ match.fthg }} - {{ match.ftag }}</span>
+        <span class="score-label status-badge status-past">{{ _('Zakończony') }}</span>
+      {% else %}
+        <span class="score-value upcoming-vs">VS</span>
+        {% if match.time %}<span class="score-time">{{ match.time }}</span>{% endif %}
+        <span class="score-label status-badge status-upcoming">{{ _('Nadchodzący mecz') }}</span>
+      {% endif %}
+      <div class="match-meta-info">
+        <span>{{ match.date.strftime('%d-%m-%Y') }}</span>
+        <span>{{ _('Kolejka:') }} {{ match.round if match.round is not none else match.home_matchday }}</span>
       </div>
     </div>
 
-    <div class="team-column away-team-column card">
-      <h2 class="team-header">
-  <img src="{{ url_for('static', filename='logos/' ~ match.away_team.team_id ~ '.png') }}" alt="{{ match.away_team.name }} logo" class="team-logo">
-
-  {{ match.away_team.name }}
-
-        {% if away_form and away_form.team_placement %}
-          <span class="team-placement">({{ away_form.team_placement }}. {{ _('miejsce') }})</span>
-        {% endif %}
-      </h2>
-
-      <div class="stat-section">
-        <h3>Elo</h3>
-        <p class="stat-value">{% if away_elo %}{{ away_elo | round(0) }}{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-      <div class="stat-section">
-        <h3>{{ _('Forma') }}</h3>
-        <p class="stat-description">{{ _('Ostatnie 5 meczów / Sezon:') }}</p>
-        <p class="stat-value">{% if away_form %}{{ away_form.form_last_5 }} / {{ away_form.form_season }}{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-      <div class="stat-section">
-        <h3>{{ _('Gole') }}</h3>
-        <p class="stat-description">{{ _('W ostatnich 5 meczach / Sezon:') }}</p>
-        <p class="stat-value">{% if away_form %}{{ away_form.goals_last_5|round(0) }} / {{ away_form.goals_season|round(0) }}{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-      <div class="stat-section">
-        <h3>{{ _('Wartość Rynkowa') }}</h3>
-        <p class="stat-value">{% if away_value %}{{ away_value }} M €{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-      <div class="stat-section">
-        <h3>{{ _('Średnie Kursy Bukmacherów (Zwycięstwo)') }}</h3>
-        <p class="stat-value">{% if away_stats %}{{ away_stats.mean | round(2) }}{% else %}{{ _('Brak danych') }}{% endif %}</p>
-      </div>
-
-
-      <div class="stat-section last-matches-section">
-        <h3>{{ _('Ostatnie 3 Mecze') }}</h3>
-        {% if away_last_3_matches %}
-          <div class="last-matches-grid">
-            {% for m, home_name, away_name in away_last_3_matches %}
-
-                {% set current_team_result_class = '' %}
-                {% set current_team_outcome_text = '' %}
-
-                {% if m.result %}
-                    {% if m.home_team_id == match.away_team.team_id %}
-                        {% if m.result == 'H' %}
-                            {% set current_team_result_class = 'outcome-win' %}
-                            {% set current_team_outcome_text = 'W' %}
-                        {% elif m.result == 'D' %}
-                            {% set current_team_result_class = 'outcome-draw' %}
-                            {% set current_team_outcome_text = 'D' %}
-                        {% else %}
-                            {% set current_team_result_class = 'outcome-loss' %}
-                            {% set current_team_outcome_text = 'L' %}
-                        {% endif %}
-                    {% else %}
-                        {% if m.result == 'A' %}
-                            {% set current_team_result_class = 'outcome-win' %}
-                            {% set current_team_outcome_text = 'W' %}
-                        {% elif m.result == 'D' %}
-                            {% set current_team_result_class = 'outcome-draw' %}
-                            {% set current_team_outcome_text = 'D' %}
-                        {% else %}
-                            {% set current_team_result_class = 'outcome-loss' %}
-                            {% set current_team_outcome_text = 'L' %}
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-
-                <a href="{{ url_for('main.match_detail', match_type='past', match_id=m.match_id) }}" class="past-match-card">
-                    <div class="past-match-teams">
-                        <span class="team">{{ home_name }}</span>
-                        <span class="vs-separator">{{ _('vs') }}</span>
-                        <span class="team">{{ away_name }}</span>
-                    </div>
-                    <div class="past-match-info">
-                        <span class="past-match-score">
-                            {{ m.fthg }} - {{ m.ftag }}
-                        </span>
-                        {% if current_team_outcome_text %}
-                            <span class="past-match-result {{ current_team_result_class }}">
-                                {{ current_team_outcome_text }}
-                            </span>
-                        {% endif %}
-                    </div>
-                </a>
-            {% endfor %}
-          </div>
-        {% else %}
-          <p>{{ _('Brak danych o ostatnich meczach.') }}</p>
-        {% endif %}
-      </div>
-
+    <div class="match-hero-team away">
+      <a href="{{ url_for('teams.team_view',
+      league_code=league_url_code,
+      season_name=match.season.name | string | replace('/', ' '),
+      team_name=match.away_team.name) }}"
+      class="hero-team-name hero-team-link">{{ match.away_team.name }}</a>
+      {% if away_form and away_form.team_placement %}
+        <span class="team-placement">{{ away_form.team_placement }}. {{ _('miejsce') }}</span>
+      {% endif %}
     </div>
   </div>
+
+  <!-- PREDICTION BADGE: three outcome cards (H / D / A) -->
+  {% if predictions %}
+  <div class="prediction-hero">
+    {% for p in predictions %}
+      {% set max_prob = [p.prob_home, p.prob_draw, p.prob_away] | max %}
+      {% for label, val in [('H', p.prob_home), ('D', p.prob_draw), ('A', p.prob_away)] %}
+      <div class="prediction-main-badge result-{{ label | lower }} {% if val == max_prob %}is-top{% endif %} {% if val != max_prob %}is-faded{% endif %}">
+        <span class="pred-label">{{ _('Predykcja') }}</span>
+        <span class="pred-result">{{ label }}</span>
+        <span class="pred-confidence">{{ (val * 100) | round(1) }}%</span>
+      </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- STATS GRID -->
+  <div class="stats-grid">
+
+    <!-- HOME TEAM STATS -->
+    <div class="stat-card card">
+      <h3>{{ match.home_team.name }} — {{ _('Statystyki') }}</h3>
+      <div class="stat-row">
+        <span class="stat-label">ELO</span>
+        <span class="stat-val accent">{% if home_elo %}{{ home_elo | round(0) }}{% else %}{{ _('Brak danych') }}{% endif %}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">{{ _('Forma') }} (L5 / {{ _('Sezon') }})</span>
+        <span class="stat-val">{% if home_form %}{{ home_form.form_last_5 }} / {{ home_form.form_season }}{% else %}{{ _('Brak danych') }}{% endif %}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">{{ _('Gole') }} (L5 / {{ _('Sezon') }})</span>
+        <span class="stat-val">{% if home_form %}{{ home_form.goals_last_5|round(0) }} / {{ home_form.goals_season|round(0) }}{% else %}{{ _('Brak danych') }}{% endif %}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">{{ _('Śr. kurs (bukmacher)') }}</span>
+        <span class="stat-val">{% if home_stats %}{{ home_stats.mean | round(2) }}{% else %}{{ _('Brak danych') }}{% endif %}</span>
+      </div>
+    </div>
+
+    <!-- AWAY TEAM STATS -->
+    <div class="stat-card card">
+      <h3>{{ match.away_team.name }} — {{ _('Statystyki') }}</h3>
+      <div class="stat-row">
+        <span class="stat-label">ELO</span>
+        <span class="stat-val accent">{% if away_elo %}{{ away_elo | round(0) }}{% else %}{{ _('Brak danych') }}{% endif %}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">{{ _('Forma') }} (L5 / {{ _('Sezon') }})</span>
+        <span class="stat-val">{% if away_form %}{{ away_form.form_last_5 }} / {{ away_form.form_season }}{% else %}{{ _('Brak danych') }}{% endif %}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">{{ _('Gole') }} (L5 / {{ _('Sezon') }})</span>
+        <span class="stat-val">{% if away_form %}{{ away_form.goals_last_5|round(0) }} / {{ away_form.goals_season|round(0) }}{% else %}{{ _('Brak danych') }}{% endif %}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">{{ _('Śr. kurs (bukmacher)') }}</span>
+        <span class="stat-val">{% if away_stats %}{{ away_stats.mean | round(2) }}{% else %}{{ _('Brak danych') }}{% endif %}</span>
+      </div>
+    </div>
+
+    <!-- H2H -->
+    <div class="stat-card card">
+      <h3>{{ _('Bezpośrednie Mecze (Bilans Gospodarza)') }}</h3>
+      {% if home_h2h_data and home_h2h_data.h2h_matches is not none %}
+        <div class="stat-row"><span class="stat-label">{{ _('Mecze') }}</span><span class="stat-val">{{ home_h2h_data.h2h_matches }}</span></div>
+        <div class="stat-row">
+          <span class="stat-label">W / D / L</span>
+          <span class="stat-val">
+            <span class="outcome-win">{{ home_h2h_data.h2h_wins }}</span> /
+            <span class="outcome-draw">{{ home_h2h_data.h2h_draws }}</span> /
+            <span class="outcome-loss">{{ home_h2h_data.h2h_losses }}</span>
+          </span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">{{ _('Gole (H:A)') }}</span>
+          <span class="stat-val">{{ home_h2h_data.h2h_goals_for }} : {{ home_h2h_data.h2h_goals_against }}</span>
+        </div>
+      {% else %}
+        <p class="info-message">{{ _('Brak danych H2H') }}</p>
+      {% endif %}
+    </div>
+
+    <!-- MATCH INFO -->
+    <div class="stat-card card">
+      <h3>{{ _('Informacje o meczu') }}</h3>
+      <div class="stat-row">
+        <span class="stat-label">{{ _('Status') }}</span>
+        <span class="stat-val"><span class="status-badge status-{{ status }}">{{ status | capitalize }}</span></span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">{{ _('Liga') }}</span>
+        <span class="stat-val">{{ LEAGUE_DB_DISPLAY.get(match.league.code, match.league.code) }}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">{{ _('Niespodzianka') }}</span>
+        <span class="stat-val">
+          {% if match.is_surprise is not none %}
+            {% if match.is_surprise %}✅ {{ _('Tak') }}{% else %}❌ {{ _('Nie') }}{% endif %}
+          {% else %}{{ _('Brak danych') }}{% endif %}
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LAST MATCHES -->
+  <div class="last-matches-section">
+    <div class="last-matches-col">
+      <h3>{{ match.home_team.name }} — {{ _('Ostatnie 3 Mecze') }}</h3>
+      {% if home_last_3_matches %}
+        <div class="past-matches-list">
+          {% for m, home_name, away_name in home_last_3_matches %}
+            {% set current_team_result_class = '' %}
+            {% set current_team_outcome_text = '' %}
+            {% if m.result %}
+              {% if m.home_team_id == match.home_team.team_id %}
+                {% if m.result == 'H' %}{% set current_team_result_class = 'outcome-win' %}{% set current_team_outcome_text = 'W' %}
+                {% elif m.result == 'D' %}{% set current_team_result_class = 'outcome-draw' %}{% set current_team_outcome_text = 'D' %}
+                {% else %}{% set current_team_result_class = 'outcome-loss' %}{% set current_team_outcome_text = 'L' %}{% endif %}
+              {% else %}
+                {% if m.result == 'A' %}{% set current_team_result_class = 'outcome-win' %}{% set current_team_outcome_text = 'W' %}
+                {% elif m.result == 'D' %}{% set current_team_result_class = 'outcome-draw' %}{% set current_team_outcome_text = 'D' %}
+                {% else %}{% set current_team_result_class = 'outcome-loss' %}{% set current_team_outcome_text = 'L' %}{% endif %}
+              {% endif %}
+            {% endif %}
+            <a href="{{ url_for('matches.match_detail', match_type='past', match_id=m.match_id) }}" class="past-match-card">
+              <div class="past-match-teams">
+                <span>{{ home_name }}</span>
+                <span class="vs-sep">vs</span>
+                <span>{{ away_name }}</span>
+              </div>
+              <div class="past-match-result-row">
+                <span class="past-score">{{ m.fthg }} - {{ m.ftag }}</span>
+                {% if current_team_outcome_text %}
+                  <span class="outcome-badge {{ current_team_result_class }}">{{ current_team_outcome_text }}</span>
+                {% endif %}
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="info-message">{{ _('Brak danych o ostatnich meczach.') }}</p>
+      {% endif %}
+    </div>
+
+    <div class="last-matches-col">
+      <h3>{{ match.away_team.name }} — {{ _('Ostatnie 3 Mecze') }}</h3>
+      {% if away_last_3_matches %}
+        <div class="past-matches-list">
+          {% for m, home_name, away_name in away_last_3_matches %}
+            {% set current_team_result_class = '' %}
+            {% set current_team_outcome_text = '' %}
+            {% if m.result %}
+              {% if m.home_team_id == match.away_team.team_id %}
+                {% if m.result == 'H' %}{% set current_team_result_class = 'outcome-win' %}{% set current_team_outcome_text = 'W' %}
+                {% elif m.result == 'D' %}{% set current_team_result_class = 'outcome-draw' %}{% set current_team_outcome_text = 'D' %}
+                {% else %}{% set current_team_result_class = 'outcome-loss' %}{% set current_team_outcome_text = 'L' %}{% endif %}
+              {% else %}
+                {% if m.result == 'A' %}{% set current_team_result_class = 'outcome-win' %}{% set current_team_outcome_text = 'W' %}
+                {% elif m.result == 'D' %}{% set current_team_result_class = 'outcome-draw' %}{% set current_team_outcome_text = 'D' %}
+                {% else %}{% set current_team_result_class = 'outcome-loss' %}{% set current_team_outcome_text = 'L' %}{% endif %}
+              {% endif %}
+            {% endif %}
+            <a href="{{ url_for('matches.match_detail', match_type='past', match_id=m.match_id) }}" class="past-match-card">
+              <div class="past-match-teams">
+                <span>{{ home_name }}</span><span class="vs-sep">vs</span><span>{{ away_name }}</span>
+              </div>
+              <div class="past-match-result-row">
+                <span class="past-score">{{ m.fthg }} - {{ m.ftag }}</span>
+                {% if current_team_outcome_text %}
+                  <span class="outcome-badge {{ current_team_result_class }}">{{ current_team_outcome_text }}</span>
+                {% endif %}
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="info-message">{{ _('Brak danych o ostatnich meczach.') }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="back-link">
+    <a href="{{ url_for('main.mainpage', date=match.date.strftime('%Y-%m-%d')) }}" class="button secondary">
+      ← {{ _('Wróć do listy meczów') }}
+    </a>
+  </div>
+
 </div>
 {% endblock %}

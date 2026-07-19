@@ -3,6 +3,10 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 *.iml
 src/flask_app/app/secrets.json
+flask_app/app/static/img/flags
+flask_app/app/static/img/logos
+src/flask_app/app/local.db
+local.*
 src/__pycache__/
 venv/
 .idea/
@@ -14,7 +18,8 @@ venv/
 .idea/**/shelf
 # AWS User-specific
 .idea/**/aws.xml
-
+src/flask_app/app/translations/*/LC_MESSAGES/messages.mo
+src/flask_app/app/translations/messages.pot
 # Generated files
 .idea/**/contentModel.xml
 
@@ -26,7 +31,9 @@ venv/
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
+/src/flask_app/app/static/img/**/**.png
+.env
+.**env
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries

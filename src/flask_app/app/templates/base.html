@@ -1,74 +1,103 @@
+<!-- REDESIGNED: base.html -->
 <!DOCTYPE html>
 <html lang="{{ g.lang }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{% block title %}{{ _('Pewniaczki') }}{% endblock %}</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/pewniaczkilogo.ico') }}" type="image/x-icon">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   {% block extra_css %}{% endblock %}
-
   <style>
-    body {
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-    }
-    body.theme-loaded {
-      visibility: visible;
-      opacity: 1;
-    }
+    /* Only hide content when JS is available (set synchronously below).
+       Without JS the page stays visible — no blank screen. */
+    html.js-loading body { visibility: hidden; opacity: 0; transition: opacity 0.5s ease-in-out; }
+    html.js-loading body.theme-loaded { visibility: visible; opacity: 1; }
   </style>
-
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme') || 'dark';
+        if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      } catch (e) {}
+      document.documentElement.classList.add('js-loading');
+    })();
+  </script>
 </head>
-<body>
-  <header>
-    <a href="{{ url_for('main.mainpage') }}" class="logo">
-      <img src="/static/pewniaczkilogo.png" alt="Logo" />
-      <p>{{ _('Predykcje wyników meczów piłkarskich') }}</p>
+<body class="{% block body_class %}{% endblock %}">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
+    <h3>{{ _('Ligi') }}</h3>
+    <ul class="sidebar-links">
+      {% for lg in LEAGUES %}
+      <li><a href="{{ url_for('leagues.league_view', league_code=lg.url_code) }}" data-league-code="{{ lg.url_code }}">{{ lg.display }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  <header class="navbar">
+    <a href="/" class="logo">
+      <img src="{{ url_for('static', filename='img/pewniaczkilogo.png') }}" alt="Logo" class="logo-img"/>
+      <span class="logo-text">PEWNIACZKI</span>
     </a>
+
+    <nav class="nav-links">
+      <a href="{{ url_for('main.mainpage') }}" class="nav-link">⚽ {{ _('Mecze') }}</a>
+      <a href="#" class="nav-link" role="button" onclick="toggleSidebar(); return false;">🏆 {{ _('Ligi') }}</a>
+      <a href="{{ url_for('stats.system_stats') }}" class="nav-link">📊 {{ _('Info') }}</a>
+      <a href="{{ url_for('value.value_bets') }}" class="nav-link">💰 {{ _('Pewniaczki') }}</a>
+    </nav>
+
     <div class="header-right-actions">
-        <div class="language-dropdown"> {# Nowy kontener dla dropdown #}
-            {% set current_endpoint = request.endpoint %}
-            {% set current_args = request.view_args.copy() %}
-
-            {# Zaktualizowana lista wszystkich języków #}
-            {% set all_langs = ['en', 'de', 'es', 'pt', 'cs', 'da', 'pl', 'ja', 'sv', 'it', 'tr', 'hr','he'] %}
-            {% set current_lang_code = g.lang %}
-            {% set current_lang_name = lang_code_to_display_name(current_lang_code) %}
-
-            <details>
-                <summary>
-                    <img src="{{ url_for('static', filename='flags/') }}{{ current_lang_code }}.png"
-                         alt="{{ _(current_lang_name) }}"
-                         title="{{ _('Zmień język') }}"
-                         class="lang-flag current-flag">
-                    <span class="lang-text">{{ _(current_lang_name) }}</span>
-                </summary>
-                <ul class="dropdown-menu">
-                    {% for lang_code in all_langs %}
-                        {% if lang_code != current_lang_code %} {# Nie pokazujemy aktualnie wybranego języka w liście #}
-                            {% set lang_name = lang_code_to_display_name(lang_code) %}
-                            {% set current_args_for_lang = current_args.copy() %}
-                            {% do current_args_for_lang.update({'lang': lang_code}) %}
-                            <li>
-                                <a href="{{ url_for(current_endpoint, **current_args_for_lang) }}">
-                                    <img src="{{ url_for('static', filename='flags/') }}{{ lang_code }}.png"
-                                         alt="{{ _(lang_name) }}"
-                                         title="{{ _(lang_name) }}"
-                                         class="lang-flag">
-                                    <span class="lang-text">{{ _(lang_name) }}</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            </details>
-        </div>
-        <button id="theme-toggle" class="theme-toggle">
-          <span class="icon light-icon">☀️</span>
-          <span class="icon dark-icon">🌙</span>
+      <div class="search-container" id="searchContainer">
+        <button type="button" class="search-toggle" id="searchToggle" aria-label="{{ _('Szukaj') }}" aria-expanded="false">
+          <span aria-hidden="true">🔍</span>
         </button>
+        <form class="search-form" id="searchForm" role="search" onsubmit="return false;">
+          <input type="search" id="searchInput" class="search-input"
+                 placeholder="{{ _('Szukaj zespołu, ligi, meczu…') }}"
+                 autocomplete="off" aria-label="{{ _('Szukaj') }}" />
+        </form>
+        <div class="search-results" id="searchResults" hidden></div>
+      </div>
+      <div class="header-links">
+          <a href="https://github.com/Aleksoooxd/IPZ-Pewniaczki" target="_blank" rel="noopener" class="footer-link">GitHub</a>
+      </div>
+      <div class="language-dropdown">
+        {% set current_endpoint = request.endpoint %}
+        {% set current_args = request.view_args.copy() %}
+        {% set all_langs = ['en', 'pl'] %}
+        {% set current_lang_code = g.lang %}
+        {% set current_lang_name = lang_code_to_display_name(current_lang_code) %}
+        <details>
+          <summary>
+            <img src="{{ url_for('static', filename='img/flags/') }}{{ current_lang_code }}.png"
+                 alt="{{ current_lang_name }}"
+                 title="{{ lang_name }}"
+                 class="lang-flag current-flag">
+          </summary>
+          <ul class="dropdown-menu">
+            {% for lang_code in all_langs %}
+              {% if lang_code != current_lang_code %}
+                {% set lang_name = lang_code_to_display_name(lang_code) %}
+                {% set current_args_for_lang = current_args.copy() %}
+                {% do current_args_for_lang.update({'lang': lang_code}) %}
+                <li>
+                  <a href="{{ url_for(current_endpoint, **current_args_for_lang) }}">
+                    <img src="{{ url_for('static', filename='img/flags/') }}{{ lang_code }}.png"
+                         alt="{{ _(lang_name) }}" title="{{ _(lang_name) }}" class="lang-flag">
+                    <span class="lang-text">{{ lang_name }}</span>
+                  </a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </details>
+      </div>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        <span class="icon light-icon">☀️</span>
+        <span class="icon dark-icon">🌙</span>
+      </button>
     </div>
   </header>
 
@@ -76,37 +105,16 @@
     {% block content %}{% endblock %}
   </main>
 
-  <footer>
-    &copy; 2025 Pewniaczki ⚽ {{ _('Wszystkie prawa zastrzeżone.') }}
+  <footer class="site-footer">
+    <span>&copy; 2026 <strong>PEWNIACZKI</strong> {{ _('Wszystkie prawa zastrzeżone.') }}</span>
   </footer>
 
-  {# Scroll to top button #}
-  <button id="scrollToTopBtn" class="scroll-to-top-btn">
-    ⬆
-    <span>TOP</span>
-  </button>
+  <button id="scrollToTopBtn" class="scroll-to-top-btn">⬆<span>TOP</span></button>
 
-  <script src="{{ url_for('static', filename='js/theme-toggle.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/search.js') }}"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
-  <script>
-    const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-
-    window.onscroll = function() {
-      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        scrollToTopBtn.style.display = "block";
-      } else {
-        scrollToTo0Btn.style.display = "none";
-      }
-    };
-
-    scrollToTopBtn.addEventListener("click", function() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  </script>
   {% block extra_script %}{% endblock %}
 </body>
 </html>

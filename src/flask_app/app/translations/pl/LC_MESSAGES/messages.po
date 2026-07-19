@@ -1,0 +1,667 @@
+# Polish translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-07-17 14:19+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pl\n"
+"Language-Team: pl <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: templates/MainPage.html:3
+msgid "Pewniaczki - Mecze"
+msgstr ""
+
+#: templates/MainPage.html:14
+msgid "Wybierz datę:"
+msgstr ""
+
+#: templates/MainPage.html:16
+msgid "Pokaż mecze"
+msgstr ""
+
+#: templates/MainPage.html:19
+msgid "Filtruj ligę:"
+msgstr ""
+
+#: templates/MainPage.html:21
+msgid "Wszystkie ligi"
+msgstr ""
+
+#: templates/MainPage.html:25
+msgid "Sortuj według:"
+msgstr ""
+
+#: templates/MainPage.html:27
+msgid "Ligi (A-Z)"
+msgstr ""
+
+#: templates/MainPage.html:28
+msgid "Godziny (rosnąco)"
+msgstr ""
+
+#: templates/MainPage.html:44
+msgid "Proszę wybrać datę przed kliknięciem \"Pokaż mecze\"."
+msgstr ""
+
+#: templates/MainPage.html:45
+msgid "Brak meczów dla wybranej daty."
+msgstr ""
+
+#: templates/MainPage.html:46
+msgid "Wystąpił błąd przy ładowaniu meczów."
+msgstr ""
+
+#: templates/MainPage.html:47 templates/match_detail.html:32
+#: templates/system_stats.html:95 templates/system_stats.html:174
+msgid "Zakończony"
+msgstr ""
+
+#: templates/MainPage.html:48
+msgid "Nadchodzący"
+msgstr ""
+
+#: templates/base.html:7 templates/base.html:47 templates/value_bets.html:3
+#: templates/value_bets.html:13
+msgid "Pewniaczki"
+msgstr ""
+
+#: templates/base.html:30 templates/base.html:45 templates/system_stats.html:52
+msgid "Ligi"
+msgstr ""
+
+#: templates/base.html:44 templates/match_detail.html:121
+#: templates/system_stats.html:217
+msgid "Mecze"
+msgstr ""
+
+#: templates/base.html:46
+msgid "Info"
+msgstr ""
+
+#: templates/base.html:52 templates/base.html:58
+msgid "Szukaj"
+msgstr ""
+
+#: templates/base.html:57
+msgid "Szukaj zespołu, ligi, meczu…"
+msgstr ""
+
+#: templates/base.html:108
+msgid "Wszystkie prawa zastrzeżone."
+msgstr ""
+
+#: templates/index.html:4
+msgid "Pewniaczki - Predykcje"
+msgstr ""
+
+#: templates/index.html:16
+msgid "Predykcje wyników meczów piłkarskich oparte na ML"
+msgstr ""
+
+#: templates/index.html:18
+msgid "Sprawdź dzisiejsze mecze"
+msgstr ""
+
+#: templates/league_view.html:4 templates/match_detail.html:147
+#: templates/value_bets.html:40 templates/value_history.html:55
+msgid "Liga"
+msgstr ""
+
+#: templates/league_view.html:29 templates/league_view.html:44
+msgid "Sezon:"
+msgstr ""
+
+#: templates/league_view.html:31
+msgid "Wszystkie sezony"
+msgstr ""
+
+#: templates/league_view.html:44
+msgid "Tabela Ligowa"
+msgstr ""
+
+#: templates/league_view.html:54
+msgid "Drużyna"
+msgstr ""
+
+#: templates/league_view.html:55
+msgid "M"
+msgstr ""
+
+#: templates/league_view.html:56
+msgid "Z"
+msgstr ""
+
+#: templates/league_view.html:57
+msgid "R"
+msgstr ""
+
+#: templates/league_view.html:58
+msgid "P"
+msgstr ""
+
+#: templates/league_view.html:59
+msgid "GZ"
+msgstr ""
+
+#: templates/league_view.html:60
+msgid "GS"
+msgstr ""
+
+#: templates/league_view.html:62 templates/system_stats.html:74
+#: templates/team.html:135
+msgid "ELO"
+msgstr ""
+
+#: templates/league_view.html:63
+msgid "Pkt"
+msgstr ""
+
+#: templates/league_view.html:99
+msgid "Europejskie Puchary"
+msgstr ""
+
+#: templates/league_view.html:100
+msgid "Strefa spadkowa"
+msgstr ""
+
+#: templates/league_view.html:104
+msgid "Brak danych tabeli dla sezonu:"
+msgstr ""
+
+#: templates/league_view.html:106
+msgid "Wybierz konkretny sezon, aby wyświetlić tabelę ligową."
+msgstr ""
+
+#: templates/match_detail.html:4
+msgid "vs"
+msgstr ""
+
+#: templates/match_detail.html:25 templates/match_detail.html:51
+msgid "miejsce"
+msgstr ""
+
+#: templates/match_detail.html:36
+msgid "Nadchodzący mecz"
+msgstr ""
+
+#: templates/match_detail.html:40
+msgid "Kolejka:"
+msgstr ""
+
+#: templates/match_detail.html:63
+msgid "Predykcja"
+msgstr ""
+
+#: templates/match_detail.html:77 templates/match_detail.html:98
+msgid "Statystyki"
+msgstr ""
+
+#: templates/match_detail.html:80 templates/match_detail.html:84
+#: templates/match_detail.html:88 templates/match_detail.html:92
+#: templates/match_detail.html:101 templates/match_detail.html:105
+#: templates/match_detail.html:109 templates/match_detail.html:113
+#: templates/match_detail.html:155 templates/value_history.html:45
+msgid "Brak danych"
+msgstr ""
+
+#: templates/match_detail.html:83 templates/match_detail.html:104
+msgid "Forma"
+msgstr ""
+
+#: templates/match_detail.html:83 templates/match_detail.html:87
+#: templates/match_detail.html:104 templates/match_detail.html:108
+#: templates/system_stats.html:124 templates/system_stats.html:149
+msgid "Sezon"
+msgstr ""
+
+#: templates/match_detail.html:87 templates/match_detail.html:108
+msgid "Gole"
+msgstr ""
+
+#: templates/match_detail.html:91 templates/match_detail.html:112
+msgid "Śr. kurs (bukmacher)"
+msgstr ""
+
+#: templates/match_detail.html:119
+msgid "Bezpośrednie Mecze (Bilans Gospodarza)"
+msgstr ""
+
+#: templates/match_detail.html:131
+msgid "Gole (H:A)"
+msgstr ""
+
+#: templates/match_detail.html:135
+msgid "Brak danych H2H"
+msgstr ""
+
+#: templates/match_detail.html:141
+msgid "Informacje o meczu"
+msgstr ""
+
+#: templates/match_detail.html:143
+msgid "Status"
+msgstr ""
+
+#: templates/match_detail.html:151
+msgid "Niespodzianka"
+msgstr ""
+
+#: templates/match_detail.html:154
+msgid "Tak"
+msgstr ""
+
+#: templates/match_detail.html:154
+msgid "Nie"
+msgstr ""
+
+#: templates/match_detail.html:165 templates/match_detail.html:203
+msgid "Ostatnie 3 Mecze"
+msgstr ""
+
+#: templates/match_detail.html:198 templates/match_detail.html:234
+msgid "Brak danych o ostatnich meczach."
+msgstr ""
+
+#: templates/match_detail.html:241
+msgid "Wróć do listy meczów"
+msgstr ""
+
+#: templates/system_stats.html:3 templates/system_stats.html:13
+msgid "Statystyki systemu"
+msgstr ""
+
+#: templates/system_stats.html:12
+msgid "Panel analityczny"
+msgstr ""
+
+#: templates/system_stats.html:15
+msgid ""
+"Podsumowanie danych, rekordów ELO, największych zaskoczeń i czasu "
+"przetwarzania."
+msgstr ""
+
+#: templates/system_stats.html:21
+msgid "Ostatnia aktualizacja"
+msgstr ""
+
+#: templates/system_stats.html:26
+msgid "na żywo"
+msgstr ""
+
+#: templates/system_stats.html:37
+msgid "Brak statystyk"
+msgstr ""
+
+#: templates/system_stats.html:38
+msgid "Brak danych w bazie. Wykonaj scraping, aby wypełnić statystyki."
+msgstr ""
+
+#: templates/system_stats.html:44
+msgid "Drużyny"
+msgstr ""
+
+#: templates/system_stats.html:48
+msgid "Sezony"
+msgstr ""
+
+#: templates/system_stats.html:56
+msgid "Mecze historyczne"
+msgstr ""
+
+#: templates/system_stats.html:60
+msgid "Przyszłe mecze"
+msgstr ""
+
+#: templates/system_stats.html:67
+msgid "Czasy przetwarzania"
+msgstr ""
+
+#: templates/system_stats.html:70
+msgid "Scraping"
+msgstr ""
+
+#: templates/system_stats.html:78
+msgid "Predykcja ML"
+msgstr ""
+
+#: templates/system_stats.html:85
+msgid "Największy upset modelu ML"
+msgstr ""
+
+#: templates/system_stats.html:98
+msgid "pewność błędnej predykcji"
+msgstr ""
+
+#: templates/system_stats.html:105
+msgid "Brak błędnych predykcji do analizy."
+msgstr ""
+
+#: templates/system_stats.html:110
+msgid "Najwyższe ELO"
+msgstr ""
+
+#: templates/system_stats.html:122
+msgid "Rekord sezonu"
+msgstr ""
+
+#: templates/system_stats.html:125 templates/system_stats.html:150
+msgid "Rating ELO"
+msgstr ""
+
+#: templates/system_stats.html:130 templates/system_stats.html:155
+msgid "Brak danych ELO."
+msgstr ""
+
+#: templates/system_stats.html:135
+msgid "Najniższe ELO"
+msgstr ""
+
+#: templates/system_stats.html:147
+msgid "Najtrudniejszy moment"
+msgstr ""
+
+#: templates/system_stats.html:160
+msgid "Mecz z największą liczbą goli"
+msgstr ""
+
+#: templates/system_stats.html:180
+msgid "Brak danych meczowych."
+msgstr ""
+
+#: templates/system_stats.html:185
+msgid "Wydajność modelu"
+msgstr ""
+
+#: templates/system_stats.html:189
+msgid "Dokładność (test)"
+msgstr ""
+
+#: templates/system_stats.html:193
+msgid "Baza (faworyt ELO)"
+msgstr ""
+
+#: templates/system_stats.html:197
+msgid "Log loss"
+msgstr ""
+
+#: templates/system_stats.html:201
+msgid "Próbki (trening / test)"
+msgstr ""
+
+#: templates/system_stats.html:205
+msgid "Macro-F1"
+msgstr ""
+
+#: templates/system_stats.html:214
+msgid "Dokładność per klasa"
+msgstr ""
+
+#: templates/system_stats.html:217
+msgid "Klasa"
+msgstr ""
+
+#: templates/system_stats.html:217
+msgid "Czułość"
+msgstr ""
+
+#: templates/system_stats.html:217
+msgid "Precyzja"
+msgstr ""
+
+#: templates/system_stats.html:233
+msgid "Macierz pomyłek"
+msgstr ""
+
+#: templates/system_stats.html:267
+msgid "Wiersze = prawdziwy wynik"
+msgstr ""
+
+#: templates/system_stats.html:268
+msgid "Kolumny = predykcja"
+msgstr ""
+
+#: templates/system_stats.html:271
+msgid "poprawna predykcja"
+msgstr ""
+
+#: templates/system_stats.html:272
+msgid "błąd"
+msgstr ""
+
+#: templates/system_stats.html:275
+msgid "H = wygrana gospodarza, D = remis, A = wygrana gościa."
+msgstr ""
+
+#: templates/system_stats.html:281
+msgid "Uruchom run-predict, aby policzyć metryki per klasa i macierz pomyłek."
+msgstr ""
+
+#: templates/system_stats.html:284
+msgid "Model przewyższa naiwną bazę faworyta ELO."
+msgstr ""
+
+#: templates/system_stats.html:286
+msgid "Model nie przewyższa naiwnej bazy faworyta ELO."
+msgstr ""
+
+#: templates/system_stats.html:289
+msgid "Brak wyników modelu. Uruchom predykcję (run-predict)."
+msgstr ""
+
+#: templates/team.html:3
+msgid "Szczegóły Drużyny"
+msgstr ""
+
+#: templates/team.html:41
+msgid "Mistrz sezonu"
+msgstr ""
+
+#: templates/team.html:53
+msgid "Historia rankingu ELO"
+msgstr ""
+
+#: templates/team.html:57
+msgid "Historia pozycji w lidze"
+msgstr ""
+
+#: templates/team.html:63
+msgid "Podsumowanie - wszystkie sezony"
+msgstr ""
+
+#: templates/team.html:67
+msgid "Aktualne ELO"
+msgstr ""
+
+#: templates/team.html:71
+msgid "Śr. pozycja"
+msgstr ""
+
+#: templates/team.html:75 templates/team.html:109
+msgid "Śr. pkt/mecz"
+msgstr ""
+
+#: templates/team.html:84
+msgid "ELO w trakcie sezonu"
+msgstr ""
+
+#: templates/team.html:85
+msgid "Punkty w trakcie sezonu"
+msgstr ""
+
+#: templates/team.html:86 templates/team.html:136
+msgid "Pozycja w lidze"
+msgstr ""
+
+#: templates/team.html:87
+msgid "Gole strzelone (kumulacyjnie)"
+msgstr ""
+
+#: templates/team.html:88
+msgid "Gole stracone (kumulacyjnie)"
+msgstr ""
+
+#: templates/team.html:89
+msgid "Wyniki meczów (kumulatywnie)"
+msgstr ""
+
+#: templates/team.html:93
+msgid "Podsumowanie sezonu"
+msgstr ""
+
+#: templates/team.html:97
+msgid "Śr. gole strzelone"
+msgstr ""
+
+#: templates/team.html:101
+msgid "Śr. gole stracone"
+msgstr ""
+
+#: templates/team.html:105
+msgid "Pozycja końcowa"
+msgstr ""
+
+#: templates/team.html:117
+msgid "Powrót do ligi"
+msgstr ""
+
+#: templates/team.html:137
+msgid "Punkty"
+msgstr ""
+
+#: templates/team.html:138
+msgid "Gole strzelone"
+msgstr ""
+
+#: templates/team.html:139
+msgid "Gole stracone"
+msgstr ""
+
+#: templates/team.html:140
+msgid "Kolejka"
+msgstr ""
+
+#: templates/team.html:141
+msgid "Liczba"
+msgstr ""
+
+#: templates/team.html:142
+msgid "Zwycięstwa"
+msgstr ""
+
+#: templates/team.html:143
+msgid "Remisy"
+msgstr ""
+
+#: templates/team.html:144
+msgid "Porażki"
+msgstr ""
+
+#: templates/value_bets.html:12
+msgid "Kalkulator wartości"
+msgstr ""
+
+#: templates/value_bets.html:15
+msgid ""
+"Nadchodzące mecze z pozytywną wartością oczekiwaną (EV) — model vs. kursy"
+" bukmachera."
+msgstr ""
+
+#: templates/value_bets.html:19
+msgid "Znalezione +EV"
+msgstr ""
+
+#: templates/value_bets.html:25 templates/value_history.html:3
+#: templates/value_history.html:13
+msgid "Historia EV"
+msgstr ""
+
+#: templates/value_bets.html:30
+msgid "Brak kursów"
+msgstr ""
+
+#: templates/value_bets.html:31
+msgid "Brak nadchodzących meczów z kursami bukmachera i predykcjami."
+msgstr ""
+
+#: templates/value_bets.html:38 templates/value_history.html:53
+msgid "Data"
+msgstr ""
+
+#: templates/value_bets.html:39 templates/value_history.html:54
+msgid "Mecz"
+msgstr ""
+
+#: templates/value_bets.html:41
+msgid "Model (H/D/A)"
+msgstr ""
+
+#: templates/value_bets.html:42 templates/value_history.html:57
+msgid "Kurs"
+msgstr ""
+
+#: templates/value_bets.html:43 templates/value_history.html:56
+msgid "Typ"
+msgstr ""
+
+#: templates/value_bets.html:44 templates/value_history.html:58
+msgid "Edge"
+msgstr ""
+
+#: templates/value_bets.html:45
+msgid "Kelly"
+msgstr ""
+
+#: templates/value_history.html:12
+msgid "Weryfikacja modelu"
+msgstr ""
+
+#: templates/value_history.html:15
+msgid ""
+"Przeszłe mecze: typ wskazany przez model (najwyższe EV) vs rzeczywisty "
+"wynik i zrealizowany zysk."
+msgstr ""
+
+#: templates/value_history.html:21
+msgid "Value Bets"
+msgstr ""
+
+#: templates/value_history.html:26
+msgid "Zysk / strata"
+msgstr ""
+
+#: templates/value_history.html:30
+msgid "ROI"
+msgstr ""
+
+#: templates/value_history.html:34
+msgid "Trafione typy"
+msgstr ""
+
+#: templates/value_history.html:38
+msgid "Postawiono (jedn.)"
+msgstr ""
+
+#: templates/value_history.html:46
+msgid "Brak historycznych meczów z kursami i pełnym wektorem prawdopodobieństw."
+msgstr ""
+
+#: templates/value_history.html:59
+msgid "Wynik"
+msgstr ""
+
+#: templates/value_history.html:60
+msgid "Zysk"
+msgstr ""
+
