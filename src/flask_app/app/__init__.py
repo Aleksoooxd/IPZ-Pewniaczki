@@ -30,17 +30,24 @@ def _ensure_round_column():
         if table not in inspector.get_table_names():
             continue
         cols = {c["name"] for c in inspector.get_columns(table)}
-        if "round" in cols:
+        if "round" not in cols:
+            db.session.execute(text(f"ALTER TABLE {table} ADD COLUMN round INTEGER"))
+            db.session.commit()
+        # Backfill canonical round for already-scraped rows. Only reference the
+        # matchday columns that actually exist in this table: ``football_match``
+        # has both home/away matchday, but ``future_match`` only has home.
+        md_cols = [c for c in ("home_matchday", "away_matchday") if c in cols]
+        if not md_cols:
             continue
-        db.session.execute(text(f"ALTER TABLE {table} ADD COLUMN round INTEGER"))
+        # SQLite's scalar MAX(a, b) needs >=2 args; with a single matchday
+        # column just reference it directly (MAX(col) is the aggregate form and
+        # is not allowed in an UPDATE SET clause).
+        src = md_cols[0] if len(md_cols) == 1 else "MAX(" + ", ".join(md_cols) + ")"
+        where = " AND ".join(f"{c} IS NOT NULL" for c in md_cols)
+        db.session.execute(text(
+            f"UPDATE {table} SET round = {src} WHERE round IS NULL AND {where}"
+        ))
         db.session.commit()
-    # Backfill canonical round for already-scraped rows: round = max(home, away).
-    db.session.execute(text(
-        "UPDATE football_match "
-        "SET round = MAX(home_matchday, away_matchday) "
-        "WHERE round IS NULL AND home_matchday IS NOT NULL AND away_matchday IS NOT NULL"
-    ))
-    db.session.commit()
 
 
 def _ensure_model_metrics_baseline():

@@ -34,7 +34,6 @@ src/flask_app/app/translations/messages.pot
 .idea/**/dbnavigator.xml
 
 .env
-.**env
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
