@@ -1,4 +1,3 @@
-import copy
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
@@ -144,11 +143,10 @@ def process_all_matches_for_elo(session: Session):
                                'h2h_goals_for': 0, 'h2h_goals_against': 0, 'last_5_points': []}
             }
 
-        h2h_home_pre_match = copy.deepcopy(h2h_current_stats[team_pair_key][home_team_id])
-        h2h_away_pre_match = copy.deepcopy(h2h_current_stats[team_pair_key][away_team_id])
-
-        h2h_home_pre_match['h2h_last_5_points'] = sum(h2h_home_pre_match['last_5_points'])
-        h2h_away_pre_match['h2h_last_5_points'] = sum(h2h_away_pre_match['last_5_points'])
+        h2h_home_pre = h2h_current_stats[team_pair_key][home_team_id]
+        h2h_away_pre = h2h_current_stats[team_pair_key][away_team_id]
+        h2h_home_last_5 = sum(h2h_home_pre['last_5_points'])
+        h2h_away_last_5 = sum(h2h_away_pre['last_5_points'])
 
         home_match_form = all_match_forms.get((match.match_id, 'home'))
         away_match_form = all_match_forms.get((match.match_id, 'away'))
@@ -156,24 +154,24 @@ def process_all_matches_for_elo(session: Session):
         if home_match_form:
             match_form_updates.append({
                 'form_id': home_match_form.form_id,
-                'h2h_matches': h2h_home_pre_match['h2h_matches'],
-                'h2h_wins': h2h_home_pre_match['h2h_wins'],
-                'h2h_draws': h2h_home_pre_match['h2h_draws'],
-                'h2h_losses': h2h_home_pre_match['h2h_losses'],
-                'h2h_goals_for': h2h_home_pre_match['h2h_goals_for'],
-                'h2h_goals_against': h2h_home_pre_match['h2h_goals_against'],
-                'h2h_last_5_points': h2h_home_pre_match['h2h_last_5_points']
+                'h2h_matches': h2h_home_pre['h2h_matches'],
+                'h2h_wins': h2h_home_pre['h2h_wins'],
+                'h2h_draws': h2h_home_pre['h2h_draws'],
+                'h2h_losses': h2h_home_pre['h2h_losses'],
+                'h2h_goals_for': h2h_home_pre['h2h_goals_for'],
+                'h2h_goals_against': h2h_home_pre['h2h_goals_against'],
+                'h2h_last_5_points': h2h_home_last_5
             })
         if away_match_form:
             match_form_updates.append({
                 'form_id': away_match_form.form_id,
-                'h2h_matches': h2h_away_pre_match['h2h_matches'],
-                'h2h_wins': h2h_away_pre_match['h2h_wins'],
-                'h2h_draws': h2h_away_pre_match['h2h_draws'],
-                'h2h_losses': h2h_away_pre_match['h2h_losses'],
-                'h2h_goals_for': h2h_away_pre_match['h2h_goals_for'],
-                'h2h_goals_against': h2h_away_pre_match['h2h_goals_against'],
-                'h2h_last_5_points': h2h_away_pre_match['h2h_last_5_points']
+                'h2h_matches': h2h_away_pre['h2h_matches'],
+                'h2h_wins': h2h_away_pre['h2h_wins'],
+                'h2h_draws': h2h_away_pre['h2h_draws'],
+                'h2h_losses': h2h_away_pre['h2h_losses'],
+                'h2h_goals_for': h2h_away_pre['h2h_goals_for'],
+                'h2h_goals_against': h2h_away_pre['h2h_goals_against'],
+                'h2h_last_5_points': h2h_away_last_5
             })
 
         current_home_h2h = h2h_current_stats[team_pair_key][home_team_id]

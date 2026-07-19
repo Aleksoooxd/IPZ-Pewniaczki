@@ -4,6 +4,16 @@ document.addEventListener('DOMContentLoaded', function () {
   const tickColor = isDark ? '#9e9e9e' : '#555555';
   const cfg       = window.TEAM_CONFIG;
 
+  // Theme the charts to match the design system (default Chart.js Arial +
+  // gray tooltip clashed with the Barlow/Inter + dark-green identity).
+  Chart.defaults.font.family = "'Inter', sans-serif";
+  Chart.defaults.color = tickColor;
+  Chart.defaults.plugins.tooltip.backgroundColor = isDark ? '#111a11' : '#ffffff';
+  Chart.defaults.plugins.tooltip.titleColor = isDark ? '#f5f5f5' : '#0a0f0a';
+  Chart.defaults.plugins.tooltip.bodyColor = isDark ? '#9e9e9e' : '#4a5a4a';
+  Chart.defaults.plugins.tooltip.borderColor = isDark ? '#1e2e1e' : '#c8d8c8';
+  Chart.defaults.plugins.tooltip.borderWidth = 1;
+
   const baseScales = {
     x: { ticks: { autoSkip: true, maxTicksLimit: 20, color: tickColor }, grid: { color: gridColor } },
     y: { ticks: { color: tickColor }, grid: { color: gridColor } }
@@ -65,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   createChart('seasonEloChart',           cfg.labelElo,           cfg.chartData.elo,           'rgba(0, 230, 118, 1)');
-  createChart('seasonPointsChart',        cfg.labelPoints,        cfg.chartData.points,        'rgba(54, 162, 235, 1)');
+  createChart('seasonPointsChart',        cfg.labelPoints,        cfg.chartData.points,        'rgba(41, 182, 246, 1)');
   createChart('seasonGoalsForChart',      cfg.labelGoalsFor,      cfg.chartData.goalsFor,      'rgba(0, 230, 118, 1)');
   createChart('seasonGoalsConcededChart', cfg.labelGoalsConceded, cfg.chartData.goalsConceded, 'rgba(255, 23, 68, 1)');
   createChart('seasonPositionChart',      cfg.labelPosition,      cfg.chartData.position,      'rgba(255, 196, 0, 1)',

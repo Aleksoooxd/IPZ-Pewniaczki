@@ -6,24 +6,13 @@ from flask import Blueprint, render_template, request, abort
 
 from ..db import db
 from ..models import FootballMatch, Team, League, TeamLeague, Season, TeamElo
+from ..leagues_config import URL_TO_DB, DB_TO_URL
 
 leagues_bp = Blueprint("leagues", __name__)
 
-LEAGUE_URL_MAP = {
-    "Premierleague":        "premier league",
-    "Bundesliga":           "bundesliga",
-    "Eredivisie":           "eredivisie",
-    "EthnikiKatigoria":     "ethniki katigoria",
-    "FutbolLig1":           "futbol ligi 1",
-    "JupiterLeague":        "jupiler league",
-    "LaLiga":               "la liga",
-    "Ligue1":               "ligue 1",
-    "LigaI":                "liga i",
-    "SerieA":               "serie a",
-    "ScottishPremierLeague": "spremier league",
-}
-
-LEAGUE_NAME_TO_URL = {v: k for k, v in LEAGUE_URL_MAP.items()}
+# Single source of truth: src/flask_app/app/leagues_config.py
+LEAGUE_URL_MAP = URL_TO_DB          # url_code -> db_code
+LEAGUE_NAME_TO_URL = DB_TO_URL      # db_code -> url_code
 
 
 def _get_team_current_elo(team_id, season_id=None):
@@ -162,7 +151,12 @@ def league_view(league_code):
     if selected_season_name == "all_seasons" or not selected_season_name:
         selected_season_name = "all_seasons"
         current_standings = calculate_standings(league.league_id)
-        standings_display = f"2004-{datetime.datetime.now().year % 100}"
+        # Derive the real span from the data instead of hardcoding a start year.
+        start_year = min(available_seasons)[:4] if available_seasons else None
+        standings_display = (
+            f"{start_year}-{datetime.datetime.now().year % 100}"
+            if start_year else "Wszystkie sezony"
+        )
 
     teams = teams_query.distinct().order_by(Team.name).all()
 

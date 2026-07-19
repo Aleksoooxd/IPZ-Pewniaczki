@@ -4,9 +4,6 @@ function toggleSidebar() {
   document.body.classList.toggle('sidebar-open');
 }
 
-// Scroll to top button
-const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-
 window.onscroll = function() {
   scrollToTopBtn.style.display =
     (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20)

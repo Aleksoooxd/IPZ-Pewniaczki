@@ -38,7 +38,7 @@
   color: var(--text);
 }
 
-.season-filter, .matchday-filter {
+.season-filter {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -52,7 +52,7 @@
 
 
 
-/* ── TEAM LIST ASIDE ──────────────────────────────────────── */
+/* ── STANDINGS ROW INTERACTION ────────────────────────────── */
 
 .team-row-link:hover td {
   background: rgba(0, 230, 118, 0.07);
@@ -61,35 +61,6 @@
 
 .team-row-link:hover .points-cell {
   color: var(--accent);
-}
-
-.team-list { padding: 16px; }
-.team-list h3 { margin-bottom: 12px; }
-
-.team-links {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.team-links li a {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: var(--radius);
-  color: var(--text-muted);
-  font-size: 13px;
-  font-weight: 500;
-  transition: background var(--transition), color var(--transition);
-  border-left: 2px solid transparent;
-}
-
-.team-links li a:hover {
-  background: var(--border);
-  color: var(--accent);
-  border-left-color: var(--accent);
 }
 
 /* ── STANDINGS TABLE ──────────────────────────────────────── */
@@ -192,9 +163,3 @@
 .legend-item { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
 .legend-item.champions { color: var(--gold); }
 .legend-item.relegation { color: var(--danger); }
-
-/* ── RESPONSIVE ──────────────────────────────────────────── */
-@media (max-width: 860px) {
-  .league-body { grid-template-columns: 1fr; }
-  .team-list { display: none; }
-}

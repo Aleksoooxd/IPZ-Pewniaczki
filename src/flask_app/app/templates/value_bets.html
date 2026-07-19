@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Pewniaczki') }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/value.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="value-page">
+  <div class="stats-hero">
+    <div>
+      <p class="stats-kicker">{{ _('Kalkulator wartości') }}</p>
+      <h1>{{ _('Pewniaczki') }} 💰</h1>
+      <p class="stats-subtitle">
+        {{ _('Nadchodzące mecze z pozytywną wartością oczekiwaną (EV) — model vs. kursy bukmachera.') }}
+      </p>
+    </div>
+    <div class="stats-badge">
+      <span>{{ _('Znalezione +EV') }}</span>
+      <strong>{{ positive_count }}</strong>
+    </div>
+  </div>
+
+  <div class="value-actions">
+    <a class="button secondary" href="{{ url_for('value.value_history') }}">📜 {{ _('Historia EV') }}</a>
+  </div>
+
+  {% if not bets %}
+  <div class="empty-state">
+    <h2>{{ _('Brak kursów') }}</h2>
+    <p>{{ _('Brak nadchodzących meczów z kursami bukmachera i predykcjami.') }}</p>
+  </div>
+  {% else %}
+  <div class="table-wrap card">
+    <table class="value-table">
+      <thead>
+        <tr>
+          <th>{{ _('Data') }}</th>
+          <th>{{ _('Mecz') }}</th>
+          <th>{{ _('Liga') }}</th>
+          <th>{{ _('Model (H/D/A)') }}</th>
+          <th>{{ _('Kurs') }}</th>
+          <th>{{ _('Typ') }}</th>
+          <th>{{ _('Edge') }}</th>
+          <th>{{ _('Kelly') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bets %}
+        <tr class="{% if b.best.ev > 0 %}ev-pos{% else %}ev-neg{% endif %}">
+          <td>{{ b.date }}</td>
+          <td class="vb-match">
+            <a href="{{ url_for('matches.match_detail', match_type='future', match_id=b.match_id) }}">
+              <strong>{{ b.home }}</strong> <span class="vb-vs">vs</span> <strong>{{ b.away }}</strong>
+            </a>
+          </td>
+          <td>{{ b.league }}</td>
+          <td>
+            <div class="prob-bars" title="H {{ '%.0f'|format(b.probs.H*100) }}% / D {{ '%.0f'|format(b.probs.D*100) }}% / A {{ '%.0f'|format(b.probs.A*100) }}%">
+              <span class="pb pb-h" style="width:{{ '%.0f'|format(b.probs.H*100) }}%">{{ '%.0f'|format(b.probs.H*100) }}</span>
+              <span class="pb pb-d" style="width:{{ '%.0f'|format(b.probs.D*100) }}%">{{ '%.0f'|format(b.probs.D*100) }}</span>
+              <span class="pb pb-a" style="width:{{ '%.0f'|format(b.probs.A*100) }}%">{{ '%.0f'|format(b.probs.A*100) }}</span>
+            </div>
+          </td>
+          <td class="vb-odds">{{ '%.2f'|format(b.best.odds) }}</td>
+          <td class="vb-pick">
+            {% if b.best.outcome == 'H' %}1{% elif b.best.outcome == 'D' %}X{% else %}2{% endif %}
+            <small>({{ '%.1f%%'|format(b.probs[b.best.outcome]*100) }})</small>
+          </td>
+          <td class="vb-edge">{{ '%.1f'|format(b.best.edge_pct) }}%</td>
+          <td class="vb-kelly">{% if b.best.kelly is not none %}{{ '%.1f'|format(b.best.kelly*100) }}%{% else %}-{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

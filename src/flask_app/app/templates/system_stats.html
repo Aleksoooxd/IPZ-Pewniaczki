@@ -180,6 +180,115 @@
         <p class="muted">{{ _('Brak danych meczowych.') }}</p>
     {% endif %}
 </article>
+
+        <article class="panel panel-wide">
+            <h2>{{ _('Wydajność modelu') }}</h2>
+            {% if model_metrics %}
+            <div class="timing-list">
+                <div class="timing-row">
+                    <span>{{ _('Dokładność (test)') }}</span>
+                    <strong>{{ '%.2f%%'|format((model_metrics.accuracy or 0) * 100) }}</strong>
+                </div>
+                <div class="timing-row">
+                    <span>{{ _('Baza (faworyt ELO)') }}</span>
+                    <strong>{{ '%.2f%%'|format((model_metrics.baseline_accuracy or 0) * 100) }}</strong>
+                </div>
+                <div class="timing-row">
+                    <span>{{ _('Log loss') }}</span>
+                    <strong>{{ '%.4f'|format(model_metrics.log_loss or 0) }}</strong>
+                </div>
+                <div class="timing-row">
+                    <span>{{ _('Próbki (trening / test)') }}</span>
+                    <strong>{{ model_metrics.n_train or 0 }} / {{ model_metrics.n_test or 0 }}</strong>
+                </div>
+                <div class="timing-row">
+                    <span>{{ _('Macro-F1') }}</span>
+                    <strong>{{ '%.4f'|format(model_metrics.macro_f1 or 0) }}</strong>
+                </div>
+            </div>
+
+            {% if per_class and confusion_matrix %}
+            <div class="model-detail-block">
+                <div class="model-detail-grid">
+                    <div class="model-detail-col">
+                        <h3>{{ _('Dokładność per klasa') }}</h3>
+                        <table class="per-class-table">
+                            <thead>
+                                <tr><th>{{ _('Klasa') }}</th><th>{{ _('Czułość') }}</th><th>{{ _('Precyzja') }}</th><th>{{ _('Mecze') }}</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for label in ['H', 'D', 'A'] %}
+                                <tr>
+                                    <th>{{ label }}</th>
+                                    <td>{{ '%.1f%%'|format(per_class[label].recall * 100) }}</td>
+                                    <td>{{ '%.1f%%'|format(per_class[label].precision * 100) }}</td>
+                                    <td>{{ per_class[label].support }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="model-detail-col">
+                        <h3>{{ _('Macierz pomyłek') }}</h3>
+                        <div class="confusion-matrix">
+                            <div class="cm-grid">
+                                <table>
+                                    <thead>
+                                        <tr><th class="cm-corner"></th><th>H</th><th>D</th><th>A</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in [0, 1, 2] %}
+                                        {% set row_total = confusion_matrix[i][0] + confusion_matrix[i][1] + confusion_matrix[i][2] %}
+                                        <tr>
+                                            <th class="cm-rowhead">{{ ['H', 'D', 'A'][i] }}</th>
+                                            {% for j in [0, 1, 2] %}
+                                            {% set v = confusion_matrix[i][j] %}
+                                            {% set frac = (v / row_total) if row_total else 0 %}
+                                            {% if i == j %}
+                                            <td class="cm-correct" style="background: rgba(0, 230, 118, {{ (0.12 + frac * 0.72)|round(2) }});">
+                                                <span class="cm-val">{{ v }}</span>
+                                                <span class="cm-pct">{{ '%.0f%%'|format(frac * 100) }}</span>
+                                            </td>
+                                            {% else %}
+                                            <td class="cm-error" style="background: rgba(255, 82, 82, {{ (0.08 + frac * 0.6)|round(2) }});">
+                                                <span class="cm-val">{{ v }}</span>
+                                                <span class="cm-pct">{{ '%.0f%%'|format(frac * 100) }}</span>
+                                            </td>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="cm-side">
+                                <div class="cm-axis-caption">
+                                    <span>{{ _('Wiersze = prawdziwy wynik') }}</span>
+                                    <span>{{ _('Kolumny = predykcja') }}</span>
+                                </div>
+                                <div class="cm-legend">
+                                    <span class="cm-legend-item"><span class="cm-swatch cm-sw-correct"></span>{{ _('poprawna predykcja') }}</span>
+                                    <span class="cm-legend-item"><span class="cm-swatch cm-sw-error"></span>{{ _('błąd') }}</span>
+                                </div>
+                            </div>
+                            <p class="muted cm-caption">{{ _('H = wygrana gospodarza, D = remis, A = wygrana gościa.') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p class="muted">{{ _('Uruchom run-predict, aby policzyć metryki per klasa i macierz pomyłek.') }}</p>
+            {% endif %}
+            {% if (model_metrics.accuracy or 0) > (model_metrics.baseline_accuracy or 0) %}
+            <p class="muted">{{ _('Model przewyższa naiwną bazę faworyta ELO.') }}</p>
+            {% else %}
+            <p class="muted">{{ _('Model nie przewyższa naiwnej bazy faworyta ELO.') }}</p>
+            {% endif %}
+            {% else %}
+            <p class="muted">{{ _('Brak wyników modelu. Uruchom predykcję (run-predict).') }}</p>
+            {% endif %}
+        </article>
     </section>
     {% endif %}
 </section>

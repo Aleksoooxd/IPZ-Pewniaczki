@@ -1,29 +1,15 @@
 <!-- REDESIGNED: league_view.html -->
 {% extends "base.html" %}
 
-{% block title %}{{ league.code | replace("premier league", _("Premier League")) | replace("spremier league", _("Scottish Premiership")) | title }} - {{ _('Liga') }}{% endblock %}
+{% block title %}{{ LEAGUE_DB_DISPLAY.get(league.code, league.code) }} - {{ _('Liga') }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/league.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; {{ _('Wybierz Ligę') }}</div>
-
 <div class="league-page">
-  {% set league_flag_map = {
-  "premier league":   "premier-league-big.png",
-  "bundesliga":       "bundesliga-big.png",
-  "eredivisie":       "eredivisie-big.png",
-  "ethniki katigoria":"ethniki-katigoria-big.png",
-  "futbol ligi 1":    "futbol-ligi-1-big.png",
-  "jupiler league":   "jupiler-league-big.png",
-  "la liga":          "la-liga-big.png",
-  "ligue 1":          "ligue-1-big.png",
-  "liga i":           "liga-i-big.png",
-  "spremier league":  "scottish-premiership-big.png",
-  "serie a":          "serie-a-big.png"
-} %}
+  {% set league_flag_map = LEAGUE_DB_FLAG_BIG %}
 
 <div class="league-header card">
   <div class="league-header-title">
@@ -36,10 +22,7 @@
       >
     {% endif %}
     <h1 class="page-title">
-      {{ league.code
-        | replace("premier league", _("Premier League"))
-        | replace("spremier league", _("Scottish Premiership"))
-        | title }}
+      {{ LEAGUE_DB_DISPLAY.get(league.code, league.code) }}
     </h1>
   </div>
   <div class="season-filter">
@@ -94,7 +77,7 @@
                     <td class="pos-cell">{{ pos }}</td>
                     <td class="team-name-cell">
                       {% if team.team_id %}
-                        <img src="{{ url_for('static', filename='img/logos/64x64/' ~ team.team_name.lower().replace(' ', '-') ~ '.png') }}" alt="{{ team.team_name }}" class="team-logo-inline">
+                        <img src="{{ url_for('static', filename='img/logos/64x64/' ~ team.team_name.lower().replace(' ', '-') ~ '.png') }}" alt="{{ team.team_name }}" class="team-logo-inline" onerror="this.onerror=null; this.style.display='none'">
                       {% endif %}
                       {{ team.team_name }}
                     </td>

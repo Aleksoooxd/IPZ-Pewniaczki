@@ -17,7 +17,7 @@
   <div class="match-hero card">
     <div class="match-hero-team home">
       <a href="{{ url_for('teams.team_view',
-      league_code=match.league.code | string | title | replace(' ', '')  ,
+      league_code=league_url_code,
       season_name=match.season.name | string | replace('/', ' '),
       team_name=match.home_team.name) }}"
       class="hero-team-name hero-team-link">{{ match.home_team.name }}</a>
@@ -43,7 +43,7 @@
 
     <div class="match-hero-team away">
       <a href="{{ url_for('teams.team_view',
-      league_code=match.league.code | string | title | replace(' ', '')  ,
+      league_code=league_url_code,
       season_name=match.season.name | string | replace('/', ' '),
       team_name=match.away_team.name) }}"
       class="hero-team-name hero-team-link">{{ match.away_team.name }}</a>
@@ -53,15 +53,18 @@
     </div>
   </div>
 
-  <!-- PREDICTION BADGE -->
+  <!-- PREDICTION BADGE: three outcome cards (H / D / A) -->
   {% if predictions %}
   <div class="prediction-hero">
     {% for p in predictions %}
-      <div class="prediction-main-badge result-{{ p.predicted_result | lower }}">
+      {% set max_prob = [p.prob_home, p.prob_draw, p.prob_away] | max %}
+      {% for label, val in [('H', p.prob_home), ('D', p.prob_draw), ('A', p.prob_away)] %}
+      <div class="prediction-main-badge result-{{ label | lower }} {% if val == max_prob %}is-top{% endif %} {% if val != max_prob %}is-faded{% endif %}">
         <span class="pred-label">{{ _('Predykcja') }}</span>
-        <span class="pred-result">{{ p.predicted_result }}</span>
-        <span class="pred-confidence">{{ _('Pewność:') }} {{ (p.confidence * 100) | round(1) if p.confidence <= 1 else p.confidence | round(2) }}%</span>
+        <span class="pred-result">{{ label }}</span>
+        <span class="pred-confidence">{{ (val * 100) | round(1) }}%</span>
       </div>
+      {% endfor %}
     {% endfor %}
   </div>
   {% endif %}
@@ -142,7 +145,7 @@
       </div>
       <div class="stat-row">
         <span class="stat-label">{{ _('Liga') }}</span>
-        <span class="stat-val">{{ match.league.code | replace("premier league", _("Premier League")) | replace("spremier league", _("Scottish Premiership")) | title }}</span>
+        <span class="stat-val">{{ LEAGUE_DB_DISPLAY.get(match.league.code, match.league.code) }}</span>
       </div>
       <div class="stat-row">
         <span class="stat-label">{{ _('Niespodzianka') }}</span>

@@ -4,7 +4,10 @@ from flask.cli import with_appcontext
 from sqlalchemy import inspect, text
 from .config import Config
 from .db import db, babel
-from .routes import matches_bp, leagues_bp, teams_bp, api_bp, main_bp, stats_bp
+from .routes import matches_bp, leagues_bp, teams_bp, api_bp, main_bp, stats_bp, value_bp
+from .leagues_config import (
+    LEAGUES, DB_TO_DISPLAY, DB_TO_FLAG_SMALL, DB_TO_FLAG_BIG,
+)
 
 
 def _ensure_round_column():
@@ -38,6 +41,103 @@ def _ensure_round_column():
         "WHERE round IS NULL AND home_matchday IS NOT NULL AND away_matchday IS NOT NULL"
     ))
     db.session.commit()
+
+
+def _ensure_model_metrics_baseline():
+    """Add the ``baseline_accuracy`` column to ``model_metrics`` if missing.
+
+    ``ModelMetrics`` gained a ``baseline_accuracy`` column after the table was
+    already in use. On legacy databases the column is added with an ``ALTER
+    TABLE`` (idempotent — a no-op when it already exists) so
+    :func:`persist_metrics` can write to it without a manual migration.
+
+    Returns:
+        None:
+    """
+    inspector = inspect(db.engine)
+    if "model_metrics" not in inspector.get_table_names():
+        return
+    cols = {c["name"] for c in inspector.get_columns("model_metrics")}
+    if "baseline_accuracy" in cols:
+        return
+    db.session.execute(text("ALTER TABLE model_metrics ADD COLUMN baseline_accuracy FLOAT"))
+    db.session.commit()
+
+
+def _ensure_model_metrics_extras():
+    """Add the per-class / macro-F1 / confusion-matrix columns to ``model_metrics``.
+
+    These columns were added after ``ModelMetrics`` was already in use. Each is
+    added with an idempotent ``ALTER TABLE`` (a no-op when present) so
+    :func:`persist_metrics` can write the richer evaluation breakdown without a
+    manual migration.
+
+    Returns:
+        None:
+    """
+    inspector = inspect(db.engine)
+    if "model_metrics" not in inspector.get_table_names():
+        return
+    cols = {c["name"] for c in inspector.get_columns("model_metrics")}
+    for col, ctype in (
+        ("macro_f1", "FLOAT"),
+        ("per_class", "TEXT"),
+        ("confusion_matrix", "TEXT"),
+    ):
+        if col not in cols:
+            db.session.execute(text(f"ALTER TABLE model_metrics ADD COLUMN {col} {ctype}"))
+            db.session.commit()
+
+
+def _ensure_predicted_probs():
+    """Add probability columns to ``predicted`` / ``predicted_future`` if missing.
+
+    The value/EV calculator needs the full H/D/A probability vector, not just
+    the argmax + confidence. On legacy databases these columns are added with
+    idempotent ``ALTER TABLE`` statements (a no-op once present).
+    """
+    inspector = inspect(db.engine)
+    for table in ("predicted", "predicted_future"):
+        if table not in inspector.get_table_names():
+            continue
+        cols = {c["name"] for c in inspector.get_columns(table)}
+        for col in ("prob_home", "prob_draw", "prob_away"):
+            if col not in cols:
+                db.session.execute(text(f"ALTER TABLE {table} ADD COLUMN {col} FLOAT"))
+                db.session.commit()
+
+
+def _ensure_match_form_draw_ratios():
+    """Add the ``draw_ratio_team`` / ``draw_ratio_league`` columns to ``match_form``.
+
+    These draw-tendency features are computed at scrape time and fed to the
+    prediction model. On legacy databases the columns are added with an
+    idempotent ``ALTER TABLE`` (a no-op once present); existing rows default to
+    NULL and are back-filled on the next re-scrape (or treated as 0 by the
+    feature builder).
+    """
+    inspector = inspect(db.engine)
+    if "match_form" not in inspector.get_table_names():
+        return
+    cols = {c["name"] for c in inspector.get_columns("match_form")}
+    for col in ("draw_ratio_team", "draw_ratio_league"):
+        if col not in cols:
+            db.session.execute(text(f"ALTER TABLE match_form ADD COLUMN {col} FLOAT"))
+            db.session.commit()
+
+
+def _ensure_odds_tables():
+    """Create the ``match_odds`` / ``future_match_odds`` tables if absent.
+
+    These are newly introduced tables. An already-initialised database only
+    gains new tables when something calls ``create_all``; creating just these
+    two is precise and safe (idempotent — existing tables are left untouched).
+    """
+    from .models import MatchOdds, FutureMatchOdds
+    db.metadata.create_all(
+        bind=db.engine,
+        tables=[MatchOdds.__table__, FutureMatchOdds.__table__],
+    )
 
 
 def _ensure_team_elo_collapsed():
@@ -161,6 +261,12 @@ def create_app():
         return dict(
             _=gettext,
             lang_code_to_display_name=lambda code: lang_map.get(code, code),
+            # Single source of truth for league metadata (leagues_config.py),
+            # exposed to every template so the catalogue is never re-declared.
+            LEAGUES=LEAGUES,
+            LEAGUE_DB_DISPLAY=DB_TO_DISPLAY,
+            LEAGUE_DB_FLAG_SMALL=DB_TO_FLAG_SMALL,
+            LEAGUE_DB_FLAG_BIG=DB_TO_FLAG_BIG,
         )
 
     app.register_blueprint(main_bp)
@@ -169,10 +275,16 @@ def create_app():
     app.register_blueprint(teams_bp)
     app.register_blueprint(api_bp)
     app.register_blueprint(stats_bp)
+    app.register_blueprint(value_bp)
 
     with app.app_context():
         _ensure_round_column()
         _ensure_team_elo_collapsed()
+        _ensure_model_metrics_baseline()
+        _ensure_model_metrics_extras()
+        _ensure_predicted_probs()
+        _ensure_match_form_draw_ratios()
+        _ensure_odds_tables()
 
     @app.cli.command("db-create")
     @with_appcontext
@@ -181,6 +293,11 @@ def create_app():
         db.create_all()
         _ensure_round_column()
         _ensure_team_elo_collapsed()
+        _ensure_model_metrics_baseline()
+        _ensure_model_metrics_extras()
+        _ensure_predicted_probs()
+        _ensure_match_form_draw_ratios()
+        _ensure_odds_tables()
         click.echo("Tabele utworzone.")
 
     @app.cli.command("db-drop")
@@ -200,6 +317,11 @@ def create_app():
         db.create_all()
         _ensure_round_column()
         _ensure_team_elo_collapsed()
+        _ensure_model_metrics_baseline()
+        _ensure_model_metrics_extras()
+        _ensure_predicted_probs()
+        _ensure_match_form_draw_ratios()
+        _ensure_odds_tables()
         click.echo("Baza zresetowana.")
 
     @app.cli.command("db-add-round")

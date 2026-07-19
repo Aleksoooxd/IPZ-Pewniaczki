@@ -10,6 +10,7 @@ from .prediction import Predicted, PredictedFuture
 from .elo        import TeamElo
 from .system_stats import SystemStats
 from .model_metrics import ModelMetrics
+from .odds       import MatchOdds, FutureMatchOdds
 __all__ = [
     "Team", "League", "Season", "TeamLeague", "rename_team",
     "FootballMatch", "FutureMatch", "MatchStats", "MatchForm",
@@ -17,4 +18,5 @@ __all__ = [
     "TeamElo",
     "SystemStats",
     "ModelMetrics",
+    "MatchOdds", "FutureMatchOdds",
 ]

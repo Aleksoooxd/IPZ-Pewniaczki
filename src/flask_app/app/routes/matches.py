@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, abort
 
 from ..db import db
 from ..models import FootballMatch, FutureMatch, Team, League, MatchForm, MatchStats, TeamElo, PredictedFuture
+from ..leagues_config import DB_TO_URL
 
 matches_bp = Blueprint("matches", __name__)
 
@@ -44,8 +45,13 @@ def match_detail(match_type, match_id):
         status = "finished"
     elif match.date > date.today():
         status = "upcoming"
-    else:
+    elif match.date == date.today():
+        # Only a match kicking off today (with no result yet) is genuinely live.
         status = "live"
+    else:
+        # Past date but no result: data not yet scraped/updated — do not get
+        # stuck on "live" forever.
+        status = "upcoming"
 
     home_form = away_form = None
     home_stats = away_stats = None
@@ -58,9 +64,6 @@ def match_detail(match_type, match_id):
     away_team_id = match.away_team_id
     match_date = match.date
     season_id = match.season.season_id if match.season else None
-
-    HomeTeamAlias = aliased(Team)
-    AwayTeamAlias = aliased(Team)
 
     if isinstance(match, FutureMatch):
         home_elo_obj = TeamElo.query.filter_by(team_id=home_team_id).order_by(desc(TeamElo.last_updated)).first()
@@ -134,6 +137,8 @@ def match_detail(match_type, match_id):
                 list: Up to 3 ``(FootballMatch, home_team_name,
                 away_team_name)`` rows, most-recent first.
             """
+            HomeTeamAlias = aliased(Team)
+            AwayTeamAlias = aliased(Team)
             return db.session.query(
                 FootballMatch,
                 HomeTeamAlias.name.label("home_team_name"),
@@ -172,6 +177,8 @@ def match_detail(match_type, match_id):
                 list: Up to 3 ``(FootballMatch, home_team_name,
                 away_team_name)`` rows, most-recent first.
             """
+            HomeTeamAlias = aliased(Team)
+            AwayTeamAlias = aliased(Team)
             return db.session.query(
                 FootballMatch,
                 HomeTeamAlias.name.label("home_team_name"),
@@ -189,6 +196,7 @@ def match_detail(match_type, match_id):
     return render_template(
         "match_detail.html",
         match=match, status=status,
+        league_url_code=DB_TO_URL.get(match.league.code) if match.league else None,
         home_form=home_form, away_form=away_form,
         home_stats=home_stats, away_stats=away_stats,
         home_elo=home_elo, away_elo=away_elo,

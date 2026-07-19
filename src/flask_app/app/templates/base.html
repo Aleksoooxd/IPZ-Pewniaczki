@@ -5,31 +5,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{% block title %}{{ _('Pewniaczki') }}{% endblock %}</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/pewniaczkilogo.ico') }}" type="image/x-icon">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   {% block extra_css %}{% endblock %}
   <style>
-    body { visibility: hidden; opacity: 0; transition: opacity 0.5s ease-in-out; }
-    body.theme-loaded { visibility: visible; opacity: 1; }
+    /* Only hide content when JS is available (set synchronously below).
+       Without JS the page stays visible — no blank screen. */
+    html.js-loading body { visibility: hidden; opacity: 0; transition: opacity 0.5s ease-in-out; }
+    html.js-loading body.theme-loaded { visibility: visible; opacity: 1; }
   </style>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme') || 'dark';
+        if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      } catch (e) {}
+      document.documentElement.classList.add('js-loading');
+    })();
+  </script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
   <div class="sidebar" id="sidebar">
     <div class="sidebar-close" onclick="toggleSidebar()">✕</div>
     <h3>{{ _('Ligi') }}</h3>
     <ul class="sidebar-links">
-      <li><a href="{{ url_for('leagues.league_view', league_code='Premierleague') }}">{{ _('Premier League') }}</a></li>
-      <li><a href="{{ url_for('leagues.league_view', league_code='LaLiga') }}">{{ _('La Liga') }}</a></li>
-      <li><a href="{{ url_for('leagues.league_view', league_code='Bundesliga') }}">{{ _('Bundesliga') }}</a></li>
-      <li><a href="{{ url_for('leagues.league_view', league_code='SerieA') }}">{{ _('Serie A') }}</a></li>
-      <li><a href="{{ url_for('leagues.league_view', league_code='Ligue1') }}">{{ _('Ligue 1') }}</a></li>
-      <li><a href="{{ url_for('leagues.league_view', league_code='LigaI') }}">{{ _('Liga I') }}</a></li>
-      <li><a href="{{ url_for('leagues.league_view', league_code='Eredivisie') }}">{{ _('Eredivisie') }}</a></li>
-      <li><a href="{{ url_for('leagues.league_view', league_code='FutbolLig1') }}">{{ _('Futbol Lig 1') }}</a></li>
-      <li><a href="{{ url_for('leagues.league_view', league_code='JupiterLeague') }}">{{ _('Jupiler League') }}</a></li>
-      <li><a href="{{ url_for('leagues.league_view', league_code='ScottishPremierLeague') }}">{{ _('Scottish Premiership') }}</a></li>
-      <li><a href="{{ url_for('leagues.league_view', league_code='EthnikiKatigoria') }}">{{ _('Ethniki Katigoria') }}</a></li>
-
+      {% for lg in LEAGUES %}
+      <li><a href="{{ url_for('leagues.league_view', league_code=lg.url_code) }}" data-league-code="{{ lg.url_code }}">{{ lg.display }}</a></li>
+      {% endfor %}
     </ul>
   </div>
   <header class="navbar">
@@ -40,13 +43,25 @@
 
     <nav class="nav-links">
       <a href="{{ url_for('main.mainpage') }}" class="nav-link">⚽ {{ _('Mecze') }}</a>
-      <a href="{{ url_for('leagues.league_view', league_code='Premierleague') }}" class="nav-link">🏆 {{ _('Ligi') }}</a>
-      <a href="{{ url_for('stats.system_stats') }}" class="nav-link">🤓👆 {{ _('Info') }}</a>
+      <a href="#" class="nav-link" role="button" onclick="toggleSidebar(); return false;">🏆 {{ _('Ligi') }}</a>
+      <a href="{{ url_for('stats.system_stats') }}" class="nav-link">📊 {{ _('Info') }}</a>
+      <a href="{{ url_for('value.value_bets') }}" class="nav-link">💰 {{ _('Pewniaczki') }}</a>
     </nav>
 
     <div class="header-right-actions">
+      <div class="search-container" id="searchContainer">
+        <button type="button" class="search-toggle" id="searchToggle" aria-label="{{ _('Szukaj') }}" aria-expanded="false">
+          <span aria-hidden="true">🔍</span>
+        </button>
+        <form class="search-form" id="searchForm" role="search" onsubmit="return false;">
+          <input type="search" id="searchInput" class="search-input"
+                 placeholder="{{ _('Szukaj zespołu, ligi, meczu…') }}"
+                 autocomplete="off" aria-label="{{ _('Szukaj') }}" />
+        </form>
+        <div class="search-results" id="searchResults" hidden></div>
+      </div>
       <div class="header-links">
-          <a href="" target="_blank" class="footer-link">GitHub</a>
+          <a href="https://github.com/Aleksoooxd/IPZ-Pewniaczki" target="_blank" rel="noopener" class="footer-link">GitHub</a>
       </div>
       <div class="language-dropdown">
         {% set current_endpoint = request.endpoint %}
@@ -97,6 +112,7 @@
   <button id="scrollToTopBtn" class="scroll-to-top-btn">⬆<span>TOP</span></button>
 
   <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/search.js') }}"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
   {% block extra_script %}{% endblock %}

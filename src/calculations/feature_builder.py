@@ -16,7 +16,8 @@ from src.flask_app.app.models import (
 # Columns produced by MatchForm, prefixed home_/away_ after the pivot.
 FORM_COLS = [
     'form_last_3', 'form_last_5', 'form_season', 'goals_last_3', 'goals_last_5',
-    'goals_season', 'team_placement', 'h2h_wins', 'h2h_draws', 'h2h_losses',
+    'goals_season', 'team_placement', 'draw_ratio_team', 'draw_ratio_league',
+    'h2h_wins', 'h2h_draws', 'h2h_losses',
     'h2h_matches', 'h2h_goals_for', 'h2h_goals_against', 'h2h_last_5_points'
 ]
 STATS_COLS = ['mean', 'std', 'shannon', 'cv', 'gini', 'hhi']
@@ -359,6 +360,7 @@ def build_match_features(session: Session, engine: Engine,
         MatchForm.form_last_3, MatchForm.form_last_5, MatchForm.form_season,
         MatchForm.goals_last_3, MatchForm.goals_last_5, MatchForm.goals_season,
         MatchForm.team_placement,
+        MatchForm.draw_ratio_team, MatchForm.draw_ratio_league,
         MatchForm.h2h_wins, MatchForm.h2h_draws, MatchForm.h2h_losses,
         MatchForm.h2h_matches, MatchForm.h2h_goals_for, MatchForm.h2h_goals_against,
         MatchForm.h2h_last_5_points
@@ -378,6 +380,14 @@ def build_match_features(session: Session, engine: Engine,
     if include_future:
         df_full = _backfill_future_features(
             df_full, df_football, df_form, df_stats, FORM_COLS, STATS_COLS)
+
+    # Guard against null draw-ratio values (legacy rows scraped before the
+    # columns existed) so they don't drop whole matches during inference. A
+    # full re-scrape populates every row, so this only back-stops partial runs.
+    for col in ('home_draw_ratio_team', 'away_draw_ratio_team',
+                'home_draw_ratio_league', 'away_draw_ratio_league'):
+        if col in df_full.columns:
+            df_full[col] = df_full[col].fillna(0.0)
 
     return df_full
 

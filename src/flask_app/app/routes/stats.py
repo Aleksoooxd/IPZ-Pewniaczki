@@ -1,29 +1,20 @@
+import json
+
 from sqlalchemy import select
 from flask import Blueprint, render_template
 
 from ..db import db
 from ..models import (
-    SystemStats, TeamElo, FootballMatch, Team, Season, League, TeamLeague
+    SystemStats, TeamElo, FootballMatch, Team, Season, League, TeamLeague,
+    ModelMetrics,
 )
+from ..leagues_config import DB_TO_URL
 from src.scraping.footballScrap import compute_stats_dict
 
 stats_bp = Blueprint("stats", __name__)
 
-# Mapowanie League.code (wartość w bazie) -> segment używany w URL /league/<league_code>/...
-# Odwrotność LEAGUE_URL_MAP z routes/teams.py
-DB_CODE_TO_URL_CODE = {
-    "premier league": "Premierleague",
-    "bundesliga": "Bundesliga",
-    "eredivisie": "Eredivisie",
-    "ethniki katigoria": "EthnikiKatigoria",
-    "futbol ligi 1": "FutbolLig1",
-    "jupiler league": "JupiterLeague",
-    "la liga": "LaLiga",
-    "ligue 1": "Ligue1",
-    "liga i": "LigaI",
-    "serie a": "SerieA",
-    "spremier league": "ScottishPremierLeague",
-}
+# db_code -> url_code, single source of truth in leagues_config.py
+DB_CODE_TO_URL_CODE = DB_TO_URL
 
 
 def _find_league_for_team_season(team_id, season_id):
@@ -99,6 +90,32 @@ def system_stats():
         .limit(1)
     ).scalar_one_or_none()
 
+    # Most recent model evaluation, to show how the predictor compares to the
+    # naive ELO-favourite baseline. Absent on a fresh DB (no training run yet).
+    latest_model_metrics = db.session.execute(
+        select(ModelMetrics)
+        .order_by(ModelMetrics.trained_at.desc())
+        .limit(1)
+    ).scalar_one_or_none()
+
+    # Parse the JSON-encoded per-class breakdown and confusion matrix so the
+    # template can render them directly. Legacy rows (before these columns
+    # existed) simply yield None and the template shows a "run run-predict"
+    # hint instead of erroring.
+    per_class = None
+    confusion_matrix = None
+    if latest_model_metrics is not None:
+        if latest_model_metrics.per_class:
+            try:
+                per_class = json.loads(latest_model_metrics.per_class)
+            except (ValueError, TypeError):
+                per_class = None
+        if latest_model_metrics.confusion_matrix:
+            try:
+                confusion_matrix = json.loads(latest_model_metrics.confusion_matrix)
+            except (ValueError, TypeError):
+                confusion_matrix = None
+
     # Po samym scrapingu (choice 1) lub bez pełnego przebiegu pipeline'u
     # tabela system_stats może być pusta. Wtedy liczymy statystyki na żywo
     # z bieżącego stanu bazy, zamiast pokazywać pusty ekran.
@@ -152,6 +169,9 @@ def system_stats():
         "system_stats.html",
         stats=latest_stats,
         stats_live=stats_live,
+        model_metrics=latest_model_metrics,
+        per_class=per_class,
+        confusion_matrix=confusion_matrix,
         highest_elo_row=highest_elo_row,
         lowest_elo_row=lowest_elo_row,
         highest_elo_link=highest_elo_link,

@@ -41,6 +41,4 @@ class SystemStats(db.Model):
     biggest_upset_actual = Column(db.String(1), nullable=True)
 
     highest_elo = relationship("TeamElo", foreign_keys=[highest_elo_id])
-    lowest_elo = relationship("TeamElo", foreign_keys=[lowest_elo_id])
     highest_goal_match = relationship("FootballMatch", foreign_keys=[highest_goal_match_id])
-    biggest_upset_match = relationship("FootballMatch", foreign_keys=[biggest_upset_match_id])

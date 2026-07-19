@@ -31,3 +31,5 @@ class Config:
     BABEL_DEFAULT_LOCALE = 'pl'
     BABEL_DEFAULT_TIMEZONE = 'Europe/Warsaw'
     BABEL_TRANSLATION_DIRECTORIES = 'translations'
+
+    DRAW_PROB_MULTIPLIER = float(os.environ.get('DRAW_PROB_MULTIPLIER', '1.0'))

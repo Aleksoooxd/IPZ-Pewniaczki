@@ -90,6 +90,19 @@
   margin-top: 8px;
 }
 
+/* Warm "kickoff" accent for the landing's primary action — a second,
+   football-earned hue that breaks the all-green default without competing
+   with the green identity used everywhere else. */
+.button.primary.hero-cta {
+  background: var(--kickoff);
+  color: #0a120a;
+}
+
+.button.primary.hero-cta:hover {
+  box-shadow: 0 0 22px rgba(255, 145, 0, 0.55);
+  color: #0a120a;
+}
+
 /* Blokada scrolla na stronie głównej */
 body.index-page {
   overflow: hidden;

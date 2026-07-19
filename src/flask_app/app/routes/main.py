@@ -5,19 +5,9 @@ from flask import Blueprint, render_template, request, redirect, url_for
 
 main_bp = Blueprint("main", __name__)
 
-LEAGUE_NAMES = {
-    "Premierleague":        "Premier League",
-    "Bundesliga":           "Bundesliga",
-    "Eredivisie":           "Eredivisie",
-    "EthnikiKatigoria":     "Ethniki Katigoria",
-    "FutbolLig1":           "1. Lig",
-    "JupiterLeague":        "Jupiler League",
-    "LaLiga":               "La Liga",
-    "Ligue1":               "Ligue 1",
-    "LigaI":                "Liga I",
-    "ScottishPremierLeague": "Premiership",
-    "SerieA":               "Serie A",
-}
+from ..leagues_config import URL_TO_DISPLAY
+
+LEAGUE_NAMES = URL_TO_DISPLAY  # url_code -> display name
 
 
 @main_bp.route("/")

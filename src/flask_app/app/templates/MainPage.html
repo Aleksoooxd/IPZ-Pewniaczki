@@ -7,8 +7,6 @@
 {% endblock %}
 
 {% block content %}
-<div class="sidebar-toggle" onclick="toggleSidebar()">&#9776; {{ _('Wybierz Ligę') }}</div>
-
 <div class="main-content-wrapper">
   <div class="date-container card">
     <div class="date-controls">
@@ -40,32 +38,8 @@
 {% block extra_script %}
 <script>
   window.MAINPAGE_CONFIG = {
-    leagueDisplayNames: {
-      "premier league":    "{{ _('Premier League') }}",
-      "bundesliga":        "{{ _('Bundesliga') }}",
-      "eredivisie":        "{{ _('Eredivisie') }}",
-      "ethniki katigoria": "{{ _('Ethniki Katigoria') }}",
-      "futbol ligi 1":     "{{ _('Futbol Lig 1') }}",
-      "jupiler league":    "{{ _('Jupiler League') }}",
-      "la liga":           "{{ _('La Liga') }}",
-      "ligue 1":           "{{ _('Ligue 1') }}",
-      "liga i":            "{{ _('Liga I') }}",
-      "spremier league":   "{{ _('Scottish Premiership') }}",
-      "serie a":           "{{ _('Serie A') }}"
-    },
-    leagueFlagMap: {
-      "premier league":    "premier-league-small.png",
-      "bundesliga":        "bundesliga-small.png",
-      "eredivisie":        "eredivisie-small.png",
-      "ethniki katigoria": "ethniki-katigoria-small.png",
-      "futbol ligi 1":     "futbol-ligi-1-small.png",
-      "jupiler league":    "jupiler-league-small.png",
-      "la liga":           "la-liga-small.png",
-      "ligue 1":           "ligue-1-small.png",
-      "liga i":            "liga-i-small.png",
-      "spremier league":   "scottish-premiership-small.png",
-      "serie a":           "serie-a-small.png"
-    },
+    leagueDisplayNames: {{ LEAGUE_DB_DISPLAY | tojson }},
+    leagueFlagMap: {{ LEAGUE_DB_FLAG_SMALL | tojson }},
     flagsBaseUrl: "{{ url_for('static', filename='img/flags/') }}",
     msgPickDate:  {{ _('Proszę wybrać datę przed kliknięciem "Pokaż mecze".')|tojson }},
     msgNoMatches: "{{ _('Brak meczów dla wybranej daty.') }}",

@@ -6,7 +6,7 @@ IPZ-Pewniaczki is an academic project focused on developing a system for predict
 
 1. **Data Scraping**: Gathering historical match data and future fixture information from various online sources.
 2. **Data Processing and Feature Engineering**: Calculating advanced statistical metrics, ELO ratings, and team form/head-to-head (H2H) statistics.
-3. **Prediction Model**: Training a machine learning model (XGBoost and Neural Network) to predict match outcomes (Home Win, Draw, Away Win).
+3. **Prediction Model**: Training a machine learning model (XGBoost) to predict match outcomes (Home Win, Draw, Away Win). A single canonical XGBoost classifier is used for both past and future matches.
 4. **Web Application (Flask)**: Providing an interactive interface for users to browse match details, league standings, team profiles, and view predictions.
 
 ## Screenshots
@@ -35,12 +35,8 @@ IPZ-Pewniaczki is an academic project focused on developing a system for predict
 
 ![Team All-Season Profile](Docs/screenshots/team_allseason.png)
 
-### League selection
-
-![League selection](Docs/screenshots/league_selection.png)
-
 ## Features
-- **Top 10 tracked leagues**: View the top 10 leagues with the most matches played and ELO ratings.
+- **Top 11 tracked leagues**: View the top 11 leagues with the most matches played and ELO ratings.
 - **Over 400 clubs**: Access detailed information about over 400 football clubs with their respective historically accurate logos.
 - **Comprehensive Match Details**: View historical and upcoming matches with detailed information, including:
   - Match date and time.
@@ -65,9 +61,10 @@ IPZ-Pewniaczki is an academic project focused on developing a system for predict
   - Cumulative match results (Win/Draw/Loss) chart.
   - Season summary statistics with league-wide rankings.
 - **Theme Toggle**: Switch between light and dark modes for better user experience.
-- **Multi-Language Support**: (Could be expanded to include more languages)
+- **Multi-Language Support**: Full UI translation via Flask-Babel, currently:
   - English
-  - Polish
+  - Polish (default)
+  - Adding a language only requires a new `translations/<code>/LC_MESSAGES/messages.po` catalog.
 
 ## Data Sources
 
@@ -83,40 +80,34 @@ The project scrapes data from the following sources:
 - **ORM**: SQLAlchemy
 - **Data Manipulation**: Pandas, NumPy
 - **Web Scraping**: BeautifulSoup4, Requests, httpx, fuzzywuzzy, chardet, unidecode
-- **Machine Learning**: XGBoost, PyTorch (Neural Network)
+- **Machine Learning**: XGBoost (canonical model)
 - **Frontend**: HTML, CSS (custom, with Inter font), JavaScript (Chart.js for interactive charts)
 
 ## Project Structure
 
 ```
 IPZ-Pewniaczki/
-├── .github/
-│   └── workflows/          # GitHub Actions for scheduled data refreshes
 ├── Docs/                   # Project documentation
 │   └── screenshots/        # Application screenshots (see Screenshots section)
+├── models/                 # Trained model checkpoints (xgboost_canonical.json)
 ├── src/
-│   ├── static/
-│   │   ├── css/
-│   │   │   ├── base.css
-│   │   │   ├── team.css
-│   │   │   └── ...
-│   │   ├── js/
-│   │   │   ├── base.js         # Global scripts: theme toggle, sidebar, scroll-to-top
-│   │   │   ├── mainpage.js     # Matches page: fetching, filtering, sorting
-│   │   │   ├── league_view.js  # League standings: active league highlight, season/matchday switch, CSV export
-│   │   │   └── team.js         # Team profile: Chart.js charts (ELO, position, points, goals, W/D/L)
-│   │   ├── logos/               # Team logos (256x256, 512x512)
-│   │   └── flags/                # Language flag icons
-│   ├── templates/
-│   │   ├── base.html            # Shared layout (navbar, sidebar, footer)
-│   │   ├── MainPage.html        # Matches listing page
-│   │   ├── league_view.html     # League standings page
-│   │   ├── match_detail.html    # Single match detail page
-│   │   ├── team.html            # Team profile page
-│   │   └── index.html           # Landing / info page
-│   ├── models.py                # SQLAlchemy models
-│   ├── db.py                    # Database connection setup
-│   └── routes/                  # Flask blueprints (main, leagues, teams, matches)
+│   ├── flask_app/
+│   │   ├── app/
+│   │   │   ├── __init__.py   # App factory (create_app), CLI commands, i18n
+│   │   │   ├── config.py     # Flask + SQLAlchemy + Babel config
+│   │   │   ├── db.py         # Shared SQLAlchemy / Babel extensions
+│   │   │   ├── leagues_config.py  # Single source of truth for tracked leagues
+│   │   │   ├── models/       # SQLAlchemy models (team, match, elo, prediction, ...)
+│   │   │   ├── routes/       # Flask blueprints (main, leagues, teams, matches, stats, api)
+│   │   │   ├── static/       # css/, js/, img/ (logos, flags, trophies)
+│   │   │   ├── templates/    # base.html, MainPage.html, league_view.html, ...
+│   │   │   └── translations/ # Flask-Babel catalogs (pl, en)
+│   │   └── local.db          # SQLite database (gitignored)
+│   ├── calculations/        # ELO, feature building, prediction pipeline
+│   ├── scraping/            # football-data.co.uk ingestion (footballScrap.py)
+│   └── main.py              # Interactive data-pipeline CLI menu
+├── tests/                   # pytest suite (isolated in-memory SQLite)
+├── wsgi.py                  # Canonical launcher (create_app factory)
 ├── requirements.txt
 └── README.md
 ```

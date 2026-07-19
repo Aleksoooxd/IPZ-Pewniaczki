@@ -22,12 +22,6 @@
 .match-hero-team.home { align-items: flex-end; }
 .match-hero-team.away { align-items: flex-start; }
 
-.hero-team-logo {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-}
-
 .hero-team-link {
   text-decoration: none;
   color: inherit;
@@ -89,7 +83,8 @@
 .prediction-hero {
   display: flex;
   justify-content: center;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 48px;
 }
 
 .prediction-main-badge {
@@ -103,9 +98,9 @@
   background: var(--surface);
 }
 
-.result-h, .result-home { border-color: var(--accent); background: rgba(0,230,118,0.08); }
-.result-d, .result-draw { border-color: var(--warn); background: rgba(255,214,0,0.08); }
-.result-a, .result-away { border-color: var(--danger); background: rgba(255,23,68,0.08); }
+.result-h { border-color: var(--accent); background: rgba(0,230,118,0.08); }
+.result-d { border-color: var(--warn); background: rgba(255,214,0,0.08); }
+.result-a { border-color: var(--danger); background: rgba(255,23,68,0.08); }
 
 .pred-label {
   font-size: 11px;
@@ -122,14 +117,22 @@
   letter-spacing: 2px;
 }
 
-.result-h .pred-result, .result-home .pred-result { color: var(--accent); }
-.result-d .pred-result, .result-draw .pred-result { color: var(--warn); }
-.result-a .pred-result, .result-away .pred-result { color: var(--danger); }
+.result-h .pred-result { color: var(--accent); }
+.result-d .pred-result { color: var(--warn); }
+.result-a .pred-result { color: var(--danger); }
 
 .pred-confidence {
   font-size: 13px;
   color: var(--text-muted);
   font-weight: 600;
+}
+
+/* The three outcome cards (H / D / A) reuse prediction-main-badge. Each keeps
+   its outcome colour via the result-* classes (green H / yellow D / red A);
+   only the highest-probability card stays full-strength, the rest are dimmed. */
+.prediction-main-badge.is-faded {
+  filter: grayscale(80%);
+  opacity: 0.55;
 }
 
 /* ── STATS GRID ───────────────────────────────────────────── */
@@ -276,4 +279,43 @@
   .match-hero-team.home, .match-hero-team.away { align-items: center; }
   .stats-grid { grid-template-columns: 1fr; }
   .last-matches-section { grid-template-columns: 1fr; }
+}
+
+/* ── PREDICTION HERO: COLLAPSED → SPREAD ON HOVER ──────────
+   At rest only the highest-probability card (.is-top) is shown, centred in
+   the slot where the draw card normally sits. The other two cards are moved
+   under it (translated to the centre) and hidden. On hovering the hero the
+   three cards spread sideways back to their natural H / D / A positions.
+   Gap (48px) must stay in sync with .prediction-hero above. */
+.prediction-hero .prediction-main-badge {
+  transition: transform 0.45s ease, opacity 0.45s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.prediction-hero .prediction-main-badge.is-top {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+/* Resting transforms: pull H and A into the centre so every card stacks
+   under the visible top card; D is already centred. */
+.prediction-hero .result-h { transform: translateX(calc(100% + 48px)); }
+.prediction-hero .result-d { transform: translateX(0); }
+.prediction-hero .result-a { transform: translateX(calc(-100% - 48px)); }
+
+/* Hover: spread back to natural slots, restore the faded (non-top) look. */
+.prediction-hero:hover .prediction-main-badge {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.prediction-hero:hover .prediction-main-badge.is-faded {
+  opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prediction-hero .prediction-main-badge { transition: opacity 0.2s ease; }
 }

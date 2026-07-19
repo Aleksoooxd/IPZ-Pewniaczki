@@ -8,38 +8,14 @@ from flask import Blueprint, render_template
 
 from ..db import db
 from ..models import FootballMatch, Team, League, TeamLeague, Season, TeamElo, MatchForm
+from ..leagues_config import URL_TO_DB, DB_TO_URL, DB_TO_DISPLAY
 
 teams_bp = Blueprint("teams", __name__)
 
-LEAGUE_URL_MAP = {
-    "Premierleague": "premier league",
-    "Bundesliga": "bundesliga",
-    "Eredivisie": "eredivisie",
-    "EthnikiKatigoria": "ethniki katigoria",
-    "FutbolLig1": "futbol ligi 1",
-    "JupiterLeague": "jupiler league",
-    "LaLiga": "la liga",
-    "Ligue1": "ligue 1",
-    "LigaI": "liga i",
-    "SerieA": "serie a",
-    "ScottishPremierLeague": "spremier league",
-}
-
-DB_CODE_TO_URL_CODE = {v: k for k, v in LEAGUE_URL_MAP.items()}
-
-DB_CODE_TO_DISPLAY = {
-    "premier league": "Premier League",
-    "bundesliga": "Bundesliga",
-    "eredivisie": "Eredivisie",
-    "ethniki katigoria": "Ethniki Katigoria",
-    "futbol ligi 1": "Futbol Ligi 1",
-    "jupiler league": "Jupiler League",
-    "la liga": "La Liga",
-    "ligue 1": "Ligue 1",
-    "liga i": "Liga I",
-    "serie a": "Serie A",
-    "spremier league": "Scottish Premiership",
-}
+# Single source of truth: src/flask_app/app/leagues_config.py
+LEAGUE_URL_MAP = URL_TO_DB          # url_code -> db_code
+DB_CODE_TO_URL_CODE = DB_TO_URL     # db_code -> url_code
+DB_CODE_TO_DISPLAY = DB_TO_DISPLAY  # db_code -> display name
 
 
 def _current_season_name():

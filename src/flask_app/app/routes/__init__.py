@@ -10,5 +10,6 @@ from .teams import teams_bp
 from .api import api_bp
 from .main import main_bp
 from .stats import stats_bp
+from .value_bp import value_bp
 
-__all__ = ["matches_bp", "leagues_bp", "teams_bp", "api_bp", "main_bp", "stats_bp"]
+__all__ = ["matches_bp", "leagues_bp", "teams_bp", "api_bp", "main_bp", "stats_bp", "value_bp"]

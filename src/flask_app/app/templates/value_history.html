@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Historia EV') }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/value.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="value-page">
+  <div class="stats-hero">
+    <div>
+      <p class="stats-kicker">{{ _('Weryfikacja modelu') }}</p>
+      <h1>{{ _('Historia EV') }} 📜</h1>
+      <p class="stats-subtitle">
+        {{ _('Przeszłe mecze: typ wskazany przez model (najwyższe EV) vs rzeczywisty wynik i zrealizowany zysk.') }}
+      </p>
+    </div>
+  </div>
+
+  <div class="value-actions">
+    <a class="button secondary" href="{{ url_for('value.value_bets') }}">💰 {{ _('Value Bets') }}</a>
+  </div>
+
+  <section class="stats-grid roi-summary">
+    <article class="stat-card accent-green">
+      <span class="stat-label">{{ _('Zysk / strata') }}</span>
+      <strong class="stat-value">{{ '%.2f'|format(total_profit) }}</strong>
+    </article>
+    <article class="stat-card accent-blue">
+      <span class="stat-label">{{ _('ROI') }}</span>
+      <strong class="stat-value">{% if roi is not none %}{{ '%.2f'|format(roi) }}%{% else %}-{% endif %}</strong>
+    </article>
+    <article class="stat-card accent-purple">
+      <span class="stat-label">{{ _('Trafione typy') }}</span>
+      <strong class="stat-value">{{ wins }} / {{ history|length }}</strong>
+    </article>
+    <article class="stat-card accent-gold">
+      <span class="stat-label">{{ _('Postawiono (jedn.)') }}</span>
+      <strong class="stat-value">{{ '%.0f'|format(total_staked) }}</strong>
+    </article>
+  </section>
+
+  {% if not history %}
+  <div class="empty-state">
+    <h2>{{ _('Brak danych') }}</h2>
+    <p>{{ _('Brak historycznych meczów z kursami i pełnym wektorem prawdopodobieństw.') }}</p>
+  </div>
+  {% else %}
+  <div class="table-wrap card">
+    <table class="value-table">
+      <thead>
+        <tr>
+          <th>{{ _('Data') }}</th>
+          <th>{{ _('Mecz') }}</th>
+          <th>{{ _('Liga') }}</th>
+          <th>{{ _('Typ') }}</th>
+          <th>{{ _('Kurs') }}</th>
+          <th>{{ _('Edge') }}</th>
+          <th>{{ _('Wynik') }}</th>
+          <th>{{ _('Zysk') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for h in history %}
+        <tr class="{% if h.won %}ev-pos{% else %}ev-neg{% endif %}">
+          <td>{{ h.date }}</td>
+          <td class="vb-match">
+            <a href="{{ url_for('matches.match_detail', match_type='past', match_id=h.match_id) }}">
+              <strong>{{ h.home }}</strong> <span class="vb-vs">vs</span> <strong>{{ h.away }}</strong>
+            </a>
+          </td>
+          <td>{{ h.league }}</td>
+          <td class="vb-pick">
+            {% if h.best.outcome == 'H' %}1{% elif h.best.outcome == 'D' %}X{% else %}2{% endif %}
+            <small>({{ '%.1f%%'|format(h.probs[h.best.outcome]*100) }})</small>
+          </td>
+          <td class="vb-odds">{{ '%.2f'|format(h.best.odds) }}</td>
+          <td class="vb-edge">{{ '%.1f'|format(h.best.edge_pct) }}%</td>
+          <td>
+            {% if h.actual == 'H' %}1{% elif h.actual == 'D' %}X{% elif h.actual == 'A' %}2{% else %}?{% endif %}
+            {% if h.won %}<span class="vb-win">✓</span>{% else %}<span class="vb-loss">✗</span>{% endif %}
+          </td>
+          <td class="vb-edge">{{ '%.2f'|format(h.profit) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

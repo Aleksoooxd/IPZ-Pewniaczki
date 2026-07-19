@@ -104,11 +104,11 @@
     line-height: 1;
 }
 
-.accent-blue { border-top-color: var(--accent); }
-.accent-purple { border-top-color: var(--accent-soft); }
+.accent-blue { border-top-color: var(--blue); }
+.accent-purple { border-top-color: var(--purple); }
 .accent-gold { border-top-color: var(--gold); }
 .accent-green { border-top-color: var(--accent); }
-.accent-cyan { border-top-color: var(--accent-soft); }
+.accent-cyan { border-top-color: var(--cyan); }
 
 /* ── DETAIL PANELS ────────────────────────────────────── */
 .detail-grid {
@@ -201,36 +201,6 @@
     letter-spacing: normal;
 }
 
-.record-links {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-/* ── ACTION LINK (uses .button.primary style) ────────── */
-.action-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 20px;
-    border-radius: 40px;
-    text-decoration: none;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    background: var(--accent);
-    color: var(--bg);
-    transition: transform var(--transition), box-shadow var(--transition);
-}
-
-.action-link:hover {
-    transform: scale(1.04);
-    box-shadow: 0 0 18px rgba(0, 230, 118, 0.45);
-    color: var(--bg);
-}
-
 /* ── ELO PILLS ────────────────────────────────────────── */
 .elo-pill {
     display: inline-block;
@@ -254,6 +224,197 @@
     font-style: italic;
 }
 
+/* ── MODEL DETAIL BLOCK (per-class + confusion matrix) ── */
+.model-detail-block {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.model-detail-block h3 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.model-detail-block h3 + h3 {
+    margin-top: 20px;
+}
+
+.model-detail-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: flex-start;
+}
+
+.model-detail-col {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+
+.per-class-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.per-class-table th,
+.per-class-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.per-class-table thead th {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.per-class-table tbody th {
+    color: var(--accent);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.per-class-table tbody td {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    color: var(--text);
+}
+
+/* Confusion matrix — centred, gap-separated cells; green = correct
+   (diagonal), red = error (off-diagonal); intensity = share of the true
+   class, so the draw row reads almost entirely red at a glance. */
+.confusion-matrix {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin: 8px 0 4px;
+}
+
+.cm-grid {
+    flex: 0 0 auto;
+}
+
+.cm-side {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    justify-content: center;
+}
+
+.cm-axis-caption {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.confusion-matrix table {
+    border-collapse: separate;
+    border-spacing: 4px;
+    font-size: 14px;
+}
+
+.confusion-matrix th,
+.confusion-matrix td {
+    text-align: center;
+    border-radius: var(--radius);
+    min-width: 76px;
+    padding: 10px 8px;
+}
+
+.confusion-matrix thead th {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: transparent;
+}
+
+.confusion-matrix .cm-corner {
+    background: transparent;
+}
+
+.confusion-matrix .cm-rowhead {
+    color: var(--accent);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.confusion-matrix td {
+    font-family: 'Barlow Condensed', sans-serif;
+    color: var(--text);
+    vertical-align: middle;
+    border: 1px solid var(--border);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.confusion-matrix td:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+}
+
+.cm-val {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.cm-pct {
+    display: block;
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.cm-legend {
+    display: flex;
+    gap: 18px;
+    margin-top: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.cm-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cm-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.cm-sw-correct { background: rgba(0, 230, 118, 0.6); }
+.cm-sw-error { background: rgba(255, 82, 82, 0.6); }
+
+.cm-caption {
+    flex-basis: 100%;
+    margin-top: 8px;
+    font-size: 12px;
+    text-align: center;
+}
+
 .empty-state {
     padding: 32px;
     border-radius: var(--radius);
@@ -271,141 +432,7 @@
     color: var(--text-muted);
 }
 
-/* ── MATCH CARD (nowy wygląd z logo w tle) ───────────────── */
-.match-card {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  text-decoration: none;
-  color: var(--text);
-  min-height: 90px;
-  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
-}
-
-.match-card:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0, 230, 118, 0.12);
-  color: var(--text);
-}
-
-/* ── TŁO Z LOGO ───────────────────────────────────────────── */
-.mc-bg {
-  position: absolute;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  background-image: var(--logo);
-  background-repeat: no-repeat;
-  background-size: 140px 140px;
-  pointer-events: none;
-  transition: filter var(--transition), opacity var(--transition);
-
-  /* domyślnie: wyszarzone, blade */
-  filter: grayscale(100%) brightness(0.35);
-  opacity: 0.55;
-}
-
-.mc-bg-home {
-  left: 0;
-  background-position: -30px center;
-}
-
-.mc-bg-away {
-  right: 0;
-  background-position: calc(100% + 30px) center;
-}
-
-/* hover — odzysk koloru */
-.match-card:hover .mc-bg {
-  filter: grayscale(0%) brightness(0.65);
-  opacity: 0.75;
-}
-
-
-
-/* ── CONTENT (nad tłem) ───────────────────────────────────── */
-.mc-content {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-}
-
-/* ── TEAM SIDE ────────────────────────────────────────────── */
-.mc-team {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.mc-home { justify-content: flex-start; }
-.mc-away { justify-content: flex-end; }
-
-.mc-logo {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-  flex-shrink: 0;
-  /* lekka przezroczystość domyślnie, pełna na hover */
-  opacity: 0.85;
-  transition: opacity var(--transition);
-}
-
-.match-card:hover .mc-logo { opacity: 1; }
-
-.mc-name {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 160px;
-}
-
-/* ── CENTER (wynik / godzina) ─────────────────────────────── */
-.mc-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  min-width: 80px;
-}
-
-.mc-score {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 800;
-  font-size: 26px;
-  color: var(--accent);
-  letter-spacing: 2px;
-  line-height: 1;
-}
-
-.mc-status {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-.record-sub {
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--text-muted);
-    text-align: center;
-}
+/* ── MATCH CARD (defined once in base.css) ───────────────── */
 
 .elo-record-link {
     display: block;
@@ -441,12 +468,6 @@
 .elo-record-link:not(.disabled):hover .elo-record-card {
     border-color: var(--accent);
     transform: translateY(-2px);
-}
-
-.elo-record-link:not(.disabled):hover .elo-team-logo {
-    filter: grayscale(0);
-    opacity: 1;
-    transform: scale(1.08);
 }
 
 /* ── TŁO Z LOGO ───────────────────────────────────────────── */
@@ -505,27 +526,6 @@
     letter-spacing: 0.5px;
 }
 
-.upset-content p {
-    color: var(--text-muted);
-    font-size: 12px;
-    margin: 6px 0 0;
-}
-
-.tag {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 20px;
-    background: var(--border);
-    color: var(--text);
-    font-weight: 600;
-    font-size: 13px;
-}
-
-.tag.success {
-    background: rgba(0, 230, 118, 0.15);
-    color: var(--accent);
-}
-
 @media (max-width: 640px) {
     .mc-content {
         grid-template-columns: 1fr;
@@ -571,8 +571,7 @@
         grid-template-columns: 1fr;
     }
 
-    .record-card,
-    .upset-layout {
+    .record-card {
         grid-template-columns: 1fr;
         display: grid;
     }

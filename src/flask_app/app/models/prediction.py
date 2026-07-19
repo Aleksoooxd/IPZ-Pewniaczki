@@ -16,6 +16,9 @@ class Predicted(db.Model):
     match_id         = Column(Integer, ForeignKey("football_match.match_id"))
     predicted_result = Column(String)
     confidence       = Column(Float)
+    prob_home        = Column(Float, nullable=True)
+    prob_draw        = Column(Float, nullable=True)
+    prob_away        = Column(Float, nullable=True)
 
     match = relationship("FootballMatch", back_populates="predictions")
 
@@ -31,5 +34,8 @@ class PredictedFuture(db.Model):
     match_id         = Column(Integer, ForeignKey("future_match.match_id"))
     predicted_result = Column(String)
     confidence       = Column(Float)
+    prob_home        = Column(Float, nullable=True)
+    prob_draw        = Column(Float, nullable=True)
+    prob_away        = Column(Float, nullable=True)
 
     future_match = relationship("FutureMatch", back_populates="future_predictions")

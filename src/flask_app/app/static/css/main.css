@@ -1,4 +1,4 @@
-/* REDESIGNED: main.css */
+/* REDESIGNED: main.css — match-card styles live in base.css (shared) */
 
 .main-content-wrapper { display: flex; flex-direction: column; gap: 20px; }
 
@@ -14,6 +14,47 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+/* ── STYLED SELECTS (league filter + sort order) ──────────── */
+/* Match the rest of the site: kill the OS-native chevron/look and draw a
+   custom accent chevron over a surface-coloured control with the same radius,
+   border and focus treatment as the app's cards and inputs. */
+.date-controls select.date-picker {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: var(--surface);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%2300e676' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding: 8px 36px 8px 12px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text);
+  min-width: 200px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.date-controls select.date-picker:hover { border-color: var(--accent); }
+
+.date-controls select.date-picker:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.15);
+}
+
+/* The popup list: keep options readable and on-theme where the OS allows it. */
+.date-controls select.date-picker option {
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 /* ── LEAGUE SECTION ──────────────────────────────────────── */
@@ -46,214 +87,4 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-/* ── MATCH CARD (nowy wygląd z logo w tle) ───────────────── */
-.match-card {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  text-decoration: none;
-  color: var(--text);
-  min-height: 90px;
-  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
-}
-
-.match-card:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0, 230, 118, 0.12);
-  color: var(--text);
-}
-
-/* ── TŁO Z LOGO ───────────────────────────────────────────── */
-.mc-bg {
-  position: absolute;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  background-image: var(--logo);
-  background-repeat: no-repeat;
-  background-size: 140px 140px;
-  pointer-events: none;
-  transition: filter var(--transition), opacity var(--transition);
-
-  /* domyślnie: wyszarzone, blade */
-  filter: grayscale(100%) brightness(0.35);
-  opacity: 0.55;
-}
-
-.mc-bg-home {
-  left: 0;
-  background-position: -30px center;
-}
-
-.mc-bg-away {
-  right: 0;
-  background-position: calc(100% + 30px) center;
-}
-
-/* hover — odzysk koloru */
-.match-card:hover .mc-bg {
-  filter: grayscale(0%) brightness(0.65);
-  opacity: 0.75;
-}
-
-/* ── CONTENT (nad tłem) ───────────────────────────────────── */
-.mc-content {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-}
-
-/* ── TEAM SIDE ────────────────────────────────────────────── */
-.mc-team {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.mc-home { justify-content: flex-start; }
-.mc-away { justify-content: flex-end; }
-
-.mc-logo {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-  flex-shrink: 0;
-  /* lekka przezroczystość domyślnie, pełna na hover */
-  opacity: 0.85;
-  transition: opacity var(--transition);
-}
-
-.match-card:hover .mc-logo { opacity: 1; }
-
-.mc-name {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 160px;
-}
-
-/* ── CENTER (wynik / godzina) ─────────────────────────────── */
-.mc-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  min-width: 80px;
-}
-
-.mc-score {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 800;
-  font-size: 26px;
-  color: var(--accent);
-  letter-spacing: 2px;
-  line-height: 1;
-}
-
-.mc-status {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-/* ── RESPONSIVE ──────────────────────────────────────────── */
-@media (max-width: 560px) {
-  .mc-content { padding: 12px; gap: 8px; }
-  .mc-name { max-width: 90px; font-size: 13px; }
-  .mc-score { font-size: 20px; }
-  .mc-bg { background-size: 100px 100px; }
-}
-
-.match-teams {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-  min-width: 0;
-}
-
-.team {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 500;
-  font-size: 14px;
-  min-width: 0;
-}
-
-.team-name-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 160px;
-}
-
-.home-team { justify-content: flex-end; flex: 1; }
-.away-team { justify-content: flex-start; flex: 1; }
-
-.vs-separator {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 800;
-  font-size: 18px;
-  color: var(--accent);
-  letter-spacing: 1px;
-  text-align: center;
-  min-width: 60px;
-  white-space: nowrap;
-}
-
-.match-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.match-time {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-}
-
-.match-status {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-.status-finished { background: var(--border); color: var(--text-muted); }
-.status-upcoming { background: rgba(0,230,118,0.12); color: var(--accent); }
-
-/* ── RESPONSIVE ──────────────────────────────────────────── */
-@media (max-width: 640px) {
-  .match-card { flex-direction: column; align-items: stretch; padding: 12px; }
-  .match-meta { align-items: flex-start; flex-direction: row; justify-content: space-between; }
-  .team-name-text { max-width: 100px; }
-  .home-team { justify-content: flex-start; }
 }

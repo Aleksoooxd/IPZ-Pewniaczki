@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, Float, Boolean, ForeignKey, select
+from sqlalchemy import Column, Integer, String, Date, Float, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
 from ..db import db
@@ -43,6 +43,7 @@ class FootballMatch(db.Model):
     match_stats = relationship("MatchStats",  back_populates="match")
     form_data   = relationship("MatchForm",   back_populates="match")
     predictions = relationship("Predicted",   back_populates="match")
+    match_odds  = relationship("MatchOdds",   back_populates="match", uselist=False)
 
 
 class FutureMatch(db.Model):
@@ -69,6 +70,7 @@ class FutureMatch(db.Model):
     home_team          = relationship("Team",    foreign_keys=[home_team_id])
     away_team          = relationship("Team",    foreign_keys=[away_team_id])
     future_predictions = relationship("PredictedFuture", back_populates="future_match")
+    future_odds        = relationship("FutureMatchOdds", back_populates="future_match", uselist=False)
 
 
 class MatchStats(db.Model):
@@ -92,42 +94,13 @@ class MatchStats(db.Model):
 
     match = relationship("FootballMatch", back_populates="match_stats")
 
-    @classmethod
-    def create_or_update(cls, session, match_id: int, side: str, data: dict) -> "MatchStats":
-        """Insert or update a ``MatchStats`` row for one match side.
-
-        Looks up an existing ``(match_id, team_side)`` row; if none exists a new
-        instance is created and added to the session. The six diversity metrics
-        (mean/std/shannon/cv/gini/hhi) are then written from ``data`` and the
-        session is flushed.
-
-        Args:
-            session (sqlalchemy.orm.Session): Active database session.
-            match_id (int): ``FootballMatch.match_id`` the stats belong to.
-            side (str): Team side, 'home' or 'away'.
-            data (dict): Mapping of metric name to value; only the recognised
-                keys are written, others are ignored.
-
-        Returns:
-            MatchStats: The persisted (inserted or updated) stats row.
-        """
-        obj = session.execute(
-            select(cls).where(cls.match_id == match_id, cls.team_side == side)
-        ).scalar_one_or_none()
-        if not obj:
-            obj = cls(match_id=match_id, team_side=side)
-            session.add(obj)
-        for field in ("mean", "std", "shannon", "cv", "gini", "hhi"):
-            setattr(obj, field, data.get(field))
-        session.flush()
-        return obj
-
 
 class MatchForm(db.Model):
     """Per-team, per-match form and head-to-head summary.
 
     Captures recent form (last-3/5/season points and goals), the team's league
-    placement, and the running head-to-head record against the opponent
+    placement, the team's historical draw tendency, the league's historical draw
+    tendency, and the running head-to-head record against the opponent
     (matches/wins/draws/losses/goals/last-5 points) as of this match. One row
     exists per ``(match_id, team_side)``.
     """
@@ -143,6 +116,8 @@ class MatchForm(db.Model):
     goals_last_5      = Column(Float)
     goals_season      = Column(Float)
     team_placement    = Column(Integer)
+    draw_ratio_team   = Column(Float, nullable=True)
+    draw_ratio_league = Column(Float, nullable=True)
     h2h_matches       = Column(Integer, nullable=True)
     h2h_wins          = Column(Integer, nullable=True)
     h2h_draws         = Column(Integer, nullable=True)

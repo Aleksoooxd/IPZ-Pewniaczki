@@ -93,6 +93,16 @@ async function fetchMatches() {
         const statusClass  = isFinished ? 'status-finished' : 'status-upcoming';
         const statusText   = isFinished ? cfg.msgFinished : cfg.msgUpcoming;
 
+        // Surface the model's prediction on the card — that's the product.
+        const predMap = { 'H': '1', 'D': 'X', 'A': '2' };
+        const predChip = (!isFinished && match.predicted_result)
+          ? `<span class="mc-pred pred-${match.predicted_result.toLowerCase()}" `
+            + `title="${cfg.msgPrediction || 'Predykcja'}">`
+            + `${predMap[match.predicted_result] || match.predicted_result}`
+            + (match.confidence != null ? ` · ${(match.confidence * 100).toFixed(0)}%` : '')
+            + `</span>`
+          : '';
+
         const homeSlug = slugify(match.home_team);
         const awaySlug = slugify(match.away_team);
 
@@ -104,6 +114,7 @@ async function fetchMatches() {
             <div class="mc-center">
               <span class="mc-score">${scoreDisplay}</span>
               <span class="mc-status ${statusClass}">${statusText}</span>
+              ${predChip}
             </div>
             <div class="mc-team mc-away"><span class="mc-name">${match.away_team}</span></div>
           </div>`;

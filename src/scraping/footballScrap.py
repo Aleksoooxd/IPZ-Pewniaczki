@@ -14,7 +14,8 @@ from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
 from src.flask_app.app.models import (
     FootballMatch, MatchStats, MatchForm,
-    Team, League, Season, TeamLeague, FutureMatch
+    Team, League, Season, TeamLeague, FutureMatch,
+    MatchOdds, FutureMatchOdds,
 )
 from src.calculations.helpfunctions import (
     hhi_index, shannon_index, coefficient_of_variation, gini_index, calculate_consensus
@@ -172,6 +173,45 @@ def apply_team_mapping(club_name: str, mapping: dict) -> str:
         if key.lower() == lower_name:
             return mapping[key]
     return cleaned_name
+
+
+def _odds_from_row(row) -> dict:
+    """Extract average/best decimal odds (H/D/A) from a scraped match row.
+
+    Reads the ``Avg*`` / ``Max*`` bookmaker-summary columns, coercing each to a
+    float and treating missing / non-positive / placeholder values as ``None``
+    (a stake of 1.0 would be meaningless). Returns a dict with ``avg_home``,
+    ``avg_draw``, ``avg_away``, ``best_home``, ``best_draw``, ``best_away``.
+
+    Args:
+        row (pandas.Series): A row from a football-data.co.uk match CSV.
+
+    Returns:
+        dict: Odds keyed by outcome; ``None`` where unavailable.
+    """
+    def _coerce(col):
+        """Coerce one odds column to float, treating invalid values as ``None``.
+
+        A stake of 1.0 would be meaningless, so any value that is not strictly
+        greater than 1.0 (missing, non-numeric, or a placeholder) is returned as
+        ``None`` so the value-EV calculator can skip that outcome.
+
+        Args:
+            col (str): Odds column name (e.g. ``"AvgH"`` / ``"MaxA"``).
+
+        Returns:
+            float or None: The parsed decimal odds, or ``None`` when unavailable.
+        """
+        val = row.get(col) if hasattr(row, "get") else None
+        try:
+            val = float(val)
+        except (TypeError, ValueError):
+            return None
+        return val if val and val > 1.0 else None
+    return {
+        "avg_home": _coerce("AvgH"), "avg_draw": _coerce("AvgD"), "avg_away": _coerce("AvgA"),
+        "best_home": _coerce("MaxH"), "best_draw": _coerce("MaxD"), "best_away": _coerce("MaxA"),
+    }
 
 
 def correct_date_format(val):
@@ -339,10 +379,19 @@ def calculate_is_surprise(df: pd.DataFrame) -> pd.DataFrame:
         'SBH', 'SBD', 'SBA', 'SJH', 'SJD', 'SJA', 'SYH', 'SYD', 'SYA',
         'VCH', 'VCD', 'VCA', 'WHH', 'WHD', 'WHA'
     ]
+    # Bookmaker average / best-odds summary columns (Avg*/Max*) are needed
+    # downstream to persist odds for the value-bet calculator, but must NOT be
+    # filled with the 1.0 placeholder used for missing individual-bookmaker
+    # odds. Detach them, run the surprise calc, then re-attach them untouched.
+    odds_summary_cols = ['AvgH', 'AvgD', 'AvgA', 'MaxH', 'MaxD', 'MaxA']
+    kept_odds = df[[c for c in odds_summary_cols if c in df.columns]].copy()
+
     required_columns = selected_columns + all_bookmaker_columns
     new_columns = {col: pd.NA for col in required_columns if col not in df.columns}
     df = pd.concat([df, pd.DataFrame(new_columns, index=df.index)], axis=1)
     df = df[required_columns].fillna(1.0)
+    if not kept_odds.empty:
+        df = pd.concat([df, kept_odds], axis=1)
 
     home_stakeholders = [col for col in df.columns if col.endswith("H")]
     draw_stakeholders = [col for col in df.columns if col.endswith("D")]
@@ -420,6 +469,10 @@ def create_placement_columns(dataframe: pd.DataFrame) -> pd.DataFrame:
     away_goals_season = np.zeros(n, dtype=int)
     htlsp = np.zeros(n, dtype=int)
     atlsp = np.zeros(n, dtype=int)
+    home_draw_ratio = np.zeros(n, dtype=float)
+    away_draw_ratio = np.zeros(n, dtype=float)
+    home_league_draw_ratio = np.zeros(n, dtype=float)
+    away_league_draw_ratio = np.zeros(n, dtype=float)
 
     previous_season_final_placements = {}
 
@@ -427,6 +480,8 @@ def create_placement_columns(dataframe: pd.DataFrame) -> pd.DataFrame:
         season_df = season_df_orig.sort_values(by=['Date', 'HomeMatchday']).copy()
         standings = {}
         team_history = {}
+        league_draws = 0
+        league_matches = 0
 
         for index, row in season_df.iterrows():
             home_team = row['HomeTeam']
@@ -436,7 +491,7 @@ def create_placement_columns(dataframe: pd.DataFrame) -> pd.DataFrame:
                 if team not in standings:
                     standings[team] = {'points': 0, 'goal_diff': 0, 'goals_scored': 0, 'goals_against': 0}
                 if team not in team_history:
-                    team_history[team] = {'results_pts': [], 'goals_for': []}
+                    team_history[team] = {'results_pts': [], 'goals_for': [], 'draws': 0}
 
             sorted_teams = sorted(
                 standings.keys(),
@@ -449,6 +504,17 @@ def create_placement_columns(dataframe: pd.DataFrame) -> pd.DataFrame:
 
             home_team_placement[index] = placement_map.get(home_team, len(standings) + 1)
             away_team_placement[index] = placement_map.get(away_team, len(standings) + 1)
+
+            # Draw-tendency ratios as of this match (before its own result is
+            # counted): team ratio = team draws / team matches played so far;
+            # league ratio = league draws / league matches played so far.
+            home_m = len(home_hist['results_pts'])
+            away_m = len(away_hist['results_pts'])
+            home_draw_ratio[index] = (home_hist['draws'] / home_m) if home_m else 0.0
+            away_draw_ratio[index] = (away_hist['draws'] / away_m) if away_m else 0.0
+            league_ratio = (league_draws / league_matches) if league_matches else 0.0
+            home_league_draw_ratio[index] = league_ratio
+            away_league_draw_ratio[index] = league_ratio
             home_form3[index] = sum(home_hist['results_pts'][-3:])
             home_form5[index] = sum(home_hist['results_pts'][-5:])
             home_form_season[index] = sum(home_hist['results_pts'])
@@ -490,6 +556,12 @@ def create_placement_columns(dataframe: pd.DataFrame) -> pd.DataFrame:
             team_history[home_team]['goals_for'].append(fthg)
             team_history[away_team]['results_pts'].append(away_points)
             team_history[away_team]['goals_for'].append(ftag)
+            if row['FTR'] == 'D':
+                team_history[home_team]['draws'] += 1
+                team_history[away_team]['draws'] += 1
+            league_matches += 1
+            if row['FTR'] == 'D':
+                league_draws += 1
 
         final_sorted_teams = sorted(
             standings.keys(),
@@ -513,6 +585,10 @@ def create_placement_columns(dataframe: pd.DataFrame) -> pd.DataFrame:
     dataframe['AwayGoalsSeason'] = away_goals_season
     dataframe['HTLSP'] = htlsp
     dataframe['ATLSP'] = atlsp
+    dataframe['HomeDrawRatio'] = home_draw_ratio
+    dataframe['AwayDrawRatio'] = away_draw_ratio
+    dataframe['HomeLeagueDrawRatio'] = home_league_draw_ratio
+    dataframe['AwayLeagueDrawRatio'] = away_league_draw_ratio
     return dataframe
 
 
@@ -688,7 +764,10 @@ def _delete_past_fixtures(session: Session, as_of: datetime.date) -> int:
 
     Fixtures that have already been played are no longer "future" and must not
     linger in the prediction set (they would otherwise be predicted as if
-    upcoming). Deletion is performed with ``synchronize_session=False``.
+    upcoming). Their ``PredictedFuture`` rows are removed first so they do not
+    become orphans (SQLite does not enforce the FK, and a bulk query delete does
+    not trigger ORM cascades). Deletion is performed with
+    ``synchronize_session=False``.
 
     Args:
         session (Session): Active SQLAlchemy session.
@@ -697,9 +776,22 @@ def _delete_past_fixtures(session: Session, as_of: datetime.date) -> int:
     Returns:
         int: Number of FutureMatch rows deleted.
     """
-    return session.query(FutureMatch).filter(
-        FutureMatch.date < as_of
+    from src.flask_app.app.models import PredictedFuture
+
+    stale_ids = [
+        mid for (mid,) in session.query(FutureMatch.match_id)
+        .filter(FutureMatch.date < as_of).all()
+    ]
+    if not stale_ids:
+        return 0
+    # Remove dangling predictions before dropping the matches they point at.
+    session.query(PredictedFuture).filter(
+        PredictedFuture.match_id.in_(stale_ids)
     ).delete(synchronize_session=False)
+    deleted = session.query(FutureMatch).filter(
+        FutureMatch.match_id.in_(stale_ids)
+    ).delete(synchronize_session=False)
+    return deleted
 
 
 def process_fixtures(session: Session, df: pd.DataFrame, as_of: datetime.date = None):
@@ -803,14 +895,19 @@ def process_fixtures(session: Session, df: pd.DataFrame, as_of: datetime.date = 
             if key in existing_keys:
                 skipped += 1
                 continue
-            session.add(FutureMatch(
+            fm = FutureMatch(
                 league_id=lg.league_id,
                 season_id=season.season_id,
                 date=date_val,
                 time=str(row['Time']) if pd.notna(row.get('Time')) else None,
                 home_team_id=home.team_id,
                 away_team_id=away.team_id,
-            ))
+            )
+            session.add(fm)
+            session.flush()
+            odds_dict = _odds_from_row(row)
+            if any(odds_dict.values()):
+                fm.future_odds = FutureMatchOdds(fetched_at=as_of, **odds_dict)
             existing_keys.add(key)
             inserted += 1
         except Exception as e:
@@ -994,11 +1091,14 @@ def get_data_from_top_11(
         match_ids = [m.match_id for m in matches_by_key.values()]
         match_stats_by_key = {}
         match_forms_by_key = {}
+        match_odds_by_key = {}
         if match_ids:
             for s in session.query(MatchStats).filter(MatchStats.match_id.in_(match_ids)):
                 match_stats_by_key[(s.match_id, s.team_side)] = s
             for f in session.query(MatchForm).filter(MatchForm.match_id.in_(match_ids)):
                 match_forms_by_key[(f.match_id, f.team_side)] = f
+            for o in session.query(MatchOdds).filter(MatchOdds.match_id.in_(match_ids)):
+                match_odds_by_key[o.match_id] = o
 
         future_by_key = {
             (fm.home_team_id, fm.away_team_id, fm.date): fm
@@ -1008,7 +1108,8 @@ def get_data_from_top_11(
         }
 
         inserted = updated = errors = 0
-        new_match_records = []      # (match_fields, stats_records, form_records)
+        new_match_records = []      # (match_fields, stats_records, form_records, odds_dict)
+        pending_odds = []            # MatchOdds objects created for existing matches
         pending_stats = []          # MatchStats objects created for existing matches
         pending_forms = []          # MatchForm objects created for existing matches
         futures_to_delete = set()
@@ -1020,6 +1121,7 @@ def get_data_from_top_11(
             try:
                 home_team = teams_by_name[row['HomeTeam']]
                 away_team = teams_by_name[row['AwayTeam']]
+                odds_dict = _odds_from_row(row)
                 match_key = (home_team.team_id, away_team.team_id, row['Date'])
                 match = matches_by_key.get(match_key)
 
@@ -1074,8 +1176,10 @@ def get_data_from_top_11(
                             goals_last_5=row[f'{p}Goals5'],
                             goals_season=row[f'{p}GoalsSeason'],
                             team_placement=row[f'{p}TeamPlacement'],
+                            draw_ratio_team=row[f'{p}DrawRatio'],
+                            draw_ratio_league=row[f'{p}LeagueDrawRatio'],
                         ))
-                    new_match_records.append((match_fields, stats_records, form_records))
+                    new_match_records.append((match_fields, stats_records, form_records, odds_dict))
                     if match_key in future_by_key:
                         futures_to_delete.add(future_by_key[match_key])
                     inserted += 1
@@ -1131,6 +1235,17 @@ def get_data_from_top_11(
                         fm.goals_last_5 = row[f'{p}Goals5']
                         fm.goals_season = row[f'{p}GoalsSeason']
                         fm.team_placement = row[f'{p}TeamPlacement']
+                        fm.draw_ratio_team = row[f'{p}DrawRatio']
+                        fm.draw_ratio_league = row[f'{p}LeagueDrawRatio']
+
+                    if any(odds_dict.values()):
+                        mo = match_odds_by_key.get(match.match_id)
+                        if mo is None:
+                            mo = MatchOdds(match=match, source='football-data.co.uk')
+                            match_odds_by_key[match.match_id] = mo
+                            pending_odds.append(mo)
+                        for fld, val in odds_dict.items():
+                            setattr(mo, fld, val)
 
                     if match_key in future_by_key:
                         futures_to_delete.add(future_by_key[match_key])
@@ -1142,16 +1257,21 @@ def get_data_from_top_11(
                 traceback.print_exc()
 
         # ---- Bulk persist: new matches (with cascaded stats + forms) once ----
-        for match_fields, stats_records, form_records in new_match_records:
+        for match_fields, stats_records, form_records, odds_dict in new_match_records:
             m = FootballMatch(**match_fields)
             for sr in stats_records:
                 m.match_stats.append(MatchStats(**sr))
             for fr in form_records:
                 m.form_data.append(MatchForm(**fr))
+            if odds_dict and any(odds_dict.values()):
+                m.match_odds = MatchOdds(
+                    source='football-data.co.uk', **odds_dict)
             session.add(m)
 
         if pending_stats or pending_forms:
             session.add_all(pending_stats + pending_forms)
+        if pending_odds:
+            session.add_all(pending_odds)
 
         for fm in futures_to_delete:
             session.delete(fm)
