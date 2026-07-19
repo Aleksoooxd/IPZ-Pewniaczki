@@ -722,16 +722,16 @@ body.sidebar-open footer{
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: none; }
 }
-.league-matches-grid .match-card { animation: mc-rise 0.45s ease both; }
-.league-matches-grid .match-card:nth-child(1)   { animation-delay: 0.02s; }
-.league-matches-grid .match-card:nth-child(2)   { animation-delay: 0.05s; }
-.league-matches-grid .match-card:nth-child(3)   { animation-delay: 0.08s; }
-.league-matches-grid .match-card:nth-child(4)   { animation-delay: 0.11s; }
-.league-matches-grid .match-card:nth-child(5)   { animation-delay: 0.14s; }
-.league-matches-grid .match-card:nth-child(6)   { animation-delay: 0.17s; }
-.league-matches-grid .match-card:nth-child(7)   { animation-delay: 0.20s; }
-.league-matches-grid .match-card:nth-child(8)   { animation-delay: 0.23s; }
-.league-matches-grid .match-card:nth-child(n+9) { animation-delay: 0.26s; }
+.league-matches-grid .match-card { animation: mc-rise 0.45s ease backwards; }
+.league-matches-grid .match-card:nth-child(1)   { animation-delay: 0.01s; }
+.league-matches-grid .match-card:nth-child(2)   { animation-delay: 0.11s; }
+.league-matches-grid .match-card:nth-child(3)   { animation-delay: 0.21s; }
+.league-matches-grid .match-card:nth-child(4)   { animation-delay: 0.31s; }
+.league-matches-grid .match-card:nth-child(5)   { animation-delay: 0.41s; }
+.league-matches-grid .match-card:nth-child(6)   { animation-delay: 0.51s; }
+.league-matches-grid .match-card:nth-child(7)   { animation-delay: 0.61s; }
+.league-matches-grid .match-card:nth-child(8)   { animation-delay: 0.71s; }
+.league-matches-grid .match-card:nth-child(n+9) { animation-delay: 0.81s; }
 
 /* ── REDUCED MOTION (quality floor) ─────────────────────── */
 @media (prefers-reduced-motion: reduce) {
