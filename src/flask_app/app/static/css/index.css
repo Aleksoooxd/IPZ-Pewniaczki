@@ -90,9 +90,6 @@
   margin-top: 8px;
 }
 
-/* Warm "kickoff" accent for the landing's primary action — a second,
-   football-earned hue that breaks the all-green default without competing
-   with the green identity used everywhere else. */
 .button.primary.hero-cta {
   background: var(--kickoff);
   color: #0a120a;
@@ -103,7 +100,6 @@
   color: #0a120a;
 }
 
-/* Blokada scrolla na stronie głównej */
 body.index-page {
   overflow: hidden;
   height: 100vh;
@@ -121,15 +117,14 @@ body.index-page .container {
 
 body.index-page .hero {
   flex: 1;
-  min-height: 0;        /* pozwala heroowi się skurczyć */
+  min-height: 0;        
   margin: 0;
 }
 
 body.index-page .site-footer {
-  flex-shrink: 0;       /* footer nigdy się nie kurczy */
+  flex-shrink: 0;      
 }
 
-/* Ukrycie przycisku scroll-to-top na stronie głównej */
 body.index-page .scroll-to-top-btn {
   display: none !important;
 }

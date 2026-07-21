@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: ipz-pewniaczki:latest
+    container_name: pewniaczki_app
+    restart: unless-stopped
+    ports:
+      - "7777:7777"
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-change_me_in_production}
+      - DRAW_PROB_MULTIPLIER=${DRAW_PROB_MULTIPLIER:-1.0}
+      - FLASK_ENV=${FLASK_ENV:-production}
+    volumes:
+      # Persistent SQLite database
+      - pewniaczki_db:/app/src/flask_app/app
+      # Persistent ML models
+      - pewniaczki_models:/app/models
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7777/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  pewniaczki_db:
+  pewniaczki_models:

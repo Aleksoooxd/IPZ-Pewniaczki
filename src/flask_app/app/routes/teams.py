@@ -347,6 +347,7 @@ def _team_single_season(league_code, team_name, team_id, db_code, display_league
         avg_goals_for_rank=rank("avg_goals_for", team_id, rev=True),
         avg_goals_conceded_rank=rank("avg_goals_conceded", team_id),
         avg_points_per_match=round(cum_pts / n, 2) if n else 0,
+        trophies=trophies,
     )
 
     return render_template(

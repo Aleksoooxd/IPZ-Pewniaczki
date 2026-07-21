@@ -35,6 +35,10 @@ IPZ-Pewniaczki is an academic project focused on developing a system for predict
 
 ![Team All-Season Profile](Docs/screenshots/team_allseason.png)
 
+### System Stats
+
+![System Stats](Docs/screenshots/system_stats.png)
+
 ## Features
 - **Top 11 tracked leagues**: View the top 11 leagues with the most matches played and ELO ratings.
 - **Over 400 clubs**: Access detailed information about over 400 football clubs with their respective historically accurate logos.
