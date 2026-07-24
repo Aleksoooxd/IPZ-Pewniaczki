@@ -175,7 +175,16 @@ def _ensure_team_elo_collapsed():
         "CREATE UNIQUE INDEX uq_team_elo_team_season ON team_elo(team_id, season_id)"
     ))
     db.session.commit()
-
+    
+def _run_all_ensure_helpers():
+    """Uruchamia wszystkie idempotentne helpery schematu we właściwej kolejności."""
+    _ensure_round_column()
+    _ensure_team_elo_collapsed()
+    _ensure_model_metrics_baseline()
+    _ensure_model_metrics_extras()
+    _ensure_predicted_probs()
+    _ensure_match_form_draw_ratios()
+    _ensure_odds_tables()
 
 def create_app():
     """Application factory: build and configure the Flask app.
@@ -285,13 +294,8 @@ def create_app():
     app.register_blueprint(value_bp)
 
     with app.app_context():
-        _ensure_round_column()
-        _ensure_team_elo_collapsed()
-        _ensure_model_metrics_baseline()
-        _ensure_model_metrics_extras()
-        _ensure_predicted_probs()
-        _ensure_match_form_draw_ratios()
-        _ensure_odds_tables()
+        db.create_all()
+        _run_all_ensure_helpers()
 
     @app.cli.command("db-create")
     @with_appcontext

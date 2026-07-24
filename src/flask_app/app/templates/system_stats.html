@@ -18,16 +18,39 @@
 
         {% if stats %}
         <div class="stats-badge">
-            <span>{{ _('Ostatnia aktualizacja') }}</span>
-            <strong>
-                {% if stats.recorded_at %}
-                    {{ stats.recorded_at.strftime('%Y-%m-%d %H:%M') }}
-                {% elif stats_live %}
-                    {{ _('na żywo') }}
-                {% else %}
-                    -
-                {% endif %}
-            </strong>
+            <div class="stats-badge-info">
+                <span>{{ _('Ostatnia aktualizacja') }}</span>
+                <strong>
+                    {% if stats.recorded_at %}
+                        {{ stats.recorded_at.strftime('%Y-%m-%d %H:%M') }}
+                    {% elif stats_live %}
+                        {{ _('na żywo') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </strong>
+            </div>
+            <form
+                class="database-refresh-form"
+                method="post"
+                action="{{ url_for('stats.reset_and_refresh_database') }}"
+                onsubmit="return confirm('{{ _('Ta operacja usunie całą bazę danych, a następnie uruchomi pełny scraping, ELO i predykcje. Kontynuować?') }}');"
+            >
+                <button
+                    class="database-refresh-icon"
+                    type="submit"
+                    title="{{ _('Zresetuj i wypełnij bazę') }}"
+                    aria-label="{{ _('Zresetuj i wypełnij bazę') }}"
+                    {% if pipeline_state.status == 'running' %}disabled{% endif %}
+                >
+                    {% if pipeline_state.status == 'running' %}
+                        <span class="refresh-spinner" aria-hidden="true">↻</span>
+                    {% else %}
+                        <span aria-hidden="true">↻</span>
+                    {% endif %}
+                </button>
+            </form>
+
         </div>
         {% endif %}
     </div>

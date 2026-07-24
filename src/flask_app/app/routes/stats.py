@@ -1,21 +1,120 @@
 import json
+import threading
+import traceback
+from datetime import datetime, timezone
 
 from sqlalchemy import select
-from flask import Blueprint, render_template
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    url_for,
+)
 
 from ..db import db
 from ..models import (
-    SystemStats, TeamElo, FootballMatch, Team, Season, League, TeamLeague,
+    SystemStats,
+    TeamElo,
+    FootballMatch,
+    Team,
+    Season,
+    League,
+    TeamLeague,
     ModelMetrics,
 )
 from ..leagues_config import DB_TO_URL
 from src.scraping.footballScrap import compute_stats_dict
+
+_pipeline_lock = threading.Lock()
+_pipeline_state_lock = threading.Lock()
+_pipeline_state = {
+    "status": "idle",
+    "message": None,
+    "started_at": None,
+    "finished_at": None,
+}
 
 stats_bp = Blueprint("stats", __name__)
 
 # db_code -> url_code, single source of truth in leagues_config.py
 DB_CODE_TO_URL_CODE = DB_TO_URL
 
+def _pipeline_snapshot():
+    """Return a copy of the current database-refresh status."""
+    with _pipeline_state_lock:
+        return _pipeline_state.copy()
+
+
+def _set_pipeline_state(**values):
+    """Atomically update the database-refresh status exposed in System Stats."""
+    with _pipeline_state_lock:
+        _pipeline_state.update(values)
+
+
+def _reset_database_and_run_pipeline(app):
+    """Reset the schema and execute the complete option-4 pipeline in a thread."""
+    try:
+        with app.app_context():
+            db.session.remove()
+            db.drop_all()
+            db.create_all()
+
+            # Import here to avoid a circular import while Flask registers routes.
+            from src.main import run_full_pipeline
+
+            timings = run_full_pipeline(db.session, db.engine)
+            db.session.remove()
+
+        _set_pipeline_state(
+            status="success",
+            message=(
+                "Baza została zresetowana i uzupełniona. "
+                f"Scraping: {timings['scraping_time']:.2f} s, "
+                f"ELO: {timings['elo_calc_time']:.2f} s, "
+                f"predykcja: {timings['prediction_time']:.2f} s."
+            ),
+            finished_at=datetime.now(timezone.utc),
+        )
+    except Exception:
+        _set_pipeline_state(
+            status="failed",
+            message=traceback.format_exc(limit=8),
+            finished_at=datetime.now(timezone.utc),
+        )
+        app.logger.exception("Database reset and full pipeline failed")
+    finally:
+        _pipeline_lock.release()
+
+
+@stats_bp.route("/stats/reset-and-refresh", methods=["POST"])
+def reset_and_refresh_database():
+    """Start a background destructive DB reset followed by the full data pipeline."""
+    if not _pipeline_lock.acquire(blocking=False):
+        flash("Odświeżanie bazy jest już uruchomione.", "warning")
+        return redirect(url_for("stats.system_stats"))
+
+    _set_pipeline_state(
+        status="running",
+        message=(
+            "Resetowanie bazy i pobieranie danych trwa. "
+            "Ta operacja może potrwać kilka minut."
+        ),
+        started_at=datetime.now(timezone.utc),
+        finished_at=None,
+    )
+
+    app = current_app._get_current_object()
+    threading.Thread(
+        target=_reset_database_and_run_pipeline,
+        args=(app,),
+        daemon=True,
+        name="database-reset-pipeline",
+    ).start()
+
+    flash("Reset bazy oraz pełny pipeline zostały uruchomione w tle.", "info")
+    return redirect(url_for("stats.system_stats"))
 
 def _find_league_for_team_season(team_id, season_id):
     """Find the league a team played in during a given season.
@@ -178,4 +277,5 @@ def system_stats():
         lowest_elo_link=lowest_elo_link,
         highest_goal_match=highest_goal_match,
         biggest_upset_match=biggest_upset_match,
+        pipeline_state=_pipeline_snapshot(),
     )
